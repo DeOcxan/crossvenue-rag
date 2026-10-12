@@ -1,0 +1,3 @@
+mode,n,total_p50_ms,total_p95_ms,total_mean_ms,rerank_p50_ms,rerank_p95_ms,rerank_mean_ms,calls_per_query,pairs_per_call_mean,pairs_per_query_mean,identical_retrievals
+per_venue,48,5659.3,7486.9,5518.9,5292.1,7393.6,5392.6,2.0,50.0,100.0,48
+one_call,48,5208.5,7520.5,5308.8,5034.2,6861.1,5081.4,1.0,100.0,100.0,48

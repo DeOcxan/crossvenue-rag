@@ -1,0 +1,385 @@
+{
+  "runs": {
+    "20260924T200525Z": {
+      "index_version": null,
+      "index_version_from": null,
+      "notes": [
+        "Made before exact deduplication and before runs recorded an index_version; its chunk ids are those of the pre-deduplication corpus.",
+        "report.md has no unjudged@k or nDCG\u2032 column: the run predates the pooling-bias disclosure evals/methodology.md section 1 asks of every report.",
+        "report.md tells the reader to run crossvenue label and then the evaluation again, an imperative that docs/style.md rule 19 allows only in a how-to procedure.",
+        "Its Markdown report writes latencies in ms at one decimal and without a thousands separator; docs/style.md rule 11 gives a latency of 10 ms or more as an integer with a thousands separator."
+      ],
+      "files": {
+        "by_category.csv": "b7b2acde9a358af811acb44c31694d97a53aa3e461d38baae29c4d5e5c62954f",
+        "by_qtype.csv": "b26555e39a44bf81d36e615fded23eaa4a0c3539ab909a2d857344b24aaf088d",
+        "by_venue.csv": "35791f73806cd1fb6412d4452d788ca0b5ebe2b5d8d3a7d2168daf631c7dd32b",
+        "config.yaml": "0cca73c46ddb336d88c19b87085a1ba58cbd04109f8db5c00b0ecdac6e9141b4",
+        "per_query.csv": "180d937f168c87d903eb0edc10e1d0ef71f5ea05460dce47b6ea6f47cfc702c8",
+        "report.md": "37777ed5c1a0259fa3a034fcc4d530718d9c71d68eb563a44b34fcf5ffb87645",
+        "summary.csv": "8acb37ffa1d92e095a2747be4a2b333f4c1b2b50811f1720a8484beeca4a5aab",
+        "summary.json": "a7132ec637a65ca5118dedefa7aeeb454dd342376e29d0b2174b51a5420bc4bc"
+      }
+    },
+    "20260924T234623Z": {
+      "index_version": "2825a7160c4d09bf",
+      "index_version_from": "index.json",
+      "notes": [
+        "report.md has no unjudged@k or nDCG\u2032 column: the run predates the pooling-bias disclosure evals/methodology.md section 1 asks of every report.",
+        "report.md marks a metric a slice cannot have with n/a; docs/style.md rule 25 gives a table cell with no value a single dash, as the report template writes it.",
+        "Its Markdown report writes favour, labelled and towards in British spelling; docs/style.md rule 20 asks for US English, which the report templates write.",
+        "Its Markdown report writes latencies in ms at one decimal and without a thousands separator; docs/style.md rule 11 gives a latency of 10 ms or more as an integer with a thousands separator."
+      ],
+      "files": {
+        "by_category.csv": "d89a5d1d2e457b74d592189aa285495c7d1dc46915d9261490747d6103c9fe4a",
+        "by_qtype.csv": "f032cdac8414260acb95597ee52713bccec669ecbc961a4267921ee8f81a1e46",
+        "by_venue.csv": "dec57f9618897c3111fac285a4ebbfb9b31dbc425316e4d61545f96aca1df711",
+        "config.yaml": "d4cceda30009d1c169ad2281ece6bc1c9e0f2e9838fc10b83078262d68e61195",
+        "index.json": "bbccf58d177b895b498b4d1d56dd54d2f87d76f7d33c3289120908d3a6825a37",
+        "per_query.csv": "5714349d693f7cc1b8424552d093b04637be951845ab2db30777566b7ed058c3",
+        "report.md": "43589f74331a6cef6bc0dc8b837ee998f4d0bb502e8655751f73401280423a26",
+        "summary.csv": "c7d7c9bcd14d13501a35f324efc754776e9278f1d633dad61baab121e5be9369",
+        "summary.json": "34282013e13a24ff632c52962934324d06e96fb64b1b3e84cfc270d9b4ee8729"
+      }
+    },
+    "20260925T002151Z": {
+      "index_version": "2825a7160c4d09bf",
+      "index_version_from": "index.json",
+      "notes": [
+        "report.md calls venue_split_oracle an upper bound without qualification. The oracle bounds only what better venue detection can add to venue coverage; it is no upper bound on recall, precision or nDCG (docs/adr/0007-venue-split.md). The sentence ends \", not deployable.\", the trailing form docs/style.md rule 26 bans.",
+        "report.md has no unjudged@k or nDCG\u2032 column: the run predates the pooling-bias disclosure evals/methodology.md section 1 asks of every report.",
+        "report.md marks a metric a slice cannot have with n/a; docs/style.md rule 25 gives a table cell with no value a single dash, as the report template writes it.",
+        "Its Markdown report writes favour, labelled, labelling and towards in British spelling; docs/style.md rule 20 asks for US English, which the report templates write.",
+        "report.md writes \"--\" as a dash in the footnote of the methods outside the labeling pool, which docs/code-style.md rule 25 bans.",
+        "Its Markdown report writes every minus sign as an ASCII hyphen; docs/code-style.md rule 25 asks for U+2212, which formatting.py writes.",
+        "Its Markdown report writes latencies in ms at one decimal and without a thousands separator; docs/style.md rule 11 gives a latency of 10 ms or more as an integer with a thousands separator."
+      ],
+      "files": {
+        "by_category.csv": "967fb05daa05230be8b95c19276334f29c8784ab1ee92680e411fa10ac81b6ed",
+        "by_qtype.csv": "eb1a3e6302fddd5d57d309db7ce2be490016bb6ac7e4535b0bae96db95e1b223",
+        "by_venue.csv": "66b3a4551cc8783f25e49191fa4dd8671a378e0eded364332ea799c3f25d0484",
+        "config.yaml": "00f7ab758a7be067b84dabe65cc49af04f9c17a059e6e483b453f48c9a8a2c20",
+        "index.json": "bbccf58d177b895b498b4d1d56dd54d2f87d76f7d33c3289120908d3a6825a37",
+        "paired.csv": "27b11b46e314ca46eabd4e29544c82a95c35f22d36ba278c231dba08ced1a617",
+        "per_query.csv": "1e8c592dc59dc97c209f0ae5a3be9602e61f5045954c5ed6e8654b676d97d3da",
+        "report.md": "9e9ec5ad0309bce935c75d5c887a2a01d5769bfb19f31c4bd988530341b97e79",
+        "summary.csv": "90072a33889f36b6d44a1e1fde5c8fb99613396fefb3b6090cb6ed991ea9faa1",
+        "summary.json": "deb17e35ca38cff04f2beecf04cfb4295fc591b40638c12a592f938364189ca7"
+      }
+    },
+    "20260925T003721Z_pool": {
+      "index_version": "2825a7160c4d09bf",
+      "index_version_from": "index.json",
+      "notes": [
+        "POOL_RUN.md writes \"--\" as a dash, which docs/code-style.md rule 25 bans; the template writes a colon in its place."
+      ],
+      "files": {
+        "POOL_RUN.md": "e0b6d78430a3bc99112d426df1f1ab08c71ac98f8f58534254bc9781e188e7f9",
+        "config.yaml": "fcf9acaa332697b51ef92b5263343c1581a5cb9440abadd85cec04215499b9b2",
+        "index.json": "680908e57a2e5168f4d00ce3dbcfdf9b1d82d66597ec575dbf0af061bc71e793",
+        "per_query.csv": "651e611df19cdca080bcc4c089ef67996e90d9eb7af12a33aaa2fcc0402c4092"
+      }
+    },
+    "20260925T012314Z": {
+      "index_version": "2825a7160c4d09bf",
+      "index_version_from": "index.json",
+      "notes": [
+        "report.md calls venue_split_oracle an upper bound without qualification. The oracle bounds only what better venue detection can add to venue coverage; it is no upper bound on recall, precision or nDCG (docs/adr/0007-venue-split.md). The sentence ends \", not deployable.\", the trailing form docs/style.md rule 26 bans.",
+        "The report.md footnote calls pooling bias \"measured, not assumed\" and, where it has nDCG\u2032, calls its gap to nDCG@k what the missing judgments cost. unjudged@k counts never-judged chunks and does not say how much they bias recall; the nDCG\u2032 gap is the change that dropping them makes, and a relevant chunk no pooled method retrieved is never judged, so neither counts it as relevant (evals/methodology.md, section 1).",
+        "report.md has no nDCG\u2032 column: the run predates it; results/20260925T015715Z reports it on the same retrievals.",
+        "report.md marks a metric a slice cannot have with n/a; docs/style.md rule 25 gives a table cell with no value a single dash, as the report template writes it.",
+        "Its Markdown report writes favour, judgement, labelled, labelling and towards in British spelling; docs/style.md rule 20 asks for US English, which the report templates write.",
+        "Its Markdown report writes every minus sign as an ASCII hyphen; docs/code-style.md rule 25 asks for U+2212, which formatting.py writes.",
+        "Its Markdown report writes latencies in ms at one decimal and without a thousands separator; docs/style.md rule 11 gives a latency of 10 ms or more as an integer with a thousands separator.",
+        "Device effect: eval on v0.2.1-gold with embedding.device=cpu (20261010T222553Z) and the MPS run 20260925T012314Z differ in 25 of 684 retrieval lists. On the 50 comparison questions only nDCG and MRR differ, in the fourth decimal, and dense's unjudged@10 is 0.086 on CPU against 0.078 on MPS. In other categories recall and precision differ too; the largest difference is version_sensitive hybrid recall@10, 0.717 on CPU against 0.750 on MPS. The registered results are from the MPS runs 20260925T012314Z and 20260925T132613Z; the v0.2.2-gold sensitivity check pairs the two CPU runs 20261010T222553Z and 20261010T214504Z."
+      ],
+      "files": {
+        "by_category.csv": "eb71ce130119fefe6d9b3019e056ac9df13d616dd330764ec6028ee4563721bc",
+        "by_qtype.csv": "bc18e4ab4723c38046a970425bc8780d79548a635298f46640cf28df3a04ad4e",
+        "by_venue.csv": "c13748d1b738bf4bc4fa101921be86102c437fba4fdcbf8368d3ae224e814fbc",
+        "config.yaml": "12608822b030481d00f47ee96c55e36eb36857395cae28102c6fb059f69e0a20",
+        "index.json": "ba59f7932988b22a04558aa206a38e19d2b64bff6f6abfc583a8c57acab3624c",
+        "paired.csv": "cff0eb6be62d663895828af9faafd424632116963c1208bee3492a4d6841b722",
+        "per_query.csv": "bad0d332c16b3e0109eeaed9d8b0ea3e94ea86c4b10912d90d302e899cde2ba9",
+        "report.md": "83e094c6aa6b4e2c0ad14a39e6a40affc51eff411ec4af9cb520f62e6a25edb6",
+        "summary.csv": "94be46c4ba09828acc22efc7f05bd1a71ced1b7b2179b97a91be6613482b66da",
+        "summary.json": "ed312547a94519a64e340330085d8ea48217c1a4f447d72225459c2c96860e7f"
+      }
+    },
+    "20260925T015715Z": {
+      "index_version": "2825a7160c4d09bf",
+      "index_version_from": "index.json",
+      "notes": [
+        "report.md calls venue_split_oracle an upper bound without qualification. The oracle bounds only what better venue detection can add to venue coverage; it is no upper bound on recall, precision or nDCG (docs/adr/0007-venue-split.md). The sentence ends \", not deployable.\", the trailing form docs/style.md rule 26 bans.",
+        "The report.md footnote calls pooling bias \"measured, not assumed\" and, where it has nDCG\u2032, calls its gap to nDCG@k what the missing judgments cost. unjudged@k counts never-judged chunks and does not say how much they bias recall; the nDCG\u2032 gap is the change that dropping them makes, and a relevant chunk no pooled method retrieved is never judged, so neither counts it as relevant (evals/methodology.md, section 1).",
+        "report.md marks a metric a slice cannot have with n/a; docs/style.md rule 25 gives a table cell with no value a single dash, as the report template writes it.",
+        "Its Markdown report writes favour, judgement, labelled, labelling and towards in British spelling; docs/style.md rule 20 asks for US English, which the report templates write.",
+        "Its Markdown report writes every minus sign as an ASCII hyphen; docs/code-style.md rule 25 asks for U+2212, which formatting.py writes.",
+        "Its Markdown report writes latencies in ms at one decimal and without a thousands separator; docs/style.md rule 11 gives a latency of 10 ms or more as an integer with a thousands separator."
+      ],
+      "files": {
+        "by_category.csv": "1a7f53cf54d7a264f3123c164c3f02e46acaf58caec3594b67996c83ef62f9fe",
+        "by_qtype.csv": "f722043b15d726f10b762a2ffdd586f758dca11292ce1c5388cb8d993f42bd80",
+        "by_venue.csv": "5d2a2e9eaa2704db2837d0e482c4bf1d2c45794f8eee494e119454f8d04cfe5e",
+        "config.yaml": "12608822b030481d00f47ee96c55e36eb36857395cae28102c6fb059f69e0a20",
+        "index.json": "ba59f7932988b22a04558aa206a38e19d2b64bff6f6abfc583a8c57acab3624c",
+        "paired.csv": "cff0eb6be62d663895828af9faafd424632116963c1208bee3492a4d6841b722",
+        "per_query.csv": "d3bfdc6078620a825338a6bb5aa7e878f79fc5e94c234c39b64c984547600b83",
+        "report.md": "5f4079d107550230f35e68564c0c4e457e0e1688cc6de946172bc7e71dc3d01d",
+        "summary.csv": "b0600cb10dc498da306df5748817780847c35fdababccd936940887d70448815",
+        "summary.json": "63bd316ab12b9f13f0302db6587ef886e025169ebe1fd8d1649a3273035dbb94"
+      }
+    },
+    "20260925T024237Z": {
+      "index_version": "2825a7160c4d09bf",
+      "index_version_from": "index.json",
+      "notes": [
+        "report.md calls venue_split_oracle an upper bound without qualification. The oracle bounds only what better venue detection can add to venue coverage; it is no upper bound on recall, precision or nDCG (docs/adr/0007-venue-split.md). The sentence ends \", not deployable.\", the trailing form docs/style.md rule 26 bans.",
+        "The report.md footnote calls pooling bias \"measured, not assumed\" and, where it has nDCG\u2032, calls its gap to nDCG@k what the missing judgments cost. unjudged@k counts never-judged chunks and does not say how much they bias recall; the nDCG\u2032 gap is the change that dropping them makes, and a relevant chunk no pooled method retrieved is never judged, so neither counts it as relevant (evals/methodology.md, section 1).",
+        "report.md marks a metric a slice cannot have with n/a; docs/style.md rule 25 gives a table cell with no value a single dash, as the report template writes it.",
+        "Its Markdown report writes favour, judgement, labelled, labelling and towards in British spelling; docs/style.md rule 20 asks for US English, which the report templates write.",
+        "Its Markdown report writes every minus sign as an ASCII hyphen; docs/code-style.md rule 25 asks for U+2212, which formatting.py writes.",
+        "Its Markdown report writes latencies in ms at one decimal and without a thousands separator; docs/style.md rule 11 gives a latency of 10 ms or more as an integer with a thousands separator."
+      ],
+      "files": {
+        "by_category.csv": "9bb6cf68086b44b3e2a4447311b7185f2007707fee8d54821dfe6e4752520d5d",
+        "by_qtype.csv": "418173ddbe9312e5d4434b7e1909ff6ce0578c138d139fd8b553cae8a9103c67",
+        "by_venue.csv": "70d3a06e008c64cb72a0fac6d21b0819d3e4139f6f740d13cd75698833a8c6fe",
+        "config.yaml": "12608822b030481d00f47ee96c55e36eb36857395cae28102c6fb059f69e0a20",
+        "index.json": "ba59f7932988b22a04558aa206a38e19d2b64bff6f6abfc583a8c57acab3624c",
+        "paired.csv": "cff0eb6be62d663895828af9faafd424632116963c1208bee3492a4d6841b722",
+        "per_query.csv": "d9ae1fdc1bd91d0b9f5c223394c2d830b54a7d2ffaf0f7941db660533ba1c686",
+        "report.md": "29589273aa9f1447e5a89229e7972061cf7f3c5b3e800d69d154a75004b4d05e",
+        "summary.csv": "ea6e3836dae2d5eb10e999ad868e66fd760e0a53deab02d3457c9e7b8a86eb8c",
+        "summary.json": "5f31003f9138e1b0021701f417bd41b40c36d618fb0da964cbbf38fc3a0a8411"
+      }
+    },
+    "20260925T132613Z": {
+      "index_version": "2825a7160c4d09bf",
+      "index_version_from": "index.json",
+      "notes": [
+        "report.md calls venue_split_oracle an upper bound without qualification. The oracle bounds only what better venue detection can add to venue coverage; it is no upper bound on recall, precision or nDCG (docs/adr/0007-venue-split.md). The sentence ends \", not deployable.\", the trailing form docs/style.md rule 26 bans.",
+        "The report.md footnote calls pooling bias \"measured, not assumed\" and, where it has nDCG\u2032, calls its gap to nDCG@k what the missing judgments cost. unjudged@k counts never-judged chunks and does not say how much they bias recall; the nDCG\u2032 gap is the change that dropping them makes, and a relevant chunk no pooled method retrieved is never judged, so neither counts it as relevant (evals/methodology.md, section 1).",
+        "report.md marks a metric a slice cannot have with n/a; docs/style.md rule 25 gives a table cell with no value a single dash, as the report template writes it.",
+        "Its Markdown report writes favour, judgement, labelled, labelling, towards and randomisation in British spelling; docs/style.md rule 20 asks for US English, which the report templates write.",
+        "Its Markdown report writes every minus sign as an ASCII hyphen; docs/code-style.md rule 25 asks for U+2212, which formatting.py writes.",
+        "Its Markdown report writes p-values at four decimals; docs/style.md rule 11 gives them three, and a value below 0.001 as < 0.001.",
+        "Its Markdown report writes latencies in ms at one decimal and without a thousands separator; docs/style.md rule 11 gives a latency of 10 ms or more as an integer with a thousands separator."
+      ],
+      "files": {
+        "by_category.csv": "4534eb2853ad480588dc0da84dd9e0b0938bab11c9e8d36289754b301c5996f3",
+        "by_qtype.csv": "a8cc62206dd08340c4f817d7c1200738be12faee05941a9cb3d4580bacb7165a",
+        "by_venue.csv": "94323daa5ec0164e4bbdc180c9c1cac3ab6458538dfba67ab1b6f4ef00973e29",
+        "config.yaml": "12e9913849f7207be4fdc11bd76dd7f81dee23265918cc3daa86103b528c631a",
+        "index.json": "ba59f7932988b22a04558aa206a38e19d2b64bff6f6abfc583a8c57acab3624c",
+        "paired.csv": "4dbfbd5d3766c44d6598fd571980b7dec2bfd320181fe58efa79bd555154ed8d",
+        "per_query.csv": "ceaabb3f9dfa22484b94a9382fcfa1fdc1a9f8443697d8f1d0b030cfb68ea55c",
+        "report.md": "5af7c3de4884c91fdce8c7ec271ae3d15638b55502180a2822e280218f93fe93",
+        "summary.csv": "50e29e6dac1e357b3bc593da6e12509e3decac7a851f9c77286acf42164a133c",
+        "summary.json": "de12f666df818f68fdc4288f08dd7d65c52a69e4110516b81e5ad18f174c59d4"
+      }
+    },
+    "20260925T144223Z": {
+      "index_version": "2825a7160c4d09bf",
+      "index_version_from": "index.json",
+      "notes": [
+        "report.md calls venue_split_oracle an upper bound without qualification. The oracle bounds only what better venue detection can add to venue coverage; it is no upper bound on recall, precision or nDCG (docs/adr/0007-venue-split.md). The sentence ends \", not deployable.\", the trailing form docs/style.md rule 26 bans.",
+        "The report.md footnote calls pooling bias \"measured, not assumed\" and, where it has nDCG\u2032, calls its gap to nDCG@k what the missing judgments cost. unjudged@k counts never-judged chunks and does not say how much they bias recall; the nDCG\u2032 gap is the change that dropping them makes, and a relevant chunk no pooled method retrieved is never judged, so neither counts it as relevant (evals/methodology.md, section 1).",
+        "report.md marks a metric a slice cannot have with n/a; docs/style.md rule 25 gives a table cell with no value a single dash, as the report template writes it.",
+        "Its Markdown report writes favour, judgement, labelled, labelling, towards and randomisation in British spelling; docs/style.md rule 20 asks for US English, which the report templates write.",
+        "Its Markdown report writes every minus sign as an ASCII hyphen; docs/code-style.md rule 25 asks for U+2212, which formatting.py writes.",
+        "Its Markdown report writes p-values at four decimals; docs/style.md rule 11 gives them three, and a value below 0.001 as < 0.001.",
+        "Its Markdown report writes latencies in ms at one decimal and without a thousands separator; docs/style.md rule 11 gives a latency of 10 ms or more as an integer with a thousands separator."
+      ],
+      "files": {
+        "by_category.csv": "54de327d5f0655e96d72896ea293903bc078d581b2142d5625f48e7f7d65803f",
+        "by_qtype.csv": "80b120666b6f77c6e08bad49681ce0108c1ed2d420c03209ea8dcf632c4cfe45",
+        "by_venue.csv": "49d02c66c235303813cf259934902ac05653c1a1971d0b90966bb86a8a1e3bcb",
+        "config.yaml": "12e9913849f7207be4fdc11bd76dd7f81dee23265918cc3daa86103b528c631a",
+        "index.json": "ba59f7932988b22a04558aa206a38e19d2b64bff6f6abfc583a8c57acab3624c",
+        "paired.csv": "4dbfbd5d3766c44d6598fd571980b7dec2bfd320181fe58efa79bd555154ed8d",
+        "per_query.csv": "e85dc974c752735bf0c01cfc2556937f865259f6e5faec7ee87f1fc8780e3e5a",
+        "report.md": "8c18204010e99fb0adb9e233fefa0062aaf442f1309503a719c322bd24290b5d",
+        "summary.csv": "2c8434b71d61e207ee08c036275259777ddb6ab74978cfaf0a08a6f922495da3",
+        "summary.json": "bfd64bff9dfcc9d1e3293bc31f7ccd4d87449984b1bce3e7a455e032cbe83e80"
+      }
+    },
+    "20260925T175128Z_answers": {
+      "index_version": "2825a7160c4d09bf",
+      "index_version_from": "derived: chunks equal the top k of results/20260925T002151Z",
+      "notes": [
+        "Generated with prompts/generator.v1.md (sha256 519bd2c2...) and answer schema 1, as its config.yaml records; every answer's prompt_sha256 is the v1 hash.",
+        "report.md lists the parameters sent as a raw JSON object; the report template writes them as key=value items, and summary.csv holds them as JSON.",
+        "Its Markdown report writes behaviour and randomisation in British spelling; docs/style.md rule 20 asks for US English, which the report templates write.",
+        "calibration.md names the run in its heading outside code font (docs/style.md rule 35); the calibration template writes it in code font.",
+        "report.md writes USD at four decimals, and token counts and latencies in ms with no thousands separator; docs/style.md rule 11 gives cost three decimals and counts and latencies a thousands separator.",
+        "report.md names per_answer.csv, summary.csv, paired.csv and answers.jsonl outside code font (docs/style.md rule 35).",
+        "calibration.md names the metric behaviour_correct outside code font (docs/style.md rules 20 and 35), writes its intervals at two decimals beside values at three and USD per answer at four decimals (docs/style.md rule 11), and writes the minus sign of a negative bound as an ASCII hyphen (docs/code-style.md rule 25)."
+      ],
+      "files": {
+        "answers.jsonl": "485f43997e9061188710c4a679f32a215b50b16fb41e19451dad5af20c630c06",
+        "calibration.json": "ee0e6062f881f2aacac9c2765de675a86eeb1beda43b7af96899bf621382738f",
+        "calibration.md": "c71f250d7e113016b6e3bb54392584956cd020be0469498d470fd8c1a52c6257",
+        "config.yaml": "15e6af94fda5b8bf2f9025a6dab587c91483baa6b7339251b996f51a65301d37",
+        "judgements_opus.jsonl": "6e14a7d72b81c73070e640f146d2068ceb04195db30e07d3ab364e04ed071caf",
+        "judgements_opus_r1.jsonl": "8da211f9731af3a319714ed55d0fc644fb5be28b47ac09499f0c94a2f5157aff",
+        "judgements_sonnet.jsonl": "de033f3257d13ebeadf02ebf6c984d9ebf301ea3f95161337fcdabf619dff8b8",
+        "paired.csv": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "per_answer.csv": "2d6507c6e88892bbd6290c5f5e4fa987a4292f699ce95ce2a89336197e7975cd",
+        "report.md": "a8271bd77068fe376800670a90c17ac30d605d10dc883ed152a44e27e8dcf87f",
+        "summary.csv": "0b726bcfdab77b290fb7997a9b810434cef3007f178f9715662169fcbc5c90e3"
+      }
+    },
+    "20260925T202827Z_answers": {
+      "index_version": "2825a7160c4d09bf",
+      "index_version_from": "derived: chunks equal the top k of results/20260925T002151Z",
+      "notes": [
+        "report.md lists the parameters sent as a raw JSON object; the report template writes them as key=value items, and summary.csv holds them as JSON.",
+        "Its Markdown report writes behaviour and randomisation in British spelling; docs/style.md rule 20 asks for US English, which the report templates write.",
+        "report.md writes USD at four decimals, and token counts and latencies in ms with no thousands separator; docs/style.md rule 11 gives cost three decimals and counts and latencies a thousands separator.",
+        "report.md names per_answer.csv, summary.csv, paired.csv and answers.jsonl outside code font (docs/style.md rule 35)."
+      ],
+      "files": {
+        "answers.jsonl": "56680f200a89e10331358f913089525afe1416141a48f35fb62dfe5c2334558e",
+        "config.yaml": "ed6ab1d033eecd4d584f8a72179456879e478a9930e6010aac8eaf26b08e8b3b",
+        "paired.csv": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "per_answer.csv": "921aabe3d27ec1fd2b9751b5d77ff79c07700e29417b0bb3c26a8299ae4da15f",
+        "report.md": "54bc268d973a72999faba3759954dbe27f9baf9895ed8992431dc6827ecf28ec",
+        "summary.csv": "fb24a66cdfb8e0f6c88a6e405990da6a0be80f1daf164bbf5d55821c2b784a7f"
+      }
+    },
+    "20260925T225850Z_bench": {
+      "index_version": "2825a7160c4d09bf",
+      "index_version_from": "index.json",
+      "notes": [
+        "BENCH.md predates the formatting of its template: its counts carry hand-written plurals, and its load averages are a raw list and a raw dict; machine.json holds the load averages and the discarded pairs.",
+        "Its Markdown report writes latencies in ms at one decimal and without a thousands separator; docs/style.md rule 11 gives a latency of 10 ms or more as an integer with a thousands separator."
+      ],
+      "files": {
+        "BENCH.md": "c394d76c46ac9c8f6f21dd89bdf63cf109b1f00f78e72ff616e70c553c08fd9e",
+        "config.yaml": "ed6ab1d033eecd4d584f8a72179456879e478a9930e6010aac8eaf26b08e8b3b",
+        "index.json": "ea5e228b6caf2dde31dd23d4986f2baee810c9ebe06cb49bc31cadb0b1269295",
+        "machine.json": "0cf151666ccacd211a5caff7ee95e53f1b1c04659bbfb9b20a9307c23dfc52bb",
+        "raw.csv": "fdd48064f35ae297a00f876d6a9741fb84ae3c793260ad921c906fa3d61e29f6",
+        "summary.csv": "5d577cf70644d73867642517a1cdadf5fe276f126910b80fef879315020e5e6f"
+      }
+    },
+    "20260926T000001Z_judged": {
+      "index_version": "2825a7160c4d09bf",
+      "index_version_from": "derived: chunks equal the top k of results/20260925T002151Z",
+      "notes": [
+        "report.md and paired.csv predate the uncalibrated mark: faithfulness is the judge's grade only, its dimension (supported) failed calibration (results/20260925T175128Z_answers/calibration.json), and its rows support no conclusion.",
+        "report.md and paired.csv show venue_attribution_error with no mark; its judge dimension (venue_correct) passes calibration on the point estimate only, and methodology section 9 reports it as unresolved.",
+        "Made with a --budget override that config.yaml does not record: it shows generation.budget_usd 3.0, while the judge calls it paid for cost $9.943 (answers.jsonl, the uncached calls).",
+        "report.md lists the parameters sent as a raw JSON object; the report template writes them as key=value items, and summary.csv holds them as JSON.",
+        "Its Markdown report writes behaviour and randomisation in British spelling; docs/style.md rule 20 asks for US English, which the report templates write.",
+        "report.md names its source run outside code font (docs/style.md rule 35); the report template writes it in code font.",
+        "report.md names the metric behaviour_correct in the paired rows outside code font (docs/style.md rules 20 and 35).",
+        "report.md writes USD at four decimals, and token counts and latencies in ms with no thousands separator; docs/style.md rule 11 gives cost three decimals and counts and latencies a thousands separator.",
+        "Its Markdown report writes every minus sign as an ASCII hyphen; docs/code-style.md rule 25 asks for U+2212, which formatting.py writes.",
+        "Its Markdown report writes p-values at four decimals; docs/style.md rule 11 gives them three, and a value below 0.001 as < 0.001.",
+        "gemini@venue_split:cv-0002 records a judge error after 3 invalid responses. Its answer is identical to that of gemini@hybrid_rerank:cv-0002, so the judge request is the same, and this run cached a valid response to it when it judged gemini@hybrid_rerank:cv-0002 (2026-09-25T23:55:09Z, cache key 0be2aa833b3f2bcfa8fe9f8b8207be81831336c9ce5cfd219c2762ea7012dc55). judge-run from the cache therefore judges gemini@venue_split:cv-0002 too, moving gemini@venue_split coverage:all from 0.5593 to 0.5642 and behaviour_correct:all from 74/113 to 75/114. cv-0002 is a fact question, so no comparison-scope result changes, and no secondary result over all questions changes sign, significance or whether its interval excludes 0. The published numbers are those of this run."
+      ],
+      "files": {
+        "answers.jsonl": "1f9a0a35936f72a5e0abb1adf81fde0993e6eef383a917e8c454f31d9d0e8b22",
+        "config.yaml": "cacfbda8fc993730029e280c1605f60f323e616295354651f5910651a2d19f45",
+        "paired.csv": "f0fc07eb227e8734426099af0f80a5c68a62335ba7d5c52a3f8dd5702b47d31a",
+        "per_answer.csv": "36ce7e26fc4d892c3e669f32460f08d76a9c04cd6813aefb0456d2f58ea14784",
+        "report.md": "0b53555ee13d022661e046e68088bf3287a604938d689a1acffbb115b756de55",
+        "source.json": "2e06e04789752d8d479055b210ed51c8ab2ef7e533bc79e57e1ab07df05a10c1",
+        "summary.csv": "937d79d753a2ec52236c0c2208746fcb802fbf11a6330d592b825f8b7e6e45d0"
+      }
+    },
+    "20260926T004836Z_judged": {
+      "index_version": "2825a7160c4d09bf",
+      "index_version_from": "derived: chunks equal the top k of results/20260925T002151Z",
+      "notes": [
+        "report.md and paired.csv predate the uncalibrated mark: faithfulness is the judge's grade only and supports no conclusion.",
+        "report.md and paired.csv show venue_attribution_error with no mark; its judge dimension (venue_correct) passes calibration on the point estimate only, and methodology section 9 reports it as unresolved.",
+        "paired.csv labels gemini@venue_split against gemini@hybrid_rerank primary; under prompt v2 that comparison is secondary and exploratory (methodology section 9a), and the primary comparison stays on the v1 run.",
+        "Made with a --budget override that config.yaml does not record: it shows generation.budget_usd 3.0, while the judge calls it paid for cost $11.695 (answers.jsonl, the uncached calls).",
+        "report.md lists the parameters sent as a raw JSON object; the report template writes them as key=value items, and summary.csv holds them as JSON.",
+        "Its Markdown report writes behaviour and randomisation in British spelling; docs/style.md rule 20 asks for US English, which the report templates write.",
+        "report.md names its source run outside code font (docs/style.md rule 35); the report template writes it in code font.",
+        "report.md names the metric behaviour_correct in the paired rows outside code font (docs/style.md rules 20 and 35).",
+        "report.md writes USD at four decimals, and token counts and latencies in ms with no thousands separator; docs/style.md rule 11 gives cost three decimals and counts and latencies a thousands separator.",
+        "Its Markdown report writes every minus sign as an ASCII hyphen; docs/code-style.md rule 25 asks for U+2212, which formatting.py writes.",
+        "Its Markdown report writes p-values at four decimals; docs/style.md rule 11 gives them three, and a value below 0.001 as < 0.001."
+      ],
+      "files": {
+        "answers.jsonl": "48071ab5bf056e5e48d71744f705a36a95e18406a1d4c5d6dc9922167f5cf214",
+        "config.yaml": "088661ee2f5d4ab259c5f0fdea9fbdd88595e34214774ec272ede585f140dd56",
+        "paired.csv": "fdb92b1d89dc4b6fb483232ea4beb85a2f0c138220f53cf67a2d40548658dceb",
+        "per_answer.csv": "4b470ffa8c9ef8674c9269191261a7320bd76adc1ac984f8184fd39420bd13d8",
+        "report.md": "19e540c43bac3b2fdd38864e9c6837bf06e1250e65f3ce7745b55ff0ce03dc6a",
+        "source.json": "fececec614f8457f87a445ec2aeaae59aee34d0aac0232b01a94f3afcd3da42c",
+        "summary.csv": "0b5e8dda91135dbb3037d1056aa45e785e4dfd85de90017a1a0c7570f4e75bde"
+      }
+    },
+    "20260926T004851Z_prompts": {
+      "index_version": "2825a7160c4d09bf",
+      "index_version_from": "source runs: results/20260926T000001Z_judged, results/20260926T004836Z_judged",
+      "notes": [
+        "Its Markdown report writes randomisation in British spelling; docs/style.md rule 20 asks for US English, which the report templates write.",
+        "report.md names the two judged runs in its heading outside code font (docs/style.md rule 35); the template writes them in code font.",
+        "Its Markdown report writes every minus sign as an ASCII hyphen; docs/code-style.md rule 25 asks for U+2212, which formatting.py writes.",
+        "Its Markdown report writes p-values at four decimals; docs/style.md rule 11 gives them three, and a value below 0.001 as < 0.001."
+      ],
+      "files": {
+        "comparison.csv": "2b4f56b46c9131cfd350451c6e8c1fed946214c05fb1b7adab71f76dd2ca6143",
+        "report.md": "6641dec5422223ee29ab3c4cea5df63129c8871ded6c5a20a20bf4e21c07f85b",
+        "side_effects.jsonl": "64f5ceb6f9d77a29053422816f65491d458ee0735704f9833795813ac1c054b8",
+        "source.json": "f2353e53325557000b688c1ee7835d9f0cb6984828f1022ada2b6f0fc95ef503"
+      }
+    },
+    "20260926T015648Z_power": {
+      "index_version": "2825a7160c4d09bf",
+      "index_version_from": "source runs: results/20260925T132613Z",
+      "notes": [],
+      "files": {
+        "power.json": "017130d3218bcc97d34ee1c6854076e3b04a8cabb0c199d39052fd84f5f66228"
+      }
+    },
+    "20261010T214504Z": {
+      "index_version": "2825a7160c4d09bf",
+      "index_version_from": "index.json",
+      "notes": [
+        "Sensitivity run of the six retrieval methods on v0.2.2-gold, retrieval metrics only. Made with embedding.device=cpu: the MPS backend stalled in two attempts before any file was written. 20261010T222553Z is its baseline on v0.2.1-gold with the same config.",
+        "Device effect: eval on v0.2.1-gold with embedding.device=cpu (20261010T222553Z) and the MPS run 20260925T012314Z differ in 25 of 684 retrieval lists. On the 50 comparison questions only nDCG and MRR differ, in the fourth decimal, and dense's unjudged@10 is 0.086 on CPU against 0.078 on MPS. In other categories recall and precision differ too; the largest difference is version_sensitive hybrid recall@10, 0.717 on CPU against 0.750 on MPS. The registered results are from the MPS runs 20260925T012314Z and 20260925T132613Z; the v0.2.2-gold sensitivity check pairs the two CPU runs 20261010T222553Z and 20261010T214504Z."
+      ],
+      "files": {
+        "by_category.csv": "3a9f920dbb6ff6bb5014d4ab3b601b7c7b31c082394b8e8d81d0bff36956ad67",
+        "by_qtype.csv": "5d95d8784376338324b43787fba79ffe982adb8d725ca27ce322215e516df55a",
+        "by_venue.csv": "96813c64d36310e012e3c1c35251fbcc74ba09273ccc4b6208100efb341ce42b",
+        "config.yaml": "05f90ebb74597e3dd56613cb513e4d97c9326a7f01cf435f32319c191da5b742",
+        "index.json": "017572de8c912adfba2fb9b187a90480427e9d403e8e21b4687904c723e06885",
+        "off_venue.csv": "51c4151c6d0d2d195a1ac605c79b5f26938eed658dc3e8f8d46a82409803bae7",
+        "paired.csv": "176d787e10636b8c6efb580095c48fbf8a7e87fa58085fac9853ad3c7d6b5e6d",
+        "per_query.csv": "fb892480a2daac3fff9f372479ed9cce4faa545b810ac8a720c7238fd5cb7d3e",
+        "report.md": "b50817acb7c1116e9ac87fddfbf8cc5515da41cef91eb8e625f4e3776208fabc",
+        "summary.csv": "71077d593322b1b09cb9325db3ff420dec85ec39622cc61eb2de5e2a5bc537ab",
+        "summary.json": "c53d8ba05e6002fd7e4834bb5f169217b5a8ec407b71d85dd4505e75f5a3defb"
+      }
+    },
+    "20261010T222553Z": {
+      "index_version": "2825a7160c4d09bf",
+      "index_version_from": "index.json",
+      "notes": [
+        "The six retrieval methods on v0.2.1-gold with embedding.device=cpu, the baseline of the v0.2.2-gold sensitivity run 20261010T214504Z. On the comparison questions its recall, precision and venue_coverage equal those of 20260925T132613Z, made on MPS; nDCG and dense's MRR differ in the fourth decimal and dense's unjudged@10 is 0.086 against 0.078, from the device's effect on dense ranking.",
+        "Device effect: eval on v0.2.1-gold with embedding.device=cpu (20261010T222553Z) and the MPS run 20260925T012314Z differ in 25 of 684 retrieval lists. On the 50 comparison questions only nDCG and MRR differ, in the fourth decimal, and dense's unjudged@10 is 0.086 on CPU against 0.078 on MPS. In other categories recall and precision differ too; the largest difference is version_sensitive hybrid recall@10, 0.717 on CPU against 0.750 on MPS. The registered results are from the MPS runs 20260925T012314Z and 20260925T132613Z; the v0.2.2-gold sensitivity check pairs the two CPU runs 20261010T222553Z and 20261010T214504Z."
+      ],
+      "files": {
+        "by_category.csv": "a708c33ecb0dca43950856b7702b7a9fe0bfc499a88b2d7dd307c88ce232e3c0",
+        "by_qtype.csv": "9ef48e1fd9fcd00d810acfb06b7fa1275d426c2ce8f826fe26a503e05ebcf27b",
+        "by_venue.csv": "b42a2283fd4b237077e2cf288bb9792c1d4b8109f277a05a3a379ab0ef023dbf",
+        "config.yaml": "d2569216865d3ee62c1a49211a04049e7277646c6443c8633360e5e992bcf5e9",
+        "index.json": "ba59f7932988b22a04558aa206a38e19d2b64bff6f6abfc583a8c57acab3624c",
+        "off_venue.csv": "51c4151c6d0d2d195a1ac605c79b5f26938eed658dc3e8f8d46a82409803bae7",
+        "paired.csv": "d557d19dc7e81d2f975e35ab27d760fad81f3b21b26e8e07c0dcd2739ab04c64",
+        "per_query.csv": "1615b1ab091b4360b72b9a73257f00bc1d0c9e64db4885fa80dcab1d3ae0104a",
+        "report.md": "37f8cee4130d583be4774274fc577ea640b1760f21bab84b17e50705603ca200",
+        "summary.csv": "88a009ac9da754b463fdee1b75c4663b8405d1c1f3ca88c8e0ee5f51ca5256ff",
+        "summary.json": "40cfb8d5466b42f310a0cc19c9e4ccfb46eab1c229819fc2832ed1664e33ac16"
+      }
+    }
+  }
+}

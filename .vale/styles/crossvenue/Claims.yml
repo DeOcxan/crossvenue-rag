@@ -1,0 +1,15 @@
+# docs/style.md rules 13 and 16: evaluative verbs and wording that reads as
+# "no difference". State the number and the interval.
+extends: existence
+message: "'%s': state the measured difference and its interval (rule 13)."
+level: warning
+ignorecase: true
+tokens:
+  - fixes
+  - solves
+  - dramatically
+  # A phrase in double quotes is mentioned, not used ("readers hear \"no
+  # difference\"").
+  - '(?<!")no effect'
+  - '(?<!")no difference'
+  - not significant

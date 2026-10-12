@@ -1,0 +1,9 @@
+# docs/style.md rule 29: a sentence over 35 words is split unless it is a list
+# of values. Reported at suggestion level, below the lint threshold, because a
+# list of values may stay long; `vale --minAlertLevel=suggestion` shows them.
+extends: occurrence
+message: "Sentence over 35 words: split it unless it is a list of values (rule 29)."
+level: suggestion
+scope: sentence
+max: 35
+token: '[^\s]+'

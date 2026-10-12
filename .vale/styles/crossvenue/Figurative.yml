@@ -1,0 +1,21 @@
+# docs/style.md rule 22: figurative verbs for things. Use "is", "has", "is in".
+extends: existence
+message: "Figurative verb '%s'. Use 'is', 'has' or 'is in'."
+level: error
+ignorecase: true
+tokens:
+  - lives in
+  - lives on
+  - live in
+  - sits
+  - sit in
+  - owns
+  - surfaces
+  # "buy" as the trading verb ("market buys that take a quote amount") stays.
+  - 'buys? (?:a|an|the|only)\b'
+  - does the heavy lifting
+  - heavy lifting
+  - load-bearing
+  - serves as
+  - serve as
+  - stands as

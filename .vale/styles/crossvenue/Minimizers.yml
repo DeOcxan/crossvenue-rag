@@ -1,0 +1,14 @@
+# docs/style.md rule 21: words that tell the reader how hard something is
+# instead of what it is.
+extends: existence
+message: "Minimizer '%s'. Delete it."
+level: warning
+ignorecase: true
+tokens:
+  - simply
+  - just
+  # A difficulty label followed by its count ("easy 6") is a field value.
+  - 'easy(?! \d)'
+  - easily
+  - obviously
+  - clearly

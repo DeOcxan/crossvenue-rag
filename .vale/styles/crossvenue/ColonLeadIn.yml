@@ -1,0 +1,7 @@
+# docs/style.md rule 27: rhetorical lead-ins.
+extends: existence
+message: "Rhetorical lead-in '%s'. Start with the fact."
+level: error
+ignorecase: true
+raw:
+  - '\b(?:the|here is the|here''s the) (?:answer|result|catch|point|twist|lesson|upshot|takeaway|bottom line|short version|kicker|reason):'

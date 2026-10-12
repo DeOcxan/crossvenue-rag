@@ -1,0 +1,96 @@
+{
+  "dataset_version": "v0.1.6-candidates",
+  "schema_version": "1.0",
+  "created_at": "2026-09-24T21:25:43Z",
+  "corpus_snapshot": {
+    "manifest_path": "data/manifest.csv",
+    "manifest_sha256": "c419b4be7de8aca0614183e9b93baa64339b7f35a1a722f9f90596cca4fcd68f",
+    "documents": 1665,
+    "recorded_at": "2026-09-24T21:25:43Z",
+    "index_version": "2825a7160c4d09bf",
+    "chunks": 11934
+  },
+  "sources": [
+    {
+      "venue": "ccxt",
+      "venue_type": "cex",
+      "license": "MIT",
+      "homepage": "https://docs.ccxt.com/"
+    },
+    {
+      "venue": "bybit",
+      "venue_type": "cex",
+      "license": "no license found",
+      "homepage": "https://bybit-exchange.github.io/docs/"
+    },
+    {
+      "venue": "binance",
+      "venue_type": "cex",
+      "license": "no license found",
+      "homepage": "https://developers.binance.com/docs/binance-spot-api-docs"
+    },
+    {
+      "venue": "bingx",
+      "venue_type": "cex",
+      "license": "MIT",
+      "homepage": "https://bingx-api.github.io/docs/"
+    },
+    {
+      "venue": "uniswap",
+      "venue_type": "dex",
+      "license": "MIT",
+      "homepage": "https://docs.uniswap.org/"
+    },
+    {
+      "venue": "pancakeswap",
+      "venue_type": "dex",
+      "license": "no license found",
+      "homepage": "https://docs.pancakeswap.finance/"
+    },
+    {
+      "venue": "hyperliquid",
+      "venue_type": "dex",
+      "license": "no license found",
+      "homepage": "https://hyperliquid.gitbook.io/hyperliquid-docs"
+    },
+    {
+      "venue": "dydx",
+      "venue_type": "dex",
+      "license": "no license found",
+      "homepage": "https://docs.dydx.xyz/"
+    }
+  ],
+  "generator": {
+    "model": "none: hand-edited notes of two records of v0.1.5-candidates",
+    "prompt_hash": "df6de014544b2c1c"
+  },
+  "counts": {
+    "total": 204,
+    "by_venue": {
+      "binance": 56,
+      "bingx": 40,
+      "bybit": 54,
+      "ccxt": 15,
+      "dydx": 29,
+      "hyperliquid": 47,
+      "pancakeswap": 29,
+      "uniswap": 33
+    },
+    "by_qtype": {
+      "comparison": 70,
+      "fact": 120,
+      "multihop": 14
+    },
+    "by_category": {
+      "adversarial": 24,
+      "ambiguous": 13,
+      "comparison": 62,
+      "fact": 42,
+      "multihop": 14,
+      "noisy": 13,
+      "unanswerable": 23,
+      "version_sensitive": 13
+    }
+  },
+  "notes": "Supersedes v0.1.5-candidates, which stays on disk unchanged. Same 204 questions, same ids, same order. Two records differ, and only in their notes field: cv-0091 and cv-0128 described a trap (two byte-identical chunks told apart only by doc_path) that exact deduplication removed; their notes now say the source is one chunk with a mainnet and a testnet occurrence and what each question checks after the change. Every other byte is identical to v0.1.5, verified per line. index_version unchanged."
+}

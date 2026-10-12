@@ -1,0 +1,66 @@
+# docs/style.md rule 20. Identifiers keep their own spelling in code font
+# (`behaviour_correct`, `judgements_opus_r1.jsonl`); code is never linted.
+extends: substitution
+message: "US spelling: use '%s' instead of '%s'."
+level: error
+ignorecase: true
+swap:
+  journalled: journaled
+  journalling: journaling
+  labelling: labeling
+  labelled: labeled
+  labeller: labeler
+  labellers: labelers
+  normalisation: normalization
+  normalise: normalize
+  normalises: normalizes
+  normalised: normalized
+  normalising: normalizing
+  randomisation: randomization
+  randomise: randomize
+  randomises: randomizes
+  randomised: randomized
+  randomising: randomizing
+  behaviour: behavior
+  behaviours: behaviors
+  behavioural: behavioral
+  judgement: judgment
+  judgements: judgments
+  artefact: artifact
+  artefacts: artifacts
+  favour: favor
+  favours: favors
+  favoured: favored
+  favouring: favoring
+  favourable: favorable
+  analyse: analyze
+  analysed: analyzed
+  analysing: analyzing
+  organisation: organization
+  organisations: organizations
+  organise: organize
+  organised: organized
+  organising: organizing
+  recognise: recognize
+  recognises: recognizes
+  recognised: recognized
+  recognising: recognizing
+  unlabelled: unlabeled
+  unlabelling: unlabeling
+  normaliser: normalizer
+  normalisers: normalizers
+  amongst: among
+  whilst: while
+  modelling: modeling
+  modelled: modeled
+  catalogue: catalog
+  judgemental: judgmental
+  licence: license
+  licences: licenses
+  colour: color
+  colours: colors
+  centre: center
+  centres: centers
+  programme: program
+  programmes: programs
+  defence: defense

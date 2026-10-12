@@ -1,0 +1,7 @@
+# docs/style.md rule 25. An en dash marks a range (0.03–0.09), never a pause.
+extends: existence
+message: "En dash used as a pause: use a comma, colon, parentheses or a full stop."
+level: error
+nonword: true
+tokens:
+  - '\s–\s'

@@ -1,0 +1,79 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  VALE_VERSION: "3.22.0"
+  # sha256 of vale_3.22.0_Linux_64-bit.tar.gz, from the release's checksums.txt.
+  VALE_SHA256: 52f5cd0314a1b7384cac6aa102a68193977312f6ba9c9f3ae001b5deec8e3a10
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          # The version requires-python and the ruff and mypy targets name.
+          python-version: "3.12"
+          enable-cache: true
+
+      - name: Install
+        run: uv sync --locked --group dev --extra figures
+
+      - name: Lint
+        run: |
+          uv run ruff check .
+          uv run ruff format --check .
+
+      # Types over src, tests and scripts; configuration in pyproject.toml.
+      - name: Types
+        run: uv run mypy
+
+      # Layering (cli | service -> labeling | reporting -> generation ->
+      # dataset | evaluation -> retrieval -> index -> corpus), a dependency-free
+      # package root, and no cycles inside a subpackage; contracts are in
+      # pyproject.toml.
+      - name: Import contracts
+        run: uv run lint-imports
+
+      # Prose rules from docs/style.md. Vale's exit code covers errors only, so
+      # any alert at warning level or above fails the step here.
+      - name: Lint docs
+        run: |
+          curl -sSLo "$RUNNER_TEMP/vale.tar.gz" \
+            "https://github.com/errata-ai/vale/releases/download/v${VALE_VERSION}/vale_${VALE_VERSION}_Linux_64-bit.tar.gz"
+          echo "${VALE_SHA256}  $RUNNER_TEMP/vale.tar.gz" | sha256sum --check --strict
+          tar -xzf "$RUNNER_TEMP/vale.tar.gz" -C "$RUNNER_TEMP" vale
+          out=$("$RUNNER_TEMP/vale" --output=line README.md docs evals) || status=$?
+          if [ -n "$out" ]; then echo "$out"; exit 1; fi
+          exit "${status:-0}"
+
+      # Every relative link and heading anchor in the Markdown, without network.
+      - name: Lint links
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
+        with:
+          args: --offline --include-fragments --no-progress README.md docs evals
+          fail: true
+          jobSummary: false
+
+      # The suite mocks the embedding and reranker models on purpose, so CI never
+      # downloads weights and never needs a database. It includes
+      # tests/test_repo_hygiene.py: hard wraps, horizontal rules, bold list
+      # labels and invisible characters.
+      - name: Test
+        run: uv run pytest
+
+      # Schema, duplicate and balance checks on every versioned dataset. The
+      # near-duplicate check needs an encoder, so it is skipped here rather than
+      # pulling 400 MB of weights into CI; run it locally with `make validate-evals`.
+      - name: Validate evaluation datasets
+        run: uv run crossvenue validate-evals --skip-near-duplicates

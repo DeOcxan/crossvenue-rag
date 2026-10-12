@@ -1,0 +1,167 @@
+paths:
+  sources: data/sources.yaml
+  manifest: data/manifest.csv
+  raw: data/raw
+  processed: data/processed
+  index: data/index
+  results: results
+chunking:
+  max_tokens: 450
+  overlap_tokens: 60
+  min_tokens: 40
+  keep_code_blocks_intact: true
+  max_code_block_tokens: 1200
+embedding:
+  model_name: BAAI/bge-base-en-v1.5
+  dimension: 768
+  query_prefix: 'Represent this sentence for searching relevant passages: '
+  document_prefix: ''
+  normalize: true
+  batch_size: 32
+  device: cpu
+  revision: a5beb1e3e68b9ab74eb54cfd186867f64f240e1a
+reranker:
+  model_name: BAAI/bge-reranker-base
+  top_n: 50
+  batch_size: 16
+  revision: 2cfc18c9415c912f9d8155881c133215df768a70
+retrieval:
+  k: 10
+  dense_candidates: 50
+  bm25_candidates: 50
+  rrf_k: 60
+store:
+  table: chunks
+  hnsw_m: 16
+  hnsw_ef_construction: 64
+  hnsw_ef_search: 100
+fetch:
+  request_delay_seconds: 0.5
+  timeout_seconds: 30.0
+  user_agent: crossvenue-rag/1.0.0 (research corpus builder)
+  max_retries: 3
+  backoff_seconds: 0.5
+eval:
+  questions: evals/datasets/v0.2.2-gold.jsonl
+  methods:
+  - bm25
+  - dense
+  - hybrid
+  - hybrid_rerank
+  - venue_split
+  - venue_split_oracle
+  k_values:
+  - 1
+  - 5
+  - 10
+  breakdowns:
+  - venue
+  - qtype
+  - category
+  duplicate_threshold: 0.92
+  pool_depth_per_method: 20
+  pool_display: 25
+  paired_comparisons:
+  - - hybrid_rerank
+    - hybrid
+  - - venue_split
+    - hybrid_rerank
+  - - venue_split_oracle
+    - hybrid_rerank
+  - - venue_split_oracle
+    - venue_split
+  - - hybrid_rerank
+    - dense
+  - - hybrid_rerank
+    - bm25
+  primary_comparison:
+  - venue_split
+  - hybrid_rerank
+  - venue_coverage@10
+  - comparison
+  bootstrap_resamples: 10000
+  bootstrap_seed: 20260924
+generation:
+  top_k: 8
+  cache_dir: data/cache/llm
+  max_retries: 5
+  max_invalid_retries: 2
+  backoff_seconds: 2.0
+  budget_usd: 3.0
+  timeout_seconds: 180.0
+  generator_prompt: prompts/generator.md
+  generator_prompt_sha256: 826c1cf999f8ac6a79de686e6d8f82d17e4a14aba4dc58c6046712cf8ef11cbb
+  answer_schema_version: 2
+  judge_prompt: prompts/judge.md
+  judge_prompt_sha256: 4c7f312d313f185149825ccf2d6da85c7221bb576290c6e456f2dbccd477b5a2
+  generators:
+    gemini:
+      model: google/gemini-3.8-flash
+      provider_order:
+      - google-vertex/global
+      temperature_supported: false
+    qwen:
+      model: qwen/qwen3.8-27b
+      provider_order:
+      - deepinfra/bf16
+      temperature_supported: true
+    mercury:
+      model: inception/mercury-2.5
+      provider_order: []
+      temperature_supported: true
+  generator_params:
+    reasoning_effort: minimal
+    max_tokens: 4000
+    temperature: 0.0
+  judges:
+    sonnet:
+      model: anthropic/claude-sonnet-5
+      provider_order:
+      - anthropic
+      temperature_supported: true
+    opus:
+      model: anthropic/claude-opus-5.5
+      provider_order:
+      - anthropic
+      temperature_supported: true
+  judge: opus
+  judge_params:
+    effort: medium
+    max_tokens: 8000
+  matrix:
+  - name: gemini@venue_split
+    generator: gemini
+    retriever: venue_split
+  - name: qwen@venue_split
+    generator: qwen
+    retriever: venue_split
+  - name: mercury@venue_split
+    generator: mercury
+    retriever: venue_split
+  - name: gemini@hybrid_rerank
+    generator: gemini
+    retriever: hybrid_rerank
+  primary_pair:
+  - gemini@venue_split
+  - gemini@hybrid_rerank
+  primary_metrics:
+  - venue_attribution_error
+  - coverage
+  primary_scope: comparison
+  primary_prompt_sha256: 519bd2c251d42325be1f28371d53a1db30c51ba6d211e31385f16b110c61f78f
+  calibration_run: results/20260925T175128Z_answers
+  calibration_size: 40
+  calibration_seed: 20260924
+  calibration_exclude:
+  - cv-0003
+  - cv-0045
+  - cv-0081
+  - cv-0105
+  - cv-0122
+  calibration_thresholds:
+    supported: 0.61
+    venue_correct: 0.61
+    behaviour_correct: 0.61
+    coverage: 0.7
+  calibration_exclude_behaviour:
+  - qwen@venue_split:cv-0138

@@ -1,0 +1,94 @@
+{
+  "dataset_version": "v0.1-candidates",
+  "schema_version": "1.0",
+  "created_at": "2026-09-20T00:00:00Z",
+  "corpus_snapshot": {
+    "manifest_path": "data/manifest.csv",
+    "manifest_sha256": "c419b4be7de8aca0614183e9b93baa64339b7f35a1a722f9f90596cca4fcd68f",
+    "documents": 1665,
+    "recorded_at": "2026-09-20T19:07:00Z"
+  },
+  "sources": [
+    {
+      "venue": "ccxt",
+      "venue_type": "cex",
+      "license": "MIT",
+      "homepage": "https://docs.ccxt.com/"
+    },
+    {
+      "venue": "bybit",
+      "venue_type": "cex",
+      "license": "no license found",
+      "homepage": "https://bybit-exchange.github.io/docs/"
+    },
+    {
+      "venue": "binance",
+      "venue_type": "cex",
+      "license": "no license found",
+      "homepage": "https://developers.binance.com/docs/binance-spot-api-docs"
+    },
+    {
+      "venue": "bingx",
+      "venue_type": "cex",
+      "license": "MIT",
+      "homepage": "https://bingx-api.github.io/docs/"
+    },
+    {
+      "venue": "uniswap",
+      "venue_type": "dex",
+      "license": "MIT",
+      "homepage": "https://docs.uniswap.org/"
+    },
+    {
+      "venue": "pancakeswap",
+      "venue_type": "dex",
+      "license": "no license found",
+      "homepage": "https://docs.pancakeswap.finance/"
+    },
+    {
+      "venue": "hyperliquid",
+      "venue_type": "dex",
+      "license": "no license found",
+      "homepage": "https://hyperliquid.gitbook.io/hyperliquid-docs"
+    },
+    {
+      "venue": "dydx",
+      "venue_type": "dex",
+      "license": "no license found",
+      "homepage": "https://docs.dydx.xyz/"
+    }
+  ],
+  "generator": {
+    "model": "claude-opus-5[1m] (Claude Code, Stage B)",
+    "prompt_hash": "4187db04f23f37a1"
+  },
+  "counts": {
+    "total": 140,
+    "by_venue": {
+      "binance": 38,
+      "bingx": 24,
+      "bybit": 34,
+      "ccxt": 11,
+      "dydx": 14,
+      "hyperliquid": 27,
+      "pancakeswap": 16,
+      "uniswap": 21
+    },
+    "by_qtype": {
+      "comparison": 28,
+      "fact": 98,
+      "multihop": 14
+    },
+    "by_category": {
+      "adversarial": 24,
+      "ambiguous": 6,
+      "comparison": 24,
+      "fact": 42,
+      "multihop": 14,
+      "noisy": 6,
+      "unanswerable": 17,
+      "version_sensitive": 7
+    }
+  },
+  "notes": "Candidate pool, unlabelled and unfiltered: input to human selection, not an evaluation set. Composition follows evals/METHODOLOGY.md, scaled from the 120 questions decided there to 140 and widened from five categories to the eight the schema defines. The methodology's five-way split (fact 35% / comparison 20% / multihop 12% / adversarial 18% / unanswerable 15%) is preserved in relative terms over the 121 questions in those five categories (fact 34.7% / comparison 19.8% / multihop 11.6% / adversarial 19.8% / unanswerable 14.0%); the remaining 19 slots go to the three categories the methodology did not name -- ambiguous (6), version_sensitive (7) and noisy (6) -- each above the five-question floor the validator enforces for a breakdown row. Adversarial items draw on the T1-T13 trap list in METHODOLOGY.md section 8. Because that section established that Uniswap/PancakeSwap duplication is conceptual rather than lexical (zero PancakeSwap chunks above 0.7 TF-IDF cosine to any Uniswap chunk), the fork traps here turn on shared concepts and diverging values -- fee tiers, Permit2 spender, router revert semantics -- not on copied wording. The corpus's genuine lexical duplication is intra-Binance (mainnet/testnet/Demo Mode), and it is used for both adversarial and version_sensitive items. Every answerable question was grepped against chunks.jsonl before it was written; every unanswerable one was confirmed to have zero supporting hits. source_chunk_ids are provenance only and are NOT gold labels: they record where a question came from and let the annotator notice when the candidate pool fails to surface it. gold_chunk_ids and reference_answer are empty by design at this version."
+}

@@ -1,0 +1,13 @@
+qtype,method,questions,labelled_questions,p50_ms
+comparison,bm25,53,0,0.1
+comparison,dense,53,0,62.6
+comparison,hybrid,53,0,22.4
+comparison,hybrid_rerank,53,0,3520.8
+fact,bm25,56,0,0.1
+fact,dense,56,0,62.4
+fact,hybrid,56,0,24.4
+fact,hybrid_rerank,56,0,3563.4
+multihop,bm25,5,0,0.2
+multihop,dense,5,0,67.2
+multihop,hybrid,5,0,26.5
+multihop,hybrid_rerank,5,0,3206.4

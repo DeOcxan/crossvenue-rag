@@ -1,0 +1,33 @@
+# docs/style.md rule 21: words and phrases that carry no fact.
+extends: existence
+message: "Filler: '%s'. Delete it or replace it with the fact it stands for."
+level: error
+ignorecase: true
+tokens:
+  - important
+  - importantly
+  - crucial
+  - crucially
+  - notably
+  - essentially
+  - robust
+  - seamless
+  - seamlessly
+  - comprehensive
+  - delve
+  - delves
+  - showcase
+  - showcases
+  - underscore
+  - underscores
+  - it is worth noting
+  - worth noting
+  - in summary
+  - in other words
+  - furthermore
+  - moreover
+  # "key" as an adjective; "API key", "config key" and "key pair" are nouns.
+  - 'key (?:finding|findings|result|results|point|points|insight|insights|takeaway|takeaways|difference|differences|factor|factors|role|idea|ideas|question|questions|aspect|aspects|feature|features|part|step|steps|metric|metrics|decision|decisions)'
+  # "leverage" as a verb, before a determiner or a pronoun; trading leverage is a noun
+  # and stays.
+  - 'leverag(?:e|es|ed|ing) (?:the|a|an|this|these|that|those|our|its|their|it|them|your|my|his|her|him|us|itself|themselves)'

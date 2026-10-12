@@ -1,0 +1,58 @@
+[
+  {
+    "method": "bm25",
+    "questions": 114,
+    "labelled_questions": 0,
+    "metrics": {},
+    "latency_p50_ms": 0.1,
+    "latency_p95_ms": 0.3,
+    "step_latency_p50_ms": {
+      "encode_ms": 0.0,
+      "search_ms": 0.1,
+      "fuse_ms": 0.0,
+      "rerank_ms": 0.0
+    }
+  },
+  {
+    "method": "dense",
+    "questions": 114,
+    "labelled_questions": 0,
+    "metrics": {},
+    "latency_p50_ms": 64.1,
+    "latency_p95_ms": 100.9,
+    "step_latency_p50_ms": {
+      "encode_ms": 19.1,
+      "search_ms": 45.6,
+      "fuse_ms": 0.0,
+      "rerank_ms": 0.0
+    }
+  },
+  {
+    "method": "hybrid",
+    "questions": 114,
+    "labelled_questions": 0,
+    "metrics": {},
+    "latency_p50_ms": 24.1,
+    "latency_p95_ms": 31.5,
+    "step_latency_p50_ms": {
+      "encode_ms": 18.0,
+      "search_ms": 5.5,
+      "fuse_ms": 0.1,
+      "rerank_ms": 0.0
+    }
+  },
+  {
+    "method": "hybrid_rerank",
+    "questions": 114,
+    "labelled_questions": 0,
+    "metrics": {},
+    "latency_p50_ms": 3508.6,
+    "latency_p95_ms": 4797.1,
+    "step_latency_p50_ms": {
+      "encode_ms": 46.3,
+      "search_ms": 50.5,
+      "fuse_ms": 0.3,
+      "rerank_ms": 3375.4
+    }
+  }
+]

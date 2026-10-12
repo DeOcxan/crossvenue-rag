@@ -1,0 +1,52 @@
+# docs/style.md rule 31: headings in sentence case.
+extends: capitalization
+message: "Heading '%s' is not in sentence case."
+level: warning
+scope: heading
+match: $sentence
+indicators:
+  - ':'
+  - '.'
+exceptions:
+  # identifiers and version names keep their own case
+  - crossvenue-rag
+  - crossvenue
+  - index_version
+  - hybrid_rerank
+  - venue_split
+  - recall@10
+  - 'v\d[\w.-]*'
+  - ADR
+  - API
+  - BM25
+  - Binance
+  - BingX
+  - Bybit
+  - CCXT
+  - CLI
+  - Cohen's
+  - DEX
+  - dYdX
+  - Hyperliquid
+  - HNSW
+  - McNemar
+  - Opus
+  - PancakeSwap
+  - Postgres
+  - RRF
+  - Uniswap
+  - Vale
+  - TREC
+  - SQuAD
+  - LLM
+  - RAG
+  - WebSocket
+  - TP
+  - SL
+  - GitHub
+  - Permit2
+  - DCP
+  - URL
+  - TF-IDF
+  - JSON
+  - YAML

@@ -1,0 +1,213 @@
+# Baseline configuration: every key the pipeline reads, except fetch.user_agent,
+# which keeps its schema default (docs/reference/config.md). An ablation is
+# another config file or `--set section.field=value` on the CLI, never a code
+# edit. Each eval run copies the resolved config next to its results.
+
+paths:
+  sources: data/sources.yaml
+  manifest: data/manifest.csv
+  raw: data/raw
+  processed: data/processed
+  index: data/index
+  results: results
+
+chunking:
+  # Token budget per chunk, measured with the embedding model's own tokenizer so
+  # a token here is a token at encode time (the bi-encoder reads 510 tokens of text,
+  # 512 with its two special tokens; the cross-encoder reads the query and the chunk
+  # in 512 tokens, four of them special).
+  max_tokens: 450
+  overlap_tokens: 60
+  # A heading section shorter than this is merged into the next one instead of
+  # becoming a chunk of its own. Stops "## Parameters" from being a chunk.
+  min_tokens: 40
+  # Never split inside a fenced code block: an endpoint signature cut in half is
+  # unretrievable and unusable as a citation.
+  keep_code_blocks_intact: true
+  # A code block up to this size may exceed max_tokens rather than be split;
+  # above it, splitting is the lesser evil.
+  max_code_block_tokens: 1200
+
+embedding:
+  model_name: BAAI/bge-base-en-v1.5
+  dimension: 768
+  # bge-* models are trained with an asymmetric query prefix.
+  query_prefix: "Represent this sentence for searching relevant passages: "
+  document_prefix: ""
+  normalize: true
+  batch_size: 32
+  device: null  # null -> auto (mps/cuda/cpu)
+  # Hugging Face commit of the weights and tokenizer; recorded in index_meta.json.
+  revision: a5beb1e3e68b9ab74eb54cfd186867f64f240e1a
+
+reranker:
+  model_name: BAAI/bge-reranker-base
+  # Candidates fed to the cross-encoder before truncation to k.
+  top_n: 50
+  batch_size: 16
+  # Hugging Face commit of the cross-encoder.
+  revision: 2cfc18c9415c912f9d8155881c133215df768a70
+
+retrieval:
+  k: 10
+  # Per-method candidate depth before fusion.
+  dense_candidates: 50
+  bm25_candidates: 50
+  # Reciprocal Rank Fusion constant. 60 is the value from Cormack et al. 2009.
+  rrf_k: 60
+
+store:
+  # Read from the environment (CROSSVENUE_PG_DSN) when set; this is the
+  # docker-compose default.
+  dsn: postgresql://crossvenue:crossvenue@localhost:5433/crossvenue
+  table: chunks
+  # HNSW build parameters; ef_search is set per transaction at query time.
+  hnsw_m: 16
+  hnsw_ef_construction: 64
+  hnsw_ef_search: 100
+
+fetch:
+  # Politeness for `kind: gitbook` sources. Git sources ignore these.
+  request_delay_seconds: 0.5
+  timeout_seconds: 30
+  max_retries: 3
+  # First wait before a retry; doubles on each retry, or follows Retry-After when longer.
+  backoff_seconds: 0.5
+
+eval:
+  questions: evals/questions.jsonl
+  # Six methods. The labeling pool is the first five
+  # (retrieval.methods.POOL_METHODS); venue_split_oracle is never pooled,
+  # because it reads the question's `venues` field, which a deployed system does
+  # not have; it bounds what better venue detection can add to venue coverage.
+  methods: [bm25, dense, hybrid, hybrid_rerank, venue_split, venue_split_oracle]
+  k_values: [1, 5, 10]
+  # Metrics are broken down along these dimensions as well as aggregated: the
+  # corpus is unbalanced across venues (`make stats`) and the set across
+  # question types, so an aggregate alone hides where a headline number comes from.
+  breakdowns: [venue, qtype, category]
+  # Cosine similarity at or above which `make validate-evals` calls two questions
+  # near-duplicates. See evals/methodology.md section 6 for how this was chosen.
+  duplicate_threshold: 0.92
+  # Labeling pool. Each of the five pool methods contributes its top
+  # `pool_depth_per_method`; the fused list is truncated to `pool_display` for the
+  # annotator. Depth must exceed max(k_values) so the judged set extends past the
+  # ranks the metrics score (evals/methodology.md section 1, docs/how-to/label.md).
+  pool_depth_per_method: 20
+  pool_display: 25
+  # Paired comparisons in report.md, [a, b] = a minus b: paired bootstrap
+  # interval on the difference of means, exact McNemar on venue_coverage@k,
+  # sign-flip randomization test on both metrics; secondary rows are
+  # Holm-adjusted within each metric and scope.
+  paired_comparisons:
+    - [hybrid_rerank, hybrid]
+    - [venue_split, hybrid_rerank]
+    - [venue_split_oracle, hybrid_rerank]
+    - [venue_split_oracle, venue_split]
+    - [hybrid_rerank, dense]
+    - [hybrid_rerank, bm25]
+  # The one comparison the study is designed around (evals/methodology.md
+  # section 7): [a, b, metric, scope]. Every other pair is secondary, and its
+  # randomization p-value is Holm-adjusted within its metric and scope.
+  primary_comparison: [venue_split, hybrid_rerank, venue_coverage@10, comparison]
+  bootstrap_resamples: 10000
+  bootstrap_seed: 20260924
+
+generation:
+  # Chunks of the chosen retriever given to the generator.
+  top_k: 8
+  # Responses are cached by a hash of (provider, model, parameters, prompt,
+  # schema) and a replicate number, so a re-run costs nothing for every call that
+  # succeeded and a judge's repeat is another entry; results link to the cache entry
+  # they came from.
+  cache_dir: data/cache/llm
+  # HTTP retries on 408, 429, 500, 502, 503, 504 and 529 (`retries.RETRY_STATUSES`),
+  # with exponential backoff from backoff_seconds.
+  max_retries: 5
+  backoff_seconds: 2.0
+  # A response that is not valid JSON or fails its schema is asked for again,
+  # at most this many times; the same rule for every model.
+  max_invalid_retries: 2
+  timeout_seconds: 180
+  # Most one run may spend, in USD, from the cost OpenRouter reports. The run
+  # stops before a call whose expected cost, the most expensive known call of that
+  # model, would pass it; the first call of a model with no cached call is not bounded.
+  budget_usd: 3.0
+  # Prompt files and their sha256; a call is refused when a file differs from
+  # its pin. The schema version must match the prompt's version line: 2
+  # (partial, missing) for prompts/generator.md, 1 for prompts/generator.v1.md.
+  generator_prompt: prompts/generator.md
+  generator_prompt_sha256: 826c1cf999f8ac6a79de686e6d8f82d17e4a14aba4dc58c6046712cf8ef11cbb
+  answer_schema_version: 2
+  judge_prompt: prompts/judge.md
+  judge_prompt_sha256: 4c7f312d313f185149825ccf2d6da85c7221bb576290c6e456f2dbccd477b5a2
+  # Every model is called through OpenRouter, at an exact id, never an alias
+  # such as `latest` (docs/adr/0009-generators.md).
+  generators:
+    gemini:
+      model: google/gemini-3.8-flash
+      # Vertex is the endpoint that enforces the JSON schema; it accepts no
+      # temperature, so none is sent (docs/adr/0009-generators.md).
+      provider_order: [google-vertex/global]
+      temperature_supported: false
+    qwen:
+      model: qwen/qwen3.8-27b
+      # DeepInfra serves the bf16 weights; no fallback to another provider.
+      provider_order: [deepinfra/bf16]
+    mercury:
+      model: inception/mercury-2.5
+  # One rule for every generator; the parameters actually sent are written into
+  # every result. Reasoning effort minimal: the lowest level all three accept
+  # (Gemini cannot disable reasoning).
+  generator_params:
+    reasoning_effort: minimal
+    max_tokens: 4000
+    temperature: 0.0
+  # Judge candidates, both pinned to Anthropic as provider; the one used is
+  # chosen by agreement with human ratings (docs/adr/0010-judge.md).
+  judges:
+    sonnet:
+      model: anthropic/claude-sonnet-5
+      provider_order: [anthropic]
+    opus:
+      model: anthropic/claude-opus-5.5
+      provider_order: [anthropic]
+  # Chosen by calibration (docs/adr/0010-judge.md): meets its threshold on
+  # venue_correct, behaviour_correct and coverage; neither candidate on supported.
+  judge: opus
+  # Pre-registered in evals/methodology.md section 9: a judge dimension enters
+  # a conclusion only at or above its threshold of agreement with the human
+  # ratings (Cohen's kappa for the binary ones, Spearman for coverage).
+  calibration_thresholds:
+    supported: 0.61
+    venue_correct: 0.61
+    behaviour_correct: 0.61
+    coverage: 0.70
+  # The run whose calibration.json records which dimensions passed for each
+  # candidate; a run's report.md and paired.csv mark the metrics of the others
+  # uncalibrated. The two committed judged runs predate the mark.
+  calibration_run: results/20260925T175128Z_answers
+  # Left out of behaviour_correct against the human: the rating screen showed
+  # asked_clarification as false for this answer (methodology section 9).
+  calibration_exclude_behaviour: ["qwen@venue_split:cv-0138"]
+  # The same for both candidates. No temperature is sent.
+  judge_params:
+    effort: medium
+    max_tokens: 8000
+  matrix:
+    - {name: gemini@venue_split, generator: gemini, retriever: venue_split}
+    - {name: qwen@venue_split, generator: qwen, retriever: venue_split}
+    - {name: mercury@venue_split, generator: mercury, retriever: venue_split}
+    - {name: gemini@hybrid_rerank, generator: gemini, retriever: hybrid_rerank}
+  # Pre-registered in evals/methodology.md (section 9) before any run.
+  primary_pair: [gemini@venue_split, gemini@hybrid_rerank]
+  primary_metrics: [venue_attribution_error, coverage]
+  primary_scope: comparison
+  # The primary comparison was registered for prompt v1
+  # (prompts/generator.v1.md); under another prompt the pair is secondary.
+  primary_prompt_sha256: 519bd2c251d42325be1f28371d53a1db30c51ba6d211e31385f16b110c61f78f
+  calibration_size: 40
+  calibration_seed: 20260924
+  # The five trial questions: the judge prompt was revised on them, so their
+  # answers never enter the calibration sample (evals/methodology.md section 9).
+  calibration_exclude: [cv-0003, cv-0045, cv-0081, cv-0105, cv-0122]

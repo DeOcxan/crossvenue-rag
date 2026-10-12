@@ -1,0 +1,12 @@
+# docs/style.md rule 19: no "we", "our" or "us". Procedures address the reader
+# in the imperative; everything else is impersonal. Code spans are not linted.
+# Quoted text is skipped: a word after an odd number of double quotes on its
+# line is inside a quotation; italic titles are skipped by IgnoredScopes in
+# .vale.ini. "US" in capitals is the country ("US English"), so "us" is matched
+# in lower case only.
+extends: existence
+message: "First person '%s': write impersonally, or in the imperative in a how-to (rule 19)."
+level: warning
+ignorecase: false
+tokens:
+  - '(?<!(?m:^)[^"\n]*(?:"[^"\n]*"[^"\n]*)*"[^"\n]*)\b(?:[Ww]e|[Oo]urs?|us)\b'

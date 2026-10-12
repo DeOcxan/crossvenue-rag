@@ -1,0 +1,8 @@
+# docs/style.md rule 25. A table cell holding only a dash is an empty cell and
+# is allowed; a dash with text on either side is prose.
+extends: existence
+message: "Em dash in prose: use a comma, colon, parentheses or a full stop."
+level: error
+nonword: true
+tokens:
+  - '[^\s|]\s*—|—\s*[^\s|]'

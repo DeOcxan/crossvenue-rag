@@ -1,0 +1,297 @@
+{
+  "run": "results/20260925T175128Z_answers",
+  "ratings": "evals/annotations/judge_ratings.jsonl",
+  "raters": [
+    "artem"
+  ],
+  "answers_rated": 40,
+  "resamples": 10000,
+  "seed": 20260924,
+  "thresholds": {
+    "supported": 0.61,
+    "venue_correct": 0.61,
+    "behaviour_correct": 0.61,
+    "coverage": 0.7
+  },
+  "excluded_from_behaviour_correct": [
+    "qwen@venue_split:cv-0138"
+  ],
+  "statistic": {
+    "supported": "kappa",
+    "venue_correct": "kappa",
+    "behaviour_correct": "kappa",
+    "coverage": "spearman"
+  },
+  "comparisons": {
+    "sonnet vs human": {
+      "supported": {
+        "n": 91,
+        "answers": 40,
+        "agreement": 0.9010989010989011,
+        "agreement_ci": [
+          0.8405758556891767,
+          0.956989247311828
+        ],
+        "agreement_undefined_resamples": 0,
+        "kappa": 0.16513761467889934,
+        "kappa_ci": [
+          0.0,
+          0.48966211525109954
+        ],
+        "kappa_undefined_resamples": 0
+      },
+      "venue_correct": {
+        "n": 91,
+        "answers": 40,
+        "agreement": 0.978021978021978,
+        "agreement_ci": [
+          0.9418604651162791,
+          1.0
+        ],
+        "agreement_undefined_resamples": 0,
+        "kappa": 0.491620111731842,
+        "kappa_ci": [
+          0.0,
+          0.6623376623376634
+        ],
+        "kappa_undefined_resamples": 1270
+      },
+      "behaviour_correct": {
+        "n": 39,
+        "answers": 40,
+        "agreement": 0.8974358974358975,
+        "agreement_ci": [
+          0.7948717948717948,
+          0.975
+        ],
+        "agreement_undefined_resamples": 0,
+        "kappa": 0.7796610169491527,
+        "kappa_ci": [
+          0.559322033898305,
+          0.9473684210526316
+        ],
+        "kappa_undefined_resamples": 0
+      },
+      "coverage": {
+        "n": 34,
+        "answers": 40,
+        "pearson": 0.8377445349323323,
+        "spearman": 0.8434573131834147,
+        "spearman_ci": [
+          0.6702577993106916,
+          0.9494828194001146
+        ],
+        "spearman_undefined_resamples": 0
+      }
+    },
+    "opus vs human": {
+      "supported": {
+        "n": 91,
+        "answers": 40,
+        "agreement": 0.8901098901098901,
+        "agreement_ci": [
+          0.8282828282828283,
+          0.9466666666666667
+        ],
+        "agreement_undefined_resamples": 0,
+        "kappa": 0.23785594639865967,
+        "kappa_ci": [
+          -0.05144832535224854,
+          0.557788944723618
+        ],
+        "kappa_undefined_resamples": 0
+      },
+      "venue_correct": {
+        "n": 91,
+        "answers": 40,
+        "agreement": 0.989010989010989,
+        "agreement_ci": [
+          0.9615384615384616,
+          1.0
+        ],
+        "agreement_undefined_resamples": 0,
+        "kappa": 0.6617100371747214,
+        "kappa_ci": [
+          0.6468401486988848,
+          0.6626506024096409
+        ],
+        "kappa_undefined_resamples": 3634
+      },
+      "behaviour_correct": {
+        "n": 39,
+        "answers": 40,
+        "agreement": 0.8717948717948718,
+        "agreement_ci": [
+          0.7567567567567568,
+          0.9736842105263158
+        ],
+        "agreement_undefined_resamples": 0,
+        "kappa": 0.7218259629101283,
+        "kappa_ci": [
+          0.4858611825192802,
+          0.9354838709677419
+        ],
+        "kappa_undefined_resamples": 0
+      },
+      "coverage": {
+        "n": 34,
+        "answers": 40,
+        "pearson": 0.8940838174999407,
+        "spearman": 0.8986495800693473,
+        "spearman_ci": [
+          0.7819712541807944,
+          0.9639263000860491
+        ],
+        "spearman_undefined_resamples": 0
+      }
+    },
+    "sonnet vs opus": {
+      "supported": {
+        "n": 91,
+        "answers": 40,
+        "agreement": 0.967032967032967,
+        "agreement_ci": [
+          0.9247311827956989,
+          1.0
+        ],
+        "agreement_undefined_resamples": 0,
+        "kappa": 0.3892617449664426,
+        "kappa_ci": [
+          0.0,
+          1.0
+        ],
+        "kappa_undefined_resamples": 134
+      },
+      "venue_correct": {
+        "n": 91,
+        "answers": 40,
+        "agreement": 0.989010989010989,
+        "agreement_ci": [
+          0.9624941037735849,
+          1.0
+        ],
+        "agreement_undefined_resamples": 0,
+        "kappa": 0.7945823927765243,
+        "kappa_ci": [
+          0.0,
+          1.0
+        ],
+        "kappa_undefined_resamples": 1270
+      },
+      "behaviour_correct": {
+        "n": 40,
+        "answers": 40,
+        "agreement": 0.975,
+        "agreement_ci": [
+          0.925,
+          1.0
+        ],
+        "agreement_undefined_resamples": 0,
+        "kappa": 0.9418604651162791,
+        "kappa_ci": [
+          0.8048780487804877,
+          1.0
+        ],
+        "kappa_undefined_resamples": 0
+      },
+      "coverage": {
+        "n": 34,
+        "answers": 40,
+        "pearson": 0.9817208897633852,
+        "spearman": 0.9803647725105074,
+        "spearman_ci": [
+          0.9301052964392053,
+          0.9979026695044103
+        ],
+        "spearman_undefined_resamples": 0
+      }
+    },
+    "opus vs opus replicate 1": {
+      "supported": {
+        "n": 91,
+        "answers": 40,
+        "agreement": 0.989010989010989,
+        "agreement_ci": [
+          0.9615384615384616,
+          1.0
+        ],
+        "agreement_undefined_resamples": 0,
+        "kappa": 0.8515497553017947,
+        "kappa_ci": [
+          0.0,
+          1.0
+        ],
+        "kappa_undefined_resamples": 134
+      },
+      "venue_correct": {
+        "n": 91,
+        "answers": 40,
+        "agreement": 1.0,
+        "agreement_ci": [
+          1.0,
+          1.0
+        ],
+        "agreement_undefined_resamples": 0,
+        "kappa": 1.0,
+        "kappa_ci": [
+          1.0,
+          1.0
+        ],
+        "kappa_undefined_resamples": 3634
+      },
+      "behaviour_correct": {
+        "n": 40,
+        "answers": 40,
+        "agreement": 1.0,
+        "agreement_ci": [
+          1.0,
+          1.0
+        ],
+        "agreement_undefined_resamples": 0,
+        "kappa": 1.0,
+        "kappa_ci": [
+          1.0,
+          1.0
+        ],
+        "kappa_undefined_resamples": 0
+      },
+      "coverage": {
+        "n": 34,
+        "answers": 40,
+        "pearson": 0.961213521246829,
+        "spearman": 0.9636298688655658,
+        "spearman_ci": [
+          0.9103348554791432,
+          0.9903302800335936
+        ],
+        "spearman_undefined_resamples": 0
+      }
+    }
+  },
+  "candidates": {
+    "sonnet": {
+      "passes": [
+        "behaviour_correct",
+        "coverage"
+      ],
+      "fails": [
+        "supported",
+        "venue_correct"
+      ],
+      "cost_per_answer_usd": 0.0164209
+    },
+    "opus": {
+      "passes": [
+        "venue_correct",
+        "behaviour_correct",
+        "coverage"
+      ],
+      "fails": [
+        "supported"
+      ],
+      "cost_per_answer_usd": 0.0295485
+    }
+  },
+  "selected": "opus",
+  "reason": "opus meets the threshold on 3 dimensions, more than any other candidate"
+}

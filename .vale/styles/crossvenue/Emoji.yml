@@ -1,0 +1,8 @@
+# docs/style.md rule 34.
+extends: existence
+message: "Emoji or decorative symbol '%s'."
+level: error
+nonword: true
+tokens:
+  - '[\x{1F300}-\x{1FAFF}\x{2600}-\x{27BF}\x{2B50}\x{2705}\x{274C}\x{2728}]'
+  - '[→⇒➜▶►★☆✓✔✗✘]'

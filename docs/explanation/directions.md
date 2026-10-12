@@ -1,0 +1,75 @@
+# Development directions
+
+Nine changes the measurements point to, each with the measured problem it addresses and the measurement that decides whether it worked. None is built. The filtered run under "Venue filter as a control" runs with `eval --venue-filter`. Judging the chunks only it retrieves, which rule 3 of [methodology §1](../../evals/methodology.md#1-test-collection-construction-and-pooling) requires before its recall is compared, needs code, and so does the per-venue-pair tally beside it.
+
+Runs, from [findings](../results/findings.md): `results/20260925T012314Z` (retrieval) and `results/20260925T175128Z_answers` (prompt v1 answers; calibration sample 40 answers, 91 claims) on the 114 questions of `v0.2.1-gold`, 50 comparison, with comparison gold augmented after results were seen ([methodology D4](../../evals/methodology.md#deviations-from-protocol)):
+
+| Direction | Measured problem it addresses |
+|---|---|
+| [Fast relevance scorer](#fast-relevance-scorer) | The cross-encoder is 2,505 of hybrid_rerank's 2,531 ms p50 per query (`results/20260925T012314Z`, 114 questions of `v0.2.1-gold`, [latency](../results/findings.md#the-cross-encoder-takes-2505-of-hybrid_reranks-2531-ms-at-p50)). |
+| [Context use and chunking](#context-use-and-chunking) | gemini@venue_split refused 3 comparison questions whose top 8 held a gold chunk of every named venue, and in 10 of its 25 comparison refusals the top 8 held no gold chunk (prompt v1, `results/20260925T175128Z_answers`, `v0.2.1-gold`). |
+| [Graph layer](#graph-layer) | In 12 of gemini@venue_split's 25 comparison refusals the context held gold for some named venues and not for the others (prompt v1, `results/20260925T175128Z_answers`, `v0.2.1-gold`). |
+| [Venue filter as a control](#venue-filter-as-a-control) | hybrid_rerank's top 10 hold every named venue for 35 of the 50 comparison questions (`results/20260925T012314Z`, `v0.2.1-gold`), and no run tallies which other venue holds the remaining slots. |
+| [Blue-green embedding migration](#blue-green-embedding-migration) | On the 50 comparison questions of `v0.2.1-gold`, dense retrieval has recall@10 0.353 and venue_coverage@10 0.52 (26/50) (`results/20260925T012314Z`, [venue split](../results/findings.md#splitting-retrieval-by-venue-raises-comparison-coverage-from-070-to-098)), and changing its model blocks `eval` and `label` until the whole index is rebuilt. |
+| [Closing `missing_from_pool`](#closing-missing_from_pool) | 15 of the 50 comparison questions of `v0.2.1-gold` have a named venue with no gold chunk, so their recall measures one side. |
+| [Second annotator](#second-annotator) | Every gold label of `v0.2.1-gold` comes from one annotator, who also rates the judge calibration sample of `results/20260925T175128Z_answers`; no inter-annotator agreement exists. |
+| [Faithfulness without an LLM judge](#faithfulness-without-an-llm-judge) | Neither judge reaches the κ threshold of 0.61 on `supported` ([methodology §9](../../evals/methodology.md#conditions-for-using-a-judge-dimension)): κ 0.238 (Opus) and 0.165 (Sonnet) on the 91 claims of the calibration sample (`results/20260925T175128Z_answers`, questions of `v0.2.1-gold`, [calibration](../results/findings.md#the-judge-meets-three-of-four-thresholds-on-the-point-estimate-and-one-on-the-interval)). Both judges accept 8 or 9 of the 10 claims the human rejected. |
+| [Recalibrating the judge](#recalibrating-the-judge) | The calibration (`results/20260925T175128Z_answers`, questions of `v0.2.1-gold`) has 40 answers rated before the criterion for `supported` was written down, and `venue_correct` has 2 claims that either grader marked wrong. |
+
+## Fast relevance scorer
+
+In `results/20260925T012314Z` on the 114 questions of `v0.2.1-gold` ([latency](../results/findings.md#the-cross-encoder-takes-2505-of-hybrid_reranks-2531-ms-at-p50), [venue split](../results/findings.md#splitting-retrieval-by-venue-raises-comparison-coverage-from-070-to-098)), the cross-encoder (`BAAI/bge-reranker-base`) is 2,505 of hybrid_rerank's 2,531 ms p50 per query. venue_split, timed with one call per named venue, has a p50 of 5,408 ms on the 48 questions it splits. On the 50 comparison questions hybrid_rerank's recall@10 is 0.620, against 0.538 for hybrid. The paired difference to hybrid, +0.083 [−0.033, +0.198] (95% paired bootstrap interval), is inconclusive at this size. The test reaches 80% power from a gap of 0.17 (`results/20260926T015648Z_power`). Recall here is scored against comparison gold augmented after results were seen ([methodology D4](../../evals/methodology.md#deviations-from-protocol)).
+
+The labeling journal of `v0.2.1-gold` holds 3,382 judged (question, chunk) pairs, 277 of them relevant. A scorer trained on those pairs replaces a transformer forward pass per pair with a feature lookup. Its features are ones the pipeline already computes: BM25 score, dense cosine, RRF rank and whether the chunk's venue is a named venue.
+
+The pairs are the evaluation set, so the scorer is trained and scored by question-level cross-validation, never on the questions it is evaluated on. It replaces the cross-encoder if it meets two decision criteria on the 50 comparison questions of `v0.2.1-gold`. Its paired difference to hybrid_rerank on recall@10 and venue_coverage@10 has a 95% interval above −0.05, and its p50 is under 100 ms.
+
+## Context use and chunking
+
+The generator sees the top 8 chunks, a mean of 3,481 input tokens per gemini@venue_split answer under prompt v1 (`results/20260925T175128Z_answers`, 114 answers to the questions of `v0.2.1-gold`). In v1, gemini@venue_split refused 25 of the 50 comparison questions; in 3 of them the context held a gold chunk of every named venue, and in 10 it held none. The gold of these questions was augmented after retrieval results were seen ([methodology D4](../../evals/methodology.md#deviations-from-protocol)). The expectation is that the first is a failure to use the context and the second a retrieval and chunking failure, which the measurements below test.
+
+Three measurements separate the causes with no model call beyond the generator's:
+
+- Position. Where the gold chunk is in the context, against the outcome, from the saved answer runs; then the same questions with the context reordered and with `generation.top_k` 4, 8 and 16. Accuracy that falls with position or input length is the effect Hong, Troynikov and Huber (2025) name context rot: "Context Rot: How Increasing Input Tokens Impacts LLM Performance", Chroma technical report, [trychroma.com/research/context-rot](https://www.trychroma.com/research/context-rot).
+- Parent sections. Structural chunking ([ADR 0002](../adr/0002-structural-chunking.md)) against smaller windows that return their parent section, compared on comparison recall@10 and on the share of refusals with no gold in context.
+- Smaller chunks. A smaller budget with no parent return (`chunking.max_tokens` 220, `overlap_tokens` 30, `min_tokens` 25, `max_code_block_tokens` 800) against the default. It needs its own index and a gold set judged on that index: chunk ids are content hashes of the venue and the chunk text, so `v0.2.1-gold` cannot score another chunking.
+
+## Graph layer
+
+Venues name the same thing differently: `cv-0056 "hyperliquid calls it Alo, what is"` asks for Binance's equivalent of Hyperliquid's `Alo`, and under prompt v1 gemini@venue_split refused it with Hyperliquid's gold chunk in context (`results/20260925T175128Z_answers`, `v0.2.1-gold`). That pattern is 12 of its 25 comparison refusals (group b in findings), grouped by comparison gold augmented after results were seen ([methodology D4](../../evals/methodology.md#deviations-from-protocol)).
+
+A graph of concepts (order types, time-in-force values, rate-limit units, parameters) has an edge between each venue's term for the same concept, and is extracted from the documentation and reviewed by hand. It lets venue_split expand the query for the second venue with that venue's term. It is measured on comparison recall@10 of the venue that lacked gold in context, and on the group-b refusals.
+
+## Venue filter as a control
+
+`retrieve` accepts a venue filter, and venue_split and the oracle apply it once per venue. `eval --venue-filter` restricts every query to the question's labeled venues, but no committed run uses it, so the evaluation reports no filtered-against-unfiltered gap. On the 50 comparison questions of `v0.2.1-gold` in `results/20260925T012314Z`, hybrid_rerank's top 10 hold every named venue for 35. The share of slots that unnamed venues take is measured ([findings](../results/findings.md#unnamed-venues-fill-0036-of-hybrid_reranks-comparison-top-10-and-0214-of-bm25s-exploratory), exploratory); no run tallies which unnamed venue takes them.
+
+Two measurements, on the same questions and the same index. The first is recall@10 and venue_coverage@10 of hybrid_rerank with the question's labeled venues as the filter, paired against the unfiltered run. Once the filtered run's never-judged chunks are judged, that pair shows how much recall and coverage the filter adds on these questions. The second, from `retrieved_venues` in `per_query.csv`, is a count per question of top-10 slots held by venues the question does not name, reported by venue pair for the comparison and adversarial questions.
+
+## Blue-green embedding migration
+
+The embedding model is part of `index_version` ([ADR 0004](../adr/0004-index-version.md)), so trying another model changes it, and `eval` and `label` refuse to run until the index is rebuilt. On the 50 comparison questions of `v0.2.1-gold` in `results/20260925T012314Z`, dense retrieval has recall@10 0.353 and venue_coverage@10 0.52 (26/50) ([venue split](../results/findings.md#splitting-retrieval-by-venue-raises-comparison-coverage-from-070-to-098)). The expectation is that a better model helps it most. A run of the six methods with another embedding model would test that expectation.
+
+Chunk ids are content hashes of venue and text, and chunk boundaries are counted in the embedding model's tokenizer, so gold labels stay valid only for a candidate model chunked with the current tokenizer. Another tokenizer re-chunks the corpus, and the labels must then be migrated or re-judged. Any model change also changes `index_version`, which hashes the model name, so labels made against blue are refused on green until `crossvenue id-map` and `crossvenue remap-ids` carry them across. With the same tokenizer every id maps onto itself ([ADR 0002](../adr/0002-structural-chunking.md), [ADR 0004](../adr/0004-index-version.md)). A second pgvector table for the candidate model ("green") is built next to the current one ("blue"), and `eval` runs against both with the same questions. The index pointer moves to green only when the interval of each paired difference on the primary metrics is above −0.05. Blue stays queryable until then.
+
+## Closing `missing_from_pool`
+
+`v0.2.1-gold` records 14 named venues as `missing_from_pool` and 1 as `absent_in_docs` (101 venue records on 51 questions). On 15 of the 50 comparison questions a named venue has no gold chunk, and recall there is measured against the side the pools found. gemini@venue_split refused 11 comparison questions of that kind under prompt v1, in `results/20260925T175128Z_answers` (5 in group b, 6 in group c, groups by comparison gold augmented after results were seen, [methodology D4](../../evals/methodology.md#deviations-from-protocol)).
+
+Each missing venue gets a targeted search. `crossvenue count-term` counts the chunks under every spelling the venue uses, and those chunks are judged by hand. Each search ends in added gold or in an `absent_in_docs` record with the search that justified it. The result is another dataset version, with the recall change measured as for the v0.2.1-gold augmentation.
+
+## Second annotator
+
+The 277 gold chunks of `v0.2.1-gold` and every round-1 judgment come from one annotator, and the same person rates the 40 judge-calibration answers. The only agreement the protocol can measure is intra-rater: round 2 re-labeled 25 questions on 2026-10-10, at least 14 days after round 1. It reproduced the labels at κ 0.470 [0.317, 0.645] (95% percentile bootstrap over questions), below the registered 0.61 ([agreement](../../evals/agreement.md)). The judge's thresholds (κ ≥ 0.61) are agreement with that one person ([ADR 0006](../adr/0006-single-annotator.md)).
+
+A second annotator labels the fixed round-2 subsample and rates the calibration sample, blind to the first. Cohen's κ between the two gives inter-annotator agreement; disagreements are adjudicated and recorded as another dataset version. The judge is then held to agreement with each annotator, and a judge that agrees with one person more than the two agree with each other is reported as fitted to that person.
+
+## Faithfulness without an LLM judge
+
+In the calibration sample of `results/20260925T175128Z_answers` (questions of `v0.2.1-gold`), both judges accept claims the human rejects. They include a qualifier the chunk does not state ("fiat", "history"), one example generalized into a rule and a date taken from a heading instead of the text ([findings](../results/findings.md#opus-as-judge-agrees-with-the-human-on-2-of-the-10-claims-the-human-rejects)). Of those 8 claims, the date is checkable without a model. So are the 3 qualifiers, if the check compares the claim's words with the chunk; the 4 generalizations need a reading of what the chunk implies. A claim's numbers, dates, parameter names, endpoint paths and enum values either occur in the chunk it cites or they do not; the same holds for the venue, environment and version the chunk's header names. A deterministic check extracts those tokens from the claim, searches the cited chunk and its header for each, and marks a claim unsupported when one is missing.
+
+It is measured against the same 91 rated claims: the share of the 10 human-rejected claims it catches, and the share of the 81 accepted claims it wrongly rejects. It cannot judge paraphrase, so it complements a judge on the claims it passes.
+
+## Recalibrating the judge
+
+The human ratings of `supported` follow a criterion that was written down after the rating ([findings](../results/findings.md#opus-as-judge-agrees-with-the-human-on-2-of-the-10-claims-the-human-rejects)). Partial support is unsupported, a number, date or identifier that differs from the chunk is unsupported, and a claim that generalizes one example is unsupported. The calibration sample of `results/20260925T175128Z_answers` (questions of `v0.2.1-gold`) has 91 claims, of which 10 are unsupported and 1 is misattributed. The written criterion goes into another judge prompt and into the rating screen before any rating. Another sample is drawn from the judged matrices, weighted toward claims either grader rejected so that each binary dimension has at least 20 negative verdicts. The human rates it blind, and both candidates grade it. §9's thresholds apply unchanged, and that judge prompt is another prompt version with its own calibration record.

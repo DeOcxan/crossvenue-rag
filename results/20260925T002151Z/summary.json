@@ -1,0 +1,188 @@
+[
+  {
+    "method": "bm25",
+    "questions": 114,
+    "labelled_questions": 90,
+    "metrics": {
+      "mrr": 0.4693,
+      "recall@1": 0.1914,
+      "precision@1": 0.3667,
+      "ndcg@1": 0.3667,
+      "recall@5": 0.3668,
+      "precision@5": 0.1933,
+      "ndcg@5": 0.3661,
+      "recall@10": 0.547,
+      "precision@10": 0.1578,
+      "ndcg@10": 0.4339
+    },
+    "latency_p50_ms": 0.4,
+    "latency_p95_ms": 0.7,
+    "step_latency_p50_ms": {
+      "encode_ms": 0.0,
+      "search_ms": 0.4,
+      "fuse_ms": 0.0,
+      "rerank_ms": 0.0
+    },
+    "multi_venue_questions": 59,
+    "venue_metrics": {
+      "venue_coverage@1": 0.0,
+      "venue_coverage@5": 0.4068,
+      "venue_coverage@10": 0.661
+    }
+  },
+  {
+    "method": "dense",
+    "questions": 114,
+    "labelled_questions": 90,
+    "metrics": {
+      "mrr": 0.4019,
+      "recall@1": 0.1601,
+      "precision@1": 0.2778,
+      "ndcg@1": 0.2778,
+      "recall@5": 0.3458,
+      "precision@5": 0.1578,
+      "ndcg@5": 0.3185,
+      "recall@10": 0.4912,
+      "precision@10": 0.12,
+      "ndcg@10": 0.3757
+    },
+    "latency_p50_ms": 26.2,
+    "latency_p95_ms": 47.8,
+    "step_latency_p50_ms": {
+      "encode_ms": 20.5,
+      "search_ms": 5.5,
+      "fuse_ms": 0.0,
+      "rerank_ms": 0.0
+    },
+    "multi_venue_questions": 59,
+    "venue_metrics": {
+      "venue_coverage@1": 0.0,
+      "venue_coverage@5": 0.4068,
+      "venue_coverage@10": 0.5085
+    }
+  },
+  {
+    "method": "hybrid",
+    "questions": 114,
+    "labelled_questions": 90,
+    "metrics": {
+      "mrr": 0.4623,
+      "recall@1": 0.1541,
+      "precision@1": 0.3111,
+      "ndcg@1": 0.3111,
+      "recall@5": 0.4452,
+      "precision@5": 0.2289,
+      "ndcg@5": 0.3947,
+      "recall@10": 0.6388,
+      "precision@10": 0.1722,
+      "ndcg@10": 0.4619
+    },
+    "latency_p50_ms": 28.6,
+    "latency_p95_ms": 41.4,
+    "step_latency_p50_ms": {
+      "encode_ms": 21.1,
+      "search_ms": 7.1,
+      "fuse_ms": 0.1,
+      "rerank_ms": 0.0
+    },
+    "multi_venue_questions": 59,
+    "venue_metrics": {
+      "venue_coverage@1": 0.0,
+      "venue_coverage@5": 0.4407,
+      "venue_coverage@10": 0.5763
+    }
+  },
+  {
+    "method": "hybrid_rerank",
+    "questions": 114,
+    "labelled_questions": 90,
+    "metrics": {
+      "mrr": 0.5742,
+      "recall@1": 0.2438,
+      "precision@1": 0.4222,
+      "ndcg@1": 0.4222,
+      "recall@5": 0.5437,
+      "precision@5": 0.26,
+      "ndcg@5": 0.4983,
+      "recall@10": 0.7416,
+      "precision@10": 0.1967,
+      "ndcg@10": 0.5766
+    },
+    "latency_p50_ms": 2423.4,
+    "latency_p95_ms": 3390.8,
+    "step_latency_p50_ms": {
+      "encode_ms": 17.3,
+      "search_ms": 11.0,
+      "fuse_ms": 0.1,
+      "rerank_ms": 2365.3
+    },
+    "multi_venue_questions": 59,
+    "venue_metrics": {
+      "venue_coverage@1": 0.0,
+      "venue_coverage@5": 0.4407,
+      "venue_coverage@10": 0.661
+    }
+  },
+  {
+    "method": "venue_split",
+    "questions": 114,
+    "labelled_questions": 90,
+    "metrics": {
+      "mrr": 0.5196,
+      "recall@1": 0.2161,
+      "precision@1": 0.3667,
+      "ndcg@1": 0.3667,
+      "recall@5": 0.5276,
+      "precision@5": 0.2467,
+      "ndcg@5": 0.4623,
+      "recall@10": 0.6933,
+      "precision@10": 0.1844,
+      "ndcg@10": 0.5312
+    },
+    "latency_p50_ms": 3128.2,
+    "latency_p95_ms": 6596.4,
+    "step_latency_p50_ms": {
+      "encode_ms": 21.5,
+      "search_ms": 25.2,
+      "fuse_ms": 0.1,
+      "rerank_ms": 3099.5
+    },
+    "multi_venue_questions": 59,
+    "venue_metrics": {
+      "venue_coverage@1": 0.0,
+      "venue_coverage@5": 0.8305,
+      "venue_coverage@10": 0.8983
+    }
+  },
+  {
+    "method": "venue_split_oracle",
+    "questions": 114,
+    "labelled_questions": 90,
+    "metrics": {
+      "mrr": 0.5007,
+      "recall@1": 0.2087,
+      "precision@1": 0.3444,
+      "ndcg@1": 0.3444,
+      "recall@5": 0.5096,
+      "precision@5": 0.2311,
+      "ndcg@5": 0.4424,
+      "recall@10": 0.6812,
+      "precision@10": 0.1789,
+      "ndcg@10": 0.5154
+    },
+    "latency_p50_ms": 3821.1,
+    "latency_p95_ms": 7182.1,
+    "step_latency_p50_ms": {
+      "encode_ms": 27.2,
+      "search_ms": 30.1,
+      "fuse_ms": 0.2,
+      "rerank_ms": 3755.4
+    },
+    "multi_venue_questions": 59,
+    "venue_metrics": {
+      "venue_coverage@1": 0.0,
+      "venue_coverage@5": 1.0,
+      "venue_coverage@10": 1.0
+    }
+  }
+]

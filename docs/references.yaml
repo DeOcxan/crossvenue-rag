@@ -1,0 +1,109 @@
+# The literature evals/methodology.md cites: each item of its "## References"
+# list under its section, in the list's order, written as the document writes it.
+# `make reproduce` requires the document's list to equal this one: the same items
+# in the same order in each section, none missing and none extra.
+references:
+- section: Test collections, pooling and incompleteness
+  entry: '- Zobel, J. (1998). *How reliable are the results of large-scale information retrieval experiments?*
+    SIGIR ''98, 307–314. [doi:10.1145/290941.291014](https://doi.org/10.1145/290941.291014)'
+- section: Test collections, pooling and incompleteness
+  entry: '- Buckley, C., Dimmick, D., Soboroff, I. & Voorhees, E. (2007). *Bias and the limits of pooling
+    for large collections.* Information Retrieval 10(6):491–508. [doi:10.1007/s10791-007-9032-x](https://doi.org/10.1007/s10791-007-9032-x)'
+- section: Test collections, pooling and incompleteness
+  entry: '- Büttcher, S., Clarke, C. L. A., Yeung, P. C. K. & Soboroff, I. (2007). *Reliable information
+    retrieval evaluation with incomplete and biased judgments.* SIGIR ''07, 63–70. [doi:10.1145/1277741.1277755](https://doi.org/10.1145/1277741.1277755)'
+- section: Test collections, pooling and incompleteness
+  entry: '- Buckley, C. & Voorhees, E. M. (2004). *Retrieval evaluation with incomplete information.*
+    SIGIR ''04, 25–32. [doi:10.1145/1008992.1009000](https://doi.org/10.1145/1008992.1009000) · [NIST
+    PDF](https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=150469)'
+- section: Test collections, pooling and incompleteness
+  entry: '- Sakai, T. (2007). *Alternatives to Bpref.* SIGIR ''07, 71–78. [doi:10.1145/1277741.1277756](https://doi.org/10.1145/1277741.1277756)'
+- section: Test collections, pooling and incompleteness
+  entry: '- Voorhees, E. M., Soboroff, I. & Lin, J. (2022). *Can Old TREC Collections Reliably Evaluate
+    Modern Neural Retrieval Models?* [arXiv:2201.11086](https://arxiv.org/abs/2201.11086)'
+- section: Test collections, pooling and incompleteness
+  entry: '- Allan, J., Harman, D., Kanoulas, E., Li, D., Van Gysel, C. & Voorhees, E. (2017). *TREC 2017
+    Common Core Track Overview.* TREC 2017. [PDF](https://trec.nist.gov/pubs/trec26/papers/Overview-CC.pdf)'
+- section: Test collections, pooling and incompleteness
+  entry: '- [TREC: English relevance judgments](https://trec.nist.gov/data/reljudge_eng.html)'
+- section: Synthetic question generation and its limits
+  entry: '- Thakur, N., Reimers, N., Rücklé, A., Srivastava, A. & Gurevych, I. (2021). *BEIR: A Heterogenous
+    Benchmark for Zero-shot Evaluation of Information Retrieval Models.* NeurIPS Datasets and Benchmarks.
+    [arXiv:2104.08663](https://arxiv.org/abs/2104.08663)'
+- section: Synthetic question generation and its limits
+  entry: '- Saad-Falcon, J., Khattab, O., Potts, C. & Zaharia, M. (2024). *ARES: An Automated Evaluation
+    Framework for Retrieval-Augmented Generation Systems.* NAACL. [arXiv:2311.09476](https://arxiv.org/abs/2311.09476)
+    · [code](https://github.com/stanford-futuredata/ARES)'
+- section: Synthetic question generation and its limits
+  entry: '- Ragas. [Testset Generation for RAG](https://docs.ragas.io/en/stable/getstarted/rag_testset_generation/)
+    · [source](https://github.com/explodinggradients/ragas)'
+- section: Synthetic question generation and its limits
+  entry: '- Hong, K., Troynikov, A., Huber, J. & McGuire, M. (2025). *Generative Benchmarking.* Chroma
+    Research. [report](https://www.trychroma.com/research/generative-benchmarking)'
+- section: Synthetic question generation and its limits
+  entry: '- Kucia, F. J. & Gawlik, B. M. (2026). *Beyond Benchmark Scores: How Synthetic and Authentic
+    Query Distributions Diverge in RAG Evaluation.* [arXiv:2609.14579](https://arxiv.org/abs/2609.14579)'
+- section: Synthetic question generation and its limits
+  entry: '- van Elburg, J., van der Putten, P. & Marx, M. (2025). *Can we Evaluate RAGs with Synthetic
+    Data?* SynDAiTE workshop, ECML-PKDD. [arXiv:2508.11758](https://arxiv.org/abs/2508.11758)'
+- section: Synthetic question generation and its limits
+  entry: '- Rahmani, H. A., Ramineni, V., Yilmaz, E., Craswell, N. & Mitra, B. (2025). *Towards Understanding
+    Bias in Synthetic Data for Evaluation.* CIKM. [arXiv:2506.10301](https://arxiv.org/abs/2506.10301)'
+- section: Synthetic question generation and its limits
+  entry: '- Filice, S., Horowitz, G., Carmel, D. et al. (2025). *Generating Diverse Q&A Benchmarks for
+    RAG Evaluation with DataMorgana.* [arXiv:2501.12789](https://arxiv.org/abs/2501.12789)'
+- section: Unanswerable, adversarial and conflicting evidence
+  entry: '- Rajpurkar, P., Jia, R. & Liang, P. (2018). *Know What You Don''t Know: Unanswerable Questions
+    for SQuAD.* ACL. [arXiv:1806.03822](https://arxiv.org/abs/1806.03822) · [leaderboard](https://rajpurkar.github.io/SQuAD-explorer/)'
+- section: Unanswerable, adversarial and conflicting evidence
+  entry: '- Kwiatkowski, T. et al. (2019). *Natural Questions: A Benchmark for Question Answering Research.*
+    TACL 7:453–466. [doi:10.1162/tacl_a_00276](https://doi.org/10.1162/tacl_a_00276) · [ACL Anthology](https://aclanthology.org/Q19-1026/)'
+- section: Unanswerable, adversarial and conflicting evidence
+  entry: '- Chen, J., Lin, H., Han, X. & Sun, L. (2024). *Benchmarking Large Language Models in Retrieval-Augmented
+    Generation.* AAAI. [arXiv:2309.01431](https://arxiv.org/abs/2309.01431)'
+- section: Unanswerable, adversarial and conflicting evidence
+  entry: '- Min, S., Michael, J., Hajishirzi, H. & Zettlemoyer, L. (2020). *AmbigQA: Answering Ambiguous
+    Open-domain Questions.* EMNLP, 5783–5797. [doi:10.18653/v1/2020.emnlp-main.466](https://doi.org/10.18653/v1/2020.emnlp-main.466)
+    · [ACL Anthology](https://aclanthology.org/2020.emnlp-main.466/)'
+- section: Unanswerable, adversarial and conflicting evidence
+  entry: '- Wang, H., Prasad, A., Stengel-Eskin, E. & Bansal, M. (2025). *Retrieval-Augmented Generation
+    with Conflicting Evidence.* COLM. [arXiv:2504.13079](https://arxiv.org/abs/2504.13079)'
+- section: Agreement
+  entry: '- Landis, J. R. & Koch, G. G. (1977). *The Measurement of Observer Agreement for Categorical
+    Data.* Biometrics 33(1):159–174. [doi:10.2307/2529310](https://doi.org/10.2307/2529310)'
+- section: Agreement
+  entry: '- [Cohen''s kappa](https://en.wikipedia.org/wiki/Cohen%27s_kappa): collects the standard critiques
+    of the Landis & Koch bands.'
+- section: Deduplication and contamination
+  entry: '- Lee, K., Ippolito, D., Nystrom, A. et al. (2022). *Deduplicating Training Data Makes Language
+    Models Better.* ACL. [arXiv:2107.06499](https://arxiv.org/abs/2107.06499)'
+- section: Deduplication and contamination
+  entry: '- Abbas, A., Tirumala, K., Simig, D., Ganguli, S. & Morcos, A. S. (2023). *SemDeDup: Data-efficient
+    learning at web-scale through semantic deduplication.* [arXiv:2303.09540](https://arxiv.org/abs/2303.09540)'
+- section: Deduplication and contamination
+  entry: '- Broder, A. Z. (1997). *On the resemblance and containment of documents.* Compression and Complexity
+    of Sequences. [doi:10.1109/SEQUEN.1997.666900](https://doi.org/10.1109/SEQUEN.1997.666900)'
+- section: Deduplication and contamination
+  entry: '- Brown, T. et al. (2020). *Language Models are Few-Shot Learners* (13-gram contamination analysis,
+    appendix C). NeurIPS 2020. [arXiv:2005.14165](https://arxiv.org/abs/2005.14165)'
+- section: Deduplication and contamination
+  entry: '- OpenAI (2023). *GPT-4 Technical Report* (50-character substring contamination check). [arXiv:2303.08774](https://arxiv.org/abs/2303.08774)'
+- section: Sample size and significance
+  entry: '- Voorhees, E. M. & Buckley, C. (2002). *The effect of topic set size on retrieval experiment
+    error.* SIGIR ''02, 316–323. [doi:10.1145/564376.564432](https://doi.org/10.1145/564376.564432) ·
+    [NIST record](https://www.nist.gov/publications/effect-topic-set-size-retrieval-experiment-error)'
+- section: Sample size and significance
+  entry: '- Sakai, T. (2016). *Topic set size design.* Information Retrieval Journal 19(3):256–283. [doi:10.1007/s10791-015-9273-z](https://doi.org/10.1007/s10791-015-9273-z)'
+- section: Sample size and significance
+  entry: '- Smucker, M. D., Allan, J. & Carterette, B. (2007). *A comparison of statistical significance
+    tests for information retrieval evaluation.* CIKM ''07, 623–632. [doi:10.1145/1321440.1321528](https://doi.org/10.1145/1321440.1321528)'
+- section: Sample size and significance
+  entry: '- Smucker, M. D., Allan, J. & Carterette, B. (2009). *Agreement among statistical significance
+    tests for information retrieval evaluation at varying sample sizes.* SIGIR ''09 (poster), 630–631.
+    [doi:10.1145/1571941.1572050](https://doi.org/10.1145/1571941.1572050)'
+- section: Retrieval and documentation formats
+  entry: '- Cormack, G. V., Clarke, C. L. A. & Büttcher, S. (2009). *Reciprocal rank fusion outperforms
+    Condorcet and individual rank learning methods.* SIGIR ''09, 758–759. [doi:10.1145/1571941.1572114](https://doi.org/10.1145/1571941.1572114)'
+- section: Retrieval and documentation formats
+  entry: '- Gebru, T. et al. (2021). *Datasheets for Datasets.* Communications of the ACM 64(12):86–92.
+    [doi:10.1145/3458723](https://doi.org/10.1145/3458723)'

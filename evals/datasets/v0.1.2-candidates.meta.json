@@ -1,0 +1,94 @@
+{
+  "dataset_version": "v0.1.2-candidates",
+  "schema_version": "1.0",
+  "created_at": "2026-09-20T21:40:00Z",
+  "corpus_snapshot": {
+    "manifest_path": "data/manifest.csv",
+    "manifest_sha256": "c419b4be7de8aca0614183e9b93baa64339b7f35a1a722f9f90596cca4fcd68f",
+    "documents": 1665,
+    "recorded_at": "2026-09-20T20:37:17Z"
+  },
+  "sources": [
+    {
+      "venue": "ccxt",
+      "venue_type": "cex",
+      "license": "MIT",
+      "homepage": "https://docs.ccxt.com/"
+    },
+    {
+      "venue": "bybit",
+      "venue_type": "cex",
+      "license": "no license found",
+      "homepage": "https://bybit-exchange.github.io/docs/"
+    },
+    {
+      "venue": "binance",
+      "venue_type": "cex",
+      "license": "no license found",
+      "homepage": "https://developers.binance.com/docs/binance-spot-api-docs"
+    },
+    {
+      "venue": "bingx",
+      "venue_type": "cex",
+      "license": "MIT",
+      "homepage": "https://bingx-api.github.io/docs/"
+    },
+    {
+      "venue": "uniswap",
+      "venue_type": "dex",
+      "license": "MIT",
+      "homepage": "https://docs.uniswap.org/"
+    },
+    {
+      "venue": "pancakeswap",
+      "venue_type": "dex",
+      "license": "no license found",
+      "homepage": "https://docs.pancakeswap.finance/"
+    },
+    {
+      "venue": "hyperliquid",
+      "venue_type": "dex",
+      "license": "no license found",
+      "homepage": "https://hyperliquid.gitbook.io/hyperliquid-docs"
+    },
+    {
+      "venue": "dydx",
+      "venue_type": "dex",
+      "license": "no license found",
+      "homepage": "https://docs.dydx.xyz/"
+    }
+  ],
+  "generator": {
+    "model": "claude-opus-5[1m] (Claude Code, v0.1.2 comparison supplement)",
+    "prompt_hash": "e1e2519d848abd35"
+  },
+  "counts": {
+    "total": 178,
+    "by_venue": {
+      "binance": 52,
+      "bingx": 34,
+      "bybit": 48,
+      "ccxt": 13,
+      "dydx": 23,
+      "hyperliquid": 41,
+      "pancakeswap": 23,
+      "uniswap": 27
+    },
+    "by_qtype": {
+      "comparison": 66,
+      "fact": 98,
+      "multihop": 14
+    },
+    "by_category": {
+      "adversarial": 24,
+      "ambiguous": 6,
+      "comparison": 62,
+      "fact": 42,
+      "multihop": 14,
+      "noisy": 6,
+      "unanswerable": 17,
+      "version_sensitive": 7
+    }
+  },
+  "notes": "Supersedes v0.1.1-candidates, which stays on disk unchanged, as does v0.1-candidates. All 140 v0.1.1 records are carried through byte-for-byte in the same order -- same ids, same field values, no renumbering, no re-serialisation -- and 38 new comparison candidates follow at cv-0142 through cv-0179. Nothing was dropped or edited.\n\nWhy: METHODOLOGY section 7 is being retargeted from 35 comparison questions to 50, because the project's headline claim -- cross-venue confusion -- is measured entirely in the comparison subgroup, and at psi = 0.25 a subgroup of 35 only detects a recall@10 gap of 0.24 at 80% power while 50 detects 0.20. v0.1.1 held 24 comparison candidates, which could not meet a 35 target let alone 50. This version raises the comparison pool to 62 of 178 records, so selection of 50 has real headroom rather than being a forced copy of the pool.\n\nComposition of the 38 new records. Venue-pair type: CEX-CEX 12, DEX-DEX 10, CEX-DEX 14 -- CEX-DEX was the thin cell in v0.1.1 (3 of 24) and is now the largest. Pairs: binance x bybit 5, uniswap x pancakeswap 5 (the two required pairs), binance x hyperliquid 4, binance x bingx 4, dydx x hyperliquid 4, bybit x bingx 3, bybit x hyperliquid 3, bybit x dydx 2, bingx x hyperliquid 2, binance x dydx 1, bingx x dydx 1, uniswap x hyperliquid 1, bybit x pancakeswap 1, ccxt x hyperliquid 1, ccxt x dydx 1. No pair exceeds 13.2% of the batch and every one of the eight venues appears. ccxt is held to 2 of 38 (5.3%) because it is a library rather than a venue; both of its items are about the unified abstraction leaking -- the credential shape it imposes on hyperliquid's agent wallet, and the dydx orderFlags value it has to guess.\n\nEvery new record serves exactly one of three information needs, named in its own notes field. (1) Numeric divergence under a shared term, 10 records: the two venues use the same word and the number underneath differs -- request-weight budgets, IP windows, idle-socket timeouts, tick spacing per fee tier, minimum notional, size precision, open-order caps. (2) Same name, different mechanism, 17 records: the identifier matches and the semantics do not -- 403 meaning a WAF violation on binance and plain forbidden on bingx, 'nonce' as a Permit2 per-triple counter versus a hyperliquid millisecond replay guard, 'subaccount' as a bybit UID with its own keys versus a dydx numbered slot under one address, 'hooks' on two fourth-generation AMMs, self-trade-prevention enums that describe the same behaviour in disjoint vocabularies. (3) Capability present on one venue and genuinely absent on the other, 11 records. Each absence was proved by search across every spelling the vendor uses, not one keyword, and the counts are recorded in the record's notes: pegged orders (binance 97 'pegged' / 74 pegPriceType / 32 PRIMARY_PEG / 12 'peg offset' against bybit 0 on every one of those, its only two 'peg' substring hits being .png and jpeg); 429 (binance 35, hyperliquid 0); api key and secret (binance 227 'api key', hyperliquid 0 and 0 for apiSecret / 'api secret' / X-API-KEY); recvWindow (binance 225, hyperliquid 0); X-SOURCE-KEY (bingx 8, every other venue 0); listenKey (bingx 25 and userDataStream 14, against binance's documented removal); DCP and cancel-on-disconnect (bybit 16 DCP, bingx 0 DCP / 0 'dead man' / 0 'cancel on disconnect'); orderbook aggregation (hyperliquid nSigFigs 3 and 'significant figure' 3, dydx 0 / 0 / 0 for nSigFigs, 'significant figure' and 'grouping', its 16 'aggregat' hits all being rewards and aggregators); and a slippage figure for tax tokens (pancakeswap's explicit 12%, uniswap 0 for '12%' and no slippage number anywhere in its 20 'slippage tolerance' chunks, which solve fee-on-transfer at contract level instead).\n\nGrounding and provenance. Every new record has source_chunk_ids filled with at least one chunk per venue, because a comparison question needs evidence on both sides; all of them resolve against data/processed/chunks.jsonl at the corpus snapshot recorded above. source_chunk_ids are provenance pointers, NOT gold labels, and must not be used as such. gold_chunk_ids and reference_answer are empty by design at this version, as are the annotation stamps: this is a candidate pool, unlabelled and unfiltered, and it is input to human selection rather than an evaluation set. corpus_snapshot was recomputed with crossvenue_rag.dataset.manifest_fingerprint(\"data/manifest.csv\") and counts were recomputed from the file. adversarial_type is null on all 38: these are comparison items, not adversarial ones, even where the confusable venue is named in notes -- every new record names it, so per_query.csv can report which wrong venue won. No new record cross-references another question id.\n\nValidation. crossvenue validate-evals was run on the full file WITHOUT --skip-near-duplicates, so the encoder-backed near-duplicate check at cosine 0.92 did run, and it reported ok with no near-duplicate warnings -- which matters most here, because new comparison questions are the likeliest thing in this project to restate an existing one."
+}

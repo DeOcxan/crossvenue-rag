@@ -1,0 +1,29 @@
+{
+  "before": {
+    "measured_at": "2026-09-25T22:13:32+00:00",
+    "cpu_count": 10,
+    "load_average": [
+      13.1,
+      11.17,
+      8.59
+    ],
+    "competing_processes": 1,
+    "busy_processes": 2
+  },
+  "after": {
+    "measured_at": "2026-09-25T22:58:50+00:00",
+    "cpu_count": 10,
+    "load_average": [
+      3.9,
+      6.26,
+      6.55
+    ],
+    "competing_processes": 0,
+    "busy_processes": 0
+  },
+  "discarded_pairs": 21,
+  "load1_during": {
+    "median": 4.09,
+    "max": 5.0
+  }
+}

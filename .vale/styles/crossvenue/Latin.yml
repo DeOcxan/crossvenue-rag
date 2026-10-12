@@ -1,0 +1,9 @@
+# docs/style.md rule 24.
+extends: substitution
+message: "Use '%s' instead of '%s'."
+level: error
+ignorecase: true
+nonword: true
+swap:
+  '\be\.g\.': for example
+  '\bi\.e\.': that is

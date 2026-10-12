@@ -1,0 +1,102 @@
+[
+  {
+    "method": "bm25",
+    "questions": 114,
+    "labelled_questions": 90,
+    "metrics": {
+      "mrr": 0.4693,
+      "recall@1": 0.1914,
+      "precision@1": 0.3667,
+      "ndcg@1": 0.3667,
+      "recall@5": 0.3668,
+      "precision@5": 0.1933,
+      "ndcg@5": 0.3661,
+      "recall@10": 0.547,
+      "precision@10": 0.1578,
+      "ndcg@10": 0.4339
+    },
+    "latency_p50_ms": 0.1,
+    "latency_p95_ms": 0.2,
+    "step_latency_p50_ms": {
+      "encode_ms": 0.0,
+      "search_ms": 0.1,
+      "fuse_ms": 0.0,
+      "rerank_ms": 0.0
+    }
+  },
+  {
+    "method": "dense",
+    "questions": 114,
+    "labelled_questions": 90,
+    "metrics": {
+      "mrr": 0.4019,
+      "recall@1": 0.1601,
+      "precision@1": 0.2778,
+      "ndcg@1": 0.2778,
+      "recall@5": 0.3458,
+      "precision@5": 0.1578,
+      "ndcg@5": 0.3185,
+      "recall@10": 0.4912,
+      "precision@10": 0.12,
+      "ndcg@10": 0.3757
+    },
+    "latency_p50_ms": 21.2,
+    "latency_p95_ms": 25.9,
+    "step_latency_p50_ms": {
+      "encode_ms": 17.5,
+      "search_ms": 3.6,
+      "fuse_ms": 0.0,
+      "rerank_ms": 0.0
+    }
+  },
+  {
+    "method": "hybrid",
+    "questions": 114,
+    "labelled_questions": 90,
+    "metrics": {
+      "mrr": 0.4623,
+      "recall@1": 0.1541,
+      "precision@1": 0.3111,
+      "ndcg@1": 0.3111,
+      "recall@5": 0.4452,
+      "precision@5": 0.2289,
+      "ndcg@5": 0.3947,
+      "recall@10": 0.6388,
+      "precision@10": 0.1722,
+      "ndcg@10": 0.4619
+    },
+    "latency_p50_ms": 21.2,
+    "latency_p95_ms": 30.3,
+    "step_latency_p50_ms": {
+      "encode_ms": 16.1,
+      "search_ms": 5.0,
+      "fuse_ms": 0.1,
+      "rerank_ms": 0.0
+    }
+  },
+  {
+    "method": "hybrid_rerank",
+    "questions": 114,
+    "labelled_questions": 90,
+    "metrics": {
+      "mrr": 0.5742,
+      "recall@1": 0.2438,
+      "precision@1": 0.4222,
+      "ndcg@1": 0.4222,
+      "recall@5": 0.5437,
+      "precision@5": 0.26,
+      "ndcg@5": 0.4983,
+      "recall@10": 0.7416,
+      "precision@10": 0.1967,
+      "ndcg@10": 0.5766
+    },
+    "latency_p50_ms": 2644.5,
+    "latency_p95_ms": 3434.4,
+    "step_latency_p50_ms": {
+      "encode_ms": 18.2,
+      "search_ms": 15.2,
+      "fuse_ms": 0.1,
+      "rerank_ms": 2577.8
+    }
+  }
+]

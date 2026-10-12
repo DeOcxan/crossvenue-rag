@@ -1,0 +1,13 @@
+# Round-2 questions whose gold chunks the answer-rating screen (`crossvenue rate`) showed
+# while the 40 judge-calibration answers were rated, 2026-09-25T21:48Z to 22:35Z, inside
+# the quiet period (methodology section 5). `crossvenue kappa` reports agreement with and
+# without them. Written from round2_sample.txt and judge_calibration_sample.txt.
+cv-0006
+cv-0060
+cv-0070
+cv-0089
+cv-0127
+cv-0140
+cv-0146
+cv-0153
+cv-0162

@@ -1,0 +1,17 @@
+# docs/style.md rule 28: significance inflation and closing summaries.
+extends: existence
+message: "Inflated or summarizing phrase '%s'. Delete it."
+level: error
+ignorecase: true
+tokens:
+  - exactly what this project
+  - which is exactly what
+  - the whole project exists
+  - this project exists to
+  - it is no exaggeration
+  - plays a pivotal role
+  - pivotal
+  - testament to
+  - in conclusion
+  - to sum up
+  - all in all

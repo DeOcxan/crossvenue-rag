@@ -1,0 +1,7 @@
+# docs/style.md rule 33. Emphasis, when unavoidable, is italic.
+extends: existence
+message: "Bold in text: '%s'. Remove it, or use italic if emphasis is unavoidable."
+level: error
+scope: strong
+raw:
+  - '.+'

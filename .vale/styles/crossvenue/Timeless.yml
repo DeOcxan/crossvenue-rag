@@ -1,0 +1,26 @@
+# docs/style.md rule 2. History belongs in docs/adr/, evals/datasets/CHANGELOG.md
+# and git.
+extends: existence
+message: "Time-bound wording '%s'. Describe the repository as it is."
+level: error
+ignorecase: true
+tokens:
+  - now
+  - currently
+  - latest
+  - soon
+  - recently
+  - previously
+  - no longer
+  - at present
+  - as of this writing
+  - after the fix
+  - first version
+  - 'week[- ]\d+'
+  # "since" and a date: ISO, "September 2026", "Sep 25, 2026" or "25 September 2026".
+  - 'since \d{4}(?:-\d\d(?:-\d\d)?)?'
+  - 'since (?:(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.?(?: \d{1,2},?)? \d{4}|\d{1,2} (?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\b\.?(?: \d{4})?)'
+  # "new" as an adjective before a noun or an identifier (`new index_version`). Word
+  # boundaries keep identifiers (`new_spend`, `cost_usd_new`) out; code spans are never
+  # linted.
+  - 'new (?:[a-z][\w-]*)'

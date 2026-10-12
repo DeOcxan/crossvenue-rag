@@ -1,0 +1,7032 @@
+{
+  "cv-0001": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T20:20:11Z",
+      "pool": [
+        "fd158d1d4dfa8662",
+        "3b10d539ba08e959",
+        "d0083abb00906b9c",
+        "84ce4b94d4ce3817",
+        "c4a60bd54018d654",
+        "3290240681e0ed87",
+        "6fe9d033622750bb",
+        "a831ffc2053c2aea",
+        "44209603aa1061c9",
+        "403ac0f51cd1c592",
+        "eab060194d24c369",
+        "3bdc24e6fb608829",
+        "7ab52e6050ed8294",
+        "8e329afd7150dc1e",
+        "f84b2da85154cf89",
+        "de694e9148dfd7f2",
+        "38fc729194a1d9e2",
+        "7cf003ff3a8bcb7e",
+        "395edf1237d6bbfb",
+        "aad98a5de0b7836c",
+        "0dfcddd7bf09643f",
+        "37307fddc807a0fd",
+        "ee9a962e97559e23"
+      ],
+      "relevant": [
+        "eab060194d24c369",
+        "de694e9148dfd7f2"
+      ],
+      "migrated_from": {
+        "pool": [
+          "fcf727993d2369cb",
+          "89f785fcb3f85211",
+          "16872f35eb1ab2c9",
+          "6830c4ddc90844d6",
+          "e200e282b3e8accf",
+          "6466359b8421fd0b",
+          "c3e9d6f3f3e37a1f",
+          "d7aafa45c0bc0d7a",
+          "4e2a425e86e0a181",
+          "a12afc2f1ce3dc18",
+          "811758bf92609a92",
+          "cdef1d3288cce31a",
+          "5643ec27f36e41b4",
+          "a75ea4b4be80db76",
+          "0c95ab4b18d4e10f",
+          "fc83d2283b25c2af",
+          "c908f9c675f5e848",
+          "fdf9ce5145c19bdd",
+          "a7cecd5add523d23",
+          "805fc4fa4e5751a2",
+          "eb0079336e2af680",
+          "2a1c7f14f80d0018",
+          "9c7165d56458be1a",
+          "0735729fbc212039",
+          "e41d027b0281374d"
+        ],
+        "relevant": [
+          "811758bf92609a92",
+          "cdef1d3288cce31a",
+          "c908f9c675f5e848",
+          "fdf9ce5145c19bdd"
+        ],
+        "index_version": null
+      },
+      "index_version": "2825a7160c4d09bf"
+    }
+  },
+  "cv-0002": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T21:34:49Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "dbcc414946a41cf3",
+        "eab060194d24c369",
+        "de694e9148dfd7f2",
+        "e6ded549d28b58fb",
+        "15d5455e874a57ef",
+        "8e2bb0cdb21b9bd3",
+        "42c38291fe46ed96",
+        "998da96cbf86855c",
+        "6ca5040c70dd1231",
+        "08d694c731837bb0",
+        "bf51ca30ea8725ce",
+        "0f506ceb64a14467",
+        "5ee72b7a59b1c69c",
+        "7b2bee40a02df4ad",
+        "d27f62cdc0081f12",
+        "41b8ee592f72cfe0",
+        "eb33e78300a86115",
+        "4c9ccfc9dbc11dc7",
+        "453e379a237bd61e",
+        "fd13580695538899",
+        "c848e436b638ae92",
+        "153a75b6e2887175",
+        "87f8adf4c1a7f915",
+        "82c94c8742a61d78",
+        "b352f5695e8e7fa4"
+      ],
+      "relevant": [
+        "e6ded549d28b58fb",
+        "15d5455e874a57ef",
+        "8e2bb0cdb21b9bd3",
+        "42c38291fe46ed96",
+        "998da96cbf86855c",
+        "08d694c731837bb0",
+        "41b8ee592f72cfe0",
+        "eb33e78300a86115",
+        "fd13580695538899",
+        "c848e436b638ae92",
+        "87f8adf4c1a7f915",
+        "b352f5695e8e7fa4"
+      ]
+    }
+  },
+  "cv-0003": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T21:43:55Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "2b369c6613d48ffa",
+        "b15b629dd1b08355",
+        "067a219af84d0186",
+        "9372e7af283d5470",
+        "6617adcb6b59f1b5",
+        "0317f8a0f9d502f5",
+        "e9a0a1c9ba73b8e5",
+        "95a4b84d9d7ed947",
+        "2551900a671eb9ff",
+        "31beb4a0668effe4",
+        "2b231cb52626f70e",
+        "456bdedb639b5536",
+        "eee9e35b7f9f7b6b",
+        "c893da7dde82ee9e",
+        "e680cb2b135dd5ba",
+        "418c52965195c40e",
+        "04170f186da297a8",
+        "bb1fbbb8ab405558",
+        "640d4498f2af6c60",
+        "f75197ecfc3b6d00",
+        "d1b10a509b48651c",
+        "0e7cbc60c0e191d1",
+        "931da4dffff7add2",
+        "e6683ba4c189e0a6",
+        "bfa78f6cdaf4a836"
+      ],
+      "relevant": [
+        "067a219af84d0186",
+        "9372e7af283d5470"
+      ]
+    }
+  },
+  "cv-0004": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T21:44:54Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "6617adcb6b59f1b5",
+        "facffec16b04896c",
+        "2e6f082adeaa6015",
+        "e62bef6db1e28af5",
+        "2551900a671eb9ff",
+        "e9a0a1c9ba73b8e5",
+        "dc61f1258c9a2782",
+        "c92df3e417c11eab",
+        "d6aa36bb192acfc1",
+        "b57cf16ea1eba1fe",
+        "529792f40a739e16",
+        "0317f8a0f9d502f5",
+        "cb69ae916d32dd77",
+        "ae850b671b86e217",
+        "7efb42d9522017b6",
+        "754f1ddafd5a42a0",
+        "9a7b27f8f01dbb62",
+        "4e3b874bb73081e2",
+        "f7e420d751d93606",
+        "5c51f2fb7dd3b647",
+        "e15e153fdfb529f7",
+        "415a71f491bd553f",
+        "4d0c1c3ff7cdb62b",
+        "4e53707a5d0e27fa",
+        "e7233f5c74b230c3"
+      ],
+      "relevant": [
+        "6617adcb6b59f1b5"
+      ]
+    }
+  },
+  "cv-0005": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T21:45:30Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "35f6bc2d78e84002",
+        "6e50c56989a5b97f",
+        "3584bdce0ac5c7d1",
+        "137f23e3f1887126",
+        "44f4cf125e07b436",
+        "468043410cc0c27e",
+        "067a219af84d0186",
+        "8981dc033b80276d",
+        "8af42d40f8ecc202",
+        "5311c230ced41dbd",
+        "5306a63f1716511f",
+        "c4ceff5514253837",
+        "b5d878ccbf092a04",
+        "395fa4a95b3d3877",
+        "5004ec38c5d2f1ec",
+        "d1175f63bc486de1",
+        "b5dcf8d7cf5b0610",
+        "e93ce1a816d2867d",
+        "3336838b6d2226a9",
+        "b3ff952be7f79e83",
+        "a7b55444a8bdcf9f",
+        "183d111cd7537a7c",
+        "6ccf702400ef09ad",
+        "1ea3d663d6b9e830",
+        "88c27f6ec13e4318"
+      ],
+      "relevant": [
+        "3584bdce0ac5c7d1"
+      ]
+    }
+  },
+  "cv-0006": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T21:56:37Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "35f6bc2d78e84002",
+        "b5d878ccbf092a04",
+        "24234d84a1dac409",
+        "411ce195949a5df8",
+        "243e6d70ffb0ce18",
+        "5004ec38c5d2f1ec",
+        "f5897806bac8d33f",
+        "42d881d46b755594",
+        "d9cd2f8eb2632657",
+        "5d0407daa99f5686",
+        "9317ddb8c686ec9c",
+        "c11520e5fa244df0",
+        "a1b2a17a7240953e",
+        "b4f80d3991057445",
+        "12e5b7cc1d275a16",
+        "5401d2a1029c97ee",
+        "94887f33a2ce6b4e",
+        "6aee37548a3dfb37",
+        "271f983a4f222076",
+        "19a500fc9f4ddae5",
+        "718f19bb64fceacf",
+        "678e129df2e8d8e8",
+        "e93ce1a816d2867d",
+        "b17d4f613a91851f",
+        "60080f8d07418c8f"
+      ],
+      "relevant": [
+        "5004ec38c5d2f1ec",
+        "a1b2a17a7240953e",
+        "94887f33a2ce6b4e"
+      ]
+    }
+  },
+  "cv-0007": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T21:47:24Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "468043410cc0c27e",
+        "44f4cf125e07b436",
+        "2763c12d46e6d6b1",
+        "243e6d70ffb0ce18",
+        "6421d8427fd40eb9",
+        "6ccf702400ef09ad",
+        "e74c6fd63adebac7",
+        "5ddd2987739032c3",
+        "e3a808587d76f0cb",
+        "fd874c5a97bd898c",
+        "f20f4f04968c7233",
+        "943519877c1134cb",
+        "1f0c55315bb7918a",
+        "c4ceff5514253837",
+        "4fe832b090d38c63",
+        "b3ff952be7f79e83",
+        "6ca9903b36f628f0",
+        "c10ee451372cb002",
+        "f8d570087aa76c0c",
+        "608898aa04e65672",
+        "5d0407daa99f5686",
+        "6df59c30ad8b6bb9",
+        "174337f4633cd769",
+        "36b4a88a5718568b",
+        "12e5b7cc1d275a16"
+      ],
+      "relevant": [
+        "468043410cc0c27e"
+      ]
+    }
+  },
+  "cv-0008": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T21:48:29Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "ca1adf65b763fe72",
+        "f20f4f04968c7233",
+        "e9e3428ae7f7b6e1",
+        "34c96e54bb693a4f",
+        "1e428b95334a6066",
+        "c059580b26230e11",
+        "156462c0073b118a",
+        "847ff1e94c580249",
+        "44f4cf125e07b436",
+        "26a5d23b0cd22879",
+        "65e24af2bcd912c0",
+        "0c8e0886719f2344",
+        "468043410cc0c27e",
+        "a8b39903379c68d3",
+        "205249bc8d99c323",
+        "0b8a85d6374a5aa9",
+        "27856102ec10463c",
+        "d7202564d15ac547",
+        "f6eaa82ff8198f10",
+        "5eabfa1c8da9cab2",
+        "27161becaa9fb29f",
+        "6250f6176a1e2f6c",
+        "581fa2ea77f4104b",
+        "5ddd2987739032c3",
+        "df262bc5068dd789"
+      ],
+      "relevant": [
+        "f20f4f04968c7233"
+      ]
+    }
+  },
+  "cv-0043": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T21:49:15Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "47a711d004f13682",
+        "702da9102bd8c810",
+        "79a403c6d9bc25a9",
+        "431a41573fb9568e",
+        "54b065200e70e533",
+        "9f2bb8116cd0c309",
+        "0256bed34949440a",
+        "52affe72106418bd",
+        "b3e3aed35afe2f71",
+        "d046fcc6ae9adaa6",
+        "00d799fd7df2ad19",
+        "96e1b8fb37f036eb",
+        "134ea4ceae3aa1a8",
+        "8ebc4d4a8899d579",
+        "5126900d85cd69b6",
+        "981a5a0309661340",
+        "b7119f4aeea1beff",
+        "56a97f48cc7f03d1",
+        "6cb4f744e4e1c7df",
+        "166bd1e333dce201",
+        "f13bb9bf53c3aa20",
+        "a6385389cd7a62a6",
+        "8062fc694752a863",
+        "6d2251c8d4adda0c",
+        "9c9615cbbf95339b"
+      ],
+      "relevant": [
+        "79a403c6d9bc25a9"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T23:04:42Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "79a403c6d9bc25a9"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "79a403c6d9bc25a9"
+          ],
+          "venue_coverage": {
+            "binance": "missing_from_pool",
+            "bybit": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "binance": "missing_from_pool",
+        "bybit": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:48:10Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "d0083abb00906b9c",
+            "0d5c72a13bbf2001",
+            "fd158d1d4dfa8662",
+            "f3511dba13aca074",
+            "07523fd7ba09f474",
+            "3bdc24e6fb608829",
+            "e580fd4f3c3d6e23",
+            "6b174e0d39ed334b"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0044": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T21:50:11Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "dbcc414946a41cf3",
+        "eab060194d24c369",
+        "eb33e78300a86115",
+        "5681daa4302fc5df",
+        "15d5455e874a57ef",
+        "6b174e0d39ed334b",
+        "8e2bb0cdb21b9bd3",
+        "41b8ee592f72cfe0",
+        "c848e436b638ae92",
+        "de694e9148dfd7f2",
+        "0bdc717beeceef8d",
+        "fd384e377124ed3e",
+        "fd13580695538899",
+        "326cbb232318d246",
+        "42c38291fe46ed96",
+        "87f8adf4c1a7f915",
+        "4c9ccfc9dbc11dc7",
+        "998da96cbf86855c",
+        "b9393c0a9f97adf3",
+        "b352f5695e8e7fa4",
+        "5ee72b7a59b1c69c",
+        "1c0d5c9a83f1aec4",
+        "58929420f512f88f",
+        "08d694c731837bb0",
+        "7b2bee40a02df4ad"
+      ],
+      "relevant": [
+        "eab060194d24c369",
+        "eb33e78300a86115",
+        "5681daa4302fc5df",
+        "15d5455e874a57ef",
+        "8e2bb0cdb21b9bd3",
+        "41b8ee592f72cfe0",
+        "c848e436b638ae92",
+        "de694e9148dfd7f2",
+        "0bdc717beeceef8d",
+        "fd384e377124ed3e",
+        "fd13580695538899",
+        "42c38291fe46ed96",
+        "87f8adf4c1a7f915",
+        "998da96cbf86855c",
+        "b352f5695e8e7fa4",
+        "08d694c731837bb0",
+        "e6ded549d28b58fb"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T22:50:07Z",
+          "derived": true,
+          "rule": "covered: a gold chunk is from the venue; missing_from_pool: the recorded round-1 pool holds no candidate from the venue",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "eab060194d24c369",
+            "eb33e78300a86115",
+            "5681daa4302fc5df",
+            "15d5455e874a57ef",
+            "8e2bb0cdb21b9bd3",
+            "41b8ee592f72cfe0",
+            "c848e436b638ae92",
+            "de694e9148dfd7f2",
+            "0bdc717beeceef8d",
+            "fd384e377124ed3e",
+            "fd13580695538899",
+            "42c38291fe46ed96",
+            "87f8adf4c1a7f915",
+            "998da96cbf86855c",
+            "b352f5695e8e7fa4",
+            "08d694c731837bb0"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "eab060194d24c369",
+            "eb33e78300a86115",
+            "5681daa4302fc5df",
+            "15d5455e874a57ef",
+            "8e2bb0cdb21b9bd3",
+            "41b8ee592f72cfe0",
+            "c848e436b638ae92",
+            "de694e9148dfd7f2",
+            "0bdc717beeceef8d",
+            "fd384e377124ed3e",
+            "fd13580695538899",
+            "42c38291fe46ed96",
+            "87f8adf4c1a7f915",
+            "998da96cbf86855c",
+            "b352f5695e8e7fa4",
+            "08d694c731837bb0"
+          ],
+          "venue_coverage": {
+            "binance": "covered",
+            "bingx": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "binance": "covered",
+        "bingx": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:48:33Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "d0083abb00906b9c",
+            "fd158d1d4dfa8662",
+            "e6ded549d28b58fb",
+            "c4a60bd54018d654",
+            "69f44e6cc370d65a",
+            "ecb7b644f8ef6f9a",
+            "84ce4b94d4ce3817",
+            "7ab52e6050ed8294",
+            "21538818b884fabe"
+          ],
+          "relevant": [
+            "e6ded549d28b58fb"
+          ],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0045": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T21:50:58Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "2b369c6613d48ffa",
+        "456bdedb639b5536",
+        "b15b629dd1b08355",
+        "6617adcb6b59f1b5",
+        "067a219af84d0186",
+        "eec8c1a905a872ca",
+        "9372e7af283d5470",
+        "0921143740c562b3",
+        "bddc4dd8df425396",
+        "88833db650cc1f42",
+        "e183859cab350362",
+        "4f74081f143fee12",
+        "0317f8a0f9d502f5",
+        "9d6fd4242b03f9a6",
+        "95a4b84d9d7ed947",
+        "fc6186a1ae67fd41",
+        "25e1c607497bdaf0",
+        "facffec16b04896c",
+        "88ec2049e5181199",
+        "d514134cef844f6e",
+        "f0a4ad73afe1e978",
+        "14c136b489c814a6",
+        "800613908a3315e4",
+        "af7dcd9b64855c26",
+        "92042d0e65b64c45"
+      ],
+      "relevant": [
+        "6617adcb6b59f1b5",
+        "067a219af84d0186",
+        "9372e7af283d5470"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T22:50:07Z",
+          "derived": true,
+          "rule": "covered: a gold chunk is from the venue; missing_from_pool: the recorded round-1 pool holds no candidate from the venue",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "6617adcb6b59f1b5",
+            "067a219af84d0186",
+            "9372e7af283d5470"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "6617adcb6b59f1b5",
+            "067a219af84d0186",
+            "9372e7af283d5470"
+          ],
+          "venue_coverage": {
+            "binance": "covered",
+            "bybit": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "binance": "covered",
+        "bybit": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:48:46Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "011d200bb2540c73",
+            "e2d0d765a8680975",
+            "f8752275e41e94d3",
+            "22deada8e97de01b",
+            "c893da7dde82ee9e",
+            "7cb924ec142c553d",
+            "bcd78c9f48a787fe",
+            "b57cf16ea1eba1fe",
+            "eee9e35b7f9f7b6b",
+            "27d94293e8ddb024",
+            "27a498c45e1b0cc6",
+            "3563572f7f2cf859"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0046": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T21:51:48Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "d49fa8f9674ccdaa",
+        "4c9ccfc9dbc11dc7",
+        "6617adcb6b59f1b5",
+        "facffec16b04896c",
+        "d27f62cdc0081f12",
+        "1f4db897d218ab7e",
+        "5ee72b7a59b1c69c",
+        "dbcc414946a41cf3",
+        "cc377f98dcf85252",
+        "c309b7d8cabebd41",
+        "28b2264c47608e5c",
+        "96a55103122a8cad",
+        "81cc1c9f5d87f8ea",
+        "f6da2b246fee1244",
+        "dc61f1258c9a2782",
+        "2a2d0ada27e51781",
+        "960805df4cc60bfd",
+        "662e224fbe68a241",
+        "557b45d80ca70778",
+        "cac8db4d96c5371f",
+        "e152999e8f80c9db",
+        "6518f8e88e83d24f",
+        "be5963f91d74f274",
+        "0fc0eb3e10b9b480",
+        "92ea64479009ad83"
+      ],
+      "relevant": [
+        "4c9ccfc9dbc11dc7",
+        "6617adcb6b59f1b5"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T23:05:08Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "6617adcb6b59f1b5"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "4c9ccfc9dbc11dc7",
+            "6617adcb6b59f1b5"
+          ],
+          "venue_coverage": {
+            "bingx": "covered",
+            "bybit": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "bingx": "covered",
+        "bybit": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:48:57Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "b57cf16ea1eba1fe",
+            "847ff1e94c580249",
+            "95175d8b1ad60441"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0047": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T21:53:01Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "33eb6ae076f1007b",
+        "a94bd97101b3789b",
+        "55e1f327c0ec1613",
+        "c676b2dc7900d32a",
+        "32b3754fea13f359",
+        "07bb751441bbbdd4",
+        "bb25d26bed66a927",
+        "43d9a7ef836b2dc1",
+        "d305c585f5c77976",
+        "dab23ec5453784f7",
+        "f694444c921bc387",
+        "9a727f01d1afed3f",
+        "ec4cd39fa66bf676",
+        "d6eca88f944b0986",
+        "363636f4d8e971a6",
+        "7ec7e585376f2f34",
+        "7fb4e55687bf1aea",
+        "810f635c44da5b16",
+        "a10fe76e11c90f25",
+        "ea342d17c26e44cc",
+        "a8107aed01bf135c",
+        "e4a4c3da6b750981",
+        "64a6e3e96df6d553",
+        "017a8d3a43038d1d",
+        "156d37bfd55cf535"
+      ],
+      "relevant": [
+        "33eb6ae076f1007b",
+        "a94bd97101b3789b",
+        "c676b2dc7900d32a",
+        "d305c585f5c77976"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T22:50:07Z",
+          "derived": true,
+          "rule": "covered: a gold chunk is from the venue; missing_from_pool: the recorded round-1 pool holds no candidate from the venue",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "33eb6ae076f1007b",
+            "a94bd97101b3789b",
+            "c676b2dc7900d32a",
+            "d305c585f5c77976"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "33eb6ae076f1007b",
+            "a94bd97101b3789b",
+            "c676b2dc7900d32a",
+            "d305c585f5c77976"
+          ],
+          "venue_coverage": {
+            "uniswap": "covered",
+            "pancakeswap": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "uniswap": "covered",
+        "pancakeswap": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:49:13Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "ac38a8ffc1ae83ab",
+            "519f68e75b7b2fb0",
+            "ff2e4003ca86838c",
+            "599e59788f73842e",
+            "83fda5abfffd853e",
+            "76ae1dca5ae0a1b6",
+            "558cbd45db7fcc1b",
+            "c8bfd64663494758"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0048": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T21:53:52Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "2a8c3ff5724f66ae",
+        "f694444c921bc387",
+        "fea1996b2f2c3af0",
+        "e203d4dc3d99b4c8",
+        "be4ac42f9d0ac40d",
+        "4df773617474f2a6",
+        "dee6b7fabe2997ad",
+        "853ffa7fc6925807",
+        "9c78b4f0de755977",
+        "0ddb837d28b9d493",
+        "7ec7e585376f2f34",
+        "558cbd45db7fcc1b",
+        "2aebe19979379f69",
+        "33eb6ae076f1007b",
+        "26063ca2722e2d93",
+        "64f5add048a7adf7",
+        "b0da9cbefe10240d",
+        "123c11f40e1df4bc",
+        "962470b14bb24bd4",
+        "a10fe76e11c90f25",
+        "3868b43c6ffc220c",
+        "cad1846c00568b2f",
+        "9a18f4741c7efee6",
+        "dab23ec5453784f7",
+        "46e923a0d6c7aec2"
+      ],
+      "relevant": [
+        "26063ca2722e2d93",
+        "dab23ec5453784f7"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T22:50:07Z",
+          "derived": true,
+          "rule": "covered: a gold chunk is from the venue; missing_from_pool: the recorded round-1 pool holds no candidate from the venue",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "26063ca2722e2d93",
+            "dab23ec5453784f7"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "26063ca2722e2d93",
+            "dab23ec5453784f7"
+          ],
+          "venue_coverage": {
+            "uniswap": "covered",
+            "pancakeswap": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "uniswap": "covered",
+        "pancakeswap": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:49:26Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "d305c585f5c77976",
+            "eb8410f17bf7519f",
+            "7e91df01527fc1ff",
+            "095124949b7ed5ab",
+            "2ecd7b850ed33738",
+            "696de940933b0825",
+            "6bc3dcb254e73bc7",
+            "e5b3d4b6d2c797ec",
+            "64a6e3e96df6d553",
+            "cf9f95ea60c995bb"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0049": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T21:54:48Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "605567da62c37f98",
+        "50a36d41c2d4411d",
+        "215abcc93305893b",
+        "ac303f8b38e42b12",
+        "70062e530cd3db9a",
+        "7c9614ca524253f5",
+        "ad78cdd1332bbc2c",
+        "82c89640ecedd387",
+        "cd1b0c69e9a89a5a",
+        "3663f04f973d0422",
+        "c5ceb7bd9e4d577b",
+        "d744645ed3c552c7",
+        "5b9924bb209e9f23",
+        "e7f8ad318d38c30d",
+        "97d8565b9ce8c70a",
+        "d9bfb3504b968309",
+        "1b3ba428054107c5",
+        "48a09f63d6e71ac1",
+        "0b4fb0357f61e98e",
+        "719ab8ea4b483aaa",
+        "24f94182f3fb5398",
+        "f67987b114ca0bd7",
+        "13f1058d69ff8bc0",
+        "6009a658ee6920b5",
+        "edeb3a2c3bef2308"
+      ],
+      "relevant": [
+        "7c9614ca524253f5",
+        "6d9e8bc12e9c4077"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T22:50:07Z",
+          "derived": true,
+          "rule": "covered: a gold chunk is from the venue; missing_from_pool: the recorded round-1 pool holds no candidate from the venue",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "7c9614ca524253f5"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "7c9614ca524253f5"
+          ],
+          "venue_coverage": {
+            "uniswap": "covered",
+            "pancakeswap": "missing_from_pool"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "uniswap": "covered",
+        "pancakeswap": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:49:50Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "6d9e8bc12e9c4077",
+            "59b05edbd4050dd4",
+            "c869df6ffa043995",
+            "a797a636ac456822",
+            "73f666f6f0cee7fb",
+            "f45e84c585f90b57",
+            "a380c22165c329c5",
+            "7e91df01527fc1ff",
+            "4fe12faf19933750",
+            "d900ab8da4914122"
+          ],
+          "relevant": [
+            "6d9e8bc12e9c4077"
+          ],
+          "coverage_changes": [
+            {
+              "venue": "pancakeswap",
+              "from": "missing_from_pool",
+              "to": "covered",
+              "previous_assessment_wrong": false
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "cv-0050": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T21:57:35Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "cbf3f436b8cecda5",
+        "0a32032ae302620a",
+        "2ecd7b850ed33738",
+        "6bc3dcb254e73bc7",
+        "f694444c921bc387",
+        "dab23ec5453784f7",
+        "fe4d7e8f3138884d",
+        "b0ba7bc7dc5e5576",
+        "59fc2b56991a1fd8",
+        "6eea84913a175f31",
+        "7da8a37b0b9f6da9",
+        "008ba7626461ca50",
+        "6b9bb87d14298e94",
+        "d6eca88f944b0986",
+        "a10fe76e11c90f25",
+        "557659c5b539e9ff",
+        "ac38a8ffc1ae83ab",
+        "edb29c3404cd307e",
+        "2af6a86f1a8dab91",
+        "ef8f81c3d402365f",
+        "30a3baa5e3b6c167",
+        "8ebc4d4a8899d579",
+        "5bcc8198c642ab03",
+        "647479e7c651674b",
+        "7ec7e585376f2f34"
+      ],
+      "relevant": [
+        "dab23ec5453784f7",
+        "6b9bb87d14298e94",
+        "ac38a8ffc1ae83ab",
+        "26063ca2722e2d93"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T22:50:07Z",
+          "derived": true,
+          "rule": "covered: a gold chunk is from the venue; missing_from_pool: the recorded round-1 pool holds no candidate from the venue",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "dab23ec5453784f7",
+            "6b9bb87d14298e94",
+            "ac38a8ffc1ae83ab"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "dab23ec5453784f7",
+            "6b9bb87d14298e94",
+            "ac38a8ffc1ae83ab"
+          ],
+          "venue_coverage": {
+            "uniswap": "covered",
+            "pancakeswap": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "uniswap": "covered",
+        "pancakeswap": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:50:05Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "83fda5abfffd853e",
+            "b3d4df5c9992cfee",
+            "05ef21164835548e",
+            "08f2c9451c5b4dd2",
+            "26063ca2722e2d93"
+          ],
+          "relevant": [
+            "26063ca2722e2d93"
+          ],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0051": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T21:58:14Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "c1b23e17336faa02",
+        "88df1b3b1e5c6052",
+        "9a9f21cfb5f2fc3f",
+        "68405ec214663564",
+        "52bc7cf533744d63",
+        "dc0197b040e80514",
+        "6df59c30ad8b6bb9",
+        "2c40b841911b5169",
+        "44c895875031555f",
+        "4ca106e2cdca7cb3",
+        "aac3502627e988e0",
+        "2bc8257330f96e33",
+        "24299d605a184600",
+        "b38929dc7db27a1a",
+        "a9b53f1c2cfe1ac1",
+        "b5a9754018809b04",
+        "58bf67c70b1545ab",
+        "b7bfaaf52ac58c89",
+        "fa752a5fac39b06d",
+        "aa1a013a43f00ff1",
+        "5c06ed04e25116cb",
+        "04fbcb9ff896cf84",
+        "9f614c961d141cc4",
+        "243e6d70ffb0ce18",
+        "183d111cd7537a7c"
+      ],
+      "relevant": [
+        "58bf67c70b1545ab",
+        "adee07156b5dd3e2",
+        "411ce195949a5df8"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T23:05:29Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "c1b23e17336faa02",
+            "58bf67c70b1545ab"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "58bf67c70b1545ab"
+          ],
+          "venue_coverage": {
+            "dydx": "covered",
+            "hyperliquid": "missing_from_pool"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "dydx": "covered",
+        "hyperliquid": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:50:35Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "aa24b6b900196519",
+            "68d3177591d9701e",
+            "7c4f5eadcf017845",
+            "c45803ff89a47bd9",
+            "adee07156b5dd3e2",
+            "51bb38ac8e08b940",
+            "e7ee8a0eaf5ea524",
+            "411ce195949a5df8",
+            "f772c48dfe4c503c"
+          ],
+          "relevant": [
+            "adee07156b5dd3e2",
+            "411ce195949a5df8"
+          ],
+          "coverage_changes": [
+            {
+              "venue": "hyperliquid",
+              "from": "missing_from_pool",
+              "to": "covered",
+              "previous_assessment_wrong": false
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "cv-0052": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T21:58:53Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "24234d84a1dac409",
+        "51bb38ac8e08b940",
+        "c8c093383f5eab22",
+        "d1175f63bc486de1",
+        "a6529e063d99cb87",
+        "028dbe8b3eb9289d",
+        "411ce195949a5df8",
+        "943fc861117d29e4",
+        "b5dcf8d7cf5b0610",
+        "b3ff952be7f79e83",
+        "3336838b6d2226a9",
+        "a2012b76e74a6842",
+        "606bfc2c22e69c4e",
+        "6df9433197929887",
+        "84973d31c0767d8f",
+        "6ccf702400ef09ad",
+        "764a5519a57516f5",
+        "1c5a7f902fb27a07",
+        "702891b16e5cf017",
+        "073d46adb307b919",
+        "f772c48dfe4c503c",
+        "f71056f7d283c394",
+        "c891953628d0cd4f",
+        "a73aa35435d5605a",
+        "f9fc0016fa1de7f2"
+      ],
+      "relevant": [
+        "51bb38ac8e08b940",
+        "943fc861117d29e4"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T22:50:07Z",
+          "derived": true,
+          "rule": "covered: a gold chunk is from the venue; missing_from_pool: the recorded round-1 pool holds no candidate from the venue",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "51bb38ac8e08b940",
+            "943fc861117d29e4"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "51bb38ac8e08b940",
+            "943fc861117d29e4"
+          ],
+          "venue_coverage": {
+            "dydx": "covered",
+            "hyperliquid": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "dydx": "covered",
+        "hyperliquid": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:50:48Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "c6de2c2268036f2c",
+            "b550e3936bb17e54",
+            "0cf5ed476fc47c9b",
+            "c608577e594e6b6e",
+            "47ab13702ea8353b",
+            "d0ad1ba273020bfd",
+            "6df59c30ad8b6bb9",
+            "5755ea1444b408c1",
+            "c1206922eb3fb864",
+            "cde7ff9b83378682"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0053": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T21:59:29Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "4f95826a28c3805e",
+        "608898aa04e65672",
+        "b3ff952be7f79e83",
+        "812056c86bef060f",
+        "c608577e594e6b6e",
+        "60da23574f1fd943",
+        "6ccf702400ef09ad",
+        "b5dcf8d7cf5b0610",
+        "6eaa485a150c1376",
+        "67456433876ae03f",
+        "5476b4e037c79835",
+        "596645af7a6c5d9a",
+        "e51e349be9e467f2",
+        "9dfd49406e2465dd",
+        "c38a01ccd87772f3",
+        "b575e113c638aba7",
+        "6716525f2d577bb4",
+        "1adb28c14be21c56",
+        "d1175f63bc486de1",
+        "84973d31c0767d8f",
+        "c891953628d0cd4f",
+        "f772c48dfe4c503c",
+        "cde7ff9b83378682",
+        "7ef955628579da5e",
+        "bf2fb994b7cae832"
+      ],
+      "relevant": [
+        "5476b4e037c79835",
+        "1adb28c14be21c56"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T22:50:07Z",
+          "derived": true,
+          "rule": "covered: a gold chunk is from the venue; missing_from_pool: the recorded round-1 pool holds no candidate from the venue",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "5476b4e037c79835",
+            "1adb28c14be21c56"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "5476b4e037c79835",
+            "1adb28c14be21c56"
+          ],
+          "venue_coverage": {
+            "dydx": "covered",
+            "hyperliquid": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "dydx": "covered",
+        "hyperliquid": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:50:58Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "2a6aae3733844aa4",
+            "899ea105b353e83c",
+            "d0ad1ba273020bfd",
+            "c3509cd6dc7fa43e",
+            "817919caf2388132",
+            "e26df725eb40ba22",
+            "dd4f2dcd1777fb7b",
+            "5fcdcee6f8045064",
+            "b550e3936bb17e54",
+            "5755ea1444b408c1"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0054": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:00:09Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "a7b0f3a1c06eb9a2",
+        "39f8fc2e97399b7f",
+        "aef6dd51c2526661",
+        "382e6822330f1ffe",
+        "0921143740c562b3",
+        "44304b0e480a866d",
+        "28515268c87b1a53",
+        "b5568177ee827392",
+        "fb2ebb2af45c9c48",
+        "86deffd659b7cc0e",
+        "e183859cab350362",
+        "00d799fd7df2ad19",
+        "75e8a33270bca899",
+        "25e1c607497bdaf0",
+        "f3878adde0a5cc99",
+        "e2d0d765a8680975",
+        "db6648980c568d95",
+        "ed3790108f67c813",
+        "2633b7f52fdbe7ae",
+        "6ffdd6d59d52b5eb",
+        "011d200bb2540c73",
+        "841800951b813820",
+        "8c1416cf6f04b9c0",
+        "e7c3aa3a10375fa1",
+        "27a498c45e1b0cc6"
+      ],
+      "relevant": [
+        "b5568177ee827392",
+        "f3878adde0a5cc99"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T22:50:07Z",
+          "derived": true,
+          "rule": "covered: a gold chunk is from the venue; missing_from_pool: the recorded round-1 pool holds no candidate from the venue",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "b5568177ee827392",
+            "f3878adde0a5cc99"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "b5568177ee827392",
+            "f3878adde0a5cc99"
+          ],
+          "venue_coverage": {
+            "binance": "covered",
+            "bybit": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "binance": "covered",
+        "bybit": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:51:12Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "91e2bc6c9110a5e6",
+            "f84b2da85154cf89",
+            "785c60a388de7222",
+            "7cf003ff3a8bcb7e",
+            "1d0d0e34c68d166d",
+            "51bf68afd2e76010",
+            "f8752275e41e94d3",
+            "44209603aa1061c9",
+            "d62a2bd8d404dc6e",
+            "088f9f76272778df",
+            "35670683fab9e667",
+            "f29f43bf72cc96f5"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0055": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:00:47Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "dbcc414946a41cf3",
+        "f3878adde0a5cc99",
+        "bc6b8adad2624928",
+        "94d380dcf17a942e",
+        "43d14513b3621a7a",
+        "a72267932994e969",
+        "e67a29fd8a721871",
+        "9acb66c1c6e2e4d2",
+        "4eeda603f2a09388",
+        "b09039cba8518e1f",
+        "bbdd6c592acd0d2e",
+        "864e1a8bad1fce58",
+        "eb33e78300a86115",
+        "08d694c731837bb0",
+        "ad6167f4a30342ce",
+        "15d5455e874a57ef",
+        "dadd27c455a825f3",
+        "4e53707a5d0e27fa",
+        "5ef02625214ee080",
+        "cbdec05a6568fe19",
+        "cf85154baee17f03",
+        "7bcaa043760e1e32",
+        "6f9fbae0263ef3a7",
+        "fdee7aedc64dc14b",
+        "6c7f66ba333dc863"
+      ],
+      "relevant": [
+        "f3878adde0a5cc99",
+        "cbdec05a6568fe19"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T22:50:07Z",
+          "derived": true,
+          "rule": "covered: a gold chunk is from the venue; missing_from_pool: the recorded round-1 pool holds no candidate from the venue",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "f3878adde0a5cc99",
+            "cbdec05a6568fe19"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "f3878adde0a5cc99",
+            "cbdec05a6568fe19"
+          ],
+          "venue_coverage": {
+            "bybit": "covered",
+            "bingx": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "bybit": "covered",
+        "bingx": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:51:23Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "8316aa0e8a96a837",
+            "39f8fc2e97399b7f",
+            "556e0d0675f24bed",
+            "5a60a722521928f5",
+            "500dcde9d81623e2",
+            "6326b23949c51f8d",
+            "e73d9ded9941d3b1",
+            "a9932f461710b0d6",
+            "2710f325ffcfdbb3",
+            "c28c9b63eddbf6ad",
+            "22d0b151455b4782",
+            "960805df4cc60bfd",
+            "89b5beed2f19754b",
+            "8e2bb0cdb21b9bd3"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0056": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:01:36Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "d1175f63bc486de1",
+        "5fe32e832cbfd7d9",
+        "183d111cd7537a7c",
+        "f9fc0016fa1de7f2",
+        "411ce195949a5df8",
+        "6ccf702400ef09ad",
+        "b18cdb4953c59d1c",
+        "7c4f5eadcf017845",
+        "e3b3fd2975ae7119",
+        "b5dcf8d7cf5b0610",
+        "2c66b133bc1cca98",
+        "88df1b3b1e5c6052",
+        "f772c48dfe4c503c",
+        "8a3c4e717d9f8af9",
+        "87812a5f41dc51ff",
+        "9bcf4b564b87b087",
+        "f593702a107329b4",
+        "b3ff952be7f79e83",
+        "db7a2deea1a81f18",
+        "028dbe8b3eb9289d",
+        "bccf8efc6d05e029",
+        "24299d605a184600",
+        "073d46adb307b919",
+        "24234d84a1dac409",
+        "6df59c30ad8b6bb9"
+      ],
+      "relevant": [
+        "9bcf4b564b87b087",
+        "affa1e619cc03b38"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T23:05:46Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "9bcf4b564b87b087"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "9bcf4b564b87b087"
+          ],
+          "venue_coverage": {
+            "hyperliquid": "covered",
+            "binance": "missing_from_pool"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "hyperliquid": "covered",
+        "binance": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:52:21Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "fd158d1d4dfa8662",
+            "44209603aa1061c9",
+            "f6f998db3909944c",
+            "91e2bc6c9110a5e6",
+            "5306a63f1716511f",
+            "3bdc24e6fb608829",
+            "b5568177ee827392",
+            "d79af0fcaef44b49",
+            "ecb7b644f8ef6f9a",
+            "b2b1879f04eb1753",
+            "c930f26b06d9d3ec",
+            "affa1e619cc03b38"
+          ],
+          "relevant": [
+            "affa1e619cc03b38"
+          ],
+          "coverage_changes": [
+            {
+              "venue": "binance",
+              "from": "missing_from_pool",
+              "to": "covered",
+              "previous_assessment_wrong": false
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "cv-0057": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:02:12Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "86c319bd316fb40c",
+        "3ecc3ab56ece9eeb",
+        "7a82f6b6a0640704",
+        "86b446fc190f521b",
+        "c728060e1dc98275",
+        "4f989bbb3bb95910",
+        "3a6e090339f295a4",
+        "e42c464e93ac007b",
+        "f11fbf63b29ba6a5",
+        "8fd060f1852a4b6a",
+        "e11dd55a252c4be8",
+        "90ebc934d9b280d5",
+        "66d4728f3cc0c373",
+        "f17b56484d0fd639",
+        "0690355726801205",
+        "a1b65d965f359993",
+        "9e52c0a4ed34f7db",
+        "647603b642985f8a",
+        "34c96e54bb693a4f",
+        "f7af3628e43eba62",
+        "589d0b7abe1d0e7e",
+        "b57cf16ea1eba1fe",
+        "8bd5935359ef9338",
+        "5b06bda952f4e1dc",
+        "700856279195e41f"
+      ],
+      "relevant": [
+        "86b446fc190f521b",
+        "c728060e1dc98275",
+        "e690bdcc297b12a2"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T23:06:21Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "86b446fc190f521b",
+            "c728060e1dc98275"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "86b446fc190f521b",
+            "c728060e1dc98275"
+          ],
+          "venue_coverage": {
+            "binance": "covered",
+            "bybit": "missing_from_pool"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "binance": "covered",
+        "bybit": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:52:45Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "c71ffb202050ff70",
+            "1b5e9fee03d569d1",
+            "a4b4937ea13bd21a",
+            "7e23f0121dc85aba",
+            "3e1d25fac68ee166",
+            "023b60fa07584cae",
+            "0a548b6c0ebe70ae",
+            "b07601d2383ca65c",
+            "64322e99df290a60",
+            "f34615022b70c5c5",
+            "edda69554abb2248",
+            "23e33b56d475d25a",
+            "c17ae801b7f7b9d6",
+            "0f2c8547144d08a3",
+            "d83157df2237c4df",
+            "e690bdcc297b12a2",
+            "9bf61a69a3c1b5a2",
+            "9acb66c1c6e2e4d2"
+          ],
+          "relevant": [
+            "e690bdcc297b12a2"
+          ],
+          "coverage_changes": [
+            {
+              "venue": "bybit",
+              "from": "missing_from_pool",
+              "to": "covered",
+              "previous_assessment_wrong": false
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "cv-0058": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:02:50Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "935325ec8dc0d0d3",
+        "e69843ec4b495494",
+        "dabb65280de57016",
+        "2138bb4db90d4ec1",
+        "3020481cb73b0be1",
+        "07d2c2ca3d129417",
+        "bc8e70e01990263c",
+        "5c5147a685114e7f",
+        "887df7bd4e217d11",
+        "cf32a3fb30ddf2e6",
+        "1998e92b49fe20e3",
+        "4eeda603f2a09388",
+        "f9f60f7e969a58f8",
+        "25e1c607497bdaf0",
+        "d8560d7059feb9fb",
+        "6b541a7b0efc8075",
+        "bc906ab95b680b76",
+        "7e0481a324a911d4",
+        "b9e37f8b386d69f1",
+        "6546e416a3e3211e",
+        "0f2c8547144d08a3",
+        "7c329f603ce2ecf8",
+        "b7ce61ba7e60628d",
+        "96e1b8fb37f036eb",
+        "5871608493fcbe1f"
+      ],
+      "relevant": [
+        "dabb65280de57016",
+        "5c5147a685114e7f",
+        "887df7bd4e217d11",
+        "0f2c8547144d08a3",
+        "b7ce61ba7e60628d",
+        "5871608493fcbe1f"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T22:50:07Z",
+          "derived": true,
+          "rule": "covered: a gold chunk is from the venue; missing_from_pool: the recorded round-1 pool holds no candidate from the venue",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "dabb65280de57016",
+            "5c5147a685114e7f",
+            "887df7bd4e217d11",
+            "0f2c8547144d08a3",
+            "b7ce61ba7e60628d",
+            "5871608493fcbe1f"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "dabb65280de57016",
+            "5c5147a685114e7f",
+            "887df7bd4e217d11",
+            "0f2c8547144d08a3",
+            "b7ce61ba7e60628d",
+            "5871608493fcbe1f"
+          ],
+          "venue_coverage": {
+            "bybit": "covered",
+            "bingx": "missing_from_pool"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "bybit": "covered",
+        "bingx": "missing_from_pool"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:53:13Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "500dcde9d81623e2",
+            "a1b94b8aaf0b8fa9",
+            "50c484f11207732f",
+            "d75eb508f1b5b51a",
+            "ad6167f4a30342ce",
+            "3dca35691f265de7",
+            "5e6535a5a258e98e",
+            "dbcc414946a41cf3",
+            "69eb80e605d4fb08",
+            "724cf40f7ab5ed43",
+            "823a56d6b4a40192",
+            "42ccfdcd05b3a575",
+            "670210bb072c0aa9",
+            "7b2bee40a02df4ad"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0059": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:03:32Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "185f079396a3b594",
+        "088f9f76272778df",
+        "42c153e84f9ea7d7",
+        "b2b1879f04eb1753",
+        "7ab52e6050ed8294",
+        "21538818b884fabe",
+        "cc3448f44fbd64ae",
+        "e2e37c1d8e13da12",
+        "cba11b85b2e811ac",
+        "7cf003ff3a8bcb7e",
+        "f84b2da85154cf89",
+        "a751f0cd0d63d47a",
+        "55996c9000de7f1f",
+        "4bc48c86a88b42b8",
+        "5306a63f1716511f",
+        "e1153090179911c8",
+        "6b1430d5b8363184",
+        "d06965216ba3a5d2",
+        "3290240681e0ed87",
+        "fce80c7ad09658c4",
+        "193b8cd6d2d0aee0",
+        "3bdc24e6fb608829",
+        "54b065200e70e533",
+        "bebd46f6e900ae43",
+        "cac9fcb061b240f1"
+      ],
+      "relevant": [
+        "185f079396a3b594",
+        "088f9f76272778df",
+        "42c153e84f9ea7d7",
+        "7ab52e6050ed8294",
+        "7cf003ff3a8bcb7e",
+        "f84b2da85154cf89",
+        "a751f0cd0d63d47a",
+        "55996c9000de7f1f",
+        "3bdc24e6fb608829",
+        "6a5dd3c09bdffadd"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T22:50:07Z",
+          "derived": true,
+          "rule": "covered: a gold chunk is from the venue; missing_from_pool: the recorded round-1 pool holds no candidate from the venue",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "185f079396a3b594",
+            "088f9f76272778df",
+            "42c153e84f9ea7d7",
+            "7ab52e6050ed8294",
+            "7cf003ff3a8bcb7e",
+            "f84b2da85154cf89",
+            "a751f0cd0d63d47a",
+            "55996c9000de7f1f",
+            "3bdc24e6fb608829"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "185f079396a3b594",
+            "088f9f76272778df",
+            "42c153e84f9ea7d7",
+            "7ab52e6050ed8294",
+            "7cf003ff3a8bcb7e",
+            "f84b2da85154cf89",
+            "a751f0cd0d63d47a",
+            "55996c9000de7f1f",
+            "3bdc24e6fb608829"
+          ],
+          "venue_coverage": {
+            "binance": "covered",
+            "bybit": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "binance": "covered",
+        "bybit": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:53:36Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "44f10772ae6ce105",
+            "6a5dd3c09bdffadd",
+            "95175d8b1ad60441",
+            "894b16c922fce97f",
+            "0679475df00e4844",
+            "86f4d3e67f0d12ed",
+            "7cb924ec142c553d",
+            "f7f203972c5aaf5b",
+            "28d3e745a8fef6af",
+            "e9899e17626a6c76",
+            "9d6fd4242b03f9a6",
+            "ea02eec53f6a19ae",
+            "d86d8851dd42b178",
+            "f843309b4e0d1e5f"
+          ],
+          "relevant": [
+            "6a5dd3c09bdffadd"
+          ],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0060": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:04:13Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "a9932f461710b0d6",
+        "42ccfdcd05b3a575",
+        "ecb7b644f8ef6f9a",
+        "ba0937c65d921115",
+        "c28c9b63eddbf6ad",
+        "52a4c1b0d7f46c59",
+        "b2b1879f04eb1753",
+        "d46ff38f197607a8",
+        "4fe832b090d38c63",
+        "587ac5d2f75d478e",
+        "3fb51b1e49d7d6bc",
+        "1f4db897d218ab7e",
+        "bc8e70e01990263c",
+        "69f44e6cc370d65a",
+        "385ff4e415413b3a",
+        "07d2c2ca3d129417",
+        "d27f62cdc0081f12",
+        "eb33e78300a86115",
+        "1a13f3850852b739",
+        "21538818b884fabe",
+        "8415b7ae6017e5f9",
+        "460c8233bbb14ee4",
+        "98e8867863073db9",
+        "d75eb508f1b5b51a",
+        "883b9d55cb504498"
+      ],
+      "relevant": [
+        "a9932f461710b0d6",
+        "c28c9b63eddbf6ad",
+        "b2b1879f04eb1753",
+        "d46ff38f197607a8",
+        "21538818b884fabe",
+        "8415b7ae6017e5f9"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T22:50:07Z",
+          "derived": true,
+          "rule": "covered: a gold chunk is from the venue; missing_from_pool: the recorded round-1 pool holds no candidate from the venue",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "a9932f461710b0d6",
+            "c28c9b63eddbf6ad",
+            "b2b1879f04eb1753",
+            "d46ff38f197607a8",
+            "21538818b884fabe",
+            "8415b7ae6017e5f9"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "a9932f461710b0d6",
+            "c28c9b63eddbf6ad",
+            "b2b1879f04eb1753",
+            "d46ff38f197607a8",
+            "21538818b884fabe",
+            "8415b7ae6017e5f9"
+          ],
+          "venue_coverage": {
+            "binance": "covered",
+            "bingx": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "binance": "covered",
+        "bingx": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:53:53Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "7ab52e6050ed8294",
+            "28d3e745a8fef6af",
+            "8316aa0e8a96a837",
+            "d86d8851dd42b178",
+            "cc3448f44fbd64ae",
+            "050be6c4d80ca4d9",
+            "de9c21f00be77787",
+            "58929420f512f88f",
+            "b66bf393e2ac148e",
+            "264bbf6dee3381e4",
+            "e2e37c1d8e13da12",
+            "06a6e10457612a4d",
+            "cba11b85b2e811ac"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0061": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:04:55Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "44f4cf125e07b436",
+        "468043410cc0c27e",
+        "f20f4f04968c7233",
+        "6421d8427fd40eb9",
+        "2763c12d46e6d6b1",
+        "db055d14395281aa",
+        "581fa2ea77f4104b",
+        "6ccf702400ef09ad",
+        "8af42d40f8ecc202",
+        "c14a820295788bfd",
+        "c4ceff5514253837",
+        "9b8276a90b8fc5bd",
+        "5ddd2987739032c3",
+        "174337f4633cd769",
+        "243e6d70ffb0ce18",
+        "c9623862eafdd1eb",
+        "e74c6fd63adebac7",
+        "943519877c1134cb",
+        "4ec49368769bd62f",
+        "b5dcf8d7cf5b0610",
+        "156462c0073b118a",
+        "600c7299771712c5",
+        "0c8e0886719f2344",
+        "980cc39c72d81e0a",
+        "12e5b7cc1d275a16"
+      ],
+      "relevant": [
+        "44f4cf125e07b436",
+        "468043410cc0c27e",
+        "f20f4f04968c7233"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T22:50:07Z",
+          "derived": true,
+          "rule": "covered: a gold chunk is from the venue; missing_from_pool: the recorded round-1 pool holds no candidate from the venue",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "44f4cf125e07b436",
+            "468043410cc0c27e",
+            "f20f4f04968c7233"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "44f4cf125e07b436",
+            "468043410cc0c27e",
+            "f20f4f04968c7233"
+          ],
+          "venue_coverage": {
+            "bybit": "covered",
+            "hyperliquid": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "bybit": "covered",
+        "hyperliquid": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:54:04Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "979a6f8a0fea5570",
+            "7cf5b016c9910ec6",
+            "b35b09c7bb847a02",
+            "137f23e3f1887126",
+            "fa210600c0846c27",
+            "6f45fe6a11ce7531",
+            "e5ccec630b9a5efd",
+            "5306a63f1716511f",
+            "847ff1e94c580249",
+            "2c8a53c020ef9ab6",
+            "7a2890e4a172c100"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0062": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:05:36Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "06430f8c38844e19",
+        "f772c48dfe4c503c",
+        "6a9addb995a205ad",
+        "b5dcf8d7cf5b0610",
+        "8267549cc2daed52",
+        "c37337f709ebad48",
+        "5a130fdebeb6d998",
+        "d37e22842f7b7b2c",
+        "097306afd50bbb41",
+        "88df1b3b1e5c6052",
+        "183d111cd7537a7c",
+        "411ce195949a5df8",
+        "84973d31c0767d8f",
+        "f9fc0016fa1de7f2",
+        "e5d0b05196481383",
+        "686177000bf0917b",
+        "d1175f63bc486de1",
+        "894b16c922fce97f",
+        "b3ff952be7f79e83",
+        "74e92a0c7d2a8be9",
+        "6df59c30ad8b6bb9",
+        "a9b53f1c2cfe1ac1",
+        "b18cdb4953c59d1c",
+        "3b8dfbe4721cfb7f",
+        "980500dc01622011"
+      ],
+      "relevant": [
+        "5a130fdebeb6d998",
+        "097306afd50bbb41"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T23:08:21Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "5a130fdebeb6d998",
+            "097306afd50bbb41"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "5a130fdebeb6d998",
+            "097306afd50bbb41"
+          ],
+          "venue_coverage": {
+            "hyperliquid": "covered",
+            "bybit": "missing_from_pool"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "hyperliquid": "covered",
+        "bybit": "missing_from_pool"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:54:27Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "785dc4554ab8b02a",
+            "0c786b8e2174ca32",
+            "a80c2520591af6e9",
+            "6971876cc33cc7b4",
+            "83aab6fd27e28887",
+            "d7382be849533547",
+            "030e5f6cf74b6a63",
+            "4888022ed4405efa",
+            "7d7d88e110ea0648",
+            "9ae1dc95e8a3cf1d",
+            "382e6822330f1ffe",
+            "f8d570087aa76c0c",
+            "1b5e9fee03d569d1"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0063": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:06:12Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "0dc92c8e0db371dc",
+        "684b4fbf5aa8cd59",
+        "ae9725ee605c567b",
+        "8b97648a0c0cd240",
+        "f0dab458e805567f",
+        "9fa150a91d06db0c",
+        "5d5a715c89b9e3c4",
+        "a27b0db1e281f53c",
+        "23d5e6a5d00e3459",
+        "a03c4289dcce694e",
+        "8502ea4b5ed7971e",
+        "4ea88c73a6ff1f6a",
+        "bfa78f6cdaf4a836",
+        "b57cf16ea1eba1fe",
+        "c94d659e095ad247",
+        "2c4bb1327144b6f5",
+        "7e23f0121dc85aba",
+        "fdd82911e074bdf4",
+        "2cd9cd5322506ce6",
+        "7d479867e074803c",
+        "55f8610a74d5ccc3",
+        "f7af3628e43eba62",
+        "67bd990e3c8ceb7f",
+        "86c319bd316fb40c",
+        "ed43d55a04476d19"
+      ],
+      "relevant": [
+        "0dc92c8e0db371dc"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T23:08:43Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "0dc92c8e0db371dc",
+            "4ea88c73a6ff1f6a"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "0dc92c8e0db371dc"
+          ],
+          "venue_coverage": {
+            "binance": "covered",
+            "bybit": "missing_from_pool"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "binance": "covered",
+        "bybit": "missing_from_pool"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:54:38Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "22deada8e97de01b",
+            "0c786b8e2174ca32",
+            "2b603cc2dbc440b5",
+            "d128815d695838e6",
+            "73500e68b87a2359",
+            "4daab1d25905e4c4",
+            "29706f7a37bc79f7"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0064": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:06:41Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "7e91df01527fc1ff",
+        "3868b43c6ffc220c",
+        "32bc9feb92d05c75",
+        "7da6f0ce8e4552ed",
+        "1e8f18d30a218b5a",
+        "558cbd45db7fcc1b",
+        "76ae1dca5ae0a1b6",
+        "158367e4175c25e1",
+        "9fcbdd3b1f693b96",
+        "962470b14bb24bd4",
+        "2d423b589704f59a",
+        "ee541d454ed7707a",
+        "7467eab0ff2f106d",
+        "26063ca2722e2d93",
+        "8e5d035c3e15629c",
+        "4d366c890c0252b8",
+        "032eafb523d75877",
+        "b0da9cbefe10240d",
+        "123c11f40e1df4bc",
+        "add69c0c47e6be0f",
+        "4d765962226f50c5",
+        "dab23ec5453784f7",
+        "b4fe68d56f7d2374",
+        "d9b95996888f4286",
+        "0caa0683ee647d73"
+      ],
+      "relevant": [
+        "9fcbdd3b1f693b96"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T23:08:58Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "9fcbdd3b1f693b96"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "9fcbdd3b1f693b96"
+          ],
+          "venue_coverage": {
+            "uniswap": "missing_from_pool",
+            "pancakeswap": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "uniswap": "missing_from_pool",
+        "pancakeswap": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:54:48Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "cad1846c00568b2f",
+            "eb8410f17bf7519f",
+            "dee6b7fabe2997ad",
+            "f087d7f8290b46fa",
+            "f2cd51166ffca6f9",
+            "565cdbd8b3cd8f2d",
+            "52e98500b53c64de",
+            "7e2b76bce718a897",
+            "3498810408150cd2",
+            "68e627726165aa4b",
+            "be4ac42f9d0ac40d",
+            "64cb3b3c12b39528"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0065": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:07:23Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "34701be12aac73c2",
+        "35553ad5ad46a887",
+        "2b944dc9a14be97a",
+        "b01c9636ddf6029d",
+        "7239c230f49b258a",
+        "406b90eb0c096e2a",
+        "9b6adbeba6c0e6d8",
+        "7cb3929e3e74b88e",
+        "42ccfdcd05b3a575",
+        "07d2c2ca3d129417",
+        "ecb0cbcd77fbbef9",
+        "8ef4086c5565a24f",
+        "eb5d5111ae5aa6f1",
+        "4950f759dd1aaf22",
+        "dbcc414946a41cf3",
+        "24718ce5b2dafe7e",
+        "8c8ba80d83304c27",
+        "56402da932494bd6",
+        "5b9a5c1dbbae88dc",
+        "724cf40f7ab5ed43",
+        "25dceb2165c28861",
+        "32dd770c5e4e65eb",
+        "e69843ec4b495494",
+        "ae25d73a223d3d58",
+        "a86efd3e7574e12d"
+      ],
+      "relevant": [
+        "35553ad5ad46a887",
+        "42ccfdcd05b3a575",
+        "724cf40f7ab5ed43"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T22:50:07Z",
+          "derived": true,
+          "rule": "covered: a gold chunk is from the venue; missing_from_pool: the recorded round-1 pool holds no candidate from the venue",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "35553ad5ad46a887",
+            "42ccfdcd05b3a575",
+            "724cf40f7ab5ed43"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "35553ad5ad46a887",
+            "42ccfdcd05b3a575",
+            "724cf40f7ab5ed43"
+          ],
+          "venue_coverage": {
+            "ccxt": "covered",
+            "bingx": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "ccxt": "covered",
+        "bingx": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:54:57Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "d34c6dcdd7ab8849",
+            "83d52811e8535390",
+            "15b967250c214a07",
+            "8e2bb0cdb21b9bd3",
+            "05955c15a78f287d",
+            "a9932f461710b0d6",
+            "e1e58940913becc5"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0066": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:08:06Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "b23c70672c27c692",
+        "e73d9ded9941d3b1",
+        "0690355726801205",
+        "bc11f0be827f9c4d",
+        "392a23d77d107884",
+        "589d0b7abe1d0e7e",
+        "e1ddaeab178deab4",
+        "647603b642985f8a",
+        "be4b52cee805a3af",
+        "e69843ec4b495494",
+        "1707e675ce750b38",
+        "7b7f69c466af17f9",
+        "7f5f14e55e8b1fe6",
+        "b38929dc7db27a1a",
+        "db7e2d216602b85b",
+        "5b06bda952f4e1dc",
+        "241bd01e2c4badf6",
+        "482d997ed7ae8e0c",
+        "617294be3a2715c1",
+        "20ccb2453b63142a",
+        "7a82f6b6a0640704",
+        "8009c3406c5bc3be",
+        "0921143740c562b3",
+        "34c96e54bb693a4f",
+        "dee3cf03b40e7c1b"
+      ],
+      "relevant": [
+        "e73d9ded9941d3b1",
+        "f3878adde0a5cc99"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T23:09:14Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "e73d9ded9941d3b1"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "e73d9ded9941d3b1"
+          ],
+          "venue_coverage": {
+            "ccxt": "missing_from_pool",
+            "bybit": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "ccxt": "missing_from_pool",
+        "bybit": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:55:08Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "39f8fc2e97399b7f",
+            "5ffba5848dd8fd6d",
+            "a7b0f3a1c06eb9a2",
+            "7f3755b9244cc5d1",
+            "f3878adde0a5cc99",
+            "4d2c3ee78c8540d1",
+            "556e0d0675f24bed",
+            "43ac749f88ba1f28",
+            "864e1a8bad1fce58",
+            "a25794143452dee1",
+            "0068741d9d0d2bad"
+          ],
+          "relevant": [
+            "f3878adde0a5cc99"
+          ],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0067": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:08:21Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "2a2d0ada27e51781",
+        "b57cf16ea1eba1fe",
+        "a2fa815af77cbb35",
+        "7c9ee7e8421009bb",
+        "cc377f98dcf85252",
+        "5311c230ced41dbd",
+        "f385a5f09432b074",
+        "0c786b8e2174ca32",
+        "67bd990e3c8ceb7f",
+        "6f4b2e3cdfd87e36",
+        "3daceb8fb610bedc",
+        "05d64a3c9036b9dc",
+        "abf673b5edb83fe2",
+        "9560cf0beb8aa978",
+        "79a403c6d9bc25a9",
+        "32eda422403a508d",
+        "355b97ff9f9d37c0",
+        "7e23f0121dc85aba",
+        "174337f4633cd769",
+        "55f8610a74d5ccc3",
+        "6617adcb6b59f1b5",
+        "c7e5004f0f93a1e2",
+        "6131b66ff28896a4",
+        "023b60fa07584cae",
+        "b0f7ffa6694027b9"
+      ],
+      "relevant": []
+    }
+  },
+  "cv-0068": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:08:35Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "3df5f9b56583a36e",
+        "675b6deb2e72093a",
+        "f824483d09ac5cd1",
+        "67c73f9804403637",
+        "c59ccfd973c095b7",
+        "8d2d9a565f083bfa",
+        "ffb0bbe31af1de8b",
+        "b131c74892437f01",
+        "894b16c922fce97f",
+        "2561fb7af23c55ca",
+        "af111b7385ab1baa",
+        "52a257cc92147df6",
+        "d01e799b2b398b88",
+        "166bd1e333dce201",
+        "21eaf77cda7a27e5",
+        "6ae4160a5e89a4e7",
+        "e9a0a1c9ba73b8e5",
+        "5004ec38c5d2f1ec",
+        "367409658fa14af0",
+        "6971876cc33cc7b4",
+        "506b571b4d4184be",
+        "5ad337e5b5b78ea5",
+        "23a40af9e9200950",
+        "21d444859bad7c4e",
+        "5ed3e6db44f83aae"
+      ],
+      "relevant": [
+        "3df5f9b56583a36e"
+      ]
+    }
+  },
+  "cv-0069": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:08:51Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "5f3e359fc458d87e",
+        "46949d2fdd9c6f29",
+        "45ea96533ead5db8",
+        "d0f5b2d53bfb7188",
+        "a37b1e10e2f97bbf",
+        "a7e02d71fbd4315d",
+        "5069179c7a7f3728",
+        "67bd990e3c8ceb7f",
+        "1b9e2258439677fc",
+        "51550b266b8d54de",
+        "2c960099917c1a28",
+        "5f0d44ae556339c8",
+        "bdc1471641a52f93",
+        "55fe3ee1c996ede5",
+        "3d895e4b2e51a089",
+        "3f43e205b288cab0",
+        "5d10948cdb4820b0",
+        "7dd3849ac11e467c",
+        "e0e9d4f5a7575d7e",
+        "e42e5a8546f36f0f",
+        "2a2649bd2dd5038d",
+        "fef1614afd44a744",
+        "dc0197b040e80514",
+        "c72b9bc04aef0c7d",
+        "fe724f80f9f66850"
+      ],
+      "relevant": [
+        "5f3e359fc458d87e",
+        "45ea96533ead5db8",
+        "a37b1e10e2f97bbf"
+      ]
+    }
+  },
+  "cv-0070": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:09:06Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "f5a91dec953cab38",
+        "5b7135865149cb85",
+        "3d65e5f8b62a67c0",
+        "be5612700e7fcdfc",
+        "46e72e92399263fe",
+        "11ffa017065279e3",
+        "0bc4081da7ab6758",
+        "4b1e7949d3d90bfe",
+        "eb568d43967d9ff2",
+        "df4f806fdb6156d1",
+        "9d4dc569ca98b63e",
+        "88fefa3913d9b895",
+        "ac99d228cf94ae08",
+        "74e3a2ed8206ec04",
+        "b736213370bc7468",
+        "a159c717683bb93e",
+        "94cf87aab9c41db4",
+        "81819d4d09fe2cbf",
+        "3a6637ef623b8cb1",
+        "6e2e28e5bb9a530c",
+        "90942404105d25ed",
+        "d8ef6367ff724d05",
+        "cd8bcb17078ea2cc",
+        "eaed9e967fa872a6",
+        "81837b9dfe0b743b"
+      ],
+      "relevant": [
+        "f5a91dec953cab38",
+        "3d65e5f8b62a67c0"
+      ]
+    }
+  },
+  "cv-0071": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:09:23Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "42ccfdcd05b3a575",
+        "724cf40f7ab5ed43",
+        "15d5455e874a57ef",
+        "c848e436b638ae92",
+        "eb33e78300a86115",
+        "0bdc717beeceef8d",
+        "fd384e377124ed3e",
+        "a9ed15d0e2912528",
+        "42c38291fe46ed96",
+        "5681daa4302fc5df",
+        "8e2bb0cdb21b9bd3",
+        "998da96cbf86855c",
+        "41b8ee592f72cfe0",
+        "bf51ca30ea8725ce",
+        "fd13580695538899",
+        "de9c21f00be77787",
+        "282a0324bd14f312",
+        "cb6d7170ad7c6516",
+        "453e379a237bd61e",
+        "c28c9b63eddbf6ad",
+        "87f8adf4c1a7f915",
+        "5ee72b7a59b1c69c",
+        "6f296102d5c24729",
+        "28b2264c47608e5c",
+        "7b2bee40a02df4ad"
+      ],
+      "relevant": [
+        "42ccfdcd05b3a575",
+        "724cf40f7ab5ed43",
+        "cb6d7170ad7c6516",
+        "c28c9b63eddbf6ad"
+      ]
+    }
+  },
+  "cv-0081": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:09:39Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "eab060194d24c369",
+        "dbcc414946a41cf3",
+        "de694e9148dfd7f2",
+        "e6ded549d28b58fb",
+        "6ca5040c70dd1231",
+        "153a75b6e2887175",
+        "b90a5e54fcef2a18",
+        "c40d7e96372db35c",
+        "3209e1a3516e3b09",
+        "e5eb08d0076deea3",
+        "49fe689a3bafd0b3",
+        "71752c3eb9118063",
+        "7b3022c2cfcc3bb7",
+        "1ba954a0cfdc84de",
+        "c51e06974426eaec",
+        "58929420f512f88f",
+        "15d5455e874a57ef",
+        "35c88a89eb99b112",
+        "eb33e78300a86115",
+        "42c38291fe46ed96",
+        "67e4237218b3611f",
+        "e2ad0de333811d58",
+        "a991ba77c36671c1",
+        "f1154152250a5231",
+        "d0a53c5376a0e621"
+      ],
+      "relevant": [
+        "e6ded549d28b58fb",
+        "15d5455e874a57ef",
+        "eb33e78300a86115",
+        "42c38291fe46ed96"
+      ]
+    }
+  },
+  "cv-0082": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:09:53Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "6617adcb6b59f1b5",
+        "9372e7af283d5470",
+        "067a219af84d0186",
+        "b15b629dd1b08355",
+        "2b369c6613d48ffa",
+        "cc377f98dcf85252",
+        "e9a0a1c9ba73b8e5",
+        "7efb42d9522017b6",
+        "8593b635f34e1376",
+        "2e6d984825bacc96",
+        "4b715b10b0f0a685",
+        "95a4b84d9d7ed947",
+        "418c52965195c40e",
+        "42b264906b54ad24",
+        "cfc6348be3d0b8d4",
+        "3dccd9cc43b46932",
+        "89e404c49b7d7133",
+        "facffec16b04896c",
+        "ba0e992a8f5969ac",
+        "e6ded549d28b58fb",
+        "97f6da0f52be7936",
+        "543ab2d92471603c",
+        "662e224fbe68a241",
+        "6f11d024b0ae2b3b",
+        "4765428058b177d4"
+      ],
+      "relevant": [
+        "6617adcb6b59f1b5"
+      ]
+    }
+  },
+  "cv-0083": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:10:13Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "33eb6ae076f1007b",
+        "5c9c635aa283b63e",
+        "a94bd97101b3789b",
+        "519f68e75b7b2fb0",
+        "f73a2c1d2d5459ce",
+        "afbd9f15389e95a6",
+        "c676b2dc7900d32a",
+        "3059030fc7b80da3",
+        "f87de8fa1137466b",
+        "79da4d55e4e7ac2d",
+        "9c517f197e767be6",
+        "a10fe76e11c90f25",
+        "02011be23b90ba59",
+        "f2430567e12203e5",
+        "e64ef9cb34e120d8",
+        "e81839347be47258",
+        "bb25d26bed66a927",
+        "31fee7b6bf17914c",
+        "e25377924066d5ed",
+        "7e0d11b2814599cd",
+        "ff2e4003ca86838c",
+        "f7af3628e43eba62",
+        "b02abf5944d66561",
+        "0aefdfb712e1b680",
+        "aec1a013b0b8f205"
+      ],
+      "relevant": [
+        "33eb6ae076f1007b",
+        "a94bd97101b3789b",
+        "519f68e75b7b2fb0",
+        "c676b2dc7900d32a"
+      ]
+    }
+  },
+  "cv-0084": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:10:29Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "97d8565b9ce8c70a",
+        "269320e70141352f",
+        "cd485e5dcc07635d",
+        "e6c72b0fae0beef6",
+        "cd1b0c69e9a89a5a",
+        "dc8b869a11d2ff3a",
+        "0b4fb0357f61e98e",
+        "ac71f96e7a94b936",
+        "e7f8ad318d38c30d",
+        "cd5fc3c4bd33dac4",
+        "ea7acf1d821e8d7f",
+        "8f8ee0bca0fa1b7c",
+        "9b9eb7173241941e",
+        "de2af0af4f674c9d",
+        "14681c32d3192767",
+        "7437d17fb896c37e",
+        "f416e0e969e3f800",
+        "6d9e8bc12e9c4077",
+        "e48975197e34630c",
+        "7ba0b08d40a1a748",
+        "605567da62c37f98",
+        "7b6de1ea9ad572e7",
+        "719ab8ea4b483aaa",
+        "4f72aa2b9f2f0212",
+        "7fb4e55687bf1aea"
+      ],
+      "relevant": [
+        "14681c32d3192767",
+        "6d9e8bc12e9c4077"
+      ]
+    }
+  },
+  "cv-0085": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:10:43Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "823a7aa4e5c26dab",
+        "a81334fa7a5a7931",
+        "a75dc1dd2ce7da52",
+        "d744645ed3c552c7",
+        "4edc5e6015e8a048",
+        "253a79b232a489cc",
+        "c5ceb7bd9e4d577b",
+        "3663f04f973d0422",
+        "99faa437355f1903",
+        "156d37bfd55cf535",
+        "b3fa1daa4bde00bf",
+        "73007c5f7f496059",
+        "1c19b6f1fd3175c2",
+        "7fb4e55687bf1aea",
+        "90a2be87ef99c749",
+        "ff27bc3682ddad72",
+        "da0974c50cb83607",
+        "f963900cb3743343",
+        "0ef9645320196eab",
+        "38a297c454f7b5d8",
+        "573d5ef7d2438680",
+        "258f071f5b91ff7f",
+        "88c375ad25163ca0",
+        "158367e4175c25e1",
+        "3dfce29a6f80d353"
+      ],
+      "relevant": [
+        "a81334fa7a5a7931"
+      ]
+    }
+  },
+  "cv-0086": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:11:01Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "519f68e75b7b2fb0",
+        "1acfac5fd5bdee88",
+        "054f99f8d6fecdc5",
+        "33eb6ae076f1007b",
+        "9a391650c74765ae",
+        "853ffa7fc6925807",
+        "7e98a97a89cb284d",
+        "810f635c44da5b16",
+        "c676b2dc7900d32a",
+        "4df773617474f2a6",
+        "de5c31ee9e8d4c2b",
+        "a94bd97101b3789b",
+        "dbaff1e81d208391",
+        "8c0497ecb19ac496",
+        "4dc0c25fd33c9dac",
+        "4f1c21c5649261ba",
+        "2902fb89f5c8220b",
+        "2766e3da5ff61984",
+        "7ec7e585376f2f34",
+        "1cc3511cf6139225",
+        "6b364b04365fca60",
+        "9c78b4f0de755977",
+        "563bd999a0f64b41",
+        "095124949b7ed5ab",
+        "ac38a8ffc1ae83ab"
+      ],
+      "relevant": [
+        "519f68e75b7b2fb0",
+        "33eb6ae076f1007b",
+        "810f635c44da5b16",
+        "c676b2dc7900d32a",
+        "a94bd97101b3789b"
+      ]
+    }
+  },
+  "cv-0087": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:11:12Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "e3b3fd2975ae7119",
+        "9bcf4b564b87b087",
+        "55affe4e2d7298e7",
+        "81bdd8cddcb63d4b",
+        "5fe32e832cbfd7d9",
+        "a7b0f3a1c06eb9a2",
+        "ab214e9fb6fdf6d8",
+        "151d535e1617b8b7",
+        "6f45fe6a11ce7531",
+        "7a3c28a16e918eaf",
+        "e0ed046af94cbf93",
+        "24299d605a184600",
+        "a9b53f1c2cfe1ac1",
+        "b7bfaaf52ac58c89",
+        "c4ceff5514253837",
+        "b18cdb4953c59d1c",
+        "87812a5f41dc51ff",
+        "f469e2e77150c6c7",
+        "4ca106e2cdca7cb3",
+        "39f8fc2e97399b7f",
+        "e73d9ded9941d3b1",
+        "3d9a68f2edc6772d",
+        "7f3755b9244cc5d1",
+        "86c9a1958d12c165",
+        "93141464fd84abf3"
+      ],
+      "relevant": [
+        "9bcf4b564b87b087"
+      ]
+    }
+  },
+  "cv-0088": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:11:29Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "ef0036db41b91a15",
+        "6f9fbae0263ef3a7",
+        "5ef02625214ee080",
+        "a7b0f3a1c06eb9a2",
+        "cf85154baee17f03",
+        "a72267932994e969",
+        "39f8fc2e97399b7f",
+        "7855e88bb916a52f",
+        "2def14a111f47126",
+        "a9b53f1c2cfe1ac1",
+        "eee9e35b7f9f7b6b",
+        "931da4dffff7add2",
+        "ff512190cb21b601",
+        "28d3e745a8fef6af",
+        "8ed0261c592d62ee",
+        "185f079396a3b594",
+        "d86d8851dd42b178",
+        "19a500fc9f4ddae5",
+        "6d2720f11242fa1d",
+        "31beb4a0668effe4",
+        "6c7f66ba333dc863",
+        "43d14513b3621a7a",
+        "088f9f76272778df",
+        "ed43d55a04476d19",
+        "dadd27c455a825f3"
+      ],
+      "relevant": []
+    }
+  },
+  "cv-0089": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:11:43Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "51bb38ac8e08b940",
+        "179ff82fe758f1ee",
+        "943fc861117d29e4",
+        "cd1b0c69e9a89a5a",
+        "998705bb64a56c68",
+        "a6529e063d99cb87",
+        "deabef655d4c9412",
+        "0b4fb0357f61e98e",
+        "e6c72b0fae0beef6",
+        "e38c04759e2e2126",
+        "624c1daf1b097a09",
+        "9626aa138f0bb93b",
+        "d23dc9f1d50604f7",
+        "dc8b869a11d2ff3a",
+        "e4813f22b571ddea",
+        "b6c5c172b1cd64c2",
+        "c4be04bcef2295f0",
+        "c413054d02fb6f3d",
+        "6ea344d61a70b2f3",
+        "97d8565b9ce8c70a",
+        "c148cbd3736b879d",
+        "0757cc121617ba62",
+        "85c87327f025a5d8",
+        "fd8dd49749c5d7fe",
+        "61ba343cd98fb611"
+      ],
+      "relevant": [
+        "943fc861117d29e4"
+      ]
+    }
+  },
+  "cv-0090": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:11:58Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "b183ece9ba8cc950",
+        "5a7026711c01185e",
+        "562131e8ec29e42f",
+        "a528d301d9aff3ca",
+        "9251b3aa36fd0171",
+        "b8803ca98e1d2d0c",
+        "24234d84a1dac409",
+        "f6f8747bad3a9134",
+        "6d682e568a562fff",
+        "7941804a22a3acc4",
+        "a2012b76e74a6842",
+        "7062bd48edcfd554",
+        "7ac35c91766929d3",
+        "e84d573ec30ca9c4",
+        "4b5c916f0c0ad634",
+        "a2742d197326e04b",
+        "030e5f6cf74b6a63",
+        "468d052abf919911",
+        "05606412259f69d0",
+        "581fa2ea77f4104b",
+        "9d1d4749b882bfc2",
+        "3ab7fd15a8f2afd8",
+        "c14a820295788bfd",
+        "e1e84d9b99b2562a",
+        "51bb38ac8e08b940"
+      ],
+      "relevant": []
+    }
+  },
+  "cv-0091": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:12:18Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "b15b629dd1b08355",
+        "2b369c6613d48ffa",
+        "684b4fbf5aa8cd59",
+        "08a21697bcec76ff",
+        "b565aa2c82b77964",
+        "04170f186da297a8",
+        "067a219af84d0186",
+        "5c869ec6c307ed3c",
+        "9372e7af283d5470",
+        "de0f809703fb5240",
+        "6d2720f11242fa1d",
+        "e22dc951bca08362",
+        "31beb4a0668effe4",
+        "1d56e8a2fc5ed924",
+        "3e636d8bd17079a7",
+        "2bf2782579f0653c",
+        "c6f7d000f14bef97",
+        "d06965216ba3a5d2",
+        "6617adcb6b59f1b5",
+        "72619445848285b0",
+        "0b896cc122e7502e",
+        "124b0a8125f13427",
+        "ce6f451fe628febb",
+        "d1b10a509b48651c",
+        "8ed0261c592d62ee"
+      ],
+      "relevant": [
+        "067a219af84d0186",
+        "9372e7af283d5470"
+      ]
+    }
+  },
+  "cv-0092": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:12:34Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "d0f5b2d53bfb7188",
+        "5f3e359fc458d87e",
+        "46949d2fdd9c6f29",
+        "88df1b3b1e5c6052",
+        "5fe32e832cbfd7d9",
+        "e3b3fd2975ae7119",
+        "00a7c9d886e7be37",
+        "87812a5f41dc51ff",
+        "fd2f657d65353fe6",
+        "b18cdb4953c59d1c",
+        "073d46adb307b919",
+        "7a3c28a16e918eaf",
+        "a37b1e10e2f97bbf",
+        "5c6af81f0d137eb4",
+        "d4083a436d6ff34c",
+        "598ba3eb02b93d6a",
+        "3b2904b44c5f63c8",
+        "b14ae0c2a4281eb7",
+        "fc9be05664ed637e",
+        "9290e4839560d703",
+        "97c5df72c4e86854",
+        "b297a022993ed02b",
+        "124e9107408d0622",
+        "998705bb64a56c68",
+        "6ccf702400ef09ad"
+      ],
+      "relevant": [
+        "d0f5b2d53bfb7188",
+        "5f3e359fc458d87e",
+        "a37b1e10e2f97bbf"
+      ]
+    }
+  },
+  "cv-0093": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:12:49Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "d6406a00265baefb",
+        "9228109adbc73c27",
+        "c5792ff2f6937047",
+        "b996c649431a4211",
+        "981a5a0309661340",
+        "ba58fed722f53d05",
+        "de0f809703fb5240",
+        "3e636d8bd17079a7",
+        "00d799fd7df2ad19",
+        "e6683ba4c189e0a6",
+        "128faf5f8a2adac6",
+        "8ed0261c592d62ee",
+        "b565aa2c82b77964",
+        "2bf2782579f0653c",
+        "57595477c4abd5dd",
+        "f13bb9bf53c3aa20",
+        "4748dfe1cdefc5ba",
+        "08a21697bcec76ff",
+        "bfbbba5740ab4a93",
+        "1471dca0053a4b87",
+        "d0083abb00906b9c",
+        "04170f186da297a8",
+        "8c53bb77fabbbf35",
+        "ce6f451fe628febb",
+        "a6eb9194ea4c9367"
+      ],
+      "relevant": [
+        "d6406a00265baefb",
+        "ba58fed722f53d05",
+        "4748dfe1cdefc5ba",
+        "bfbbba5740ab4a93"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T23:13:52Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "d6406a00265baefb",
+            "ba58fed722f53d05",
+            "b565aa2c82b77964",
+            "4748dfe1cdefc5ba",
+            "bfbbba5740ab4a93"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "d6406a00265baefb",
+            "ba58fed722f53d05",
+            "4748dfe1cdefc5ba",
+            "bfbbba5740ab4a93"
+          ],
+          "venue_coverage": {}
+        }
+      ]
+    }
+  },
+  "cv-0105": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:13:03Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "c2ccd09906a0c598",
+        "bde0f1e8973c3482",
+        "6421d8427fd40eb9",
+        "6eaa4644ce39d2a7",
+        "f20f4f04968c7233",
+        "36a13fe22738f7af",
+        "6130a14ce32c8b9b",
+        "6df59c30ad8b6bb9",
+        "8ddc36a9192b12fd",
+        "cca5dad0144ff0e5",
+        "85d468a3febcabb6",
+        "1e428b95334a6066",
+        "2c8a53c020ef9ab6",
+        "e6fc65720e16eca6",
+        "cc244187a7ad7402",
+        "e0524d34b6b597d7",
+        "14712e275e00b38f",
+        "bb0ca9f1b44a8dcf",
+        "afbd9f15389e95a6",
+        "27161becaa9fb29f",
+        "3275793a43b311dc",
+        "ca1adf65b763fe72",
+        "5ddd2987739032c3",
+        "654b4d645b04f96c",
+        "4b038aee826be1e2"
+      ],
+      "relevant": []
+    }
+  },
+  "cv-0106": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:13:23Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "21611bd81c7fa18b",
+        "3798f05921420e8f",
+        "feefae26b8d2b80a",
+        "20fdbbdddbfc8eff",
+        "b5cb5c4ef4472736",
+        "2c636a399b2771f8",
+        "428fecde2fdd7138",
+        "3ca513672ed2a4d1",
+        "e18eed765436a46b",
+        "9ddcca7a3198339b",
+        "83bf51d6abb455f8",
+        "f09c6c66ff4484ef",
+        "d685f1afebe4b595",
+        "40b1cc7ec3bc0e32",
+        "65fab91c2ed09c22",
+        "2ad3ec356b2f723c",
+        "7e0481a324a911d4",
+        "ac02a1bf2e012517",
+        "65ce58913ccd3ff7",
+        "f3e198ebcef13fb1",
+        "87f06407b39b1481",
+        "9ced5d752b9f0fc4",
+        "22deada8e97de01b",
+        "bc8e70e01990263c",
+        "29f832ad289eaa3e"
+      ],
+      "relevant": []
+    }
+  },
+  "cv-0107": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:13:41Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "2c636a399b2771f8",
+        "6184850e33c32adc",
+        "dc72b184217597db",
+        "c7f874817cb6b0d1",
+        "131123d7df42abd7",
+        "69f80e4899fb3267",
+        "c654f4143d136f66",
+        "1e9fcaadc7db5a1d",
+        "c303b99a3e857ed7",
+        "1e16066076f506e5",
+        "a394ffa6f50e224e",
+        "77545487ebe8b542",
+        "14aad4abbd10de0b",
+        "b9a15df53b91c803",
+        "1e503c79f551a4cd",
+        "6d75f19c41338b5e",
+        "00655c0c97988740",
+        "b7d80042c206a850",
+        "f09c6c66ff4484ef",
+        "86d8ff369fd221f1",
+        "5c43876f4eb61748",
+        "6ca9903b36f628f0",
+        "c3ec746309c6b08a",
+        "cc0f27f32537d173",
+        "a9075510df00022c"
+      ],
+      "relevant": []
+    }
+  },
+  "cv-0108": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:13:57Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "93d7c50e9d3ca74e",
+        "c508bfe010be06b1",
+        "68b8fc11d83f29e2",
+        "7d7c0c4a65d61717",
+        "44c895875031555f",
+        "735d40af3f05ec29",
+        "c6de2c2268036f2c",
+        "9725b120d3dec8bf",
+        "6ffdd6d59d52b5eb",
+        "a7b55444a8bdcf9f",
+        "7d06120f95cb387f",
+        "f132c38485505d1c",
+        "359df446403e8434",
+        "aef6dd51c2526661",
+        "bb47d1a2d235ce86",
+        "60782f3f1aef8d8d",
+        "bf141cfa20f24ee5",
+        "c0afa5001da87169",
+        "fac2fc24a5cc3079",
+        "ab214e9fb6fdf6d8",
+        "d67b7e7e1331f014",
+        "d17c541468972205",
+        "a02da28006175fb3",
+        "86deffd659b7cc0e",
+        "9bcf4b564b87b087"
+      ],
+      "relevant": []
+    }
+  },
+  "cv-0109": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:14:14Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "b57cf16ea1eba1fe",
+        "7e23f0121dc85aba",
+        "52a257cc92147df6",
+        "0c786b8e2174ca32",
+        "2a2d0ada27e51781",
+        "cfc6348be3d0b8d4",
+        "29706f7a37bc79f7",
+        "5f45b3a8a984c216",
+        "0766540c71dfbadf",
+        "d128815d695838e6",
+        "919078f73e3facf4",
+        "55f8610a74d5ccc3",
+        "382e6822330f1ffe",
+        "953dc54092f0ce8e",
+        "b6fb0f49aaed2c6e",
+        "153a75b6e2887175",
+        "916ee539c62fb666",
+        "6b174e0d39ed334b",
+        "b0128b066c528929",
+        "bbdd6c592acd0d2e",
+        "fe629944d244b191",
+        "c893da7dde82ee9e",
+        "16cc25f36586507a",
+        "73500e68b87a2359",
+        "1efd0904065e0705"
+      ],
+      "relevant": []
+    }
+  },
+  "cv-0111": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:14:31Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "b38929dc7db27a1a",
+        "aa1a013a43f00ff1",
+        "06639c7055c3cfe9",
+        "2c40b841911b5169",
+        "c6de2c2268036f2c",
+        "c286a5fd7515cc96",
+        "aac3502627e988e0",
+        "edfbca3b95297faa",
+        "dbcc414946a41cf3",
+        "5db5d576fdc3b633",
+        "c1b23e17336faa02",
+        "7c807540a0f9fe74",
+        "47252039578c1fd0",
+        "c608577e594e6b6e",
+        "af39ffcf937ecdce",
+        "de694e9148dfd7f2",
+        "817919caf2388132",
+        "eab060194d24c369",
+        "7ef955628579da5e",
+        "6ca5040c70dd1231",
+        "60782f3f1aef8d8d",
+        "5258f99b5aa7abe8",
+        "fc020bec5402260a",
+        "a3e818bca3cfb6f5",
+        "729c02e120996380"
+      ],
+      "relevant": []
+    }
+  },
+  "cv-0112": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:14:45Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "eafa5b4160612a6d",
+        "ff512190cb21b601",
+        "681bee2fc058e243",
+        "023a1babde76ba9a",
+        "9d88fd83c07ce7a8",
+        "c92c2f69ba298149",
+        "ef0036db41b91a15",
+        "cbdec05a6568fe19",
+        "a27b0db1e281f53c",
+        "940f9f56a69a6308",
+        "cf9f95ea60c995bb",
+        "f9c76436a011a15c",
+        "1de12b9e2ba0807c",
+        "bc20b4c35a58c011",
+        "c0d6e3b9a998d5b0",
+        "194a803bec020bfe",
+        "6667bf0a25ba94a0",
+        "23c0c27d61ed22f2",
+        "f3878adde0a5cc99",
+        "7c408dc79a0f9f92",
+        "aa12d9cea79ee8fe",
+        "9e237e704b5490a0",
+        "05d885d9b370914d",
+        "b76b3903f7b6ce35",
+        "aa24b6b900196519"
+      ],
+      "relevant": []
+    }
+  },
+  "cv-0113": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:14:59Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "232037f33bdc0ba5",
+        "a61224164176c9eb",
+        "1e428b95334a6066",
+        "55a5a88b5e4af1ae",
+        "c113eeed614484ee",
+        "54b11e8bc4b74b79",
+        "27161becaa9fb29f",
+        "641ce974df21dcfd",
+        "69d77b53efad5c53",
+        "bddb60575e3a99e4",
+        "183d6dc9935cb13b",
+        "d50b8d1f8bbd5141",
+        "1217567e59f77c49",
+        "bb5a9d5c643a1c85",
+        "342dd42b2370d697",
+        "01857ac8e14ab02d",
+        "ed43d55a04476d19",
+        "df262bc5068dd789",
+        "0827b17a7d11c2ed",
+        "557b45d80ca70778",
+        "c059580b26230e11",
+        "f3bf982f5668a2ec",
+        "c86bedfe65a2e9fb",
+        "28b2264c47608e5c",
+        "e18fbc94867e3842"
+      ],
+      "relevant": []
+    }
+  },
+  "cv-0114": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:15:16Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "bd54e325086084d9",
+        "7ebcfc54d1f5d33a",
+        "b7119f4aeea1beff",
+        "c9787a3678a5e9e8",
+        "c0afa5001da87169",
+        "d8d8ea800c205aa3",
+        "9df753d1bbdbbd30",
+        "14aad4abbd10de0b",
+        "84822a1482691617",
+        "51f8e27951304038",
+        "f132c38485505d1c",
+        "93d7c50e9d3ca74e",
+        "82f02d4512d81bc0",
+        "68b8fc11d83f29e2",
+        "f1a069b85ea2f38b",
+        "3d0096439e1a95d8",
+        "b9a15df53b91c803",
+        "a4e32afd076d0007",
+        "12994358e6a71ae5",
+        "35670683fab9e667",
+        "3ac390c4fe91dec8",
+        "7019b9ca2016a80e",
+        "a1b2a17a7240953e",
+        "5a5c9ea9f10581a8",
+        "85c9f1ecee196846"
+      ],
+      "relevant": []
+    }
+  },
+  "cv-0115": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:15:31Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "9d23b38bce76d190",
+        "75089ee19205a95e",
+        "98adaf8cecfeeee5",
+        "f9fd251d36d9c4f4",
+        "5bf6b2f8f3c302f4",
+        "c34b84f3ca13e1f9",
+        "898cf6e55aa4defa",
+        "b67fc642ccbfc9e8",
+        "b23c70672c27c692",
+        "0f945f345bd0220c",
+        "8e2fc0c7eaf9f92f",
+        "371460928623af89",
+        "31a2a7c3a3351661",
+        "5c524bd7fb96bc08",
+        "facffec16b04896c",
+        "ff6e7e50f15d9506",
+        "00d799fd7df2ad19",
+        "29f832ad289eaa3e",
+        "cbe2c14a3c8e0d61",
+        "fcd1fbcfb582acfb",
+        "00aaae0e06208c8d",
+        "e183859cab350362",
+        "85961c221492de8e",
+        "cbd3c75c42ab7317",
+        "5b114b54f065171a"
+      ],
+      "relevant": []
+    }
+  },
+  "cv-0116": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:15:47Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "ab214e9fb6fdf6d8",
+        "97f1c3eb4f9af752",
+        "4f95826a28c3805e",
+        "55affe4e2d7298e7",
+        "5fe32e832cbfd7d9",
+        "c9c1e518bf94cc67",
+        "81bdd8cddcb63d4b",
+        "6f61e68701c633a1",
+        "9b9b649557f50a8b",
+        "0fe409e947d49e53",
+        "9a9f21cfb5f2fc3f",
+        "02246592a7b298f5",
+        "b5f1ec327057ba05",
+        "6249b5f4d5a876bf",
+        "a2742d197326e04b",
+        "fc305927ca243037",
+        "573f363fa78b4d9a",
+        "724e178cac430bd3",
+        "2c66b133bc1cca98",
+        "be5612700e7fcdfc",
+        "b297a022993ed02b",
+        "c374ffbdb2f6bef0",
+        "9f614c961d141cc4",
+        "9251b3aa36fd0171",
+        "e3b3fd2975ae7119"
+      ],
+      "relevant": []
+    }
+  },
+  "cv-0117": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:16:05Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "6dbf6553a5a67ccf",
+        "0fe9575d82da519a",
+        "4bd28c240f96337c",
+        "3b5dfb88843becf7",
+        "711d65eee90f5b77",
+        "5d32b55b68314cce",
+        "86c2732793048f49",
+        "20c3059989405c91",
+        "28396cdb46a05253",
+        "5c6537eeb63ff1f7",
+        "a714cdce87fdbf74",
+        "2f362aa9000c26cf",
+        "43dd1a1a4396b634",
+        "7534b367cb4e50e7",
+        "d16e4e190aa67b69",
+        "352b0ca9e1ef791e",
+        "0e82440f0066fe11",
+        "a39dce9802b00298",
+        "d305c585f5c77976",
+        "9b0ad34613c1b6aa",
+        "843a181edad3cf19",
+        "69fcacfef11e7066",
+        "5b9788cf84aedc45",
+        "39cfd15c5d4df720",
+        "bc1014de28a7fba8"
+      ],
+      "relevant": []
+    }
+  },
+  "cv-0118": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:16:21Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "456bdedb639b5536",
+        "60146198d92b5c94",
+        "1179e29658d55afb",
+        "31beb4a0668effe4",
+        "27c87dc392b558fa",
+        "08635bd2c07b5ec9",
+        "b2fe3d16948d385c",
+        "6b174e0d39ed334b",
+        "2b369c6613d48ffa",
+        "9fa150a91d06db0c",
+        "ac01fe04b339ce59",
+        "bfa78f6cdaf4a836",
+        "573f363fa78b4d9a",
+        "c7375b345c209337",
+        "a3e818bca3cfb6f5",
+        "dd61be4ff7293975",
+        "120df13437ac895a",
+        "ae9725ee605c567b",
+        "66c1d6ca4a821a52",
+        "0679475df00e4844",
+        "dbad8717ad2e6ea4",
+        "2b231cb52626f70e",
+        "ff32845d95b93a00",
+        "a03c4289dcce694e",
+        "eee9e35b7f9f7b6b"
+      ],
+      "relevant": []
+    }
+  },
+  "cv-0119": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:16:34Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "44df63d99d2ede3d",
+        "f09c6c66ff4484ef",
+        "2c636a399b2771f8",
+        "ec4cd39fa66bf676",
+        "ea342d17c26e44cc",
+        "74dc0bcab4d89d9a",
+        "e50c37b36b8a95e4",
+        "ffd826bca3feb22c",
+        "574512eea42b94c1",
+        "33eb6ae076f1007b",
+        "edb29c3404cd307e",
+        "810f635c44da5b16",
+        "093e6abb6376766d",
+        "d305c585f5c77976",
+        "5c6537eeb63ff1f7",
+        "c676b2dc7900d32a",
+        "32b3754fea13f359",
+        "5fc6849c5c7925ae",
+        "2059adc778bc7efa",
+        "9a727f01d1afed3f",
+        "74f76624fef672c3",
+        "43d9a7ef836b2dc1",
+        "1a6974e65114da82",
+        "fccc2bed69f13e7c",
+        "0a32032ae302620a"
+      ],
+      "relevant": []
+    }
+  },
+  "cv-0120": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:16:49Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "2a8c3ff5724f66ae",
+        "6421d8427fd40eb9",
+        "dd5f984bbcd6eae0",
+        "468043410cc0c27e",
+        "bde0f1e8973c3482",
+        "1f0c55315bb7918a",
+        "4df773617474f2a6",
+        "c698042d7fe97569",
+        "7da6f0ce8e4552ed",
+        "6821383e6e8ff125",
+        "5ddd2987739032c3",
+        "fea1996b2f2c3af0",
+        "a10fe76e11c90f25",
+        "2c8a53c020ef9ab6",
+        "009e7d39834bf9fd",
+        "eb3b994c107c6a38",
+        "890fbdf1c911cfce",
+        "7da8a37b0b9f6da9",
+        "afbd9f15389e95a6",
+        "f20f4f04968c7233",
+        "232b545d9dd39ffd",
+        "08f2c9451c5b4dd2",
+        "a8107aed01bf135c",
+        "55e03b4a9f5375a1",
+        "d36caa2f8c45cbc8"
+      ],
+      "relevant": []
+    }
+  },
+  "cv-0121": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:17:01Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "e18fbc94867e3842",
+        "205249bc8d99c323",
+        "c41fc4e0fd57dca5",
+        "01857ac8e14ab02d",
+        "f20f4f04968c7233",
+        "f6eaa82ff8198f10",
+        "df262bc5068dd789",
+        "ca1adf65b763fe72",
+        "27161becaa9fb29f",
+        "04f42911d507ed9b",
+        "28b2264c47608e5c",
+        "557b45d80ca70778",
+        "e9e3428ae7f7b6e1",
+        "980cc39c72d81e0a",
+        "e0524d34b6b597d7",
+        "eb53f8145b15c68a",
+        "1b6656f1b3284e42",
+        "c2ccd09906a0c598",
+        "34c96e54bb693a4f",
+        "eb33e78300a86115",
+        "49700e93da96cbe0",
+        "22ef5b61ca7b4df4",
+        "5ddd2987739032c3",
+        "64a0848106f2d0e6",
+        "54b11e8bc4b74b79"
+      ],
+      "relevant": []
+    }
+  },
+  "cv-0122": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:17:17Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "6421d8427fd40eb9",
+        "c2ccd09906a0c598",
+        "bde0f1e8973c3482",
+        "468043410cc0c27e",
+        "f20f4f04968c7233",
+        "ecebe18408c70fa8",
+        "5ddd2987739032c3",
+        "6eaa4644ce39d2a7",
+        "1f0c55315bb7918a",
+        "2c8a53c020ef9ab6",
+        "ab935200319f0fa4",
+        "1ae8a387bd2636a0",
+        "1cd479d881224222",
+        "cdab714298490a06",
+        "d50b8d1f8bbd5141",
+        "1e62e8aad753a2b0",
+        "f3b2174d4a2af823",
+        "bdbc73972cdfcfc3",
+        "afbd9f15389e95a6",
+        "e5b3d4b6d2c797ec",
+        "8ddc36a9192b12fd",
+        "6df59c30ad8b6bb9",
+        "2a8c3ff5724f66ae",
+        "cca5dad0144ff0e5",
+        "10ad4a210a9daa1f"
+      ],
+      "relevant": [
+        "468043410cc0c27e",
+        "f20f4f04968c7233",
+        "2c8a53c020ef9ab6"
+      ]
+    }
+  },
+  "cv-0123": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:17:38Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "eab060194d24c369",
+        "de694e9148dfd7f2",
+        "e6ded549d28b58fb",
+        "6ca5040c70dd1231",
+        "06639c7055c3cfe9",
+        "dbcc414946a41cf3",
+        "153a75b6e2887175",
+        "e4d755a4b7cd33fc",
+        "b9393c0a9f97adf3",
+        "da4ccf1412683f81",
+        "3df5f9b56583a36e",
+        "bc23727e8b46d7a5",
+        "e638d0218d41905e",
+        "187ca04055ad3fd4",
+        "24299d605a184600",
+        "c0afa5001da87169",
+        "62d89a1c4cd66209",
+        "1ea2e3a3701f4188",
+        "a2fa815af77cbb35",
+        "a991ba77c36671c1",
+        "e2ad0de333811d58",
+        "c47a7aac276d6f2f",
+        "58929420f512f88f",
+        "6b174e0d39ed334b",
+        "4d3ae32f0cbd5c69"
+      ],
+      "relevant": [
+        "eab060194d24c369",
+        "de694e9148dfd7f2",
+        "e6ded549d28b58fb",
+        "6ca5040c70dd1231",
+        "a991ba77c36671c1",
+        "e2ad0de333811d58"
+      ]
+    }
+  },
+  "cv-0124": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:17:54Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "93b1a602a150faeb",
+        "0aefdfb712e1b680",
+        "ea342d17c26e44cc",
+        "336294bacfb6bfbe",
+        "920bc93692e8df01",
+        "01ad0174e898b46c",
+        "1a6974e65114da82",
+        "853ffa7fc6925807",
+        "cc0ec8215ee5e853",
+        "2a211d4d06aaf870",
+        "2059adc778bc7efa",
+        "42dd02e650ac8c23",
+        "33eb6ae076f1007b",
+        "4ba71d126becd885",
+        "10d8cbc6fd1d54c2",
+        "8adaa8fb8f01f135",
+        "17f137ceb1253c1e",
+        "18a8f5089c47ba58",
+        "563bd999a0f64b41",
+        "726028956ff0cca6",
+        "869554c5a53b34bb",
+        "e29b162f766d6070",
+        "c6388466f76bd00e",
+        "6e56b58166eef88c",
+        "7180e75207a326ef"
+      ],
+      "relevant": [
+        "93b1a602a150faeb",
+        "33eb6ae076f1007b"
+      ]
+    }
+  },
+  "cv-0125": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:18:11Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "2b369c6613d48ffa",
+        "067a219af84d0186",
+        "b15b629dd1b08355",
+        "0317f8a0f9d502f5",
+        "9372e7af283d5470",
+        "e9a0a1c9ba73b8e5",
+        "55f8610a74d5ccc3",
+        "407cfb88f4fcdb60",
+        "8ef45188c120f546",
+        "6617adcb6b59f1b5",
+        "ffb0bbe31af1de8b",
+        "7bae7b6cd81d4034",
+        "cee26159c70526aa",
+        "53538be7b9e01175",
+        "f75197ecfc3b6d00",
+        "08a21697bcec76ff",
+        "6cd05d2110d058bb",
+        "4aa73e44aec79b7e",
+        "355b97ff9f9d37c0",
+        "bb1fbbb8ab405558",
+        "332347b82d331468",
+        "b5e81d8f9e03f968",
+        "0dae49b67f8a9d22",
+        "188c4d2d6664761a",
+        "5311c230ced41dbd"
+      ],
+      "relevant": [
+        "067a219af84d0186",
+        "9372e7af283d5470",
+        "e9a0a1c9ba73b8e5",
+        "6617adcb6b59f1b5"
+      ]
+    }
+  },
+  "cv-0126": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:18:27Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "9bcf4b564b87b087",
+        "76dd537f0f94393a",
+        "93d7c50e9d3ca74e",
+        "fc305927ca243037",
+        "0fe409e947d49e53",
+        "68b8fc11d83f29e2",
+        "87cf95b86bb3eba5",
+        "a751f0cd0d63d47a",
+        "c508bfe010be06b1",
+        "b5f1ec327057ba05",
+        "e4aaec34e674909c",
+        "ab214e9fb6fdf6d8",
+        "246b39b94d590ba1",
+        "12994358e6a71ae5",
+        "3aaa7209d38d0115",
+        "106cc14e896939fa",
+        "b0ff3c8fe27ab0e5",
+        "7a3a3ffe5ae742ec",
+        "a1b2a17a7240953e",
+        "76d97b9481d1993a",
+        "59075ebbf43fe0f7",
+        "7b1d787ac2e901ce",
+        "c4be04bcef2295f0",
+        "1b3a63f89b71f1e6",
+        "39c31469a816b99a"
+      ],
+      "relevant": [
+        "9bcf4b564b87b087",
+        "76dd537f0f94393a",
+        "a751f0cd0d63d47a",
+        "246b39b94d590ba1"
+      ]
+    }
+  },
+  "cv-0127": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:18:44Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "6db82a15b53e232e",
+        "3971a0d7976caf70",
+        "11ff0288ae97c8d0",
+        "8d78fec8f362121f",
+        "23e33b56d475d25a",
+        "d8cee09729854083",
+        "22d728b1ce60c868",
+        "4b66fb098a32963a",
+        "b7ce61ba7e60628d",
+        "af4665bf5dd455ad",
+        "0aff94a4c28d14cd",
+        "a18dd28a898ea133",
+        "dc7e07cfb5c95855",
+        "5c5147a685114e7f",
+        "4df81ca525ea2f76",
+        "ecb05a7728981d1f",
+        "60befe6e6649d0e2",
+        "61c75bf61a38108f",
+        "b79fb2da2849a9b8",
+        "60e9390f7498f0c6",
+        "7447b3fc8a3eca9c",
+        "94a825a1d414fa30",
+        "c8f4f8ba055e7fb2",
+        "2da8051c50f8c8db",
+        "4128a3b2fbf7c87e"
+      ],
+      "relevant": [
+        "d8cee09729854083",
+        "b7ce61ba7e60628d",
+        "af4665bf5dd455ad"
+      ]
+    }
+  },
+  "cv-0128": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:19:02Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "b15b629dd1b08355",
+        "4748dfe1cdefc5ba",
+        "2b369c6613d48ffa",
+        "684b4fbf5aa8cd59",
+        "0b896cc122e7502e",
+        "d804fc254211cf6f",
+        "08a21697bcec76ff",
+        "95a4b84d9d7ed947",
+        "3216bf5f7d95c110",
+        "de0f809703fb5240",
+        "3e636d8bd17079a7",
+        "9372e7af283d5470",
+        "067a219af84d0186",
+        "15b3ecab80a9ed81",
+        "b565aa2c82b77964",
+        "2fa28ef35535e71e",
+        "e22dc951bca08362",
+        "5c869ec6c307ed3c",
+        "fce80c7ad09658c4",
+        "2f5dbc131c154c5f",
+        "91a7a32595288f7f",
+        "d06965216ba3a5d2",
+        "04170f186da297a8",
+        "724cf40f7ab5ed43",
+        "75fe3834c85d6778"
+      ],
+      "relevant": [
+        "684b4fbf5aa8cd59",
+        "9372e7af283d5470",
+        "067a219af84d0186"
+      ]
+    }
+  },
+  "cv-0129": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:19:20Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "d6406a00265baefb",
+        "ba58fed722f53d05",
+        "b996c649431a4211",
+        "981a5a0309661340",
+        "2bf2782579f0653c",
+        "bfbbba5740ab4a93",
+        "fc4f1b0fd2aa6ca0",
+        "9d6fd4242b03f9a6",
+        "f13bb9bf53c3aa20",
+        "00d799fd7df2ad19",
+        "91e3f2f740eadb5f",
+        "1471dca0053a4b87",
+        "93af990e3377cc2a",
+        "38fc729194a1d9e2",
+        "088f9f76272778df",
+        "4748dfe1cdefc5ba",
+        "c42c9ec8715191b3",
+        "5e67a814a440f6b3",
+        "1078cd14cca82b82",
+        "3e636d8bd17079a7",
+        "26e2ec683b0bb8ec",
+        "aa93a009b8a0a615",
+        "134ea4ceae3aa1a8",
+        "5126900d85cd69b6",
+        "839c60efd88c4fbc"
+      ],
+      "relevant": [
+        "d6406a00265baefb",
+        "ba58fed722f53d05"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T23:14:18Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "d6406a00265baefb",
+            "ba58fed722f53d05",
+            "2bf2782579f0653c"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "d6406a00265baefb",
+            "ba58fed722f53d05"
+          ],
+          "venue_coverage": {}
+        }
+      ]
+    }
+  },
+  "cv-0130": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:19:49Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "76933a32f3b54512",
+        "cbf3f436b8cecda5",
+        "f694444c921bc387",
+        "7fab7a509cedc133",
+        "30a3baa5e3b6c167",
+        "f52f432ba23f70be",
+        "e19097e72a1e0ea8",
+        "258f071f5b91ff7f",
+        "6009a658ee6920b5",
+        "70062e530cd3db9a",
+        "c65d75e798e38860",
+        "dcdffdbcc72ca245",
+        "f8c5e8e029674764",
+        "1ca3036639d26ccc",
+        "64e60ae6ed8347b3",
+        "cad1846c00568b2f",
+        "3868b43c6ffc220c",
+        "aa27ad84ab900c05",
+        "823a7aa4e5c26dab",
+        "07bb751441bbbdd4",
+        "c8023db7f74c50ee",
+        "b0da9cbefe10240d",
+        "ad78cdd1332bbc2c",
+        "f2cd51166ffca6f9",
+        "123c11f40e1df4bc"
+      ],
+      "relevant": [
+        "7fab7a509cedc133"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T23:14:41Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "7fab7a509cedc133"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "7fab7a509cedc133"
+          ],
+          "venue_coverage": {
+            "uniswap": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "uniswap": "covered"
+      }
+    }
+  },
+  "cv-0131": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:20:10Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "42b4764836e1cf8a",
+        "c9867feba5e4a740",
+        "9ef779df8e1fddac",
+        "a5317723e8692222",
+        "d59ed45f239c2ed8",
+        "1bee98094b879355",
+        "d73fba0e0dd7bfb2",
+        "3f2238c50b6c29fb",
+        "b3ae2a1dc4185f5e",
+        "dcdffdbcc72ca245",
+        "8415b7ae6017e5f9",
+        "9d58973910b52f92",
+        "f367dd493c060543",
+        "5c524bd7fb96bc08",
+        "0ac99247b8703446",
+        "afbabe9ffebefce9",
+        "0415e1a52d90604e",
+        "c297d78aa9a75c76",
+        "d9bb921613aa14b5",
+        "322a335c729c9953",
+        "235128d0d606ae73",
+        "292033e1b6419090",
+        "32f248844143aeab",
+        "a857dbdded252cf2",
+        "c5f56ac9742e04c9"
+      ],
+      "relevant": [
+        "42b4764836e1cf8a",
+        "d59ed45f239c2ed8",
+        "dcdffdbcc72ca245",
+        "afbabe9ffebefce9",
+        "322a335c729c9953",
+        "292033e1b6419090"
+      ]
+    }
+  },
+  "cv-0132": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:20:27Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "50001a98d23ce4be",
+        "5d30db527fe97163",
+        "c303b99a3e857ed7",
+        "97c7bff5451827c5",
+        "6751db5ac6f5733c",
+        "1d487535bd153f9c",
+        "66d371893270a55b",
+        "8702c01557387b3c",
+        "cf6425c1131308b4",
+        "2d55d46f102ff172",
+        "bfe1074a3c1c304b",
+        "cf5aeae972331bc2",
+        "933e6c1f9acc4abc",
+        "3d9a68f2edc6772d",
+        "693d50b5b242c65f",
+        "86a0a196e141113c",
+        "d3f40a8378ea8868",
+        "9bbeaee386dd39cc",
+        "38cd970d625d659a",
+        "5d10948cdb4820b0",
+        "aa0fab3d8e09babb",
+        "0fa6f06d71f87c34",
+        "a6385389cd7a62a6",
+        "1030374083a61019",
+        "6527d58a4cf03021"
+      ],
+      "relevant": [],
+      "corrections": [
+        {
+          "at": "2026-09-24T23:14:55Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "8702c01557387b3c"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [],
+          "venue_coverage": {}
+        }
+      ]
+    }
+  },
+  "cv-0133": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:20:45Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "33eb6ae076f1007b",
+        "519f68e75b7b2fb0",
+        "26063ca2722e2d93",
+        "7ec7e585376f2f34",
+        "ff5ef394140e96a8",
+        "a94bd97101b3789b",
+        "fdc1547f77cdc29a",
+        "d6eca88f944b0986",
+        "4df773617474f2a6",
+        "2a8c3ff5724f66ae",
+        "1a6974e65114da82",
+        "0a32032ae302620a",
+        "76ae1dca5ae0a1b6",
+        "853ffa7fc6925807",
+        "a10fe76e11c90f25",
+        "fea1996b2f2c3af0",
+        "008ba7626461ca50",
+        "dab23ec5453784f7",
+        "0ddb837d28b9d493",
+        "7fb4e55687bf1aea",
+        "cd06884cc48914bc",
+        "7da8a37b0b9f6da9",
+        "759ea0bf52fe5d0c",
+        "7e0d11b2814599cd",
+        "810f635c44da5b16"
+      ],
+      "relevant": [
+        "33eb6ae076f1007b",
+        "519f68e75b7b2fb0",
+        "26063ca2722e2d93",
+        "a94bd97101b3789b"
+      ]
+    }
+  },
+  "cv-0135": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:20:58Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "3df5f9b56583a36e",
+        "eab060194d24c369",
+        "6a5dd3c09bdffadd",
+        "de694e9148dfd7f2",
+        "153a75b6e2887175",
+        "6ca5040c70dd1231",
+        "e6ded549d28b58fb",
+        "9ba6138387ea13ed",
+        "054962a8321c2042",
+        "ffb0bbe31af1de8b",
+        "e9a0a1c9ba73b8e5",
+        "f3924cc4bc505cba",
+        "6b174e0d39ed334b",
+        "25fc4bf4be549bc2",
+        "ae16db8ac03ac0d5",
+        "f843309b4e0d1e5f",
+        "e4d755a4b7cd33fc",
+        "dbcc414946a41cf3",
+        "752a706073892292",
+        "1ea2e3a3701f4188",
+        "c47a7aac276d6f2f",
+        "1f798a2506028a53",
+        "30cea8c1ed463ee6",
+        "06639c7055c3cfe9",
+        "da47fd5c77f718e8"
+      ],
+      "relevant": [
+        "3df5f9b56583a36e",
+        "eab060194d24c369",
+        "de694e9148dfd7f2",
+        "6ca5040c70dd1231"
+      ]
+    }
+  },
+  "cv-0136": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:21:14Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "6617adcb6b59f1b5",
+        "facffec16b04896c",
+        "66c25daed1bc7f09",
+        "4d000a0667ac8f82",
+        "b57cf16ea1eba1fe",
+        "6cb4f744e4e1c7df",
+        "1585e26b555d7b20",
+        "2551900a671eb9ff",
+        "023b60fa07584cae",
+        "4d0c1c3ff7cdb62b",
+        "4fcf480269ce1481",
+        "e62bef6db1e28af5",
+        "f01c3cb8c10c7eed",
+        "e9a0a1c9ba73b8e5",
+        "f3f8c58046334cc8",
+        "9abed7d07bc3cca7",
+        "aa1024a1df9ca0f2",
+        "800613908a3315e4",
+        "702da9102bd8c810",
+        "8e5e757d2ccd4daa",
+        "249ae6b38e74f11c",
+        "cdb5bb855fa4a2d6",
+        "b607821d549a05b5",
+        "eadd5ce5e20591b0",
+        "a792fd752f259cb6"
+      ],
+      "relevant": [
+        "6617adcb6b59f1b5"
+      ]
+    }
+  },
+  "cv-0137": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:21:32Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "f772c48dfe4c503c",
+        "097306afd50bbb41",
+        "439a19cfe82dcf52",
+        "2dc1519306033273",
+        "b18cdb4953c59d1c",
+        "25c64b8c34bcae50",
+        "4077187c0979bdd9",
+        "183d111cd7537a7c",
+        "e370915f6783df6b",
+        "9f614c961d141cc4",
+        "5fe32e832cbfd7d9",
+        "68405ec214663564",
+        "980500dc01622011",
+        "f5a91dec953cab38",
+        "fb2beef42fa8ab33",
+        "7dcacb8757fc9cd8",
+        "c5f56ac9742e04c9",
+        "9798edde095d34b2",
+        "c3ceb0c684a0c7c3",
+        "04ae05e9861a3a56",
+        "120df13437ac895a",
+        "2c5e438b070d4e48",
+        "e3b3fd2975ae7119",
+        "94d380dcf17a942e",
+        "bc6b8adad2624928"
+      ],
+      "relevant": [
+        "097306afd50bbb41",
+        "2dc1519306033273",
+        "980500dc01622011",
+        "f5a91dec953cab38"
+      ]
+    }
+  },
+  "cv-0138": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:21:45Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "1bee98094b879355",
+        "e47ae5ebdd235f56",
+        "ddf8dd7fbb94df52",
+        "4d366c890c0252b8",
+        "d72803c391e60315",
+        "8a0384235e9aee68",
+        "b2fe3d16948d385c",
+        "d1a18c4737e0782f",
+        "960ebc88abb70249",
+        "cb3f814fcb4a0c1d",
+        "2af2e29f8cbac31d",
+        "e1e58940913becc5",
+        "8190929de71f2eec",
+        "32f691d55757a3c9",
+        "cd4940f9e09123a8",
+        "573f363fa78b4d9a",
+        "03025a45fcda1f52",
+        "7fab7a509cedc133",
+        "b2a3c29a34ce69c2",
+        "896c8308ed9a4155",
+        "c29c48930b665528",
+        "011c253892412355",
+        "15536f7dc80a95ad",
+        "cc39b0702fba4844",
+        "719ab8ea4b483aaa"
+      ],
+      "relevant": [
+        "d1a18c4737e0782f"
+      ]
+    }
+  },
+  "cv-0140": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:22:03Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "488acd1cdb5ece81",
+        "d26f88007d4fa04a",
+        "fd49022f201e099a",
+        "68d3177591d9701e",
+        "ed8e5788aa411dc9",
+        "58bf67c70b1545ab",
+        "ff1d3fc18cb1bfb9",
+        "52bc7cf533744d63",
+        "23060fecdb0d9e2b",
+        "c1b23e17336faa02",
+        "eb4cf5bffd71c685",
+        "76d97b9481d1993a",
+        "5341691531aaf0ef",
+        "640d4498f2af6c60",
+        "aa1a013a43f00ff1",
+        "1925f3a11f8c623c",
+        "b9143a90f4b341af",
+        "1b9cfcc0e47b61e4",
+        "aa24b6b900196519",
+        "953dc54092f0ce8e",
+        "8543e082ec457c93",
+        "88fe521948ec73df",
+        "1539dc96a735d5f9",
+        "adee07156b5dd3e2",
+        "4a01f141609eb774"
+      ],
+      "relevant": [
+        "58bf67c70b1545ab",
+        "1b9cfcc0e47b61e4",
+        "adee07156b5dd3e2"
+      ]
+    }
+  },
+  "cv-0141": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:22:15Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "b288f5fcd338ebcd",
+        "a94bd97101b3789b",
+        "74dc0bcab4d89d9a",
+        "e53d99f4f3a5d2df",
+        "a380c22165c329c5",
+        "ff5ef394140e96a8",
+        "dbaff1e81d208391",
+        "6a04924b5da61434",
+        "a10fe76e11c90f25",
+        "02011be23b90ba59",
+        "31fee7b6bf17914c",
+        "6e957fa325376dc7",
+        "773cb42da0fef8ac",
+        "9c517f197e767be6",
+        "af111b7385ab1baa",
+        "b905fbdfad2a9ef5",
+        "97834e4173de6526",
+        "facf0d07427b61dd",
+        "38cf5a61dd676a54",
+        "5cacaecd3b321f3d",
+        "b3d4df5c9992cfee",
+        "73f666f6f0cee7fb",
+        "33eb6ae076f1007b",
+        "a797a636ac456822",
+        "f416e0e969e3f800"
+      ],
+      "relevant": []
+    }
+  },
+  "cv-0142": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:22:31Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "cd991c5a53b9f60f",
+        "d13ce1dc6ebbee4e",
+        "b4030e4f54b4b572",
+        "44787758dac4c3b7",
+        "c0888c8286de9f8e",
+        "06f8676be7918164",
+        "56f1a06524984f27",
+        "ee541d454ed7707a",
+        "5611bfc249b78622",
+        "24718ce5b2dafe7e",
+        "74a812ce4c25a1af",
+        "79064c4542ada79a",
+        "3c7ab39b79197335",
+        "71d1370b5ab32ea7",
+        "e60c8533c3337408",
+        "fcc40bc13e2c648f",
+        "5cd4770ea3bcb07e",
+        "8acfa999c07d3b61",
+        "5935ce0686f342a2",
+        "28c7f2db754dd3e5",
+        "a8ca6c5bb5362aeb",
+        "47d04afb15afff7e",
+        "edc64c0b89d250f6",
+        "03b33f168157ec32",
+        "8aa8fa81b01046bc"
+      ],
+      "relevant": [
+        "ee541d454ed7707a",
+        "8aa8fa81b01046bc"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T22:50:07Z",
+          "derived": true,
+          "rule": "covered: a gold chunk is from the venue; missing_from_pool: the recorded round-1 pool holds no candidate from the venue",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "ee541d454ed7707a",
+            "8aa8fa81b01046bc"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "ee541d454ed7707a",
+            "8aa8fa81b01046bc"
+          ],
+          "venue_coverage": {
+            "binance": "covered",
+            "bybit": "missing_from_pool"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "binance": "covered",
+        "bybit": "missing_from_pool"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:55:20Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "0c8e0886719f2344",
+            "832d966538072263",
+            "65e24af2bcd912c0",
+            "1206c6e592429809",
+            "382e6822330f1ffe",
+            "79a403c6d9bc25a9",
+            "7f6416d4d40a1edf",
+            "69eb80e605d4fb08",
+            "efdddf14dcf689aa",
+            "e67a29fd8a721871"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0143": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:22:49Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "d72ecde573bc0dc1",
+        "b31a66f48fcdda8b",
+        "d473eeb974732d23",
+        "ae9725ee605c567b",
+        "f727d546a02180e4",
+        "d5134b479833feb6",
+        "a59d484f846e2f4e",
+        "fe0fd0dc171c014e",
+        "b3f30a85fd861118",
+        "6681e64ca6618e15",
+        "4766fb4aa066d11b",
+        "dac0f2b56799341e",
+        "fac2fc24a5cc3079",
+        "0a783c96536a7e27",
+        "463b49b4dd010e2a",
+        "7e23f0121dc85aba",
+        "bdc1471641a52f93",
+        "382997ad14a61b99",
+        "d36ff6ee6af55c53",
+        "c5d14cb09ff73d17",
+        "0ef10caf70b2f789",
+        "64912fbc4c794b93",
+        "1b5e9fee03d569d1",
+        "382e6822330f1ffe",
+        "d632b73afc078f8b"
+      ],
+      "relevant": [
+        "b31a66f48fcdda8b",
+        "ae9725ee605c567b",
+        "1b5e9fee03d569d1"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T22:50:07Z",
+          "derived": true,
+          "rule": "covered: a gold chunk is from the venue; missing_from_pool: the recorded round-1 pool holds no candidate from the venue",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "b31a66f48fcdda8b",
+            "ae9725ee605c567b",
+            "1b5e9fee03d569d1"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "b31a66f48fcdda8b",
+            "ae9725ee605c567b",
+            "1b5e9fee03d569d1"
+          ],
+          "venue_coverage": {
+            "binance": "covered",
+            "bybit": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "binance": "covered",
+        "bybit": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:55:33Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "0c786b8e2174ca32",
+            "6b174e0d39ed334b",
+            "25c64b8c34bcae50",
+            "4888022ed4405efa",
+            "e73d9ded9941d3b1",
+            "453df2674b855fa6",
+            "22d0b151455b4782",
+            "7d4aabd4ce8f3f80",
+            "fe724f80f9f66850"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0144": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:23:11Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "907cf741688501a6",
+        "36ccd074a592a7ce",
+        "5a21da83494ad0b9",
+        "382e6822330f1ffe",
+        "0c786b8e2174ca32",
+        "98163518b19f2af7",
+        "57595477c4abd5dd",
+        "86d8ff369fd221f1",
+        "6ffdd6d59d52b5eb",
+        "ac02a1bf2e012517",
+        "b00502b939e9e985",
+        "6cf47088a3f4f047",
+        "7339bb658cc117cd",
+        "7d06120f95cb387f",
+        "b5cb5c4ef4472736",
+        "267bca4b99846925",
+        "453df2674b855fa6",
+        "d978273afe0ba514",
+        "c45409f15a73140f",
+        "785dc4554ab8b02a",
+        "88ec2049e5181199",
+        "b3693ad46f3183cf",
+        "47b0dc5aede405e2",
+        "bbdd6c592acd0d2e",
+        "43d5c047fb398780"
+      ],
+      "relevant": [
+        "382e6822330f1ffe"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T23:17:53Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "382e6822330f1ffe"
+          ],
+          "venue_coverage": {
+            "binance": "missing_from_pool",
+            "bybit": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "binance": "missing_from_pool",
+        "bybit": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:55:53Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "120df13437ac895a",
+            "556e0d0675f24bed",
+            "979a6f8a0fea5570",
+            "9798edde095d34b2",
+            "e67a29fd8a721871",
+            "c7376460a156647a",
+            "3a81d41cedbbc7d7",
+            "f84b2da85154cf89",
+            "4aba4eb43d82fad4",
+            "b5568177ee827392",
+            "1b5e9fee03d569d1",
+            "a3686f0837821efa",
+            "6fce863cca935cca",
+            "aad98a5de0b7836c",
+            "6de67cfbff272243",
+            "7cf003ff3a8bcb7e",
+            "44209603aa1061c9",
+            "1e503c79f551a4cd"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0145": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:23:28Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "067a219af84d0186",
+        "2b369c6613d48ffa",
+        "d58431a5d779b35b",
+        "49b21475cb4b90b9",
+        "b15b629dd1b08355",
+        "caa7f6fd0f0b2870",
+        "86a1385d9541d485",
+        "166bd1e333dce201",
+        "ed43d55a04476d19",
+        "6d2720f11242fa1d",
+        "2b231cb52626f70e",
+        "23d5e6a5d00e3459",
+        "931da4dffff7add2",
+        "79a403c6d9bc25a9",
+        "6de67cfbff272243",
+        "3584bdce0ac5c7d1",
+        "326cbb232318d246",
+        "dd61be4ff7293975",
+        "4dad97dac34312e9",
+        "e183859cab350362",
+        "2d1775567d0097f7",
+        "feb15d8bdf8e2ce3",
+        "8ed0261c592d62ee",
+        "8593b635f34e1376",
+        "5702829a81f3cb8f"
+      ],
+      "relevant": [
+        "4dad97dac34312e9"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T23:09:32Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "4dad97dac34312e9"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "4dad97dac34312e9"
+          ],
+          "venue_coverage": {
+            "binance": "covered",
+            "bybit": "missing_from_pool"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "binance": "covered",
+        "bybit": "missing_from_pool"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:56:05Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "52401c67eca0e6f8",
+            "5c51f2fb7dd3b647",
+            "edda69554abb2248",
+            "73500e68b87a2359",
+            "218598be94ac49c0",
+            "e706cdc408aa23ef",
+            "89d804cc1d0a9b6d",
+            "03586f1b48fd05c8",
+            "9ffa2eb01c53bd9a",
+            "81837b9dfe0b743b",
+            "c2041c936d5125a1",
+            "894b16c922fce97f"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0146": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:23:45Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "6d2720f11242fa1d",
+        "04170f186da297a8",
+        "e6683ba4c189e0a6",
+        "4daab1d25905e4c4",
+        "0cf1f7beb0aafe28",
+        "931da4dffff7add2",
+        "1d56e8a2fc5ed924",
+        "f14dfd0fb1e882ea",
+        "5e67a814a440f6b3",
+        "c1c584e381a20416",
+        "79a403c6d9bc25a9",
+        "e91cff49ac10a9aa",
+        "91583470380f6600",
+        "1078cd14cca82b82",
+        "eee9e35b7f9f7b6b",
+        "32f248844143aeab",
+        "8ed0261c592d62ee",
+        "fe4d30ccad541f80",
+        "9d88fd83c07ce7a8",
+        "149467b3bd105b64",
+        "cc377f98dcf85252",
+        "31beb4a0668effe4",
+        "9fa1a8d92765f5a0",
+        "9b8c35283d6ffee6",
+        "0d5c72a13bbf2001"
+      ],
+      "relevant": [
+        "e6683ba4c189e0a6",
+        "91583470380f6600"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T23:09:51Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "04170f186da297a8",
+            "e6683ba4c189e0a6",
+            "1d56e8a2fc5ed924",
+            "91583470380f6600"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "e6683ba4c189e0a6",
+            "91583470380f6600"
+          ],
+          "venue_coverage": {
+            "binance": "covered",
+            "bybit": "missing_from_pool"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "binance": "covered",
+        "bybit": "missing_from_pool"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:56:15Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "32b1a7f2d1bd3207",
+            "894b16c922fce97f",
+            "5c51f2fb7dd3b647",
+            "0898ba42ca54ae33",
+            "32d38ce915ada017",
+            "156462c0073b118a",
+            "f75197ecfc3b6d00",
+            "011d200bb2540c73",
+            "2b231cb52626f70e",
+            "44f10772ae6ce105",
+            "c8cd66dc22fe47a8"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0147": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:24:02Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "456bdedb639b5536",
+        "c893da7dde82ee9e",
+        "e62bef6db1e28af5",
+        "b3d422ab596eca46",
+        "96a55103122a8cad",
+        "facffec16b04896c",
+        "5ca8f382ffd7f585",
+        "e712f098e750bca6",
+        "6617adcb6b59f1b5",
+        "326cbb232318d246",
+        "92ea64479009ad83",
+        "2551900a671eb9ff",
+        "7b2bee40a02df4ad",
+        "754f1ddafd5a42a0",
+        "011c253892412355",
+        "c28c9b63eddbf6ad",
+        "fd13580695538899",
+        "4c9ccfc9dbc11dc7",
+        "42ccfdcd05b3a575",
+        "93156d245f1bb88f",
+        "e1e58940913becc5",
+        "52a4c1b0d7f46c59",
+        "5cf251a94669edc0",
+        "a2faf6a6f5a97831",
+        "0bdc717beeceef8d"
+      ],
+      "relevant": [
+        "456bdedb639b5536",
+        "c893da7dde82ee9e",
+        "2551900a671eb9ff"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T22:50:07Z",
+          "derived": true,
+          "rule": "covered: a gold chunk is from the venue; missing_from_pool: the recorded round-1 pool holds no candidate from the venue",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "456bdedb639b5536",
+            "c893da7dde82ee9e",
+            "2551900a671eb9ff"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "456bdedb639b5536",
+            "c893da7dde82ee9e",
+            "2551900a671eb9ff"
+          ],
+          "venue_coverage": {
+            "binance": "covered",
+            "bingx": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "binance": "covered",
+        "bingx": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:56:26Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "50c484f11207732f",
+            "60146198d92b5c94",
+            "dbcc414946a41cf3",
+            "e6683ba4c189e0a6",
+            "6ffdd6d59d52b5eb",
+            "14c136b489c814a6",
+            "2c9f7dc7c7e54ecf",
+            "fd158d1d4dfa8662",
+            "ad6167f4a30342ce",
+            "ed43d55a04476d19",
+            "af7dcd9b64855c26",
+            "bddc4dd8df425396"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0148": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:24:20Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "d7ce39bbc5d6951a",
+        "bf51ca30ea8725ce",
+        "070d1d221e5258ae",
+        "453e379a237bd61e",
+        "41f87617c87b0517",
+        "282a0324bd14f312",
+        "bc30a9c2d5fc88ee",
+        "d1906a45c0032ce2",
+        "45548f68c9f904c9",
+        "bbdc719013d895a2",
+        "d87bb8721d437ba3",
+        "98dcfab8446a3172",
+        "073cc9d7cdaa19a2",
+        "07d30c512776ba30",
+        "73a7804134f1d7b6",
+        "bddc4dd8df425396",
+        "14c136b489c814a6",
+        "7c85e149356ae760",
+        "8ef4086c5565a24f",
+        "35cb2de3a173e834",
+        "6aacfb1db2a855ca",
+        "dac3f20e962b4949",
+        "d514134cef844f6e",
+        "83d52811e8535390",
+        "5681daa4302fc5df"
+      ],
+      "relevant": [
+        "bf51ca30ea8725ce",
+        "070d1d221e5258ae",
+        "453e379a237bd61e",
+        "41f87617c87b0517",
+        "282a0324bd14f312",
+        "bc30a9c2d5fc88ee",
+        "d1906a45c0032ce2",
+        "45548f68c9f904c9",
+        "bbdc719013d895a2",
+        "073cc9d7cdaa19a2",
+        "73a7804134f1d7b6",
+        "35cb2de3a173e834",
+        "6aacfb1db2a855ca"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T22:50:07Z",
+          "derived": true,
+          "rule": "covered: a gold chunk is from the venue; missing_from_pool: the recorded round-1 pool holds no candidate from the venue",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "bf51ca30ea8725ce",
+            "070d1d221e5258ae",
+            "453e379a237bd61e",
+            "41f87617c87b0517",
+            "282a0324bd14f312",
+            "bc30a9c2d5fc88ee",
+            "d1906a45c0032ce2",
+            "45548f68c9f904c9",
+            "bbdc719013d895a2",
+            "073cc9d7cdaa19a2",
+            "73a7804134f1d7b6",
+            "35cb2de3a173e834",
+            "6aacfb1db2a855ca"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "bf51ca30ea8725ce",
+            "070d1d221e5258ae",
+            "453e379a237bd61e",
+            "41f87617c87b0517",
+            "282a0324bd14f312",
+            "bc30a9c2d5fc88ee",
+            "d1906a45c0032ce2",
+            "45548f68c9f904c9",
+            "bbdc719013d895a2",
+            "073cc9d7cdaa19a2",
+            "73a7804134f1d7b6",
+            "35cb2de3a173e834",
+            "6aacfb1db2a855ca"
+          ],
+          "venue_coverage": {
+            "binance": "covered",
+            "bingx": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "binance": "covered",
+        "bingx": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:56:41Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "6213a08f1de69f7a",
+            "af7dcd9b64855c26",
+            "91e3f2f740eadb5f",
+            "ed43d55a04476d19"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0149": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:24:38Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "dbcc414946a41cf3",
+        "7b2bee40a02df4ad",
+        "93156d245f1bb88f",
+        "ed43d55a04476d19",
+        "42ccfdcd05b3a575",
+        "c28c9b63eddbf6ad",
+        "44f10772ae6ce105",
+        "185f079396a3b594",
+        "f1fd5a2f749bcc0a",
+        "b3b200e321aabe89",
+        "135bad7b236467c5",
+        "323eda2d9aa5a4e9",
+        "41b8ee592f72cfe0",
+        "cb6d7170ad7c6516",
+        "dac3f20e962b4949",
+        "088f9f76272778df",
+        "15d5455e874a57ef",
+        "bf51ca30ea8725ce",
+        "42c153e84f9ea7d7",
+        "d0506279a5aac23a",
+        "998da96cbf86855c",
+        "5681daa4302fc5df",
+        "92ea64479009ad83",
+        "8e2bb0cdb21b9bd3",
+        "08d694c731837bb0"
+      ],
+      "relevant": [
+        "93156d245f1bb88f",
+        "185f079396a3b594",
+        "cb6d7170ad7c6516",
+        "088f9f76272778df",
+        "42c153e84f9ea7d7"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T22:50:07Z",
+          "derived": true,
+          "rule": "covered: a gold chunk is from the venue; missing_from_pool: the recorded round-1 pool holds no candidate from the venue",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "93156d245f1bb88f",
+            "185f079396a3b594",
+            "cb6d7170ad7c6516",
+            "088f9f76272778df",
+            "42c153e84f9ea7d7"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "93156d245f1bb88f",
+            "185f079396a3b594",
+            "cb6d7170ad7c6516",
+            "088f9f76272778df",
+            "42c153e84f9ea7d7"
+          ],
+          "venue_coverage": {
+            "binance": "covered",
+            "bingx": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "binance": "covered",
+        "bingx": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:56:54Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "d06965216ba3a5d2",
+            "326cbb232318d246",
+            "ecb7b644f8ef6f9a",
+            "84ce4b94d4ce3817",
+            "073cc9d7cdaa19a2",
+            "699a155da591bff2",
+            "b2b1879f04eb1753"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0150": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:24:55Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "6b541a7b0efc8075",
+        "c61949183ee4f247",
+        "06a6e10457612a4d",
+        "8e76e968bdd3fd0b",
+        "ad6167f4a30342ce",
+        "3455b34811f8077f",
+        "c67e9e27a174bc6c",
+        "5cf251a94669edc0",
+        "ae9725ee605c567b",
+        "8316aa0e8a96a837",
+        "9fa150a91d06db0c",
+        "22ef5b61ca7b4df4",
+        "cbdec05a6568fe19",
+        "8cb76e33f6f455d3",
+        "385ff4e415413b3a",
+        "e1e58940913becc5",
+        "326cbb232318d246",
+        "2cce9f88dbcec59e",
+        "7de063b364ec96ac",
+        "32f691d55757a3c9",
+        "286720944123cb71",
+        "6cf47088a3f4f047",
+        "011c253892412355",
+        "2c9f7dc7c7e54ecf",
+        "5069179c7a7f3728"
+      ],
+      "relevant": [
+        "22ef5b61ca7b4df4"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T23:10:09Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "22ef5b61ca7b4df4"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "22ef5b61ca7b4df4"
+          ],
+          "venue_coverage": {
+            "binance": "missing_from_pool",
+            "bingx": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "binance": "missing_from_pool",
+        "bingx": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:57:04Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "08635bd2c07b5ec9",
+            "ac01fe04b339ce59",
+            "b5568177ee827392",
+            "6b174e0d39ed334b",
+            "554484105bf8855f",
+            "bc6b8adad2624928",
+            "17922d6d47537ad4"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0151": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:25:10Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "282a0324bd14f312",
+        "c50c85b532e3fd66",
+        "453e379a237bd61e",
+        "b7353cc9ba9f8af5",
+        "bf51ca30ea8725ce",
+        "9dfd49406e2465dd",
+        "9aff2b31094cf241",
+        "8bf4d3582f01806e",
+        "7b2bee40a02df4ad",
+        "f4d1ddc2575962ec",
+        "4a566c9ba7956dee",
+        "d575ad6c1fc2b5fb",
+        "d27f62cdc0081f12",
+        "960805df4cc60bfd",
+        "87f8adf4c1a7f915",
+        "15d5455e874a57ef",
+        "b09039cba8518e1f",
+        "4f3225f26416480b",
+        "41b8ee592f72cfe0",
+        "1f4db897d218ab7e",
+        "5476b4e037c79835",
+        "c848e436b638ae92",
+        "08d694c731837bb0",
+        "88b1704246af47e9",
+        "af111b7385ab1baa"
+      ],
+      "relevant": [
+        "282a0324bd14f312",
+        "c50c85b532e3fd66",
+        "453e379a237bd61e",
+        "b7353cc9ba9f8af5",
+        "bf51ca30ea8725ce",
+        "9aff2b31094cf241",
+        "8bf4d3582f01806e",
+        "f4d1ddc2575962ec",
+        "4a566c9ba7956dee",
+        "d575ad6c1fc2b5fb"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T22:50:07Z",
+          "derived": true,
+          "rule": "covered: a gold chunk is from the venue; missing_from_pool: the recorded round-1 pool holds no candidate from the venue",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "282a0324bd14f312",
+            "c50c85b532e3fd66",
+            "453e379a237bd61e",
+            "b7353cc9ba9f8af5",
+            "bf51ca30ea8725ce",
+            "9aff2b31094cf241",
+            "8bf4d3582f01806e",
+            "f4d1ddc2575962ec",
+            "4a566c9ba7956dee",
+            "d575ad6c1fc2b5fb"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "282a0324bd14f312",
+            "c50c85b532e3fd66",
+            "453e379a237bd61e",
+            "b7353cc9ba9f8af5",
+            "bf51ca30ea8725ce",
+            "9aff2b31094cf241",
+            "8bf4d3582f01806e",
+            "f4d1ddc2575962ec",
+            "4a566c9ba7956dee",
+            "d575ad6c1fc2b5fb"
+          ],
+          "venue_coverage": {
+            "bybit": "covered",
+            "bingx": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "bybit": "covered",
+        "bingx": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:57:33Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "dc61f1258c9a2782",
+            "c183d0d88594c16f",
+            "4e3b874bb73081e2",
+            "a9932f461710b0d6",
+            "f3f8c58046334cc8",
+            "dbcc414946a41cf3",
+            "6617adcb6b59f1b5"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0152": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:25:25Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "724cf40f7ab5ed43",
+        "15d5455e874a57ef",
+        "a9ed15d0e2912528",
+        "42ccfdcd05b3a575",
+        "8e2bb0cdb21b9bd3",
+        "87f8adf4c1a7f915",
+        "08d694c731837bb0",
+        "998da96cbf86855c",
+        "eb33e78300a86115",
+        "42c38291fe46ed96",
+        "41b8ee592f72cfe0",
+        "c848e436b638ae92",
+        "fd13580695538899",
+        "b352f5695e8e7fa4",
+        "c6a64d5563d1377d",
+        "35a0e8649f1b3c61",
+        "864e1a8bad1fce58",
+        "5681daa4302fc5df",
+        "dbcc414946a41cf3",
+        "0bdc717beeceef8d",
+        "fd384e377124ed3e",
+        "847ff1e94c580249",
+        "a5e304b550de3070",
+        "b9a1bd7cf16390c0",
+        "3a05088df511c510"
+      ],
+      "relevant": [
+        "724cf40f7ab5ed43"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T23:10:25Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "724cf40f7ab5ed43",
+            "42ccfdcd05b3a575"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "724cf40f7ab5ed43"
+          ],
+          "venue_coverage": {
+            "bybit": "missing_from_pool",
+            "bingx": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "bybit": "missing_from_pool",
+        "bingx": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:57:45Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "26a5d23b0cd22879",
+            "69eb80e605d4fb08",
+            "92ea64479009ad83",
+            "81cc1c9f5d87f8ea",
+            "f2c7fc4ed675e767",
+            "156462c0073b118a",
+            "11af0b262e719719",
+            "5ee72b7a59b1c69c",
+            "7f6416d4d40a1edf",
+            "65e24af2bcd912c0",
+            "4d0c1c3ff7cdb62b",
+            "03dfceafcb541521"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0153": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:25:38Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "023e260d685b68d5",
+        "228a0f63dccb7982",
+        "e2f083ab8fb0515e",
+        "1486d10b496017ac",
+        "61984dacf15cad42",
+        "1c0d5c9a83f1aec4",
+        "ffd79bf242ce1a8f",
+        "9dfd49406e2465dd",
+        "c34b84f3ca13e1f9",
+        "c83d962198c7e9a6",
+        "8cc751e12655d32a",
+        "f9fd251d36d9c4f4",
+        "98adaf8cecfeeee5",
+        "fc44935f236cd8f2",
+        "9e66d661684bd707",
+        "5bf6b2f8f3c302f4",
+        "488acd1cdb5ece81",
+        "e4aaec34e674909c",
+        "9d23b38bce76d190",
+        "50e8b4bc5a54a8b9",
+        "75089ee19205a95e",
+        "bda426f2372916b2",
+        "ca73fefb2b55872f",
+        "382e6822330f1ffe",
+        "76d97b9481d1993a"
+      ],
+      "relevant": [
+        "9dfd49406e2465dd",
+        "5829d730ca17484c"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T23:11:01Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "9dfd49406e2465dd"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "9dfd49406e2465dd"
+          ],
+          "venue_coverage": {
+            "bybit": "covered",
+            "bingx": "absent_in_docs"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "bybit": "covered",
+        "bingx": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:58:09Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "9e8c87a306f7784f",
+            "4e1a6adb6fb383c9",
+            "c67e9e27a174bc6c",
+            "d93652bd582c0583",
+            "d62a2bd8d404dc6e",
+            "e1e58940913becc5",
+            "22deada8e97de01b",
+            "32f691d55757a3c9",
+            "898cf6e55aa4defa",
+            "5cf251a94669edc0",
+            "1b5e9fee03d569d1",
+            "2cce9f88dbcec59e",
+            "4ab074af4f61fafb",
+            "011c253892412355",
+            "363400755b78ca63",
+            "5829d730ca17484c"
+          ],
+          "relevant": [
+            "5829d730ca17484c"
+          ],
+          "coverage_changes": [
+            {
+              "venue": "bingx",
+              "from": "absent_in_docs",
+              "to": "covered",
+              "previous_assessment_wrong": true
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "cv-0154": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:25:56Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "defeedb2c62da07a",
+        "08f2c9451c5b4dd2",
+        "6f0a14514abe5f0e",
+        "757ac448f9818fba",
+        "a94bd97101b3789b",
+        "39e5a53dcb0534fa",
+        "2743bf5c90255bc8",
+        "9a727f01d1afed3f",
+        "2ec7425bd49b60cc",
+        "36391f9fc5821e49",
+        "8b12b8678b1cf3c3",
+        "4bf5f8cb26888f80",
+        "6c388fffc982e86b",
+        "4a8edc43a00fd99a",
+        "0a68b95ec2047357",
+        "97895d6b45554838",
+        "1b4a2d57534d89a0",
+        "fb0980446b426f5e",
+        "a10fe76e11c90f25",
+        "962470b14bb24bd4",
+        "e152999e8f80c9db",
+        "01e20ad1e8ee0a4a",
+        "363636f4d8e971a6",
+        "f416e0e969e3f800",
+        "1234ff9f28020ace"
+      ],
+      "relevant": [
+        "defeedb2c62da07a",
+        "a94bd97101b3789b"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T22:50:07Z",
+          "derived": true,
+          "rule": "covered: a gold chunk is from the venue; missing_from_pool: the recorded round-1 pool holds no candidate from the venue",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "defeedb2c62da07a",
+            "a94bd97101b3789b"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "defeedb2c62da07a",
+            "a94bd97101b3789b"
+          ],
+          "venue_coverage": {
+            "uniswap": "covered",
+            "pancakeswap": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "uniswap": "covered",
+        "pancakeswap": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:58:19Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "48981a6726961b83",
+            "bb25d26bed66a927",
+            "7d8db0f6d9269b34",
+            "a10503fd7b9afb80",
+            "d5de60970c75a6f6",
+            "b8f8cba99680a9e9",
+            "021676b2a3433dbe",
+            "fa23a0b8b708e568",
+            "dab23ec5453784f7",
+            "e25377924066d5ed"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0155": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:26:13Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "3b5dfb88843becf7",
+        "a797a636ac456822",
+        "7534b367cb4e50e7",
+        "5198ecfecb4039e0",
+        "97b7ec059b018efb",
+        "851f144533516a39",
+        "8bc97063a8db2aec",
+        "8abe7b6f02f0c64f",
+        "faed710c94d17485",
+        "9b0ad34613c1b6aa",
+        "9b22822c893db61b",
+        "34547f38f752eee0",
+        "5d32b55b68314cce",
+        "9115ca4a974ab07c",
+        "38930b722743cd84",
+        "05ff34e559638c46",
+        "8d3c66c4922c587b",
+        "9f20c47df648aa36",
+        "dbee8cebab3db9c7",
+        "8b9473ac093aeeec",
+        "28396cdb46a05253",
+        "347d14a6c0761308",
+        "892d1eeaf78f0699",
+        "5013e4d63371a505",
+        "01a116b3e251fef0"
+      ],
+      "relevant": [
+        "3b5dfb88843becf7",
+        "8bc97063a8db2aec",
+        "9b22822c893db61b",
+        "892d1eeaf78f0699",
+        "08f2c9451c5b4dd2",
+        "9c517f197e767be6"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T22:50:07Z",
+          "derived": true,
+          "rule": "covered: a gold chunk is from the venue; missing_from_pool: the recorded round-1 pool holds no candidate from the venue",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "3b5dfb88843becf7",
+            "8bc97063a8db2aec",
+            "9b22822c893db61b",
+            "892d1eeaf78f0699"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "3b5dfb88843becf7",
+            "8bc97063a8db2aec",
+            "9b22822c893db61b",
+            "892d1eeaf78f0699"
+          ],
+          "venue_coverage": {
+            "uniswap": "covered",
+            "pancakeswap": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "uniswap": "covered",
+        "pancakeswap": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:58:33Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "a10fe76e11c90f25",
+            "a3523843ae7acef3",
+            "7da8a37b0b9f6da9",
+            "ad4ff27a65d3e518",
+            "58fcee5d50e6efa1",
+            "3e151c782126d77f",
+            "ef8f81c3d402365f",
+            "ff5ef394140e96a8",
+            "46cbf1c08981bb61",
+            "08f2c9451c5b4dd2",
+            "9c517f197e767be6"
+          ],
+          "relevant": [
+            "08f2c9451c5b4dd2",
+            "9c517f197e767be6"
+          ],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0156": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:26:30Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "bd8e8b5ee668c1d3",
+        "460193b755e82d98",
+        "939804afa2941b15",
+        "e95b5dd16341a820",
+        "d234c94f597c3bb8",
+        "b0e64cae0d0d8ef4",
+        "db60405f908a403e",
+        "9137dcccfdddcf02",
+        "ba68d1a10a27a364",
+        "463f2bf938d98749",
+        "8b12b8678b1cf3c3",
+        "add69c0c47e6be0f",
+        "320db850444018cf",
+        "b320344efac3ab12",
+        "a249b459b4d77f15",
+        "e26d6a1724b55bc1",
+        "263185bbb78097df",
+        "c2c5bab6922df254",
+        "2743bf5c90255bc8",
+        "2ec7425bd49b60cc",
+        "6fd0e2cd7b8f6e71",
+        "daad6e75c1d4fc2b",
+        "618a44980a7bc9f4",
+        "35715f5e66e837ec",
+        "08f2c9451c5b4dd2"
+      ],
+      "relevant": [
+        "939804afa2941b15",
+        "9137dcccfdddcf02",
+        "ba68d1a10a27a364",
+        "463f2bf938d98749"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T22:50:07Z",
+          "derived": true,
+          "rule": "covered: a gold chunk is from the venue; missing_from_pool: the recorded round-1 pool holds no candidate from the venue",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "939804afa2941b15",
+            "9137dcccfdddcf02",
+            "ba68d1a10a27a364",
+            "463f2bf938d98749"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "939804afa2941b15",
+            "9137dcccfdddcf02",
+            "ba68d1a10a27a364",
+            "463f2bf938d98749"
+          ],
+          "venue_coverage": {
+            "uniswap": "covered",
+            "pancakeswap": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "uniswap": "covered",
+        "pancakeswap": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:58:44Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "24683c114a28da42",
+            "43b673f393d26d0a",
+            "b4fe68d56f7d2374",
+            "8e5b2871bc3a2788",
+            "8ebc4d4a8899d579",
+            "191751f1054abd5f",
+            "2a43fc7e881ac78a",
+            "e19c39c4434c5987"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0157": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:26:46Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "4bf5f8cb26888f80",
+        "4fc847f76881fe64",
+        "36391f9fc5821e49",
+        "3faaa32e5c28ddec",
+        "b0ff3c8fe27ab0e5",
+        "647479e7c651674b",
+        "1b4a2d57534d89a0",
+        "d96fe7fd25d3b908",
+        "e0985b55b2f4118b",
+        "6b364b04365fca60",
+        "c29c48930b665528",
+        "9397a95f25857c98",
+        "799dc0b8817dc700",
+        "0a68b95ec2047357",
+        "c2c5bab6922df254",
+        "1234ff9f28020ace",
+        "8b12b8678b1cf3c3",
+        "a10503fd7b9afb80",
+        "0e22b52bcb1baa28",
+        "5c06ed04e25116cb",
+        "20da3ee0700b22bf",
+        "d30cd1c077c3575a",
+        "7e0d11b2814599cd",
+        "514c202a18d00be4",
+        "d5de60970c75a6f6"
+      ],
+      "relevant": [
+        "d96fe7fd25d3b908"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T23:11:34Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "d96fe7fd25d3b908"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "d96fe7fd25d3b908"
+          ],
+          "venue_coverage": {
+            "pancakeswap": "covered",
+            "uniswap": "missing_from_pool"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "pancakeswap": "covered",
+        "uniswap": "missing_from_pool"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:58:54Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "757ac448f9818fba",
+            "6bc3dcb254e73bc7",
+            "fa23a0b8b708e568",
+            "009e7d39834bf9fd",
+            "2cecc2c7ab41d743",
+            "8ebc4d4a8899d579",
+            "64a6e3e96df6d553",
+            "05d885d9b370914d",
+            "b296d28c7c0698be"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0158": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:26:57Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "032eafb523d75877",
+        "4bf5f8cb26888f80",
+        "e18eae0bbb071a5c",
+        "15e886c3bf710819",
+        "e19097e72a1e0ea8",
+        "2766e3da5ff61984",
+        "cbdc228164e1951c",
+        "733d19d46f01f9c7",
+        "fdcbf23afc6ec100",
+        "3c2b0e96bb44f0e4",
+        "246dd02a6cd76145",
+        "96e1b8fb37f036eb",
+        "f6455e855c2fb80a",
+        "62bff85a7f0f211c",
+        "bc1014de28a7fba8",
+        "05d885d9b370914d",
+        "c86bedfe65a2e9fb",
+        "3e3ba8d92c30aaa5",
+        "3e70948812553ea1",
+        "357789caf855e32b",
+        "0a15a08de3203acb",
+        "208bebd6e61278c8",
+        "cd1b0c69e9a89a5a",
+        "563c90a6be3cf641",
+        "188c4d2d6664761a"
+      ],
+      "relevant": [
+        "e18eae0bbb071a5c",
+        "375f575e8cf5c0c1"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T23:11:49Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "e18eae0bbb071a5c"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "e18eae0bbb071a5c"
+          ],
+          "venue_coverage": {
+            "uniswap": "missing_from_pool",
+            "pancakeswap": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "uniswap": "covered",
+        "pancakeswap": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:59:17Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "1b4a2d57534d89a0",
+            "d5de60970c75a6f6",
+            "d30cd1c077c3575a",
+            "3fdc781ea72c6516",
+            "b7de8ab468a82835",
+            "375f575e8cf5c0c1",
+            "1b43e0cb7e7b3381",
+            "a66e50574219e8be",
+            "ccbe5e2d3b2b7b73",
+            "f963900cb3743343",
+            "2d423b589704f59a",
+            "b0e64cae0d0d8ef4",
+            "05ef21164835548e"
+          ],
+          "relevant": [
+            "375f575e8cf5c0c1"
+          ],
+          "coverage_changes": [
+            {
+              "venue": "uniswap",
+              "from": "missing_from_pool",
+              "to": "covered",
+              "previous_assessment_wrong": false
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "cv-0159": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:27:11Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "c148cbd3736b879d",
+        "13064c2565b69005",
+        "9433d580383daaad",
+        "1b87f4679aec817a",
+        "0138656692156097",
+        "67ca23b358a2aeac",
+        "6875967e53ba97ee",
+        "5e6dcb303780622c",
+        "53e4faf74c2d161d",
+        "558dd09d9957a81e",
+        "1217567e59f77c49",
+        "bbbc45c5b058241a",
+        "b5d878ccbf092a04",
+        "04f42911d507ed9b",
+        "b4f80d3991057445",
+        "05ee3c91c85f9e00",
+        "029a1305eed7eaeb",
+        "dccbc1a39928ce81",
+        "44f4cf125e07b436",
+        "35f6bc2d78e84002",
+        "b55a7201de9be6ba",
+        "e50935b28fe1e75d",
+        "372350b9e26342eb",
+        "664221826cd2e09a",
+        "563bd999a0f64b41"
+      ],
+      "relevant": [
+        "c148cbd3736b879d",
+        "55f8610a74d5ccc3"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T23:12:19Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "c148cbd3736b879d"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "c148cbd3736b879d"
+          ],
+          "venue_coverage": {
+            "dydx": "covered",
+            "hyperliquid": "missing_from_pool"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "dydx": "covered",
+        "hyperliquid": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:59:34Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "2aff22dc9b7c50ce",
+            "dbedf023665c8840",
+            "5004ec38c5d2f1ec",
+            "6e50c56989a5b97f",
+            "1675e0e4248c604a",
+            "b5a9754018809b04",
+            "90946c5ce4ca6302",
+            "60080f8d07418c8f",
+            "c3509cd6dc7fa43e",
+            "55f8610a74d5ccc3",
+            "ed42b89b99998f41",
+            "0964d2b075f06724"
+          ],
+          "relevant": [
+            "55f8610a74d5ccc3"
+          ],
+          "coverage_changes": [
+            {
+              "venue": "hyperliquid",
+              "from": "missing_from_pool",
+              "to": "covered",
+              "previous_assessment_wrong": false
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "cv-0160": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:27:28Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "e13457673c41a404",
+        "61e8e26d8b05af0a",
+        "2059adc778bc7efa",
+        "57cf3200553d04c6",
+        "e50935b28fe1e75d",
+        "42d881d46b755594",
+        "c9623862eafdd1eb",
+        "9b8276a90b8fc5bd",
+        "d4083a436d6ff34c",
+        "563bd999a0f64b41",
+        "920bc93692e8df01",
+        "6ccf702400ef09ad",
+        "12e5b7cc1d275a16",
+        "f772c48dfe4c503c",
+        "fda7dd40772eb93d",
+        "1d0ec2924779acb7",
+        "6875967e53ba97ee",
+        "5262a8abbdd8ac49",
+        "c2182706a4563af7",
+        "372350b9e26342eb",
+        "b5a9754018809b04",
+        "cd73ace2e62d13ab",
+        "b60879889dbb072c",
+        "d6974a566103be88",
+        "2286e593246ecd01"
+      ],
+      "relevant": [
+        "e13457673c41a404",
+        "5262a8abbdd8ac49",
+        "1ef23262bd5e3f43"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T22:50:07Z",
+          "derived": true,
+          "rule": "covered: a gold chunk is from the venue; missing_from_pool: the recorded round-1 pool holds no candidate from the venue",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "e13457673c41a404",
+            "5262a8abbdd8ac49"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "e13457673c41a404",
+            "5262a8abbdd8ac49"
+          ],
+          "venue_coverage": {
+            "dydx": "covered",
+            "hyperliquid": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "dydx": "covered",
+        "hyperliquid": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:59:45Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "8d0874f32800c1e9",
+            "b1c5b829bbd2e81a",
+            "c148cbd3736b879d",
+            "876bc1483ad4b8ac",
+            "b01dd92d3c9ecde2",
+            "5ddd2987739032c3",
+            "1f0c55315bb7918a",
+            "1ef23262bd5e3f43",
+            "61ba343cd98fb611"
+          ],
+          "relevant": [
+            "1ef23262bd5e3f43"
+          ],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0161": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:27:42Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "e1e84d9b99b2562a",
+        "073d46adb307b919",
+        "8981dc033b80276d",
+        "1e8330388561ed3b",
+        "15c0a44be0c2e4e4",
+        "b5a9754018809b04",
+        "68405ec214663564",
+        "98b01e4110ccca98",
+        "0964d2b075f06724",
+        "24299d605a184600",
+        "f2abebc342af8b6f",
+        "4ca106e2cdca7cb3",
+        "a1b2a17a7240953e",
+        "26b5faa7b7898bcc",
+        "7e0e210c45714c14",
+        "b4f80d3991057445",
+        "a7827b68ce43320d",
+        "76dd537f0f94393a",
+        "d96852c8d7981b64",
+        "f586e67f52a6f2af",
+        "76b5e469d3ddca85",
+        "764a5519a57516f5",
+        "386616869c1ed076",
+        "5d0407daa99f5686",
+        "86c94185c7827ad3"
+      ],
+      "relevant": [
+        "e1e84d9b99b2562a",
+        "98e3b35e3a4fe32e"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T23:12:41Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "e1e84d9b99b2562a",
+            "8981dc033b80276d"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "e1e84d9b99b2562a"
+          ],
+          "venue_coverage": {
+            "dydx": "missing_from_pool",
+            "hyperliquid": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "dydx": "covered",
+        "hyperliquid": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T00:59:59Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "c1b23e17336faa02",
+            "c1206922eb3fb864",
+            "aac3502627e988e0",
+            "9663952541897f3e",
+            "a80f261b4620fc80",
+            "9ad8ec4caa386276",
+            "8c3a9bc385af5139",
+            "c3509cd6dc7fa43e",
+            "aa1a013a43f00ff1",
+            "94981b7fbe0959ef",
+            "98e3b35e3a4fe32e",
+            "f772c48dfe4c503c"
+          ],
+          "relevant": [
+            "98e3b35e3a4fe32e"
+          ],
+          "coverage_changes": [
+            {
+              "venue": "dydx",
+              "from": "missing_from_pool",
+              "to": "covered",
+              "previous_assessment_wrong": false
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "cv-0162": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:27:56Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "f5a91dec953cab38",
+        "5b7135865149cb85",
+        "3336838b6d2226a9",
+        "d9362cdb41462e97",
+        "de070afe85d9b710",
+        "2118ca76c68cf5e7",
+        "5db5d576fdc3b633",
+        "d0d28c0934ee233a",
+        "3249617f6fa75019",
+        "ced7de961d5bad5f",
+        "2fb5f535953ac3d1",
+        "ba003b9d2c928ed8",
+        "f772c48dfe4c503c",
+        "0514802da03b4ef1",
+        "1ca3036639d26ccc",
+        "79721a61a0a88ea7",
+        "a4e78d97b15ef91a",
+        "286c7e31da12f23b",
+        "d7e304de55be1f2f",
+        "06430f8c38844e19",
+        "c226ac0e38a8cf7f",
+        "c65d75e798e38860",
+        "c1206922eb3fb864",
+        "eb9925d80f22d373",
+        "fc1cbd0f9da76342"
+      ],
+      "relevant": [
+        "f5a91dec953cab38"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T23:13:01Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "f5a91dec953cab38"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "f5a91dec953cab38"
+          ],
+          "venue_coverage": {
+            "dydx": "absent_in_docs",
+            "hyperliquid": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "dydx": "absent_in_docs",
+        "hyperliquid": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T01:00:12Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "af39ffcf937ecdce",
+            "c930f26b06d9d3ec",
+            "b550e3936bb17e54",
+            "f595c700e02619d0",
+            "a8db880034640223",
+            "26b5faa7b7898bcc",
+            "68405ec214663564",
+            "5ad5ccdd7a387a48",
+            "d2fa551ce73a9c15",
+            "c608577e594e6b6e",
+            "33c94b601c24756a",
+            "3c1c6fc46e58a07d",
+            "e13457673c41a404",
+            "899ea105b353e83c",
+            "c51771b5351be54c"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0163": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:28:14Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "5401d2a1029c97ee",
+        "f9f60f7e969a58f8",
+        "51bb38ac8e08b940",
+        "411ce195949a5df8",
+        "640d4498f2af6c60",
+        "35d70052405dba18",
+        "719ab8ea4b483aaa",
+        "f9fc0016fa1de7f2",
+        "fddbcda18f766332",
+        "e48975197e34630c",
+        "6f61d2176961003f",
+        "dbad8717ad2e6ea4",
+        "c7375b345c209337",
+        "23fab404ff6e1900",
+        "2a9e1d0befbc3354",
+        "c891953628d0cd4f",
+        "de2af0af4f674c9d",
+        "3336838b6d2226a9",
+        "a3e818bca3cfb6f5",
+        "24299d605a184600",
+        "5b9924bb209e9f23",
+        "624c1daf1b097a09",
+        "e22842460ddcb3cb",
+        "6ccf702400ef09ad",
+        "2c66b133bc1cca98"
+      ],
+      "relevant": [
+        "5401d2a1029c97ee",
+        "411ce195949a5df8",
+        "23fab404ff6e1900"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T22:50:07Z",
+          "derived": true,
+          "rule": "covered: a gold chunk is from the venue; missing_from_pool: the recorded round-1 pool holds no candidate from the venue",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "5401d2a1029c97ee",
+            "411ce195949a5df8",
+            "23fab404ff6e1900"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "5401d2a1029c97ee",
+            "411ce195949a5df8",
+            "23fab404ff6e1900"
+          ],
+          "venue_coverage": {
+            "uniswap": "covered",
+            "hyperliquid": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "uniswap": "covered",
+        "hyperliquid": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T01:00:21Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "abfefaf1c3d8f5ae",
+            "998705bb64a56c68",
+            "6ea344d61a70b2f3",
+            "a9ed533ed0f1e317",
+            "f1149435532cbad3",
+            "78b8237f30f271fe",
+            "60080f8d07418c8f",
+            "b5dcf8d7cf5b0610",
+            "d1175f63bc486de1"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0164": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:28:31Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "35f6bc2d78e84002",
+        "6e50c56989a5b97f",
+        "3584bdce0ac5c7d1",
+        "44f4cf125e07b436",
+        "468043410cc0c27e",
+        "e93ce1a816d2867d",
+        "b5dcf8d7cf5b0610",
+        "6ccf702400ef09ad",
+        "7c4f5eadcf017845",
+        "23d5e6a5d00e3459",
+        "411ce195949a5df8",
+        "243e6d70ffb0ce18",
+        "764a5519a57516f5",
+        "d1175f63bc486de1",
+        "e29b162f766d6070",
+        "8af42d40f8ecc202",
+        "7c807540a0f9fe74",
+        "b5d878ccbf092a04",
+        "395fa4a95b3d3877",
+        "183d111cd7537a7c",
+        "220bb97ceb04e20e",
+        "ac79b983811f42b6",
+        "71fa4a64e5eda62a",
+        "998705bb64a56c68",
+        "6df59c30ad8b6bb9"
+      ],
+      "relevant": [
+        "3584bdce0ac5c7d1",
+        "23d5e6a5d00e3459"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T22:50:07Z",
+          "derived": true,
+          "rule": "covered: a gold chunk is from the venue; missing_from_pool: the recorded round-1 pool holds no candidate from the venue",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "3584bdce0ac5c7d1",
+            "23d5e6a5d00e3459"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "3584bdce0ac5c7d1",
+            "23d5e6a5d00e3459"
+          ],
+          "venue_coverage": {
+            "binance": "covered",
+            "hyperliquid": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "binance": "covered",
+        "hyperliquid": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T01:00:33Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "b2b1879f04eb1753",
+            "067a219af84d0186",
+            "137f23e3f1887126",
+            "e6683ba4c189e0a6",
+            "21538818b884fabe",
+            "6d2720f11242fa1d",
+            "dd61be4ff7293975",
+            "eee9e35b7f9f7b6b",
+            "4aa73e44aec79b7e",
+            "456bdedb639b5536",
+            "f772c48dfe4c503c"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0165": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:28:47Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "eab060194d24c369",
+        "dbcc414946a41cf3",
+        "de694e9148dfd7f2",
+        "f84b2da85154cf89",
+        "7cf003ff3a8bcb7e",
+        "7c4f5eadcf017845",
+        "fdff3cf4dcf5f52c",
+        "b3ff952be7f79e83",
+        "6ca5040c70dd1231",
+        "073d46adb307b919",
+        "e18eae0bbb071a5c",
+        "9b8276a90b8fc5bd",
+        "24299d605a184600",
+        "411ce195949a5df8",
+        "b0c810b9eed4d6a1",
+        "153a75b6e2887175",
+        "688fe563be00c461",
+        "9a9f21cfb5f2fc3f",
+        "b5dcf8d7cf5b0610",
+        "f3924cc4bc505cba",
+        "6ccf702400ef09ad",
+        "d08bbcf580dcb1c3",
+        "26bff666e1ec0f8e",
+        "60da23574f1fd943",
+        "5cf2cd39eb1fa872"
+      ],
+      "relevant": [
+        "eab060194d24c369",
+        "de694e9148dfd7f2",
+        "411ce195949a5df8"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T22:50:07Z",
+          "derived": true,
+          "rule": "covered: a gold chunk is from the venue; missing_from_pool: the recorded round-1 pool holds no candidate from the venue",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "eab060194d24c369",
+            "de694e9148dfd7f2",
+            "411ce195949a5df8"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "eab060194d24c369",
+            "de694e9148dfd7f2",
+            "411ce195949a5df8"
+          ],
+          "venue_coverage": {
+            "binance": "covered",
+            "hyperliquid": "covered"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "binance": "covered",
+        "hyperliquid": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T01:00:47Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "3b10d539ba08e959",
+            "d0083abb00906b9c",
+            "04fbcb9ff896cf84",
+            "fd158d1d4dfa8662",
+            "6df59c30ad8b6bb9",
+            "3bdc24e6fb608829",
+            "7ab52e6050ed8294",
+            "69f44e6cc370d65a",
+            "ecb7b644f8ef6f9a",
+            "b5d878ccbf092a04",
+            "c4a60bd54018d654",
+            "a831ffc2053c2aea",
+            "c4ceff5514253837"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0166": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:29:02Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "94887f33a2ce6b4e",
+        "c891953628d0cd4f",
+        "a9b53f1c2cfe1ac1",
+        "4ca106e2cdca7cb3",
+        "415a71f491bd553f",
+        "1e8330388561ed3b",
+        "11ba6f8c2de4281b",
+        "24299d605a184600",
+        "b5dcf8d7cf5b0610",
+        "764a5519a57516f5",
+        "c4ceff5514253837",
+        "5004ec38c5d2f1ec",
+        "1998e92b49fe20e3",
+        "8a1637671259f069",
+        "19a500fc9f4ddae5",
+        "fdff3cf4dcf5f52c",
+        "3f2238c50b6c29fb",
+        "af111b7385ab1baa",
+        "f9fc0016fa1de7f2",
+        "bf18e2df03166d48",
+        "a1b2a17a7240953e",
+        "a0317a80854c06db",
+        "e50935b28fe1e75d",
+        "f772c48dfe4c503c",
+        "f232683e7b86d9fa"
+      ],
+      "relevant": [
+        "5004ec38c5d2f1ec",
+        "c893da7dde82ee9e"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T22:50:07Z",
+          "derived": true,
+          "rule": "covered: a gold chunk is from the venue; missing_from_pool: the recorded round-1 pool holds no candidate from the venue",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [],
+          "previous_venue_coverage": {},
+          "relevant": [],
+          "venue_coverage": {
+            "binance": "missing_from_pool"
+          }
+        },
+        {
+          "at": "2026-09-24T23:18:15Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [],
+          "previous_venue_coverage": {
+            "binance": "missing_from_pool"
+          },
+          "relevant": [
+            "5004ec38c5d2f1ec"
+          ],
+          "venue_coverage": {
+            "hyperliquid": "covered",
+            "binance": "missing_from_pool"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "hyperliquid": "covered",
+        "binance": "covered"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T01:00:58Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "456bdedb639b5536",
+            "c893da7dde82ee9e",
+            "9372e7af283d5470",
+            "067a219af84d0186",
+            "4984c6c135a9c74f",
+            "6ccf702400ef09ad",
+            "cf444122ca55305a",
+            "8c06201c0a7504c2",
+            "593e38b974d1413c",
+            "7c4f5eadcf017845",
+            "5f45b3a8a984c216",
+            "aa12d9cea79ee8fe",
+            "5b416902e3309ff8",
+            "42d881d46b755594",
+            "1efd0904065e0705"
+          ],
+          "relevant": [
+            "c893da7dde82ee9e"
+          ],
+          "coverage_changes": [
+            {
+              "venue": "binance",
+              "from": "missing_from_pool",
+              "to": "covered",
+              "previous_assessment_wrong": false
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "cv-0167": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:29:20Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "af7dcd9b64855c26",
+        "bddc4dd8df425396",
+        "1e8330388561ed3b",
+        "7cb924ec142c553d",
+        "f0c3890799c3a5ef",
+        "e50935b28fe1e75d",
+        "91e3f2f740eadb5f",
+        "01e86268bf3bdb73",
+        "24234d84a1dac409",
+        "fc4f1b0fd2aa6ca0",
+        "14c136b489c814a6",
+        "dac3f20e962b4949",
+        "1471dca0053a4b87",
+        "8e329afd7150dc1e",
+        "ed43d55a04476d19",
+        "254a99d1726749af",
+        "94887f33a2ce6b4e",
+        "b3ff952be7f79e83",
+        "38fc729194a1d9e2",
+        "598ba3eb02b93d6a",
+        "88262a77ca0894af",
+        "c891953628d0cd4f",
+        "d6406a00265baefb",
+        "411ce195949a5df8",
+        "3f234763d742134b"
+      ],
+      "relevant": [
+        "7cb924ec142c553d",
+        "88262a77ca0894af"
+      ],
+      "corrections": [
+        {
+          "at": "2026-09-24T23:13:19Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "previous_relevant": [
+            "7cb924ec142c553d",
+            "88262a77ca0894af"
+          ],
+          "previous_venue_coverage": {},
+          "relevant": [
+            "7cb924ec142c553d",
+            "88262a77ca0894af"
+          ],
+          "venue_coverage": {
+            "binance": "covered",
+            "hyperliquid": "missing_from_pool"
+          }
+        }
+      ],
+      "venue_coverage": {
+        "binance": "covered",
+        "hyperliquid": "missing_from_pool"
+      },
+      "augmentations": [
+        {
+          "at": "2026-09-25T01:01:09Z",
+          "annotator": "lord",
+          "index_version": "2825a7160c4d09bf",
+          "source": "evals/augment_round1.jsonl",
+          "shown": [
+            "5306a63f1716511f",
+            "36b4a88a5718568b",
+            "6ffdd6d59d52b5eb",
+            "bf18e2df03166d48",
+            "028dbe8b3eb9289d",
+            "bebd46f6e900ae43",
+            "185f079396a3b594",
+            "3119b395ea657aec",
+            "6875967e53ba97ee",
+            "f84b2da85154cf89"
+          ],
+          "relevant": [],
+          "coverage_changes": []
+        }
+      ]
+    }
+  },
+  "cv-0187": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:29:34Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "ef0036db41b91a15",
+        "f3878adde0a5cc99",
+        "a27b0db1e281f53c",
+        "44c895875031555f",
+        "1b5e9fee03d569d1",
+        "9d88fd83c07ce7a8",
+        "4ad792bdafd4aece",
+        "bbdd6c592acd0d2e",
+        "940f9f56a69a6308",
+        "2bd44c08bb5cca4f",
+        "8e76e968bdd3fd0b",
+        "e7f61ba6b2f73280",
+        "2f9d65ce3ea297ea",
+        "f69e3b2e20ebae28",
+        "aac3502627e988e0",
+        "ff512190cb21b601",
+        "b76b3903f7b6ce35",
+        "c0d6e3b9a998d5b0",
+        "34d0e3714e094571",
+        "aa1a013a43f00ff1",
+        "ec31b60d2f619cea",
+        "cdffb43f5402f9a6",
+        "2bc3d5fc91e79547",
+        "cbdec05a6568fe19",
+        "785dc4554ab8b02a"
+      ],
+      "relevant": [
+        "2f9d65ce3ea297ea"
+      ]
+    }
+  },
+  "cv-0200": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:29:46Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "563bd999a0f64b41",
+        "8d0874f32800c1e9",
+        "75de6fa4a5e7a638",
+        "bb6447939def4ecc",
+        "df2d670fa587df25",
+        "b967e0d799272412",
+        "b1c5b829bbd2e81a",
+        "769705b86eec4a3f",
+        "07182fc69a9a5914",
+        "bb5e2823ce503ce4",
+        "264bbf6dee3381e4",
+        "cd73ace2e62d13ab",
+        "96a55103122a8cad",
+        "4c9ccfc9dbc11dc7",
+        "97895d6b45554838",
+        "d49fa8f9674ccdaa",
+        "987135e53b5b0907",
+        "4e1fab073ba7f642",
+        "5ee72b7a59b1c69c",
+        "4ba71d126becd885",
+        "7b2bee40a02df4ad",
+        "81cc1c9f5d87f8ea",
+        "6b541a7b0efc8075",
+        "93b1a602a150faeb",
+        "665900278b90aba8"
+      ],
+      "relevant": []
+    }
+  },
+  "cv-0201": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:30:00Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "103ce18ed46b9f04",
+        "232b545d9dd39ffd",
+        "80f76d7def5c68a3",
+        "76ae1dca5ae0a1b6",
+        "bb6770cf3757b499",
+        "3059030fc7b80da3",
+        "593f8ea7334e5456",
+        "727c27f5ecb62ee9",
+        "e53d99f4f3a5d2df",
+        "b71da1e9f48b751b",
+        "ccb548315f5a6c0c",
+        "45725771faf01e2a",
+        "55a5a88b5e4af1ae",
+        "afdf86565c04af48",
+        "c46e2a457644ec7c",
+        "460322fecfee50d6",
+        "6ffdd6d59d52b5eb",
+        "278a8fa532a67a1e",
+        "009e7d39834bf9fd",
+        "7da8a37b0b9f6da9",
+        "2962907bd7bba4a3",
+        "a43ae6b397d17d2c",
+        "8ebc4d4a8899d579",
+        "191751f1054abd5f",
+        "67eab8db14a0f9ce"
+      ],
+      "relevant": []
+    }
+  },
+  "cv-0202": {
+    "1": {
+      "annotator": "lord",
+      "annotated_at": "2026-09-24T22:30:14Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "aac3502627e988e0",
+        "b9143a90f4b341af",
+        "b38929dc7db27a1a",
+        "817919caf2388132",
+        "2c40b841911b5169",
+        "9725b120d3dec8bf",
+        "c45803ff89a47bd9",
+        "acd8957e00072f3f",
+        "5258f99b5aa7abe8",
+        "ee771035bac4f744",
+        "b654ba0413061a99",
+        "44c895875031555f",
+        "ff1d3fc18cb1bfb9",
+        "56f1a06524984f27",
+        "a05c35339ba4977d",
+        "47d04afb15afff7e",
+        "aa24b6b900196519",
+        "86cdd487696ce168",
+        "c1206922eb3fb864",
+        "a8ca6c5bb5362aeb",
+        "c922ac3a29958c17",
+        "af39ffcf937ecdce",
+        "2a6aae3733844aa4",
+        "47252039578c1fd0",
+        "c6de2c2268036f2c"
+      ],
+      "relevant": []
+    }
+  }
+}

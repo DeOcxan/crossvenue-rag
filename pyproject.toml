@@ -1,0 +1,241 @@
+[project]
+name = "crossvenue-rag"
+version = "1.0.0"
+description = "RAG over CEX/DEX API documentation, with retrieval-reliability evaluation"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Artem Mokrushin" }]
+dependencies = [
+    "pydantic>=2.9",
+    "pydantic-settings>=2.6",
+    "pyyaml>=6.0",
+    "typer>=0.15",
+    "rich>=13.9",
+    "httpx>=0.28",
+    "sentence-transformers>=3.3",
+    # Imported directly (tokenizer, TF-IDF, device selection), not only
+    # through sentence-transformers, so declared.
+    "transformers>=5.17",
+    "torch>=2.14",
+    "scikit-learn>=1.9",
+    "bm25s>=0.2.6",
+    "PyStemmer>=2.2",
+    "psycopg[binary]>=3.2",
+    "pgvector>=0.3.6",
+    "numpy>=1.26",
+    "fastapi>=0.141.1",
+    "uvicorn>=0.54.0",
+]
+
+[project.optional-dependencies]
+figures = [
+    "matplotlib>=3.9",
+]
+
+[dependency-groups]
+dev = [
+    "import-linter>=2.15",
+    "mypy>=1.8",
+    "pytest>=8.3",
+    "ruff>=0.8",
+    "types-pyyaml>=6.0.12.20260906",
+]
+
+[project.scripts]
+crossvenue = "crossvenue_rag.cli:main"
+
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/crossvenue_rag"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q -m 'not slow'"
+# `slow`: the full mutation test of the documents' checks; `make check` and
+# `make reproduce` run it, `make test` does not.
+markers = ["slow: the full mutation test of the documents' checks (make check, make reproduce)"]
+# So test modules can import the shared fakes from tests.conftest.
+pythonpath = ["."]
+# fastapi's TestClient wraps httpx, which Starlette deprecates in favor of a
+# package this project does not use; the service tests need the client and
+# nothing else in the warning applies.
+filterwarnings = [
+    "ignore:Using `httpx` with `starlette.testclient` is deprecated",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+# data/ holds the fetched corpus, which contains other people's code samples.
+extend-exclude = ["data", "results"]
+
+[tool.ruff.lint]
+# docs/code-style.md, Checks: C90 rule 9, PLR0913 rule 10, FBT rule 11, PLR2004 rule 12,
+# BLE rule 15, S101 rule 16, D rules 20 and 21, ERA rule 23, T20 rule 13, PLC0415 rule 30.
+select = [
+    "E", "F", "I", "UP", "B", "SIM", "RUF",
+    "C90", "PLR0913", "FBT", "PLR2004", "BLE", "S101", "T20", "ERA", "D", "PLC0415",
+]
+ignore = ["B008"]  # typer uses function calls in argument defaults
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.pylint]
+max-args = 6
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.isort]
+known-first-party = ["crossvenue_rag", "tests"]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests assert (docs/code-style.md rule 16); a test's name states its behavior (rule 28), so
+# tests need no docstrings (rules 20 and 21, ruff D); an assertion compares with the literal
+# value it expects (rule 12), and a test may import inside the test function (rule 30).
+"tests/*" = ["D", "S101", "PLR2004", "PLC0415"]
+# The command modules: each parameter of a command function is a command-line option and
+# each boolean a command-line flag (docs/code-style.md rules 10 and 11). Not debt.
+"src/crossvenue_rag/cli/{corpus,dataset,evaluate,generation,index,labeling,reporting}.py" = [
+    "PLR0913",
+    "FBT",
+]
+# Imports deferred for start-up time: each module defers psycopg, pgvector, bm25s, Stemmer,
+# torch, sentence_transformers, transformers, scipy or scikit-learn, or a module that loads
+# them, and says so in its docstring (docs/code-style.md rule 30).
+"src/crossvenue_rag/cli/reporting.py" = ["PLC0415"]
+"src/crossvenue_rag/corpus/tokens.py" = ["PLC0415"]
+"src/crossvenue_rag/index/{bm25_index,embeddings,store}.py" = ["PLC0415"]
+"src/crossvenue_rag/retrieval/{rerank,retriever}.py" = ["PLC0415"]
+
+# Import contracts, checked by `lint-imports` in `make lint` and CI.
+[tool.importlinter]
+root_package = "crossvenue_rag"
+
+[[tool.importlinter.contracts]]
+name = "Layers: cli | service > labeling | reporting > generation > dataset | evaluation > retrieval > index > corpus"
+type = "layers"
+layers = [
+    "crossvenue_rag.cli | crossvenue_rag.service",
+    "crossvenue_rag.labeling | crossvenue_rag.reporting",
+    "crossvenue_rag.generation",
+    "crossvenue_rag.dataset | crossvenue_rag.evaluation",
+    "crossvenue_rag.retrieval",
+    "crossvenue_rag.index",
+    "crossvenue_rag.corpus",
+]
+
+[[tool.importlinter.contracts]]
+name = "Root modules are the foundation: they import no subpackage"
+type = "forbidden"
+source_modules = [
+    "crossvenue_rag.config",
+    "crossvenue_rag.config_section",
+    "crossvenue_rag.config_pipeline",
+    "crossvenue_rag.config_eval",
+    "crossvenue_rag.config_generation",
+    "crossvenue_rag.config_loading",
+    "crossvenue_rag.models",
+    "crossvenue_rag.errors",
+    "crossvenue_rag.stats",
+    "crossvenue_rag.index_version",
+    "crossvenue_rag.clock",
+    "crossvenue_rag.jsonl",
+    "crossvenue_rag.metric_direction",
+    "crossvenue_rag.formatting",
+    "crossvenue_rag.listing",
+    "crossvenue_rag.hashes",
+    "crossvenue_rag.run_files",
+    "crossvenue_rag.retries",
+    "crossvenue_rag.yaml_files",
+    "crossvenue_rag.confined_paths",
+]
+forbidden_modules = [
+    "crossvenue_rag.corpus",
+    "crossvenue_rag.index",
+    "crossvenue_rag.retrieval",
+    "crossvenue_rag.evaluation",
+    "crossvenue_rag.dataset",
+    "crossvenue_rag.generation",
+    "crossvenue_rag.labeling",
+    "crossvenue_rag.reporting",
+    "crossvenue_rag.cli",
+    "crossvenue_rag.service",
+]
+
+[[tool.importlinter.contracts]]
+name = "No import cycles between modules of a subpackage"
+type = "acyclic_siblings"
+ancestors = [
+    "crossvenue_rag.corpus",
+    "crossvenue_rag.index",
+    "crossvenue_rag.retrieval",
+    "crossvenue_rag.evaluation",
+    "crossvenue_rag.dataset",
+    "crossvenue_rag.generation",
+    "crossvenue_rag.labeling",
+    "crossvenue_rag.reporting",
+    "crossvenue_rag.reporting.claims",
+    "crossvenue_rag.reporting.claims.adr",
+    "crossvenue_rag.reporting.claims.findings",
+    "crossvenue_rag.reporting.claims.methodology",
+    "crossvenue_rag.reporting.compute",
+    "crossvenue_rag.cli",
+    "crossvenue_rag.service",
+]
+
+[[tool.importlinter.contracts]]
+name = "Compute never reads a claim: claims call compute, not the other way"
+type = "forbidden"
+source_modules = ["crossvenue_rag.reporting.compute"]
+forbidden_modules = ["crossvenue_rag.reporting.claims"]
+
+# Type checking, in `make lint` and CI. Third-party packages without type
+# information are listed by name, each silenced on its own.
+[tool.mypy]
+# The version CI tests and requires-python names.
+python_version = "3.12"
+files = ["src", "tests", "scripts"]
+# Strict for src/ and scripts/ (docs/code-style.md rule 18): the flags --strict implies.
+warn_unused_configs = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+check_untyped_defs = true
+disallow_any_generics = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_untyped_decorators = true
+warn_return_any = true
+no_implicit_reexport = true
+strict_equality = true
+extra_checks = true
+# Reads pydantic models as pydantic builds them (defaults in Field, aliases).
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+# tests/ are checked without the strict flags (docs/code-style.md rule 19).
+module = ["tests", "tests.*"]
+disallow_any_generics = false
+disallow_subclassing_any = false
+disallow_untyped_calls = false
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+disallow_untyped_decorators = false
+warn_return_any = false
+no_implicit_reexport = false
+strict_equality = false
+extra_checks = false
+
+[[tool.mypy.overrides]]
+# No stubs and no py.typed: bm25s, Stemmer (PyStemmer), pgvector, sklearn.
+module = ["bm25s.*", "Stemmer", "pgvector.*", "sklearn.*"]
+ignore_missing_imports = true

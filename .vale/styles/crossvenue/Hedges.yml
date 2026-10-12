@@ -1,0 +1,28 @@
+# docs/style.md rules 17 and 23: quantifiers without their count, and stacked
+# or unjustified hedges.
+extends: existence
+message: "'%s': give the count, or keep one hedge the data justify."
+level: warning
+ignorecase: true
+tokens:
+  # rule 17
+  - almost always
+  - almost never
+  - almost all
+  - nearly all
+  - rarely
+  - usually
+  - mostly
+  - most of the
+  # Bare "most" before a noun this project counts. "The most expensive" and
+  # "at most 6" are a superlative and a bound, and do not match.
+  - 'most (?:questions|answers|methods|chunks|venues|runs|cases|claims|pages|documents|configurations|comparisons|judgments|labels|pools)'
+  - the vast majority
+  - the majority of
+  # rule 23
+  - could potentially
+  - may possibly
+  - might possibly
+  - could possibly
+  - arguably
+  - seemingly

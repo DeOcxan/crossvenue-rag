@@ -1,0 +1,26 @@
+---
+id: fee-tiers
+title: Fee Tiers
+---
+
+import { FeeTable } from '../../components/FeeTable'
+export const meta = { hidden: false }
+
+# Fee Tiers
+
+{/* the table below is generated from the subgraph */}
+
+<FeeTable chain="mainnet" />
+
+Uniswap v3 supports four fee tiers: 0.01%, 0.05%, 0.30% and 1.00%.
+
+<details>
+  <summary>Why four tiers?</summary>
+  Stable pairs need a tier far below what volatile pairs can sustain.
+</details>
+
+```solidity
+function createPool(address tokenA, address tokenB, uint24 fee)
+    external
+    returns (address pool);
+```

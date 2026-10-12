@@ -1,0 +1,287 @@
+# Corpus registry. One entry per venue; `crossvenue fetch` reads this file and
+# writes data/manifest.csv.
+#
+# kind: git       clone of a documentation repo at depth 1 (--depth 1), without
+#                 blobs until checkout (--filter=blob:none), sparse where
+#                 sparse_paths is set. A recorded commit is fetched by its sha
+#                 at depth 1 into a clone made with --no-checkout, then checked out.
+# kind: gitbook   GitBook space that publishes /llms.txt (an index of per-page
+#                 .md URLs). The fetcher reads those .md files, so no HTML
+#                 scraping heuristic is in the loop.
+#
+# license: the *factual* license found in the repo (LICENSE file, package.json,
+# or GitHub's detected SPDX id). "no license found" is recorded verbatim when
+# there is none: the absence of a license is a fact about the corpus.
+#
+# metadata: structural fields read off each document's path and headings:
+# environment (mainnet|testnet), api_version (free-form, for example v5), product
+# (spot|perp), doc_type (reference|guide|faq|changelog). Per field, a venue's
+# own rules are tried in order, then the global block at the bottom of this
+# file; the first match wins and no match leaves the field null. A rule is
+#   {value: ..., path: <regex on doc_path>, heading: <regex on any one heading>}
+# `value` can use `{1}` for a capture group of `path`; `value: null` stops the
+# search. None of the six retrieval methods reads these fields;
+# `retrieve(..., filters=...)` does.
+#
+# aliases: how questions name the venue, for the venue_split retrieval method.
+# Regular expressions, matched case-insensitively as whole words. `bnb` is
+# deliberately absent: "BNB Chain" occurs in 101 PancakeSwap chunks, 2 Uniswap
+# chunks and no Binance chunk (`crossvenue count-term "BNB Chain"`).
+
+sources:
+  # ---------------------------------------------------------------- CEX ----
+  - venue: ccxt
+    venue_type: cex
+    aliases: ['ccxt']
+    kind: git
+    repo: https://github.com/ccxt/ccxt
+    ref: master
+    license: MIT
+    homepage: https://docs.ccxt.com/
+    # Sparse checkout pulls only the wiki, and --filter=blob:none keeps the
+    # generated SDKs out (size: docs/reference/corpus.md, Collection process).
+    sparse_paths:
+      - wiki
+    include:
+      - "wiki/Manual.md"
+      - "wiki/FAQ.md"
+      - "wiki/ccxt.pro.manual.md"
+      # Per-exchange pages for exactly the venues in this corpus: one unified
+      # vocabulary rendered per venue with different limits underneath.
+      - "wiki/exchanges/binance.md"
+      - "wiki/exchanges/bybit.md"
+      - "wiki/exchanges/bingx.md"
+      - "wiki/exchanges/dydx.md"
+      - "wiki/exchanges/hyperliquid.md"
+    metadata:
+      doc_type:
+        - {value: faq, path: '^wiki/FAQ\.md$'}
+        - {value: reference, path: '^wiki/exchanges/'}
+        - {value: guide, path: '(?i)manual\.md$'}
+    notes: >-
+      A client library, not a venue. Kept as a source because it is the
+      canonical example of the thesis: identical wording ("createOrder",
+      "fetchFundingRate") mapped onto venues whose semantics differ.
+      venue_type is cex because its unified API is modeled on CEX semantics.
+
+  - venue: bybit
+    venue_type: cex
+    aliases: ['bybit', 'by bit']
+    kind: git
+    repo: https://github.com/bybit-exchange/docs
+    ref: master
+    license: no license found
+    homepage: https://bybit-exchange.github.io/docs/
+    sparse_paths:
+      - docs
+    include:
+      - "docs/**/*.md"
+      - "docs/**/*.mdx"
+    exclude:
+      # Docusaurus partials; included by the pages that use them, so indexing them
+      # separately would double the text.
+      - "docs/**/_*"
+      # Dated release notes. One 129 KB file that names every endpoint and every
+      # limit Bybit has ever changed, so it ranks for every rate-limit question
+      # while answering none of them.
+      - "docs/changelog/**"
+      - "docs/**/ip-changelog.mdx"
+      # The interactive API explorer: OpenAPI JSON stuffed into frontmatter plus
+      # MDX component scaffolding. Nothing survives normalization but the title,
+      # and every page duplicates a real reference page under docs/v5.
+      - "docs/api-explorer/**"
+    metadata:
+      api_version:
+        - {value: '{1}', path: '^docs/(v\d+)/'}
+      product:
+        # Every other v5 page takes a `category` covering spot and derivatives
+        # alike, so the path does not say; null is the honest value there.
+        - {value: spot, path: '^docs/v5/spot-margin-uta/'}
+      doc_type:
+        - {value: guide, path: '/(guide|guideline|intro|introduction)\.mdx?$'}
+        - {value: reference, path: '^docs/(v5|v3|fix-api|p2p)/'}
+    notes: >-
+      Official Docusaurus source for the Bybit v5 API docs. docs/v3 is kept
+      despite being superseded: within-venue version drift is a real retrieval
+      hazard and only seven documents wide here.
+
+  - venue: binance
+    venue_type: cex
+    aliases: ['binance']
+    kind: git
+    repo: https://github.com/binance/binance-spot-api-docs
+    ref: master
+    license: no license found
+    homepage: https://developers.binance.com/docs/binance-spot-api-docs
+    include:
+      - "*.md"
+      - "faqs/*.md"
+      - "fix/*.md"
+      - "sbe/*.md"
+      - "testnet/*.md"
+    exclude:
+      - "**/*_CN.md"
+      - "README*.md"
+      - "CHANGELOG*.md"
+    metadata:
+      environment:
+        - {value: testnet, path: '^testnet/'}
+        # demo-mode/ is a third environment (demo-api.binance.com), neither
+        # production nor the testnet; forcing it into either would be wrong.
+        - {value: null, path: '^demo-mode/'}
+        - {value: mainnet, path: '.'}
+      product:
+        - {value: spot, path: '.'}
+      doc_type:
+        - {value: changelog, path: '(^|/)CHANGELOG'}
+        - {value: null, path: 'TERMS-OF-USE'}
+        - {value: faq, path: '^faqs/'}
+        - {value: reference, path: '\.md$'}
+    notes: >-
+      No LICENSE file; the repo ships PROD-TERMS-OF-USE.md instead. Binance
+      derivatives docs have no public git source (developers.binance.com is a
+      compiled SPA with no llms.txt), so this corpus covers Binance spot only.
+      testnet/ is kept deliberately although it is a near-verbatim copy of the
+      mainnet pages (group counts: docs/reference/corpus.md, Duplicate text).
+      Exact deduplication stores each byte-identical pair once,
+      citing the mainnet page with the testnet page kept in `sources`; the
+      testnet chunks whose text differs stay separate, and they are the
+      version-confusion trap.
+
+  - venue: bingx
+    venue_type: cex
+    aliases: ['bingx', 'bing x']
+    kind: git
+    repo: https://github.com/BingX-API/api-ai-skills
+    ref: main
+    license: MIT
+    homepage: https://bingx-api.github.io/docs/
+    include:
+      - "skills/**/api-reference.md"
+      - "skills/references/*.md"
+    metadata:
+      product:
+        - {value: spot, path: '^skills/(spot|copytrade-spot)-?'}
+        - {value: perp, path: '^skills/(swap|cswap|copytrade-swap)-?'}
+      doc_type:
+        - {value: reference, path: '^skills/.*\.md$'}
+    notes: >-
+      The only machine-readable official BingX source: per-domain endpoint
+      references plus shared pages for rate limits, error codes and
+      authentication. Why the other BingX sources are not used:
+      docs/reference/corpus.md, Known gaps.
+
+  # ---------------------------------------------------------------- DEX ----
+  - venue: uniswap
+    venue_type: dex
+    aliases: ['uniswap', 'uniswapx', 'uni swap', 'uni', 'uni ?v[234]']
+    kind: git
+    repo: https://github.com/Uniswap/docs
+    ref: main
+    license: MIT
+    homepage: https://docs.uniswap.org/
+    sparse_paths:
+      - content
+    include:
+      - "content/protocols/**/*.md"
+      - "content/protocols/**/*.mdx"
+      - "content/sdks/**/*.md"
+      - "content/sdks/**/*.mdx"
+      - "content/trading/**/*.md"
+      - "content/trading/**/*.mdx"
+      - "content/liquidity/**/*.md"
+      - "content/liquidity/**/*.mdx"
+    metadata:
+      api_version:
+        - {value: '{1}', path: '^content/(?:protocols|sdks)/(v\d)/'}
+      product:
+        - {value: spot, path: '^content/(protocols/(v2|v3|v4|universal-router)/|sdks/|trading/|liquidity/uniswapx/)'}
+      doc_type:
+        - {value: faq, path: '(faqs?|common-errors)\.mdx?$'}
+        - {value: reference, path: '(deployments|audits|security|supported-chains)(/|\.mdx?$)'}
+        - {value: guide, path: '/(guides|concepts|filling)/|(overview|getting-started|integration-guide|resources)\.mdx?$'}
+    notes: v2/v3/v4 protocol docs and the SDK/API docs.
+
+  - venue: pancakeswap
+    venue_type: dex
+    aliases: ['pancakeswap', 'pancake ?swap', 'pancake', 'pcs']
+    kind: gitbook
+    llms_index: https://docs.pancakeswap.finance/llms.txt
+    license: no license found
+    homepage: https://docs.pancakeswap.finance/
+    # llms.txt lists every translation under its own "## <language>" heading.
+    llms_section: English
+    metadata:
+      api_version:
+        - {value: '{1}', path: 'perpetual-trading-(v\d)'}
+        - {value: infinity, path: '^pancakeswap-infinity'}
+        - {value: '{1}', path: 'pancakeswap-(v\d)\b'}
+      product:
+        - {value: perp, path: '^perpetual-trading'}
+        - {value: spot, path: '^(pancakeswap-exchange|limit-orders|stableswap|crosschain-swaps|pancakeswap-x|pancakeswap-infinity|pancakeswap-auto-slippage|pancakeswap-mev-guard|trading-faq)'}
+      doc_type:
+        - {value: faq, path: 'faq'}
+        - {value: guide, path: '^(how-to-guides|how-to-use-|building-trading-agents)'}
+        - {value: reference, path: '^(developers|audits)'}
+    notes: >-
+      The built-in adversarial control: v2 and v3 are forks of Uniswap v2 and v3,
+      documented in PancakeSwap's own text (similarity to Uniswap:
+      docs/results/findings.md, PancakeSwap is not a lexical duplicate of
+      Uniswap). robots.txt allows all crawling (Content-Signal: ai-train=yes).
+
+  - venue: hyperliquid
+    venue_type: dex
+    aliases: ['hyperliquid', 'hyper ?liquid', 'hl', 'hyperevm', 'hypercore']
+    kind: gitbook
+    llms_index: https://hyperliquid.gitbook.io/hyperliquid-docs/llms.txt
+    metadata:
+      product:
+        - {value: perp, path: '^trading/(perpetual-assets|funding|margin|liquidations|hyperps|index-perpetual|auto-deleveraging|contract-specifications|entry-price|portfolio-margin)|perpetuals'}
+      doc_type:
+        - {value: faq, path: '^support/faq'}
+        - {value: reference, path: '^for-developers/api'}
+        - {value: guide, path: '^(for-developers|builder-tools|onboarding|trading|hypercore|hyperevm|validators)'}
+    license: no license found
+    homepage: https://hyperliquid.gitbook.io/hyperliquid-docs
+    notes: >-
+      No documentation git repo exists; GitBook's llms.txt gives per-page
+      markdown, which is the source the site itself renders.
+      robots.txt allows all crawling (Content-Signal: ai-train=yes).
+
+  - venue: dydx
+    venue_type: dex
+    aliases: ['dydx', 'dy/dx']
+    kind: git
+    repo: https://github.com/dydxprotocol/v4-documentation
+    ref: main
+    license: no license found
+    homepage: https://docs.dydx.xyz/
+    sparse_paths:
+      - docs/pages
+    include:
+      - "docs/pages/**/*.md"
+      - "docs/pages/**/*.mdx"
+    metadata:
+      environment:
+        # The faucet exists only on testnet.
+        - {value: testnet, path: '^docs/pages/faucet-client/'}
+      api_version:
+        - {value: v4, path: '.'}  # the source is the v4 documentation repo
+      product:
+        - {value: perp, path: '.'}  # dYdX v4 lists perpetuals only
+      doc_type:
+        - {value: faq, path: 'faq'}
+        - {value: reference, path: '^docs/pages/(types|indexer-client|node-client|faucet-client|noble-client)/'}
+        - {value: guide, path: '^docs/pages/(concepts|interaction|nodes)/'}
+    notes: >-
+      v4 (the standalone chain) documentation. old-docs/ is excluded: it
+      describes v3, a different system with the same nouns.
+
+# Global rules, tried after every venue's own. Headings only: a section headed
+# "Testnet Deployments" or "Mainnet Margin Tiers" says which environment its
+# chunk is about on any venue. Anchored at the start of a heading so "Local Node
+# with a Mainnet Fork" and "How DutchV3 differs from mainnet" do not fire.
+metadata:
+  environment:
+    - {value: testnet, heading: '(?i)^\W*testnets?\b|testnet[- ]only|\(testnet'}
+    - {value: mainnet, heading: '(?i)^\W*(ethereum )?mainnet\b(?! fork)'}

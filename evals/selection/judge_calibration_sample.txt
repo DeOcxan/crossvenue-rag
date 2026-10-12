@@ -1,0 +1,43 @@
+# Judge calibration sample: 40 answers from results/20260925T175128Z_answers, stratified by configuration and category, seed 20260924.
+# Excluded questions (judge prompt revised on them): cv-0003 cv-0045 cv-0081 cv-0105 cv-0122.
+# Written by `crossvenue rate-sample`; read by `crossvenue rate`.
+gemini@venue_split:cv-0008  gemini@venue_split|fact
+gemini@venue_split:cv-0047  gemini@venue_split|comparison
+gemini@venue_split:cv-0061  gemini@venue_split|comparison
+gemini@venue_split:cv-0070  gemini@venue_split|multihop
+gemini@venue_split:cv-0090  gemini@venue_split|adversarial
+gemini@venue_split:cv-0117  gemini@venue_split|unanswerable
+gemini@venue_split:cv-0127  gemini@venue_split|ambiguous
+gemini@venue_split:cv-0130  gemini@venue_split|version_sensitive
+gemini@venue_split:cv-0140  gemini@venue_split|noisy
+gemini@venue_split:cv-0142  gemini@venue_split|comparison
+gemini@venue_split:cv-0146  gemini@venue_split|comparison
+gemini@venue_split:cv-0165  gemini@venue_split|comparison
+qwen@venue_split:cv-0006  qwen@venue_split|fact
+qwen@venue_split:cv-0048  qwen@venue_split|comparison
+qwen@venue_split:cv-0058  qwen@venue_split|comparison
+qwen@venue_split:cv-0060  qwen@venue_split|comparison
+qwen@venue_split:cv-0071  qwen@venue_split|multihop
+qwen@venue_split:cv-0089  qwen@venue_split|adversarial
+qwen@venue_split:cv-0121  qwen@venue_split|unanswerable
+qwen@venue_split:cv-0125  qwen@venue_split|ambiguous
+qwen@venue_split:cv-0131  qwen@venue_split|version_sensitive
+qwen@venue_split:cv-0138  qwen@venue_split|noisy
+qwen@venue_split:cv-0148  qwen@venue_split|comparison
+mercury@venue_split:cv-0004  mercury@venue_split|fact
+mercury@venue_split:cv-0047  mercury@venue_split|comparison
+mercury@venue_split:cv-0057  mercury@venue_split|comparison
+mercury@venue_split:cv-0059  mercury@venue_split|comparison
+mercury@venue_split:cv-0060  mercury@venue_split|comparison
+mercury@venue_split:cv-0067  mercury@venue_split|multihop
+mercury@venue_split:cv-0089  mercury@venue_split|adversarial
+mercury@venue_split:cv-0127  mercury@venue_split|ambiguous
+mercury@venue_split:cv-0130  mercury@venue_split|version_sensitive
+mercury@venue_split:cv-0135  mercury@venue_split|noisy
+mercury@venue_split:cv-0165  mercury@venue_split|comparison
+mercury@venue_split:cv-0202  mercury@venue_split|unanswerable
+gemini@hybrid_rerank:cv-0043  gemini@hybrid_rerank|comparison
+gemini@hybrid_rerank:cv-0119  gemini@hybrid_rerank|unanswerable
+gemini@hybrid_rerank:cv-0153  gemini@hybrid_rerank|comparison
+gemini@hybrid_rerank:cv-0160  gemini@hybrid_rerank|comparison
+gemini@hybrid_rerank:cv-0162  gemini@hybrid_rerank|comparison

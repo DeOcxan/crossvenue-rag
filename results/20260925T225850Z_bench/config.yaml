@@ -1,0 +1,154 @@
+paths:
+  sources: data/sources.yaml
+  manifest: data/manifest.csv
+  raw: data/raw
+  processed: data/processed
+  index: data/index
+  results: results
+chunking:
+  max_tokens: 450
+  overlap_tokens: 60
+  min_tokens: 40
+  keep_code_blocks_intact: true
+  max_code_block_tokens: 1200
+embedding:
+  model_name: BAAI/bge-base-en-v1.5
+  dimension: 768
+  query_prefix: 'Represent this sentence for searching relevant passages: '
+  document_prefix: ''
+  normalize: true
+  batch_size: 32
+  device: null
+reranker:
+  model_name: BAAI/bge-reranker-base
+  top_n: 50
+  batch_size: 16
+retrieval:
+  k: 10
+  dense_candidates: 50
+  bm25_candidates: 50
+  rrf_k: 60
+store:
+  dsn: postgresql://crossvenue:crossvenue@localhost:5433/crossvenue
+  table: chunks
+  hnsw_m: 16
+  hnsw_ef_construction: 64
+  hnsw_ef_search: 100
+fetch:
+  request_delay_seconds: 0.5
+  timeout_seconds: 30.0
+  user_agent: crossvenue-rag/0.1 (research corpus builder)
+  max_retries: 3
+eval:
+  questions: evals/questions.jsonl
+  methods:
+  - bm25
+  - dense
+  - hybrid
+  - hybrid_rerank
+  - venue_split
+  - venue_split_oracle
+  k_values:
+  - 1
+  - 5
+  - 10
+  breakdowns:
+  - venue
+  - qtype
+  - category
+  duplicate_threshold: 0.92
+  pool_depth_per_method: 20
+  pool_display: 25
+  paired_comparisons:
+  - - hybrid_rerank
+    - hybrid
+  - - venue_split
+    - hybrid_rerank
+  - - venue_split_oracle
+    - hybrid_rerank
+  - - venue_split_oracle
+    - venue_split
+  - - hybrid_rerank
+    - dense
+  - - hybrid_rerank
+    - bm25
+  primary_comparison:
+  - venue_split
+  - hybrid_rerank
+  - venue_coverage@10
+  - comparison
+  bootstrap_resamples: 10000
+  bootstrap_seed: 20260924
+generation:
+  top_k: 8
+  cache_dir: data/cache/llm
+  max_retries: 5
+  max_invalid_retries: 2
+  backoff_seconds: 2.0
+  budget_usd: 3.0
+  timeout_seconds: 180.0
+  generator_prompt: prompts/generator.md
+  answer_schema_version: 2
+  judge_prompt: prompts/judge.md
+  generators:
+    gemini:
+      model: google/gemini-3.8-flash
+      provider_order:
+      - google-vertex/global
+      temperature_supported: false
+    qwen:
+      model: qwen/qwen3.8-27b
+      provider_order:
+      - deepinfra/bf16
+      temperature_supported: true
+    mercury:
+      model: inception/mercury-2.5
+      provider_order: []
+      temperature_supported: true
+  generator_params:
+    reasoning_effort: minimal
+    max_tokens: 4000
+    temperature: 0.0
+  judges:
+    sonnet:
+      model: anthropic/claude-sonnet-5
+      provider_order:
+      - anthropic
+      temperature_supported: true
+    opus:
+      model: anthropic/claude-opus-5.5
+      provider_order:
+      - anthropic
+      temperature_supported: true
+  judge: null
+  judge_params:
+    effort: medium
+    max_tokens: 8000
+  matrix:
+  - name: gemini@venue_split
+    generator: gemini
+    retriever: venue_split
+  - name: qwen@venue_split
+    generator: qwen
+    retriever: venue_split
+  - name: mercury@venue_split
+    generator: mercury
+    retriever: venue_split
+  - name: gemini@hybrid_rerank
+    generator: gemini
+    retriever: hybrid_rerank
+  primary_pair:
+  - gemini@venue_split
+  - gemini@hybrid_rerank
+  primary_metrics:
+  - venue_attribution_error
+  - coverage
+  primary_scope: comparison
+  calibration_size: 40
+  calibration_seed: 20260924
+  calibration_exclude:
+  - cv-0003
+  - cv-0045
+  - cv-0081
+  - cv-0105
+  - cv-0122

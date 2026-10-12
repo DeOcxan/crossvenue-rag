@@ -1,0 +1,22 @@
+services:
+  postgres:
+    image: pgvector/pgvector:0.8.6-pg17
+    container_name: crossvenue-postgres
+    environment:
+      POSTGRES_USER: crossvenue
+      POSTGRES_PASSWORD: crossvenue
+      POSTGRES_DB: crossvenue
+    # 5433 on the host, so a local Postgres on the default 5432 does not collide.
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U crossvenue -d crossvenue"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    shm_size: 512mb
+
+volumes:
+  pgdata:

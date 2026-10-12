@@ -1,0 +1,218 @@
+[
+  {
+    "method": "bm25",
+    "questions": 114,
+    "labelled_questions": 90,
+    "metrics": {
+      "mrr": 0.4693,
+      "recall@1": 0.1644,
+      "precision@1": 0.3667,
+      "ndcg@1": 0.3667,
+      "recall@5": 0.3301,
+      "precision@5": 0.1933,
+      "ndcg@5": 0.3406,
+      "recall@10": 0.5081,
+      "precision@10": 0.1578,
+      "ndcg@10": 0.4072
+    },
+    "latency_p50_ms": 0.1,
+    "latency_p95_ms": 0.2,
+    "step_latency_p50_ms": {
+      "encode_ms": 0.0,
+      "search_ms": 0.1,
+      "fuse_ms": 0.0,
+      "rerank_ms": 0.0
+    },
+    "multi_venue_questions": 59,
+    "venue_metrics": {
+      "venue_coverage@1": 0.0,
+      "venue_coverage@5": 0.4068,
+      "venue_coverage@10": 0.661
+    },
+    "judged_metrics": {
+      "unjudged@1": 0.0,
+      "unjudged@5": 0.0044,
+      "unjudged@10": 0.0756
+    }
+  },
+  {
+    "method": "dense",
+    "questions": 114,
+    "labelled_questions": 90,
+    "metrics": {
+      "mrr": 0.4019,
+      "recall@1": 0.1472,
+      "precision@1": 0.2778,
+      "ndcg@1": 0.2778,
+      "recall@5": 0.3271,
+      "precision@5": 0.16,
+      "ndcg@5": 0.3067,
+      "recall@10": 0.4725,
+      "precision@10": 0.1211,
+      "ndcg@10": 0.3633
+    },
+    "latency_p50_ms": 25.3,
+    "latency_p95_ms": 48.5,
+    "step_latency_p50_ms": {
+      "encode_ms": 19.3,
+      "search_ms": 5.4,
+      "fuse_ms": 0.0,
+      "rerank_ms": 0.0
+    },
+    "multi_venue_questions": 59,
+    "venue_metrics": {
+      "venue_coverage@1": 0.0,
+      "venue_coverage@5": 0.4068,
+      "venue_coverage@10": 0.5085
+    },
+    "judged_metrics": {
+      "unjudged@1": 0.0111,
+      "unjudged@5": 0.0089,
+      "unjudged@10": 0.0711
+    }
+  },
+  {
+    "method": "hybrid",
+    "questions": 114,
+    "labelled_questions": 90,
+    "metrics": {
+      "mrr": 0.4623,
+      "recall@1": 0.1466,
+      "precision@1": 0.3111,
+      "ndcg@1": 0.3111,
+      "recall@5": 0.4242,
+      "precision@5": 0.2289,
+      "ndcg@5": 0.3837,
+      "recall@10": 0.6045,
+      "precision@10": 0.1722,
+      "ndcg@10": 0.4467
+    },
+    "latency_p50_ms": 29.3,
+    "latency_p95_ms": 37.6,
+    "step_latency_p50_ms": {
+      "encode_ms": 21.2,
+      "search_ms": 8.0,
+      "fuse_ms": 0.1,
+      "rerank_ms": 0.0
+    },
+    "multi_venue_questions": 59,
+    "venue_metrics": {
+      "venue_coverage@1": 0.0,
+      "venue_coverage@5": 0.4407,
+      "venue_coverage@10": 0.5763
+    },
+    "judged_metrics": {
+      "unjudged@1": 0.0,
+      "unjudged@5": 0.0089,
+      "unjudged@10": 0.0344
+    }
+  },
+  {
+    "method": "hybrid_rerank",
+    "questions": 114,
+    "labelled_questions": 90,
+    "metrics": {
+      "mrr": 0.5742,
+      "recall@1": 0.2308,
+      "precision@1": 0.4222,
+      "ndcg@1": 0.4222,
+      "recall@5": 0.508,
+      "precision@5": 0.26,
+      "ndcg@5": 0.4788,
+      "recall@10": 0.6905,
+      "precision@10": 0.1967,
+      "ndcg@10": 0.5523
+    },
+    "latency_p50_ms": 2531.3,
+    "latency_p95_ms": 3298.3,
+    "step_latency_p50_ms": {
+      "encode_ms": 16.2,
+      "search_ms": 12.2,
+      "fuse_ms": 0.1,
+      "rerank_ms": 2505.3
+    },
+    "multi_venue_questions": 59,
+    "venue_metrics": {
+      "venue_coverage@1": 0.0,
+      "venue_coverage@5": 0.4407,
+      "venue_coverage@10": 0.661
+    },
+    "judged_metrics": {
+      "unjudged@1": 0.0111,
+      "unjudged@5": 0.0222,
+      "unjudged@10": 0.0489
+    }
+  },
+  {
+    "method": "venue_split",
+    "questions": 114,
+    "labelled_questions": 90,
+    "metrics": {
+      "mrr": 0.526,
+      "recall@1": 0.1957,
+      "precision@1": 0.3667,
+      "ndcg@1": 0.3667,
+      "recall@5": 0.4968,
+      "precision@5": 0.2533,
+      "ndcg@5": 0.4486,
+      "recall@10": 0.6563,
+      "precision@10": 0.1878,
+      "ndcg@10": 0.514
+    },
+    "latency_p50_ms": 3093.5,
+    "latency_p95_ms": 6334.7,
+    "step_latency_p50_ms": {
+      "encode_ms": 19.5,
+      "search_ms": 18.3,
+      "fuse_ms": 0.1,
+      "rerank_ms": 3068.8
+    },
+    "multi_venue_questions": 59,
+    "venue_metrics": {
+      "venue_coverage@1": 0.0,
+      "venue_coverage@5": 0.8305,
+      "venue_coverage@10": 0.8983
+    },
+    "judged_metrics": {
+      "unjudged@1": 0.0,
+      "unjudged@5": 0.0178,
+      "unjudged@10": 0.0311
+    }
+  },
+  {
+    "method": "venue_split_oracle",
+    "questions": 114,
+    "labelled_questions": 90,
+    "metrics": {
+      "mrr": 0.5098,
+      "recall@1": 0.1883,
+      "precision@1": 0.3444,
+      "ndcg@1": 0.3444,
+      "recall@5": 0.4853,
+      "precision@5": 0.24,
+      "ndcg@5": 0.432,
+      "recall@10": 0.6489,
+      "precision@10": 0.1833,
+      "ndcg@10": 0.501
+    },
+    "latency_p50_ms": 4045.6,
+    "latency_p95_ms": 7612.5,
+    "step_latency_p50_ms": {
+      "encode_ms": 27.5,
+      "search_ms": 27.5,
+      "fuse_ms": 0.3,
+      "rerank_ms": 3905.9
+    },
+    "multi_venue_questions": 59,
+    "venue_metrics": {
+      "venue_coverage@1": 0.0,
+      "venue_coverage@5": 1.0,
+      "venue_coverage@10": 1.0
+    },
+    "judged_metrics": {
+      "unjudged@1": 0.0333,
+      "unjudged@5": 0.0444,
+      "unjudged@10": 0.0622
+    }
+  }
+]

@@ -1,0 +1,13 @@
+{
+  "index_version": "2825a7160c4d09bf",
+  "purpose": "pool construction only: retrieval depth for building augmentation candidates. Not an evaluation -- no metrics are computed and none may be quoted from it.",
+  "questions": "evals/datasets/v0.2-gold.jsonl",
+  "questions_sha256": "df27874b9a66b57a1fda25f8cfbdabf3c1639f423192bb63fe5d60d1119c5396",
+  "methods": [
+    "venue_split",
+    "venue_split_oracle"
+  ],
+  "k": 20,
+  "category": "comparison",
+  "questions_run": 50
+}

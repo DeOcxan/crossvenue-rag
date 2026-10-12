@@ -1,0 +1,8 @@
+# docs/style.md rule 26: state what is, instead of contrasting it with what is not.
+extends: existence
+message: "'%s': contrast framing. State what is."
+level: warning
+ignorecase: true
+tokens:
+  - 'not (?:just |only |merely |simply )?(?:a |an |the )?[\w-]+(?: [\w-]+)?, but'
+  - 'is not (?:a |an )?[\w-]+; (?:it is|it''s)'

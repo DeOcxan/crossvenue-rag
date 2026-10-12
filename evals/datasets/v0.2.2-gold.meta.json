@@ -1,0 +1,121 @@
+{
+  "dataset_version": "v0.2.2-gold",
+  "schema_version": "1.0",
+  "created_at": "2026-10-10T20:27:50Z",
+  "corpus_snapshot": {
+    "manifest_path": "data/manifest.csv",
+    "manifest_sha256": "c419b4be7de8aca0614183e9b93baa64339b7f35a1a722f9f90596cca4fcd68f",
+    "documents": 1665,
+    "recorded_at": "2026-10-10T20:27:50Z",
+    "index_version": "2825a7160c4d09bf",
+    "chunks": 11934
+  },
+  "sources": [
+    {
+      "venue": "ccxt",
+      "venue_type": "cex",
+      "license": "MIT",
+      "homepage": "https://docs.ccxt.com/"
+    },
+    {
+      "venue": "bybit",
+      "venue_type": "cex",
+      "license": "no license found",
+      "homepage": "https://bybit-exchange.github.io/docs/"
+    },
+    {
+      "venue": "binance",
+      "venue_type": "cex",
+      "license": "no license found",
+      "homepage": "https://developers.binance.com/docs/binance-spot-api-docs"
+    },
+    {
+      "venue": "bingx",
+      "venue_type": "cex",
+      "license": "MIT",
+      "homepage": "https://bingx-api.github.io/docs/"
+    },
+    {
+      "venue": "uniswap",
+      "venue_type": "dex",
+      "license": "MIT",
+      "homepage": "https://docs.uniswap.org/"
+    },
+    {
+      "venue": "pancakeswap",
+      "venue_type": "dex",
+      "license": "no license found",
+      "homepage": "https://docs.pancakeswap.finance/"
+    },
+    {
+      "venue": "hyperliquid",
+      "venue_type": "dex",
+      "license": "no license found",
+      "homepage": "https://hyperliquid.gitbook.io/hyperliquid-docs"
+    },
+    {
+      "venue": "dydx",
+      "venue_type": "dex",
+      "license": "no license found",
+      "homepage": "https://docs.dydx.xyz/"
+    }
+  ],
+  "generator": {
+    "model": "none: v0.2.1-gold with the round-2 disagreements adjudicated and the questions of deviation D23 relabeled, under methodology section 5a as amended on 2026-10-10",
+    "prompt_hash": "df6de014544b2c1c"
+  },
+  "counts": {
+    "total": 114,
+    "by_venue": {
+      "binance": 42,
+      "bingx": 24,
+      "bybit": 34,
+      "ccxt": 6,
+      "dydx": 14,
+      "hyperliquid": 27,
+      "pancakeswap": 18,
+      "uniswap": 18
+    },
+    "by_qtype": {
+      "comparison": 53,
+      "fact": 56,
+      "multihop": 5
+    },
+    "by_category": {
+      "adversarial": 13,
+      "ambiguous": 6,
+      "comparison": 50,
+      "fact": 10,
+      "multihop": 5,
+      "noisy": 6,
+      "unanswerable": 18,
+      "version_sensitive": 6
+    },
+    "labelled_by_category": {
+      "adversarial": 11,
+      "ambiguous": 6,
+      "comparison": 50,
+      "fact": 10,
+      "multihop": 4,
+      "noisy": 6,
+      "version_sensitive": 5
+    },
+    "answerable": 96,
+    "unanswerable": 18,
+    "with_gold": 92,
+    "judged": 114,
+    "gold_chunks": 282,
+    "venue_coverage": {
+      "absent_in_docs": 1,
+      "covered": 86,
+      "missing_from_pool": 14
+    },
+    "annotation_round": 1,
+    "augmented_questions": 50,
+    "adjudicated_questions": 17,
+    "relabeled_questions": 3
+  },
+  "notes": "Supersedes v0.2.1-gold, which stays on disk unchanged. Same 114 questions, same order. 8 records differ in gold_chunk_ids, from the adjudication of the 63 pairs rounds 1 and 2 disagree on (journal key `adjudicated`) and the relabeling of cv-0106, cv-0115 and cv-0121 (journal key `relabeled`); cv-0115 and cv-0121 are recategorized from unanswerable to fact, and the notes of all three are rewritten. Gold is what each question's journal entries resolve to (`dataset.questions.resolved_relevant`). Judgment history in annotations/v0.2.2-gold.rounds.json, a byte copy of evals/annotations/questions.rounds.json. See CHANGELOG.md.",
+  "dataset_sha256": "6fda6f6a7133555407e5aaa04884f169e849c64c815565ba58539ecf38e48286",
+  "journal_sha256": "0052f19d476c53a6b222217446c9ed35a815ac52c9a4f27636ec97ed3c2901ed"
+}

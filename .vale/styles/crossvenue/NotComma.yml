@@ -1,0 +1,9 @@
+# docs/style.md rule 26, the trailing form: "conceptual, not lexical." The comma may
+# follow a word, a closing parenthesis, a quote, or a code span or emphasis, which Vale
+# masks with `*`.
+extends: existence
+message: "'%s': contrast framing. State what is."
+level: warning
+ignorecase: true
+raw:
+  - '[\w)"''*\x{2019}\x{201D}], not [\w-]+(?: [\w-]+)?[.;]'
