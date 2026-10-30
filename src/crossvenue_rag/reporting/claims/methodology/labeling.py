@@ -276,6 +276,53 @@ def instructions(doc: Doc) -> None:
     doc.definitions(INSTRUCTION_CASES, reason=CONVENTION)
 
 
+def round3(doc: Doc, src: Sources) -> None:
+    """Section 5b: the registered size, seed, index and exposure of the full relabel."""
+    sizes = retest.round3_sizes(src)
+    total_questions = sum(s.questions for s in sizes.values())
+    total = formatting.count(total_questions)
+    doc.check("| {} | Full relabel | Annotation round {} over all {} questions", "12", "3", total)
+    doc.check("All {} questions, one annotator, no subsample.", total)
+    added = retest.round3_added(src)
+    doc.definition("The three questions of deviation D23 add the chunks", reason="deviation D23")
+    doc.check(
+        "which come to {} chunks on {} questions",
+        formatting.count(sum(len(chunks) for chunks in added.values())),
+        formatting.count(len(added)),
+    )
+    doc.ref("The index is `{}`, the one every earlier judgment", corpus.index_version(src))
+    rows: dict[str, list[object]] = {
+        category: [formatting.count(s.questions), formatting.count(s.decisions)]
+        for category, s in sizes.items()
+    }
+    rows["total"] = [total, formatting.count(sum(s.decisions for s in sizes.values()))]
+    doc.table("| Category | Questions | Candidate decisions |", rows)
+    doc.check(
+        "shuffled per question with seed {}, recorded as `shuffle_seed` in each entry; round 2's",
+        formatting.own_form(datasets_rounds.round3_shuffle_seed(src)),
+    )
+    doc.check(
+        "That is {} questions, and on those questions",
+        formatting.count(sizes["adversarial"].questions + sizes["version_sensitive"].questions),
+    )
+    doc.check(
+        "showed both verdicts on {} pairs of {} questions, and the D23 relabel showed {} questions",
+        formatting.count(retest.adjudicated_pairs(src)),
+        formatting.count(len(retest.adjudicated_questions(src))),
+        formatting.count(len(retest.relabeled_questions(src))),
+    )
+    doc.check(
+        "\u03ba {} stays the only test-retest figure",
+        formatting.metric(retest.registered(src).report.kappa),
+    )
+    doc.definition(
+        "Retrieval: the six methods on `v0.3-gold`", reason="the methods of a retrieval run"
+    )
+    doc.definition(
+        "to pair with the two CPU runs on", reason="the two sensitivity runs of `run_ids`"
+    )
+
+
 def deduplication(doc: Doc, src: Sources) -> None:
     """Section 6: question deduplication and leakage."""
     doc.definitions(DEDUPLICATION_STUDIES, reason=LITERATURE)

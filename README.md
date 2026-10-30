@@ -37,7 +37,7 @@ Retrieval: `results/20260925T012314Z` on v0.2.1-gold; answers: `results/20260926
 
 ## Why the documents are checked by code
 
-`make reproduce` compares 2,551 values of the checked documents with their sources, table cells included ([design](docs/explanation/design.md#checking-the-documents-against-their-sources)). That is why `src/crossvenue_rag/reporting/` is the largest package in `src/`: it holds what each document claims and the tested functions that recompute the values.
+`make reproduce` compares 2,582 values of the checked documents with their sources, table cells included ([design](docs/explanation/design.md#checking-the-documents-against-their-sources)). That is why `src/crossvenue_rag/reporting/` is the largest package in `src/`: it holds what each document claims and the tested functions that recompute the values.
 
 ## Requirements
 
@@ -105,7 +105,7 @@ Module-by-module detail is in [design](docs/explanation/design.md#module-layout)
 
 ## Tests
 
-`make test` runs 1,902 tests in about 70 s of wall time on an Apple M5 with 10 cores, with no model weights, no database and no network: the embedder, reranker and model client are stubbed. It leaves out one slow test, the full mutation test of the documents' checks; `make check` runs lint, all 1,903 tests and `crossvenue reproduce` (about 270 s). CI runs `ruff`, `mypy`, `lint-imports`, Vale, lychee, `pytest` and `crossvenue validate-evals --skip-near-duplicates`.
+`make test` runs 1,957 tests in about 70 s of wall time on an Apple M5 with 10 cores, with no model weights, no database and no network: the embedder, reranker and model client are stubbed. It leaves out one slow test, the full mutation test of the documents' checks; `make check` runs lint, all 1,958 tests and `crossvenue reproduce` (about 270 s). CI runs `ruff`, `mypy`, `lint-imports`, Vale, lychee, `pytest` and `crossvenue validate-evals --skip-near-duplicates`.
 
 ## License
 

@@ -8,7 +8,7 @@ chunks' `environment` and `api_version` beside its notes (`confirm_versions`).
 from __future__ import annotations
 
 from collections.abc import Callable, Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Literal
 
 from rich.console import Console
@@ -253,20 +253,20 @@ def judge(
     marked: set[str],
     prompt: Ask,
     *,
-    blind: bool = False,
+    view: ScreenView = ScreenView(),
 ) -> RelevanceJudgement | None:
     """Asks for the relevant candidates and runs the pre-save checks; None is a skip.
 
-    `blind=True` renders the round-2 screen (`screen.render`).
+    `view` is the screen drawn, the round-2 screen with `blind=True` (`screen.render`);
+    `f` toggles its `compact`.
     """
-    compact = True
 
     def toggle_view() -> None:
-        nonlocal compact
-        compact = not compact
-        render(console, question, candidates, marked, ScreenView(compact=compact, blind=blind))
+        nonlocal view
+        view = replace(view, compact=not view.compact)
+        render(console, question, candidates, marked, view)
 
-    render(console, question, candidates, marked, ScreenView(compact=compact, blind=blind))
+    render(console, question, candidates, marked, view)
     while True:
         picks = ask_picks(console, question, candidates, prompt, "relevant", toggle_view)
         if picks is None:

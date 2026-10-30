@@ -17,3 +17,4 @@ One file per decision, in [Nygard's format](https://cognitect.com/blog/2011/11/1
 | [0011](0011-preregistration.md) | Answer comparisons registered before the run | Accepted |
 | [0012](0012-deferred-corpus-changes.md) | Corpus corrections deferred to the next corpus version | Accepted |
 | [0013](0013-generator-prompt-v2.md) | A second generator prompt, analyzed as exploratory | Accepted |
+| [0014](0014-full-relabel-round-3.md) | Full relabel as annotation round 3 | Accepted |

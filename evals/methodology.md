@@ -21,6 +21,7 @@ Every decision below is stated with its reason and, where a number is involved, 
 | 9 | Significance testing | Paired bootstrap over questions (10,000 resamples, seed 20260924) for intervals; paired randomization test (sign flip, 10,000 permutations, same seed) for p-values; exact McNemar on discordant questions for binary per-question outcomes; one primary comparison, venue_split − hybrid_rerank on venue_coverage@10 over the comparison questions; every other comparison secondary, Holm-adjusted within its metric and scope; effect size and CI reported, never a bare p-value | Randomization/bootstrap/t agree in IR; sign and Wilcoxon are discouraged |
 | 10 | Metric under incompleteness | recall@k/nDCG@k on the pooled qrels, reported with `unjudged@k` per method and condensed-list nDCG′@k | Unjudged-as-irrelevant is the standard bias; disclosing coverage is the cheap mitigation |
 | 11 | Answer evaluation | Four generator configurations. Primary comparison: gemini@venue_split − gemini@hybrid_rerank on venue_attribution_error and coverage over comparison questions; secondary pairs Holm-adjusted. A judge dimension is used only if its agreement with human ratings reaches κ ≥ 0.61 (Spearman ≥ 0.70 for coverage) | Registered before any answer was generated (§9) |
+| 12 | Full relabel | Annotation round 3 over all 114 questions, blind, on the recorded candidates, under the criterion as amended; `v0.3-gold` takes its labels from it alone. No round 4 ([§5b](#5b-annotation-round-3-pre-registered)) | Every label of a set follows one criterion. Registered before the first judgment of the round |
 
 ## 1. Test collection construction and pooling
 
@@ -183,6 +184,7 @@ Two caveats from the reliability literature apply (not checked against a source;
 | Quiet period, no contact with the labels apart from deviation D12 | 2026-09-25 to 2026-10-09 |
 | Round 2 re-annotation of the 25-question subsample | 2026-10-10, the whole subsample on one date |
 | κ computed and written to `evals/agreement.md`: 0.470 [0.317, 0.645] (95% percentile bootstrap over questions) | 2026-10-10 |
+| Round 3, the full relabel, registered in §5b | scheduled for 2026-10-31 |
 
 Dates are UTC, as the judgment journal records them, except where marked local; the work was done in UTC−3, so an evening session local was the next day in the journal. Round 2 met the 14-day minimum under either reading: each question's round-1 and round-2 judgments are 15.7 to 15.9 days apart, from its last round-1 record, augmentation included.
 
@@ -229,7 +231,7 @@ Three cases that would otherwise be decided differently on different days.
 
 ### Amendment of 2026-10-10
 
-Written on 2026-10-10, after round 2, from the pairs on which round 1 and round 2 disagree ([agreement](agreement.md)). Neither round applied it. It governs the adjudication of those disagreements and the relabeling of the questions of deviation D23, both recorded in the judgment journal apart from round 1 and round 2 ([deviation D25](#deviations-from-protocol)).
+Written on 2026-10-10, after round 2, from the pairs on which round 1 and round 2 disagree ([agreement](agreement.md)). Neither round applied it. It governs the adjudication of those disagreements and the relabeling of the questions of deviation D23, both recorded in the judgment journal apart from round 1 and round 2 ([deviation D25](#deviations-from-protocol)), and round 3 ([§5b](#5b-annotation-round-3-pre-registered)).
 
 - A fact repeated on many pages. When the question asks about a venue's rule or policy, the chunk that states the rule is relevant. A page of one endpoint that shows only that endpoint's value is relevant only when the question is about that endpoint, or when the candidates contain no chunk stating the rule.
 - The premise venue of a comparison. When a comparison question states a fact about one venue as its premise, the chunk that confirms the premise is relevant; that venue's chunks without the premise fact are not.
@@ -238,6 +240,60 @@ Written on 2026-10-10, after round 2, from the pairs on which round 1 and round 
 ### Recording
 
 Relevance is marked with the numbers shown; `n` records "nothing in this pool answers the question", which is a judgment and is stored as one. It is not the same as skipping, and on an `unanswerable` item it is the expected outcome rather than a failure. Where a question turns out to be misclassified, or the pool missed a chunk that the `source_chunk_ids` marker shows should have been there, that is noted. Those two observations are how the set and the pool get corrected, and neither is visible anywhere else.
+
+## 5b. Annotation round 3 (pre-registered)
+
+Registered on 2026-10-30, before the first judgment of the round ([ADR 0014](../docs/adr/0014-full-relabel-round-3.md)). Round 3 is the full relabel that [deviation D25](#deviations-from-protocol) and §5 name. It is scheduled for 2026-10-31. Dates are UTC, as the journal records them.
+
+### Scope
+
+All 114 questions, one annotator, no subsample. Every field but the labels comes from `v0.2.2-gold`: categories, `expected_behavior`, `venues` and notes. `make round3` reads them from that file and not from `evals/questions.jsonl`, which still equals `v0.2.1-gold`.
+
+### Candidates
+
+Exactly the set round 2's rule gives each question: the pool round 1 recorded plus the chunks its augmentation showed. The three questions of deviation D23 add the chunks of `evals/selection/d23_answer_chunks.jsonl`, which come to 3 chunks on 2 questions; the list of `cv-0106 "which binance endpoint sets leverage on"` is empty. Nothing is retrieved again. The index is `2825a7160c4d09bf`, the one every earlier judgment was made against, and `label` refuses another. The session holds these decisions:
+
+| Category | Questions | Candidate decisions |
+|---|---:|---:|
+| comparison | 50 | 1,784 |
+| unanswerable | 18 | 450 |
+| adversarial | 13 | 325 |
+| fact | 10 | 251 |
+| ambiguous | 6 | 150 |
+| noisy | 6 | 150 |
+| version_sensitive | 6 | 150 |
+| multihop | 5 | 125 |
+| total | 114 | 3,385 |
+
+### Screen
+
+The blindness of round 2. Candidates are shuffled per question with seed 20261031, recorded as `shuffle_seed` in each entry; round 2's seed would repeat its order. The questions come in file order. The screen shows no marks, no "found by" column and no source-chunk markers. It shows the criterion of §5a with the amendment of 2026-10-10 on every question, as `--adjudicate` does.
+
+The save check on adversarial and version_sensitive questions prints the question's notes after the marks are entered, as it did in round 2, because the adversarial criterion needs the trap named. That is 19 questions, and on those questions the notes are visible before the verdict is saved.
+
+The session writes only round-3 entries of the journal, one per question when it is answered, and resumes at the first question without an entry. An `unanswerable` question refuses numbers: `n` records that nothing answers it, and `x` records the same with `flagged: true`, which is how §5a's "flagged rather than labeled" is recorded. A flag changes neither the category nor the gold of `v0.3-gold`; the CHANGELOG lists the flags, and a recategorization belongs to a later version. `u` re-opens only the previous question, within the current session, without its marks. Round 3 has no review pass, and any later correction is a recorded deviation.
+
+### Exposure
+
+The annotator has seen part of the labels. The adjudication showed both verdicts on 63 pairs of 17 questions, and the D23 relabel showed 3 questions with their added chunks. The answer-rating screen showed the gold chunks of the calibration questions. The gap since the last judgment of 2026-10-10 is therefore no reliability condition.
+
+### Gold
+
+`v0.3-gold` is `v0.2.2-gold` with `gold_chunk_ids`, `venue_coverage`, `annotator`, `annotated_at` and `annotation_round` taken from each question's round-3 entry. `make round3-gold` builds it. It refuses an unfinished round, and it refuses a journal in which any entry besides round 3 differs from the journal frozen with `v0.2.2-gold`. `relevant` is stored in candidate order, so a gold set that does not change gives the judge an identical prompt. Earlier rounds, the adjudication and the relabel stay in the journal as history. Frozen datasets and committed runs are not modified.
+
+### Reliability
+
+There is no round 4. κ 0.470 stays the only test-retest figure, and it belongs to the round-1 criterion; `make kappa` refuses round 3. Agreement of round 3 with round 1 as corrected is reported as descriptive agreement across a criterion revision, over the pairs both rounds judged: the verdict counts, raw agreement and the direction of disagreement by category, with no κ, no threshold and no reliability claim. Reliability under the amended criterion was not measured.
+
+### What is computed afterwards
+
+- Retrieval: the six methods on `v0.3-gold` with `embedding.device=cpu`, to pair with the two CPU runs on `v0.2.1-gold` and `v0.2.2-gold`, and the registered comparisons of `report.md`. `venue_coverage@k` and `off_venue@k` need no gold, so the retrieval primary comparison cannot change, and `unjudged@k` keeps its values because the judged set does not change.
+- Answers: none is generated again. The judge reads gold, so both judged runs are judged again on `v0.3-gold`, reusing cached calls, and `compare-prompts` runs on the results. The comparisons, Holm families and δ rules are those of §7, §9 and §9a, and no hypothesis is added.
+- The judge calibration is not repeated for `v0.3-gold`. Its agreement was measured on `v0.2.1-gold`, and the documents say so wherever a re-judged figure appears.
+
+### Reporting
+
+Registered results stay on `v0.2.1-gold`. Results on `v0.3-gold` are reported beside them as another version. A conclusion that differs on `v0.3-gold` is reported as a difference and does not replace the registered one. A difference in recall between gold versions is an effect of the labels and not of retrieval.
 
 ## 6. Decontamination and deduplication of questions
 
@@ -541,7 +597,7 @@ Where the data or the analysis depart from the protocol above, with when the dep
 | D22 | §9a: venue_attribution_error and faithfulness are tested v2 − v1 by the §9 procedure | Faithfulness is not compared between v1 and v2: `compare-prompts` tests the wrong-refusal share and venue_attribution_error only. | after collection and before analysis | Faithfulness is graded on the judge's `supported` dimension, which failed calibration (§9): the calibration was recorded before either matrix was judged. | H-v2's guard "without lowering faithfulness" is not tested, so no conclusion of §9a uses faithfulness; H-v2 is decided on the wrong-refusal share and venue_attribution_error. | §9 "Calibration result"; `generation/prompt_compare.py` |
 | D23 | §3: every gap is proved against the corpus before the question is kept, the concept searched under every spelling the vendor uses with `crossvenue count-term` | The questions [datasheet, known limitations](datasheet.md#known-limitations) lists are labeled unanswerable. `cv-0115 "does bybit have a mass cancel"` and `cv-0121 "which bingx endpoint returns the usdt-m"` have answers in the corpus; for the first, Bybit documents `POST /v5/order/cancel-all`. `cv-0106 "which binance endpoint sets leverage on"` was listed too and was found to have none. | after collection, before analysis: a question's unanswerable label is set when it is drafted, and selection kept these | Neither the datasheet nor the dataset CHANGELOG records why the searches did not find these answers. | They were reviewed after round 2: in `v0.2.2-gold` `cv-0115 "does bybit have a mass cancel"` and `cv-0121 "which bingx endpoint returns the usdt-m"` are fact, and `cv-0106 "which binance endpoint sets leverage on"` stays unanswerable, since CCXT's `setLeverage` chunk names Binance's page and gives no endpoint ([deviation D25](#deviations-from-protocol)). Every count on unanswerable questions in `v0.2.1-gold` includes them as labeled. No recall average on `v0.2.1-gold` includes them, because unanswerable questions enter none. | [datasheet](datasheet.md#known-limitations) |
 | D24 | §9 "Conditions for using a judge dimension": coverage is held to a Spearman threshold because "the comparisons use coverage only to order configurations" | The primary and secondary comparisons on coverage test the size of the difference: a paired bootstrap interval of the mean difference and a paired randomization test on the differences (§9 "Primary comparison"). The findings report that size. | before collection: the reason and the test were registered together, before any answer was generated; the mismatch was found after results were seen | The reason was written with the threshold and was not compared with the registered test. | The Spearman threshold checks that the judge orders answers by coverage as the human does; it leaves the scale of the judge's coverage values unchecked. The sizes of the coverage differences depend on the judge's scale. | §9 "Conditions for using a judge dimension" |
-| D25 | §5a: one written criterion for every label; §5: a third adjudication pass resolves the disagreements of round 2 | The adjudication of the 63 disagreeing pairs of round 2 and the relabeling of the D23 questions apply §5a as amended on 2026-10-10 ([Amendment of 2026-10-10](#amendment-of-2026-10-10)). Of the 89 questions outside the round-2 sample, 87 keep labels made under the round-1 criterion until the full relabel; the other 2 are D23 questions. | after results were seen: the amendment was written after κ was computed and the disagreements were read | The disagreements show the criterion ambiguous in the three cases the amendment decides, and §5 refines the criterion where the categories with the most disagreement show it ambiguous. | In `v0.2.2-gold` the 63 disagreeing pairs of the 25 sampled questions and the D23 questions follow the amended criterion; every other label follows the round-1 criterion, among them every label of 87 questions. κ is computed on round 1 and round 2 under the round-1 criterion, and the adjudication does not change it. | §5a; [agreement](agreement.md) |
+| D25 | §5a: one written criterion for every label; §5: a third adjudication pass resolves the disagreements of round 2 | The adjudication of the 63 disagreeing pairs of round 2 and the relabeling of the D23 questions apply §5a as amended on 2026-10-10 ([Amendment of 2026-10-10](#amendment-of-2026-10-10)). Of the 89 questions outside the round-2 sample, 87 keep labels made under the round-1 criterion until the full relabel; the other 2 are D23 questions. | after results were seen: the amendment was written after κ was computed and the disagreements were read | The disagreements show the criterion ambiguous in the three cases the amendment decides, and §5 refines the criterion where the categories with the most disagreement show it ambiguous. | In `v0.2.2-gold` the 63 disagreeing pairs of the 25 sampled questions and the D23 questions follow the amended criterion; every other label follows the round-1 criterion, among them every label of 87 questions. κ is computed on round 1 and round 2 under the round-1 criterion, and the adjudication does not change it. | §5a; [§5b](#5b-annotation-round-3-pre-registered); [agreement](agreement.md) |
 | D26 | Decision 2: the three constraints (comparison 50, unanswerable 15, nothing below 5) "do not fit in 100; 105 is what they sum to" | Over the 8 categories the three constraints sum to 95 (50 + 15 + 6 × 5), so a total of 100 holds them with no category below 5. The 105 of decisions 1 and 2 holds adversarial at its target of 12 and fact at 8, the targets selection used (`dataset/selection.py`, `TARGETS`). | before collection: the sum was registered with the category targets, before selection; the mismatch was found after results were seen | The sum was written beside the category split of decision 2 and was not recomputed from the three constraints alone. | None on the results: selection used the targets of decision 2 (D2), so no count, test or power figure changes. The total of 105 follows from the adversarial and fact targets as well as from the three constraints. | [Decisions at a glance](#decisions-at-a-glance) |
 
 D16 covers these results on `v0.2.1-gold`, each from the run the table names, over the n questions its comparison pairs. Each is reported as an effect (an interval that excludes 0, or a p_Holm below the significance level) with a size below δ, and each difference has its 95% paired bootstrap interval:

@@ -75,8 +75,16 @@ def label(
         Path | None,
         typer.Option(
             "--add-chunks",
-            help="With `--relabel`: chunks to show beside the recorded candidates, one JSON "
-            "object per line with the question's `id` and its `chunk_ids`.",
+            help="With `--relabel` or `--round 3`: chunks to show beside the recorded "
+            "candidates, one JSON object per line with the question's `id` and its `chunk_ids`.",
+        ),
+    ] = None,
+    metadata_from: Annotated[
+        Path | None,
+        typer.Option(
+            "--metadata-from",
+            help="With `--round 3`: the dataset the questions are shown from; the journal "
+            "stays the one of the question file.",
         ),
     ] = None,
     config: ConfigOpt = DEFAULT_CONFIG,
@@ -102,8 +110,9 @@ def label(
         int,
         typer.Option(
             "--round",
-            help="Annotation round. 1 writes gold labels; 2+ re-annotates a subsample "
-            "for intra-rater agreement without touching round 1.",
+            help="Annotation round. 1 writes gold labels; 2 re-annotates a subsample "
+            "for intra-rater agreement; 3 relabels the whole set, blind. 2 and 3 leave "
+            "round 1 untouched.",
         ),
     ] = 1,
     annotator: Annotated[str, typer.Option("--annotator", help="Recorded on every judgment.")] = "",
@@ -111,7 +120,7 @@ def label(
         int | None,
         typer.Option(
             "--sample",
-            help="N questions to label: at random in round 1, stratified by category in round 2+.",
+            help="N questions to label: at random in round 1, stratified by category in round 2.",
         ),
     ] = None,
     seed: Annotated[int, typer.Option("--seed", help="Seed for `--sample`.")] = 0,
@@ -119,7 +128,7 @@ def label(
         Path | None,
         typer.Option(
             "--sample-file",
-            help="Round 2+: exactly the questions listed here, to label "
+            help="Round 2: exactly the questions listed here, to label "
             "(written by `crossvenue round-sample`).",
         ),
     ] = None,
@@ -128,8 +137,9 @@ def label(
 
     `crossvenue label --review cv-0043 cv-0046` or `--review-file FILE` re-opens
     labeled questions for correction instead. `--adjudicate` decides the pairs the
-    two labeling rounds disagree on, and `--relabel ID ...` judges named questions
-    again; both only add entries to the journal.
+    two labeling rounds disagree on, `--relabel ID ...` judges named questions
+    again, and `--round 3` judges every question again, blind; all three only add
+    entries to the journal.
     """
     cfg = load(config, set_)
     request = LabelRequest(
@@ -150,6 +160,7 @@ def label(
         adjudicate=adjudicate,
         relabel=relabel,
         add_chunks=add_chunks,
+        metadata_from=metadata_from,
     )
     run_label(cfg, request)
 

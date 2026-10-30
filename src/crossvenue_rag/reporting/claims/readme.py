@@ -73,7 +73,7 @@ JUDGE_MODEL = "anthropic/claude-opus-5.5"
 # The count of values `make reproduce` compares across every checked document, table cells
 # included, which README.md states. No document's claims can recompute it, so `reproduce`
 # compares it with its own total once every document has been checked.
-CHECKED_NUMBERS = "2,551"
+CHECKED_NUMBERS = "2,582"
 CHECKED_NUMBERS_TEMPLATE = (
     "compares {} values of the checked documents with their sources, table cells included"
 )

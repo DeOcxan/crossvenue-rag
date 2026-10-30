@@ -3,7 +3,7 @@ CONFIG ?= configs/default.yaml
 DOCS   ?= README.md docs evals
 UV     ?= uv
 
-.PHONY: help install db db-down fetch ingest index eval select select-finalize label round2-sample relabel kappa adjudicate relabel-d23 retrieve stats test lint lint-docs lint-links fmt check check-config validate-evals ask serve reproduce figures clean
+.PHONY: help install db db-down fetch ingest index eval select select-finalize label round2-sample relabel kappa adjudicate relabel-d23 round3 round3-agreement round3-gold retrieve stats test lint lint-docs lint-links fmt check check-config validate-evals ask serve reproduce figures clean
 
 help:  ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -61,6 +61,15 @@ adjudicate:  ## Decide the pairs annotation rounds 1 and 2 disagree on, under th
 
 relabel-d23:  ## Judge the three questions of deviation D23 again, with the answer chunks their pools missed
 	$(UV) run crossvenue label --config $(CONFIG) --relabel cv-0106 cv-0115 cv-0121 --add-chunks evals/selection/d23_answer_chunks.jsonl
+
+round3:  ## Judge every question again, blind, under the amended criterion (methodology 5b); resumes where it stopped
+	$(UV) run crossvenue label --config $(CONFIG) --round 3 --add-chunks evals/selection/d23_answer_chunks.jsonl --metadata-from evals/datasets/v0.2.2-gold.jsonl
+
+round3-agreement:  ## Rounds 1 and 3 across the criterion revision: counts and raw agreement, no kappa
+	$(UV) run crossvenue round-agreement --config $(CONFIG)
+
+round3-gold:  ## Write evals/datasets/v0.3-gold.jsonl from round 3 alone, once the round is complete
+	$(UV) run crossvenue round3-gold --config $(CONFIG)
 
 validate-evals:  ## Validate every dataset under evals/datasets/
 	$(UV) run crossvenue validate-evals --config $(CONFIG)

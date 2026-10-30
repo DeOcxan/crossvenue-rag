@@ -8,7 +8,14 @@ import pytest
 
 from crossvenue_rag.config import Config
 from crossvenue_rag.errors import UserError
-from crossvenue_rag.labeling.modes import LabelRequest, check_augment, label_plan, review_ids
+from crossvenue_rag.labeling import modes
+from crossvenue_rag.labeling.modes import (
+    LabelRequest,
+    check_augment,
+    check_round3,
+    label_plan,
+    review_ids,
+)
 from tests.conftest import write_journal
 
 
@@ -246,3 +253,48 @@ def test_run_offline_checks_the_index_and_hands_the_chunks_to_the_session(tmp_pa
     write_journal(path, {"q1": {"1": {"pool": ["c1"], "relevant": [], "index_version": "old"}}})
     with pytest.raises(UserError, match="not made against the current index"):
         modes.run_offline(Config(), adjudicating)
+
+
+ROUND3 = {
+    "annotation_round": 3,
+    "add_chunks": Path("a.jsonl"),
+    "metadata_from": Path("m.jsonl"),
+}
+
+
+def test_round_3_takes_its_two_files():
+    assert check_round3(request(**ROUND3)) == (Path("a.jsonl"), Path("m.jsonl"))
+
+
+@pytest.mark.parametrize(
+    ("fields", "message"),
+    [
+        ({"annotation_round": 4}, "there is no round 4"),
+        ({"annotation_round": 1, "metadata_from": Path("m.jsonl")}, "goes with --round 3"),
+        ({"annotation_round": 3}, "needs --add-chunks and --metadata-from"),
+        ({"annotation_round": 3, "add_chunks": Path("a.jsonl")}, "needs --add-chunks"),
+        ({**ROUND3, "ids": ("cv-0001",)}, "no ids or other mode: cv-0001"),
+        ({**ROUND3, "sample": 5}, "no ids or other mode: --sample"),
+        ({**ROUND3, "sample_file": Path("s.txt")}, "no ids or other mode: --sample-file"),
+        ({**ROUND3, "relabel": True}, "no ids or other mode: --relabel"),
+        ({**ROUND3, "adjudicate": True}, "no ids or other mode: --adjudicate"),
+        ({**ROUND3, "limit": 5}, "no ids or other mode: --limit"),
+    ],
+)
+def test_round_3_refuses_what_is_not_the_registered_round(fields: dict, message: str):
+    with pytest.raises(UserError, match=message):
+        check_round3(request(**fields))
+
+
+def test_round_3_opens_no_index_and_reaches_the_session(tmp_path: Path, monkeypatch):
+    calls = []
+    monkeypatch.setattr(modes, "require_current_index", lambda cfg: "v")
+    monkeypatch.setattr(modes, "require_label_versions", lambda *a, **k: calls.append(a[0]))
+    monkeypatch.setattr(modes, "load_chunks", lambda cfg: [])
+    monkeypatch.setattr(modes, "load_questions", lambda path: [])
+    monkeypatch.setattr(modes, "read_added_chunks", lambda path: {})
+    monkeypatch.setattr(modes, "round3_session", calls.append)
+    monkeypatch.setattr(modes, "Retriever", None)
+    modes.run_label(Config(), request(**ROUND3))
+    assert calls[:2] == ["q.jsonl", Path("m.jsonl")]
+    assert calls[2].questions_path == "q.jsonl"

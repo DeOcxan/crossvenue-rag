@@ -250,3 +250,18 @@ def test_remap_file_refuses_an_only_id_the_journal_lacks_and_writes_nothing(tmp_
             "v2",
         )
     assert sidecar.read_text() == original
+
+
+def test_remap_rounds_carries_round_3_with_its_seed_and_flag(tmp_path: Path):
+    from crossvenue_rag.dataset.journal import read_journal
+
+    path = tmp_path / "q.rounds.json"
+    third = {
+        "pool": ["b", "a"], "relevant": [], "index_version": "v1", "shuffle_seed": 7,
+        "criterion": "c", "flagged": True,
+    }  # fmt: skip
+    path.write_text(json.dumps({"q1": {"1": _round1(), "3": third}}))
+    remap_rounds(path, _map({"a": "A", "b": "B", "c": "C"}), "v2")
+    entry = read_journal(path).get("q1").judgment(3)
+    assert entry is not None and entry.pool == ["B", "A"] and entry.index_version == "v2"
+    assert entry.shuffle_seed == 7 and entry.criterion == "c" and entry.flagged is True

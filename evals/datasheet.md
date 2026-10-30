@@ -88,6 +88,8 @@ Augmentation. `venue_split` and `venue_split_oracle` joined evaluation after rou
 
 Agreement. Round 2 re-judged 25 questions blind on 2026-10-10. The sample is stratified by category and was fixed before round 2 in `evals/selection/round2_sample.txt` (comparison 11, unanswerable 5, adversarial 3, fact 2, one each of ambiguous, multihop, noisy and version_sensitive; methodology §5). Cohen's κ between round 1 as corrected and round 2 is 0.470 [0.317, 0.645] over 750 candidate decisions, below the registered target of 0.61. The reproducibility of these labels is therefore a limitation of this version ([agreement](agreement.md)).
 
+Relabel. Round 3, registered in [methodology §5b](methodology.md#5b-annotation-round-3-pre-registered), is scheduled for 2026-10-31 and will give `v0.3-gold`, with every label under one criterion.
+
 ## Version v0.2.2-gold
 
 `evals/datasets/v0.2.2-gold.jsonl` supersedes this version. Every other section of this datasheet describes `v0.2.1-gold`, the version the registered results are scored on. `v0.2.2-gold` holds the same 114 questions in the same order, with the round-2 disagreements adjudicated and the questions of deviation D23 relabeled, under [methodology §5a](methodology.md#amendment-of-2026-10-10) as amended on 2026-10-10 ([CHANGELOG](datasets/CHANGELOG.md#v022-gold-2026-10-10)). Its counts beside this version's:

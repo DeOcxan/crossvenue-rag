@@ -157,3 +157,12 @@ def test_round_2_with_a_count_uses_the_stratified_sample():
     questions = gold_like()
     queue = select_queue(questions, QueueSpec(annotation_round=2, sample=25, seed=20260924))
     assert [q.id for q in queue] == [q.id for q in stratified_sample(questions, 25, 20260924)]
+
+
+def test_the_progress_table_shows_the_count_a_round_passes():
+    from crossvenue_rag.labeling.session import progress_table
+
+    queue = [Question("q1", "a?", "gold", ["bybit"], "fact", category="fact")]
+    console = Console(record=True, width=120)
+    console.print(progress_table(queue, queue, 0, 0, 0.0, labelled=0))
+    assert "0/1" in console.export_text()

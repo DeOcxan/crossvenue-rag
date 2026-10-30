@@ -24,6 +24,7 @@ from .datasets import round2_sample
 MIN_STAMPS = 3
 # Where the re-judging shuffle seed and the pool's depth limit are set.
 SHUFFLE_SEED = ("src/crossvenue_rag/labeling/pool.py", r"RETEST_SHUFFLE_SEED = (\d+)")
+ROUND3_SEED = ("src/crossvenue_rag/labeling/pool.py", r"ROUND3_SHUFFLE_SEED = (\d+)")
 MAX_DEPTH_MULTIPLIER = ("src/crossvenue_rag/labeling/pool.py", r"_MAX_DEPTH_MULTIPLIER = (\d+)")
 
 
@@ -44,6 +45,11 @@ def _committed_int(src: Sources, path: str, pattern: str) -> int:
 def retest_shuffle_seed(src: Sources) -> int:
     """The seed round 2 shuffles each question's candidates with."""
     return _committed_int(src, *SHUFFLE_SEED)
+
+
+def round3_shuffle_seed(src: Sources) -> int:
+    """The seed round 3 shuffles each question's candidates with."""
+    return _committed_int(src, *ROUND3_SEED)
 
 
 def pool_depth_multiplier(src: Sources) -> int:

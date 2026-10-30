@@ -102,14 +102,24 @@ def _judged(
     questions: Mapping[str, Question],
     judge_name: str,
 ) -> Iterator[AnswerRecord]:
-    """Each of `records` judged again, in order; one without a generation is copied unjudged."""
+    """Each of `records` judged again, in order; one without a generation is copied unjudged.
+
+    The category and expected behavior come from the question file, as the judge's prompt
+    does: a set can recategorize a question after its answers were generated.
+    """
     for record in records:
-        judged = record.model_copy(update={"judge": None, "judge_error": None})
+        question = questions[record.question_id]
+        judged = record.model_copy(
+            update={
+                "judge": None,
+                "judge_error": None,
+                "category": question.effective_category,
+                "expected_behavior": question.expected_behavior,
+            }
+        )
         if record.generation is not None:
             try:
-                submission = Submission(
-                    questions[record.question_id], record.generation, inputs.chunks
-                )
+                submission = Submission(question, record.generation, inputs.chunks)
                 graded = judge_answer(inputs.llm, cfg.generation, submission, judge_name)
                 judged = judged.model_copy(update={"judge": graded})
             # As in `answering.run_answers`: only a failed judgment is recorded on the answer.

@@ -11,7 +11,13 @@ import pytest
 from crossvenue_rag.config_loading import DEFAULT_CONFIG
 from crossvenue_rag.dataset.journal import rounds_path
 from crossvenue_rag.reporting.compute import agreement
-from crossvenue_rag.reporting.run_ids import GOLD, ROUND2_EXPOSED, WORKING_QUESTIONS
+from crossvenue_rag.reporting.run_ids import (
+    D23_ANSWER_CHUNKS,
+    GOLD,
+    GOLD_ADJUDICATED,
+    ROUND2_EXPOSED,
+    WORKING_QUESTIONS,
+)
 from crossvenue_rag.reporting.sources import Sources
 from tests.conftest import adjudication, relabel
 from tests.reporting.conftest import write_file, write_gold
@@ -172,3 +178,28 @@ def test_the_adjudication_is_split_by_the_round_each_decision_agrees_with(tmp_pa
     write_file(tmp_path, str(rounds_path(GOLD_ADJUDICATED)), json.dumps({"q1": entry}))
     with pytest.raises(ValueError, match="alike in both rounds"):
         agreement.adjudication_split(Sources(tmp_path))
+
+
+def test_round_3_counts_the_chunks_round_1_judged_plus_the_added_ones(tmp_path):
+    write_gold(
+        tmp_path,
+        [{"id": "q1", "category": "fact", "qtype": "fact"}, {"id": "q2", "category": "noisy"}],
+        path=GOLD_ADJUDICATED,
+    )
+    pool = {"pool": ["a", "b"], "relevant": [], "annotated_at": "2026-09-24T12:00:00Z"}
+    write_file(
+        tmp_path,
+        str(rounds_path(GOLD_ADJUDICATED)),
+        json.dumps({"q1": {"1": pool}, "q2": {"1": pool}}),
+    )
+    write_file(
+        tmp_path,
+        D23_ANSWER_CHUNKS,
+        '{"id": "q1", "chunk_ids": ["a", "x"]}\n{"id": "q2", "chunk_ids": []}\n',
+    )
+    src = Sources(tmp_path)
+    assert agreement.round3_added(src) == {"q1": ["a", "x"]}
+    sizes = agreement.round3_sizes(src)
+    assert list(sizes) == ["fact", "noisy"]
+    assert (sizes["fact"].questions, sizes["fact"].decisions) == (1, 3)
+    assert (sizes["noisy"].questions, sizes["noisy"].decisions) == (1, 2)

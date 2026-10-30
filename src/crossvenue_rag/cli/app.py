@@ -36,6 +36,8 @@ HELP = """The crossvenue-rag command line.
     crossvenue validate-evals      # checks the versioned datasets
     crossvenue round-sample        # fixed, stratified round-2 subsample
     crossvenue kappa               # agreement between annotation rounds
+    crossvenue round-agreement     # rounds 1 and 3 across a criterion revision
+    crossvenue round3-gold         # the gold set built from round 3 alone
     crossvenue select              # chooses the eval set from candidates
     crossvenue count-term          # chunks containing a term
     crossvenue id-map              # old chunk id -> canonical chunk id

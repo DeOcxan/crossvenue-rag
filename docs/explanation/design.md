@@ -28,7 +28,7 @@ data/sources.yaml ──fetch──> data/raw/ + data/manifest.csv
 
 There is no LangChain or LlamaIndex here. The project's output is a claim about where retrieval breaks and why, which requires every stage (normalization, chunking, fusion, reranking, scoring) to be individually legible and individually measurable. A framework that wraps the chunker in a `TextSplitter` and fusion in an `EnsembleRetriever` makes the parts under investigation unobservable.
 
-The cost is about 41,000 lines under `src/`, counting every line of its `.py` files, blank and comment lines included, as `find src -name '*.py' | xargs wc -l` gives it; a framework would have supplied part of them. The size of one module, which [code-style rule 2](../code-style.md) bounds at about 400 lines of code, counts its lines of code only: non-blank, non-comment lines, docstrings excluded. The benefit is that every number in [findings](../results/findings.md) can be traced to a specific function ([ADR 0001](../adr/0001-no-framework.md)).
+The cost is about 42,000 lines under `src/`, counting every line of its `.py` files, blank and comment lines included, as `find src -name '*.py' | xargs wc -l` gives it; a framework would have supplied part of them. The size of one module, which [code-style rule 2](../code-style.md) bounds at about 400 lines of code, counts its lines of code only: non-blank, non-comment lines, docstrings excluded. The benefit is that every number in [findings](../results/findings.md) can be traced to a specific function ([ADR 0001](../adr/0001-no-framework.md)).
 
 ## Module layout
 
@@ -112,12 +112,13 @@ crossvenue_rag/
     records.py           dataset schema, versioned files, newest candidate pool
     questions.py         the working question file, checked against the index of its labels
     journal.py           the judgment journal as typed records: rounds, adjudication, relabel
+    round3_gold.py       the gold set built from round 3 alone (round3-gold)
     remap.py             remap-ids for a journal or a dataset
     validate.py          validate-evals
     selection.py         choosing the set: decisions and composition checks
     finalize.py          select --finalize: the question file from the accepted candidates
     sampling.py          the stratified round-2 subsample (round-sample)
-    added_chunks.py      the --add-chunks file of label --relabel
+    added_chunks.py      the --add-chunks file of label --relabel and --round 3
     agreement.py         agreement between annotation rounds (kappa from stats.py)
   labeling/            interactive judgment at the keyboard
     screen.py            what a candidate row shows: compact view, highlighting
@@ -131,6 +132,7 @@ crossvenue_rag/
     coverage.py          venue_coverage values that follow from recorded data
     adjudicate.py        deciding the pairs rounds 1 and 2 disagree on (--adjudicate)
     relabel.py           judging named questions again under the amended criterion (--relabel)
+    round3.py            the blind relabel of the whole set (--round 3)
     select_session.py    the selection loop
     rate.py              grading answers by hand, the judge's grade hidden
   generation/          answers from retrieved chunks, and their judging

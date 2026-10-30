@@ -7,7 +7,7 @@ construction; the union narrows pooling bias without removing it (docs/how-to/la
 from __future__ import annotations
 
 import random
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 
 from .. import formatting
 from ..config import Config
@@ -85,23 +85,37 @@ def review_pool(
 
 # Seed of the round-2 candidate order; recorded in every round-2 journal entry.
 RETEST_SHUFFLE_SEED = 20260924
+# Seed of the round-3 candidate order (methodology section 5b). Round 2's seed would repeat
+# round 2's order on every sampled question whose candidates did not change.
+ROUND3_SHUFFLE_SEED = 20261031
+
+
+def candidate_ids(round1_entry: Judgment, added: Sequence[str] = ()) -> list[str]:
+    """What round 1 judged in its recorded order, then the `added` chunks it did not."""
+    ids = round1_entry.judged_ids()
+    return ids + [c for c in dict.fromkeys(added) if c not in ids]
 
 
 def retest_candidates(
-    chunks: Mapping[str, Chunk], question_id: str, round1_entry: Judgment, seed: int
+    chunks: Mapping[str, Chunk],
+    question_id: str,
+    round1_entry: Judgment,
+    seed: int,
+    added: Sequence[str] = (),
 ) -> list[Result]:
-    """Round 2's candidates: exactly what round 1 judged, in a shuffled order.
+    """A later round's candidates: exactly what round 1 judged, in a shuffled order.
 
     The set is round 1's recorded pool plus every chunk its augmentations showed
     (`Judgment.judged_ids`), so kappa compares the two rounds on the same
-    candidates. The order is shuffled, seeded per question, so position in the
-    list is no cue to the first verdict. No method ranks are attached: which
-    retriever found a chunk is not part of the criterion.
+    candidates. Round 3 adds the `added` chunks, shuffled in among them. The order is
+    shuffled, seeded per question, so position in the list is no cue to the first
+    verdict. No method ranks are attached: which retriever found a chunk is not part
+    of the criterion.
 
     Raises:
-        UserError: A chunk round 1 judged is not in `chunks`.
+        UserError: A chunk to show is not in `chunks`.
     """
-    ids = round1_entry.judged_ids()
+    ids = candidate_ids(round1_entry, added)
     missing = [chunk_id for chunk_id in ids if chunk_id not in chunks]
     if missing:
         raise UserError(
@@ -111,13 +125,15 @@ def retest_candidates(
         )
     return [
         Result.from_chunk(chunks[chunk_id], 0.0)
-        for chunk_id in retest_order(question_id, round1_entry, seed)
+        for chunk_id in retest_order(question_id, round1_entry, seed, added)
     ]
 
 
-def retest_order(question_id: str, round1_entry: Judgment, seed: int) -> list[str]:
-    """The chunks round 1 judged, in the order round 2 showed them (seeded per question)."""
-    order = round1_entry.judged_ids()
+def retest_order(
+    question_id: str, round1_entry: Judgment, seed: int, added: Sequence[str] = ()
+) -> list[str]:
+    """The chunks a later round shows, in the order it shows them (seeded per question)."""
+    order = candidate_ids(round1_entry, added)
     random.Random(f"{seed}:{question_id}").shuffle(order)
     return order
 

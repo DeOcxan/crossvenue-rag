@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 from crossvenue_rag.labeling.judge import judge
+from crossvenue_rag.labeling.screen import ScreenView
 from crossvenue_rag.models import Question
-from tests.labeling.conftest import Script, comparison, quiet, results
+from tests.labeling.conftest import Script, comparison, quiet, result, results
 
 
 def test_fully_covered_comparison_saves_without_asking():
@@ -119,3 +120,13 @@ def test_a_reversed_range_or_no_number_is_rejected_and_asked_again():
     assert ask_picks(quiet(), comparison(), results(), Script("n"), "relevant", no_toggle) == (
         NONE_RELEVANT
     )
+
+
+def test_between_draws_on_every_redraw_of_the_screen():
+    drawn: list[str] = []
+    console = quiet()
+    candidates = [result("a", "text")]
+    question = Question("q1", "a question?", "gold", ["binance"], "fact", category="fact")
+    view = ScreenView(between=lambda: drawn.append("x"))
+    judge(console, question, candidates, set(), Script("f", ""), view=view)
+    assert drawn == ["x", "x"]

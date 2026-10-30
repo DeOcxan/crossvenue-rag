@@ -1,4 +1,4 @@
-"""Dataset commands: validate-evals, kappa, select, round-sample."""
+"""Dataset commands: validate-evals, kappa, round-agreement, select, round-sample, round3-gold."""
 
 from __future__ import annotations
 
@@ -17,10 +17,12 @@ from ..dataset.agreement import (
     Bootstrap,
     KappaRequest,
     kappa_study,
+    round_agreement,
 )
 from ..dataset.finalize import finalize_selection
 from ..dataset.questions import load_questions
 from ..dataset.records import DATASETS_DIR, load_records, newest_candidate_pool
+from ..dataset.round3_gold import build_round3_gold
 from ..dataset.sampling import (
     ROUND2_SEED,
     ROUND2_SIZE,
@@ -32,12 +34,14 @@ from ..dataset.selection import selection_path
 from ..dataset.validate import validate_dataset
 from ..errors import require_file
 from ..labeling.select_session import SelectionPlan, check_categories, run
-from . import render
+from . import render, render_round3
 from .app import ConfigOpt, QuestionsOpt, SetOpt, console, load, say
 
 # Round-2 questions whose gold the answer-rating screen showed during the quiet
 # period (methodology section 5); `kappa` reports agreement without them too.
 EXPOSED_FILE = Path("evals/selection/round2_exposed.txt")
+# The version round 3 shows its questions from and its gold set keeps every other field of.
+ADJUDICATED_DATASET = Path("evals/datasets/v0.2.2-gold.jsonl")
 
 
 def validate_evals(
@@ -196,6 +200,53 @@ def kappa(
         ),
     )
     say(console, render.source_chunks_table(study.sources, first, second))
+
+
+def round_agreement_command(
+    config: ConfigOpt = DEFAULT_CONFIG,
+    set_: SetOpt = None,
+    questions: QuestionsOpt = None,
+    metadata_from: Annotated[
+        Path,
+        typer.Option("--metadata-from", help="The dataset that gives each question's category."),
+    ] = ADJUDICATED_DATASET,
+) -> None:
+    """Agreement of rounds 1 and 3 across a criterion revision, descriptive only.
+
+    Prints the verdict counts, the raw agreement and the direction of disagreement by
+    category over the pairs both rounds judged. It holds no kappa and no target, since
+    reliability under the amended criterion was not measured (methodology section 5b).
+    Refuses until round 3 has judged every question.
+    """
+    cfg = load(config, set_)
+    category_of = {q.id: q.effective_category for q in load_questions(metadata_from)}
+    report = round_agreement(str(questions or cfg.eval.questions), category_of)
+    say(console, render_round3.round_agreement_table(report))
+    say(console, render_round3.round_agreement_categories_table(report))
+
+
+def round3_gold_command(
+    config: ConfigOpt = DEFAULT_CONFIG,
+    set_: SetOpt = None,
+    questions: QuestionsOpt = None,
+    base: Annotated[
+        Path, typer.Option("--base", help="The version every other field comes from.")
+    ] = ADJUDICATED_DATASET,
+    out: Annotated[Path, typer.Option("--out", "-o", help="Dataset file to write.")] = Path(
+        "evals/datasets/v0.3-gold.jsonl"
+    ),
+) -> None:
+    """Writes the gold set built from round 3 alone, then lists the flagged questions.
+
+    Refuses an existing `--out`, an unfinished round, and a journal in which any entry
+    besides round 3 differs from the journal frozen with `--base`.
+    """
+    cfg = load(config, set_)
+    built = build_round3_gold(base, str(questions or cfg.eval.questions), out)
+    say(console, f"{formatting.plural(built.written, 'question')} -> {out}")
+    say(console, f"{formatting.plural(len(built.flagged), 'flagged question')}")
+    for citation in built.flagged:
+        say(console, Text(f"  {citation}"))
 
 
 def select(

@@ -15,7 +15,7 @@ from .. import formatting, listing
 from ..clock import SECONDS_PER_DAY, record_time
 from ..errors import UserError
 from ..stats import Interval, chance_agreement, cohens_kappa, kappa_value
-from .journal import Journal, load_rounds, rounds_path
+from .journal import FIRST_ROUND, FULL_RELABEL_ROUND, Journal, load_rounds, rounds_path
 from .questions import load_questions
 from .sampling import read_sample_file
 
@@ -190,6 +190,16 @@ class VerdictTable:
     def disagreements(self) -> int:
         """Pairs one round judged relevant and the other not."""
         return self.first_only + self.second_only
+
+    @property
+    def pairs(self) -> int:
+        """Every pair the table counts."""
+        return self.both_relevant + self.both_irrelevant + self.disagreements
+
+    @property
+    def raw_agreement(self) -> float:
+        """The share of pairs both rounds judged alike."""
+        return 1 - self.disagreements / self.pairs
 
 
 def verdict_table(
@@ -369,10 +379,17 @@ def kappa_study(request: KappaRequest) -> KappaStudy:
     """Cohen's kappa between two rounds and its readings (methodology section 5).
 
     Raises:
-        UserError: The question file has no round history, or a question's two judgments
+        UserError: A round is round 3, which judged under another criterion and has no
+            kappa. The question file has no round history, or a question's two judgments
             are less than `MIN_RETEST_DAYS` apart and `short_gap` is not set.
     """
     path, first, second = request.questions_path, request.first, request.second
+    if FULL_RELABEL_ROUND in (first, second):
+        raise UserError(
+            f"round {formatting.own_form(FULL_RELABEL_ROUND)} judged under the amended "
+            "criterion, so a kappa with it is no test-retest reliability",
+            hint="`crossvenue round-agreement` reports its agreement with round 1 descriptively",
+        )
     rounds = load_rounds(path)
     if not rounds.questions:
         raise UserError(
@@ -405,4 +422,43 @@ def kappa_study(request: KappaRequest) -> KappaStudy:
         sources=source_chunk_verdicts(
             earlier, later, {q.id: q.source_chunk_ids for q in questions}
         ),
+    )
+
+
+@dataclass(frozen=True)
+class RoundAgreement:
+    """Round 3 against round 1 as corrected: counts only, across a criterion revision.
+
+    It holds no kappa and no target (methodology section 5b): reliability under the
+    amended criterion was not measured.
+    """
+
+    questions: int
+    total: VerdictTable
+    by_category: list[tuple[str, VerdictTable]]
+
+
+def round_agreement(questions_path: str, category_of: Mapping[str, str]) -> RoundAgreement:
+    """The agreement of rounds 1 and 3 over the pairs both judged.
+
+    Refused until round 3 has judged every question: a partial report would show the
+    annotator earlier verdicts during the round.
+
+    Raises:
+        UserError: A question of `category_of` has no round-3 entry.
+    """
+    rounds = load_rounds(questions_path)
+    open_ids = sorted(q for q in category_of if rounds.get(q).judgment(FULL_RELABEL_ROUND) is None)
+    if open_ids:
+        raise UserError(
+            f"{formatting.plural(len(open_ids), 'question')} without a round-"
+            f"{formatting.own_form(FULL_RELABEL_ROUND)} entry: {listing.first_items(open_ids)}",
+            hint="finish the round with `make round3`; its agreement is read at the end",
+        )
+    earlier = judgements_from_rounds(rounds, FIRST_ROUND)
+    later = judgements_from_rounds(rounds, FULL_RELABEL_ROUND)
+    return RoundAgreement(
+        questions=len({q for q, _ in set(earlier.labels) & set(later.labels)}),
+        total=verdict_table(earlier, later),
+        by_category=direction_by_category(earlier, later, category_of),
     )

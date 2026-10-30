@@ -43,6 +43,18 @@ Before comparing the recall of a method that is not in the pool the questions ar
 3. Compute Cohen's kappa over the candidates judged in both rounds: `make kappa`.
 4. Write the result to `evals/agreement.md`.
 
+## Relabel the set (round 3)
+
+Round 3 judges all 114 questions again, blind, as [methodology §5b](../../evals/methodology.md#5b-annotation-round-3-pre-registered) registers. It reads the chunks file and needs no database.
+
+1. Start or resume with `make round3`. A question shows the criterion, the keys and the candidates, shuffled, with no marks.
+2. Enter the relevant numbers (`1 4 7`, `2-5`), `n` if nothing answers the question, or Enter to skip. A skipped question comes back on the next run.
+3. On an `unanswerable` question, numbers are refused: enter `n`, or `x` if a chunk does answer it, which flags the question.
+4. To fix a typing error, press `u` at the next question. It re-opens the previous question without its marks, within this session only. A later correction is a recorded deviation.
+5. Stop with Ctrl-C at any prompt. Every answered question is already saved, and `make round3` resumes at the first question without an entry, on any later day.
+6. When the round is complete, read `make kappa`, which still prints the registered reading, and `make round3-agreement`, which is descriptive. It refuses an unfinished round, so that no earlier verdict appears during the round.
+7. Build the gold set with `make round3-gold`, then freeze it as below. It writes `evals/datasets/v0.3-gold.jsonl` directly, so step 2 of [Freeze a version](#freeze-a-version) copies nothing, and `evals/questions.jsonl` stays as it is.
+
 ## Validate
 
 1. Run the full check locally: `make validate-evals` (every `evals/datasets/*.jsonl`), or `crossvenue validate-evals -d evals/datasets/v0.2.1-gold.jsonl` for one file.

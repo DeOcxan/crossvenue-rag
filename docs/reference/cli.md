@@ -153,7 +153,7 @@ Categories come in order of risk of running out: ambiguous, noisy, version_sensi
 
 ### `label [IDS]...`
 
-Marks gold chunks in the terminal. Make targets: `make label` (round 1), `make relabel` (round 2, from `evals/selection/round2_sample.txt`), `make adjudicate` (`--adjudicate`) and `make relabel-d23` (`--relabel` on the questions of deviation D23).
+Marks gold chunks in the terminal. Make targets: `make label` (round 1), `make relabel` (round 2, from `evals/selection/round2_sample.txt`), `make adjudicate` (`--adjudicate`), `make round3` (`--round 3`) and `make relabel-d23` (`--relabel` on the questions of deviation D23).
 
 | Argument or option | Type | Default | Meaning |
 |---|---|---|---|
@@ -164,15 +164,16 @@ Marks gold chunks in the terminal. Make targets: `make label` (round 1), `make r
 | `--question-file` | path | - | Candidate list for `--augment`, written by `augment-candidates` |
 | `--adjudicate` | flag | off | A decision on each (question, chunk) pair that round 1 and round 2 judged differently; recorded under `adjudicated` in the journal |
 | `--relabel` | flag | off | The listed questions, judged again on the candidates round 1 judged; recorded under `relabeled` in the journal |
-| `--add-chunks` | path | - | With `--relabel`: chunks shown after the recorded candidates, one `{"id": ..., "chunk_ids": [...]}` object per line |
+| `--add-chunks` | path | - | With `--relabel`: chunks shown after the recorded candidates. With `--round 3`: chunks shuffled in among them. One `{"id": ..., "chunk_ids": [...]}` object per line |
+| `--metadata-from` | path | - | With `--round 3`: the dataset the questions are shown from; the journal stays the one of the question file |
 | `--all` | flag | off | Questions that already have labels, shown again |
 | `--limit` | int | `eval.pool_display` | Candidates shown per question |
 | `--pool-depth` | int | `eval.pool_depth_per_method` | Depth taken from each method; must exceed max(`eval.k_values`) |
-| `--round` | int | 1 | Annotation round; 1 writes gold labels, 2 and later re-annotate a subsample without touching round 1 |
+| `--round` | int | 1 | Annotation round; 1 writes gold labels, 2 re-annotates a subsample, 3 relabels the whole set, blind; 2 and 3 leave round 1 untouched |
 | `--annotator` | str | - | Recorded on every judgment |
-| `--sample` | int | - | N questions to label: at random in round 1, stratified by category in round 2 and later |
+| `--sample` | int | - | N questions to label: at random in round 1, stratified by category in round 2 |
 | `--seed` | int | 0 | Seed for `--sample` |
-| `--sample-file` | path | - | Round 2 and later: exactly the questions listed here, to label, written by `round-sample` |
+| `--sample-file` | path | - | Round 2: exactly the questions listed here, to label, written by `round-sample` |
 
 Round 1 pools every pool method's top `--pool-depth` with RRF and shows `--limit` distinct candidates. The screen is compact: number, venue, heading path, which methods found it at which rank, the first line. `v<n>` shows candidate *n* in full with every occurrence of its text and each occurrence's `environment` / `api_version` / `product` / `doc_type`; `f` toggles full text for the table. `s` after a number marks one of the question's `source_chunk_ids`.
 
@@ -185,6 +186,8 @@ Two checks run before a judgment is saved. Comparison coverage: if no marked chu
 Round 2 (`--round 2 --sample-file`, `make relabel`) shows each listed question with exactly the candidates round 1 judged (its recorded pool, plus the augmentation chunks of comparison questions). The candidates are shuffled with a fixed seed that is written to the journal. The screen has no marks, no "found by" column and no source-chunk markers. Nothing is retrieved again, so the index must be the one round 1 was judged against, and `label` refuses to start otherwise. Round 2 writes only to the journal, never to gold.
 
 `--adjudicate` walks every pair that round 1, as corrected, and round 2 judged differently, grouped by question in question id order and, within a question, in round-2 screen order. For each question it shows the question, category, venues and the criterion of methodology §5a as amended on 2026-10-10. For each pair it shows the chunk in full with its venue and heading and both earlier verdicts, labeled round 1 and round 2. `v<n>` shows another pair of the question in full, and `f` lists the question's pairs, compact or full. `y` records relevant, `n` not relevant, and `b` goes back one pair. Each decision is written to the journal under `adjudicated` as it is made, with its timestamp and the criterion date. Ctrl-C therefore loses nothing, and the next run resumes at the first pair without a decision. `--relabel ID ...` shows each listed question on the round-1 screen with the candidates round 1 judged followed by those `--add-chunks` names, and journals the verdict under `relabeled`. Both modes read chunks from the corpus file, check the built index against every recorded judgment, and write neither the question file nor the round-1 and round-2 entries, so `kappa` is unchanged by them.
+
+Round 3 (`--round 3 --add-chunks FILE --metadata-from DATASET`, `make round3`) walks every question without a round-3 entry, on the round-2 screen, from the chunks file and with no database. Above the candidate table it shows the criterion of methodology §5a as amended. The candidates are what round 1 judged plus the added chunks, shuffled per question with seed 20261031, recorded as `shuffle_seed`. Each verdict is written when it is given, under key `3` of the journal, with the `criterion` date and `relevant` in candidate order; nothing else is written. `u` re-opens the previous question of the session without its marks. An unanswerable question refuses numbers and takes `n`, or `x`, which records `flagged: true`. Ctrl-C stops, and the next run resumes at the first question without an entry. `--round 3` refuses ids and the other modes' options, and a later round is refused.
 
 ### `augment-candidates`
 
@@ -228,6 +231,23 @@ Cohen's kappa between two annotation rounds over the candidates judged in both. 
 | `--second` | int | 2 | Second round |
 | `--exposed` | path | `evals/selection/round2_exposed.txt`, when it exists | Questions whose gold was shown before the second round; a path given that does not exist is refused |
 | `--short-gap` | flag | off | A kappa reported although a question was re-judged within 14 days of round 1; the output marks it as not the registered measurement |
+
+### `round-agreement`
+
+The agreement of round 3 with round 1 as corrected, over the pairs both judged, across a criterion revision. Make target: `make round3-agreement`. It prints the verdict counts, the raw agreement and, by category, the direction of disagreement, with no κ and no target: reliability under the amended criterion was not measured. It refuses until round 3 has judged every question.
+
+| Option | Type | Default | Meaning |
+|---|---|---|---|
+| `--metadata-from` | path | `evals/datasets/v0.2.2-gold.jsonl` | The dataset that gives each question's category |
+
+### `round3-gold`
+
+Writes the gold set built from round 3 alone, then lists the flagged questions. Make target: `make round3-gold`. Each question keeps every field of `--base` except `gold_chunk_ids`, `venue_coverage`, `annotator`, `annotated_at` and `annotation_round`. It refuses an existing `--out`, an unfinished round, and a journal in which any entry besides round 3 differs from the journal frozen with `--base`.
+
+| Option | Type | Default | Meaning |
+|---|---|---|---|
+| `--base` | path | `evals/datasets/v0.2.2-gold.jsonl` | The version every other field comes from |
+| `--out`, `-o` | path | `evals/datasets/v0.3-gold.jsonl` | Dataset file to write |
 
 ### `validate-evals`
 

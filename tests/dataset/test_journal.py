@@ -126,3 +126,48 @@ def test_a_journal_saved_and_read_back_is_the_same_journal(tmp_path: Path):
     data = {"q1": {"1": {"pool": ["a"], "relevant": ["a"], "augmentations": [augmentation(["b"])]}}}
     save_rounds(tmp_path / "q.jsonl", Journal.from_json(data))
     assert json.loads(rounds_path(tmp_path / "q.jsonl").read_text()) == data
+
+
+def _with_every_entry() -> Journal:
+    return Journal.from_json(
+        {
+            "q": {
+                "1": {"pool": ["a", "b"], "relevant": ["a"], "index_version": "v"},
+                "2": {"pool": ["a", "b"], "relevant": ["b"], "shuffle_seed": 1},
+                "3": {"pool": ["b", "a"], "relevant": ["b"], "criterion": "2026-10-10"},
+                "adjudicated": adjudication({"a": False}),
+                "relabeled": relabel(["a"], ["a"]),
+            }
+        }
+    )
+
+
+def test_round_3_replaces_every_earlier_entry_in_the_resolved_gold():
+    assert _with_every_entry().get("q").resolved_relevant() == ["b"]
+
+
+def test_a_journal_with_round_3_reads_and_writes_back_identical():
+    journal = _with_every_entry()
+    text = journal.to_text()
+    assert Journal.from_json(json.loads(text)).to_text() == text
+    assert list(json.loads(text)["q"]) == ["1", "2", "3", "adjudicated", "relabeled"]
+
+
+def test_an_empty_flag_and_criterion_are_not_written():
+    entry = json.loads(_with_every_entry().to_text())["q"]
+    assert "flagged" not in entry["3"] and "criterion" not in entry["2"]
+
+
+def test_a_failed_write_leaves_the_last_complete_journal(tmp_path, monkeypatch):
+    path = tmp_path / "q.jsonl"
+    save_rounds(path, _with_every_entry())
+    before = rounds_path(path).read_bytes()
+
+    def fail(self: Path, *_: object, **__: object) -> None:
+        self.write_bytes(b"{ cut short")
+        raise OSError("disk full")
+
+    monkeypatch.setattr(Path, "write_text", fail)
+    with pytest.raises(OSError, match="disk full"):
+        save_rounds(path, Journal())
+    assert rounds_path(path).read_bytes() == before

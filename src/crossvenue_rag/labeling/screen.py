@@ -169,7 +169,8 @@ class ScreenView:
     pool" line, which only makes sense when the candidates are the whole pool.
     `blind=True` is the round-2 screen: no marks, no "found by" column, no
     source-chunk markers and no question notes, so nothing on screen carries the
-    first verdict or a cue outside the criterion.
+    first verdict or a cue outside the criterion. The save check of `judge` still
+    prints the notes of an adversarial or version_sensitive question once it has marks.
     """
 
     compact: bool = True

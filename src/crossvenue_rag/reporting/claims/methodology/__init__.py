@@ -21,6 +21,7 @@ def methodology(doc: Doc, src: Sources) -> None:
     labeling.adversarial(doc, src)
     labeling.agreement(doc, src)
     labeling.instructions(doc)
+    labeling.round3(doc, src)
     labeling.deduplication(doc, src)
     significance.sample_size(doc)
     significance.observed_power(doc, src)

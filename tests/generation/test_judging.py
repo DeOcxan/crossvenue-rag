@@ -96,3 +96,36 @@ def test_judging_answers_to_questions_the_file_lacks_is_refused_before_any_call(
             progress=lambda _msg: None,
         )
     assert transport.calls == []
+
+
+def test_a_rejudged_record_takes_its_category_and_expected_behavior_from_the_question_file(
+    tmp_path,
+):
+    from dataclasses import replace
+
+    from tests.generation.offline import FakeTransport
+
+    cfg = config(tmp_path)
+    llm = LLM(cfg.generation, FakeTransport(respond=respond), api_key=SECRET)
+    source = run_answers(
+        cfg,
+        TwoChunkRetriever(),
+        AnswerInputs(QUESTIONS, CHUNKS, llm, judge_name=None),
+        progress=lambda _msg: None,
+    ).records
+    moved = QUESTIONS[0].id
+    questions = [
+        replace(q, category="noisy", expected_behavior="ask_clarification") if q.id == moved else q
+        for q in QUESTIONS
+    ]
+    llm = LLM(cfg.generation, FakeTransport(respond=respond), api_key=SECRET)
+    judged = judge_records(
+        cfg, source, AnswerInputs(questions, CHUNKS, llm, "sonnet"), progress=lambda _msg: None
+    ).records
+    assert [r.generation for r in judged] == [r.generation for r in source]
+    for before, after in zip(source, judged, strict=True):
+        if before.question_id == moved:
+            assert (after.category, after.expected_behavior) == ("noisy", "ask_clarification")
+        else:
+            assert after.category == before.category
+            assert after.expected_behavior == before.expected_behavior

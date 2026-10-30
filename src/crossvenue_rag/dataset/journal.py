@@ -2,8 +2,8 @@
 
 `annotations/<name>.rounds.json` holds, per question, every judgment made of it: the numbered
 labeling rounds, the adjudication of the pairs two rounds disagree on and a relabel under the
-amended criterion. A record keeps the key order of the file it was read from, so a journal read
-and written again is byte-identical.
+amended criterion. Round 3 relabels the whole set. A record keeps the key order of the file it
+was read from, so a journal read and written again is byte-identical.
 """
 
 from __future__ import annotations
@@ -33,6 +33,9 @@ ADJUDICATED = "adjudicated"
 RELABELED = "relabeled"
 # The round whose judgments are the gold the later passes start from.
 FIRST_ROUND = 1
+# The round that judges every question again under the amended criterion (methodology
+# section 5b); the gold of a set built from it comes from this round alone.
+FULL_RELABEL_ROUND = 3
 
 
 class JournalRecord(BaseModel):
@@ -121,8 +124,9 @@ class Judgment(JournalRecord):
     """One labeling round's judgment of a question: the pool shown and the chunks marked.
 
     Round 1 also carries its corrections, made by review or derived by rule, and its
-    augmentations; a later round carries the seed its candidates were shuffled with. Every
-    round carries its id migrations.
+    augmentations; a later round carries the seed its candidates were shuffled with. Round 3
+    also carries the date of its criterion and, on a question it flags as misclassified,
+    `flagged`. Every round carries its id migrations.
     """
 
     annotator: str | None = None
@@ -134,6 +138,8 @@ class Judgment(JournalRecord):
     venue_coverage: dict[str, VenueCoverage] | None = None
     augmentations: list[Augmentation] | None = None
     shuffle_seed: int | None = None
+    criterion: str | None = None
+    flagged: bool | None = None
     migrated_from: Migration | None = None
 
     def judged_ids(self) -> list[str]:
@@ -251,10 +257,13 @@ class QuestionJournal(BaseModel):
     def resolved_relevant(self) -> list[str]:
         """The relevant chunks the entries resolve to: the question's gold.
 
-        A relabel replaces round 1. Otherwise each adjudicated decision is applied to round
-        1's corrected set: a chunk decided not relevant is dropped, and one decided relevant
-        is appended in the order of the decisions.
+        Round 3 replaces every earlier entry, and a relabel replaces round 1. Otherwise each
+        adjudicated decision is applied to round 1's corrected set: a chunk decided not relevant
+        is dropped, and one decided relevant is appended in the order of the decisions.
         """
+        full = self.rounds.get(FULL_RELABEL_ROUND)
+        if full is not None:
+            return list(full.relevant)
         if self.relabeled is not None:
             return list(self.relabeled.relevant)
         relevant = list(self.first.relevant) if self.first is not None else []
@@ -371,10 +380,16 @@ def load_rounds(questions_path: str | Path) -> Journal:
 
 
 def save_rounds(questions_path: str | Path, journal: Journal) -> None:
-    """Writes the judgment journal of a question file to its sidecar."""
+    """Writes the judgment journal of a question file to its sidecar, atomically.
+
+    A session writes after every judgment, so an interrupt or a crash mid-write must leave
+    the last complete journal in place.
+    """
     path = rounds_path(questions_path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(journal.to_text(), encoding="utf-8")
+    tmp = path.with_suffix(".tmp")
+    tmp.write_text(journal.to_text(), encoding="utf-8")
+    tmp.replace(path)
 
 
 def load_judged_sets(questions_path: str | Path) -> dict[str, set[str]] | None:

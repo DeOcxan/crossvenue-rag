@@ -30,7 +30,7 @@ from ..models import Question, Result
 from ..retrieval.protocols import LabelRetriever
 from .judge import RelevanceJudgement, judge
 from .pool import RETEST_SHUFFLE_SEED, gather_candidates, retest_candidates
-from .screen import Ask, Show
+from .screen import Ask, ScreenView, Show
 
 # Below this many judged questions the time-left estimate is marked rough.
 PACE_SAMPLES = 5
@@ -42,6 +42,7 @@ def progress_table(
     handled: int,
     judged: int,
     elapsed_seconds: float,
+    labelled: int | None = None,
 ) -> Table:
     """Where the session stands, and how much longer finishing would take.
 
@@ -51,9 +52,12 @@ def progress_table(
     a prior average misleads when this batch is all hard comparison questions.
 
     `handled` counts questions moved past (a skip still costs reading time, so it
-    belongs in the pace); `judged` counts the ones recorded.
+    belongs in the pace); `judged` counts the ones recorded. `labelled` is the count
+    behind "labeled overall", by default the questions with a verdict; a round over
+    judged questions passes the ones it has recorded.
     """
-    labelled = sum(1 for q in questions if q.gold_chunk_ids or q.annotated_at)
+    if labelled is None:
+        labelled = sum(1 for q in questions if q.gold_chunk_ids or q.annotated_at)
     remaining = len(queue) - handled
 
     table = Table(show_header=False, box=None, padding=(0, 2))
@@ -337,9 +341,8 @@ def _walk(
                 )
             )
             candidates, marked = journal.candidates(retriever, question, *geometry)
-            judgement = judge(
-                console, question, candidates, marked, prompt, blind=not journal.writes_gold
-            )
+            view = ScreenView(blind=not journal.writes_gold)
+            judgement = judge(console, question, candidates, marked, prompt, view=view)
             if judgement is not None:
                 journal.record(question, candidates, judgement)
                 judged += 1

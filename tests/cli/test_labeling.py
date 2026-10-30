@@ -176,3 +176,18 @@ def test_derive_coverage_without_chunks_names_the_file_and_the_command_that_writ
     assert isinstance(result.exception, UserError)
     assert "chunks.jsonl not found" in str(result.exception)
     assert "crossvenue ingest" in (result.exception.hint or "")
+
+
+def test_label_round_3_options_reach_the_request(config_file, tmp_path, monkeypatch):
+    from crossvenue_rag.cli import labeling as modes
+
+    got: list = []
+    monkeypatch.setattr(modes, "run_label", lambda cfg, request: got.append(request))
+    added, metadata = tmp_path / "added.jsonl", tmp_path / "base.jsonl"
+    result = invoke(
+        "label", "-c", str(config_file), "--round", "3",
+        "--add-chunks", str(added), "--metadata-from", str(metadata),
+    )  # fmt: skip
+    assert result.exit_code == 0, result.output
+    assert got[0].annotation_round == 3
+    assert (got[0].add_chunks, got[0].metadata_from) == (added, metadata)

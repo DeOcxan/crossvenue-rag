@@ -323,3 +323,38 @@ def test_validate_evals_prints_a_bracketed_path_and_venue_as_they_are(
     assert result.exit_code == 0, (result.exception, result.output)
     flat = "".join(result.output.split())
     assert str(path) in flat and "[/x]=1" in flat and "venue[bold]v[/bold]" in flat
+
+
+def test_kappa_with_round_3_is_refused_and_points_to_round_agreement(config_file, tmp_path):
+    questions = judged_questions(tmp_path)
+    result = invoke("kappa", "-c", str(config_file), "-q", str(questions), "--second", "3")
+    assert isinstance(result.exception, UserError)
+    assert "round-agreement" in result.exception.with_hint()
+
+
+def test_round_agreement_prints_no_kappa_and_no_target(config_file, tmp_path):
+    from crossvenue_rag.dataset.questions import load_questions
+
+    questions = judged_questions(tmp_path)
+    ids = [q.id for q in load_questions(questions)]
+    entry = {"pool": ["a", "b"], "relevant": ["a"], "index_version": "v"}
+    write_journal(questions, {q: {"1": dict(entry), "3": dict(entry, relevant=["b"])} for q in ids})
+    result = invoke(
+        "round-agreement", "-c", str(config_file), "-q", str(questions),
+        "--metadata-from", str(questions),
+    )  # fmt: skip
+    assert result.exit_code == 0, result.output
+    assert "raw agreement" in result.output and "descriptive" in result.output
+    assert "kappa" not in result.output.lower() and "target" not in result.output.lower()
+
+
+def test_round3_gold_refuses_an_unfinished_round_and_writes_nothing(config_file, tmp_path):
+    questions = judged_questions(tmp_path)
+    out = tmp_path / "out.jsonl"
+    base = Path("evals/datasets/v0.2.2-gold.jsonl").resolve()
+    result = invoke(
+        "round3-gold", "-c", str(config_file), "-q", str(questions),
+        "--base", str(base), "-o", str(out),
+    )  # fmt: skip
+    assert isinstance(result.exception, UserError)
+    assert "without a round-3 entry" in str(result.exception) and not out.exists()

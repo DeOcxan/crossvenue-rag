@@ -7,6 +7,7 @@ round 1, so it is the reference the working round 1 is held to.
 
 from __future__ import annotations
 
+from collections import Counter
 from dataclasses import dataclass
 from typing import Any
 
@@ -152,6 +153,34 @@ def adjudicated_gold(src: Sources) -> dict[str, Question]:
 def adjudicated_journal(src: Sources) -> Journal:
     """The journal frozen with `v0.2.2-gold`."""
     return load_rounds(src.path(GOLD_ADJUDICATED))
+
+
+@dataclass(frozen=True)
+class Round3Size:
+    """The questions and candidate decisions round 3 holds for one category."""
+
+    questions: int
+    decisions: int
+
+
+def round3_added(src: Sources) -> dict[str, list[str]]:
+    """Per question, the chunks round 3 shows beside the ones round 1 judged."""
+    added = read_added_chunks(src.path(D23_ANSWER_CHUNKS))
+    return {q: chunks for q, chunks in added.items() if chunks}
+
+
+def round3_sizes(src: Sources) -> dict[str, Round3Size]:
+    """Questions and decisions by category of `v0.2.2-gold`, most decisions first."""
+    journal, added = adjudicated_journal(src), round3_added(src)
+    questions: Counter[str] = Counter()
+    decisions: Counter[str] = Counter()
+    for question in adjudicated_gold(src).values():
+        first = journal.require_first(question.id)
+        shown = set(first.judged_ids()) | set(added.get(question.id, ()))
+        questions[question.effective_category] += 1
+        decisions[question.effective_category] += len(shown)
+    order = sorted(decisions, key=lambda category: (-decisions[category], category))
+    return {c: Round3Size(questions[c], decisions[c]) for c in order}
 
 
 def changed_gold(src: Sources) -> list[str]:

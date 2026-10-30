@@ -12,12 +12,13 @@ from crossvenue_rag.dataset.agreement import (
     KappaStudy,
     compare_rounds,
     kappa_study,
+    round_agreement,
 )
 from crossvenue_rag.dataset.journal import Journal
 from crossvenue_rag.dataset.questions import save_questions
 from crossvenue_rag.errors import UserError
 from crossvenue_rag.models import Question
-from tests.conftest import augmentation, correction, write_journal
+from tests.conftest import augmentation, correction, journal_dict, write_journal
 
 
 def test_rounds_compare_only_pairs_judged_twice():
@@ -293,3 +294,48 @@ def test_the_study_carries_intervals_only_when_a_bootstrap_is_given(tmp_path: Pa
     assert plain.sources.unjudged == 0 and plain.sources.verdicts.disagreements == 0
     study = kappa_study(KappaRequest(str(path), bootstrap=Bootstrap(200, 3)))
     assert all(v.interval is not None and v.interval.resamples == 200 for v in study.variants)
+
+
+def _third_round(tmp_path: Path) -> Path:
+    """`two_rounds` plus round 3 on both questions, q1 on one more chunk than round 1 saw."""
+    path = two_rounds(tmp_path)
+    journal = journal_dict(path)
+    stamp = "2026-10-31T12:00:00Z"
+    third = entry(stamp, ["c2"])
+    journal["q1"]["3"] = dict(third, pool=[*third["pool"], "new"])
+    journal["q2"]["3"] = third
+    write_journal(path, journal)
+    return path
+
+
+def test_kappa_does_not_move_when_round_3_is_in_the_journal(tmp_path: Path):
+    before = kappa_study(KappaRequest(str(two_rounds(tmp_path))))
+    after = kappa_study(KappaRequest(str(_third_round(tmp_path))))
+    assert after.report == before.report and after.variants == before.variants
+
+
+@pytest.mark.parametrize(("first", "second"), [(1, 3), (2, 3), (3, 1)])
+def test_kappa_with_round_3_is_refused(tmp_path: Path, first: int, second: int):
+    request = KappaRequest(str(_third_round(tmp_path)), first, second)
+    with pytest.raises(UserError, match="no test-retest reliability") as refused:
+        kappa_study(request)
+    assert "round-agreement" in refused.value.with_hint()
+
+
+def test_round_agreement_counts_only_pairs_both_rounds_judged(tmp_path: Path):
+    path = str(_third_round(tmp_path))
+    report = round_agreement(path, {"q1": "fact", "q2": "comparison"})
+    assert report.questions == 2 and report.total.pairs == 4
+    table = report.total
+    assert (table.both_relevant, table.first_only, table.second_only) == (0, 2, 2)
+    assert table.raw_agreement == 0.0
+    assert {category for category, _ in report.by_category} == {"fact", "comparison"}
+    assert not hasattr(report, "kappa")
+
+
+def test_round_agreement_is_refused_until_round_3_is_complete(tmp_path: Path):
+    path = tmp_path / "q.jsonl"
+    save_questions(path, [Question("q1", "a?", "gold", ["bybit"], "fact", category="fact")])
+    write_journal(path, {"q1": {"1": entry("2026-09-01T12:00:00Z", ["c1"])}})
+    with pytest.raises(UserError, match="without a round-3 entry"):
+        round_agreement(str(path), {"q1": "fact"})

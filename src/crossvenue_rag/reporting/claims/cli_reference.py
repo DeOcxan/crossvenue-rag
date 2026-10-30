@@ -14,7 +14,7 @@ from ...evaluation.power import TARGET_POWER_PERCENT
 from ...generation.schemas import FIRST_SCHEMA, PARTIAL_SCHEMA
 from ...models import MULTI_VENUE
 from ..check import Doc
-from ..compute import cli_options
+from ..compute import cli_options, datasets_rounds
 from ..outcomes import Param
 from ..sources import Sources
 from . import comparisons
@@ -82,7 +82,15 @@ def _question_set(doc: Doc, src: Sources) -> None:
         "fewer than {} answerable comparison questions", formatting.count(TARGETS["comparison"])
     )
     doc.check("-round` | int | {} |", _default(src, "label", "--round"))
-    doc.definition("1 writes gold labels, 2 and later", reason="the round numbers `label` reads")
+    doc.definition(
+        "1 writes gold labels, 2 re-annotates a subsample, 3 relabels the whole set, blind; 2 "
+        "and 3 leave round 1 untouched",
+        reason="the round numbers `label` reads",
+    )
+    doc.check(
+        "shuffled per question with seed {}, recorded as `shuffle_seed`",
+        formatting.own_form(datasets_rounds.round3_shuffle_seed(src)),
+    )
     doc.check("-seed` | int | {} | Seed for", _default(src, "label", "--seed"))
     doc.definition("Two checks run before", reason="the two checks the paragraph describes")
     doc.check("-n` | int | {} |", _default(src, "round-sample", "--n"))
