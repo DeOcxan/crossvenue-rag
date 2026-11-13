@@ -1,10 +1,10 @@
-"""Tests for `crossvenue_rag.reporting.text_spans`: collapsed-text offsets and span membership."""
+"""Tests for `crossvenue_rag.reporting.text_spans`: collapsed-text offsets."""
 
 from __future__ import annotations
 
 import re
 
-from crossvenue_rag.reporting.text_spans import Collapsed, Found, Spans
+from crossvenue_rag.reporting.text_spans import Collapsed, Found
 
 
 def test_collapsed_text_has_each_whitespace_run_as_one_space():
@@ -32,12 +32,3 @@ def test_a_found_match_reports_its_span_and_group_starts_in_the_text_as_written(
     assert (found.group, found.groups) == ("b c", ("b", "c"))
     assert found.span == (3, 8) and written[slice(*found.span)] == "b\n\n c"
     assert found.group_start(2) == 7
-
-
-def test_spans_include_the_start_exclude_the_end_and_merge_overlaps():
-    spans = Spans([(5, 8), (0, 2), (7, 10)])
-    assert [p for p in range(12) if p in spans] == [0, 1, 5, 6, 7, 8, 9]
-
-
-def test_no_offset_lies_in_an_empty_set_of_spans():
-    assert 0 not in Spans([])

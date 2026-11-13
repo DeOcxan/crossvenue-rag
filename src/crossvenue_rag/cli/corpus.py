@@ -1,4 +1,4 @@
-"""Corpus commands: fetch, ingest, stats, count-term, check."""
+"""Corpus commands: `fetch`, `ingest`, `stats`, `count-term`, `check`."""
 
 from __future__ import annotations
 
@@ -59,7 +59,7 @@ def fetch(
         say(
             console,
             f"every file matches {cfg.paths.manifest} "
-            f"({formatting.plural(sum(report.matched.values()), 'document')}); "
+            f"({formatting.plural(report.matched_total, 'document')}); "
             "the manifest is unchanged",
         )
 
@@ -103,8 +103,8 @@ def count_term(
     """Counts chunks containing a term, by the project's one counting convention.
 
     Chunks containing the term, case-insensitive, over data/processed/chunks.jsonl.
-    Every count of one term quoted in a document or a `notes` field is this
-    command's output, so two people counting the same thing agree.
+    Every count of one term quoted in a document is this command's output, so two
+    people counting the same thing agree.
     """
     cfg = load(config, set_)
     counts = run_count(cfg, term, venue)

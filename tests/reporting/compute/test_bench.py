@@ -84,8 +84,8 @@ def write_bench(root, *, summary=None, cpu_count=8, load=None):
     (directory / MACHINE_FILE).write_text(machine_json(record), encoding="utf-8")
 
 
-def write_fixture(root, **bench_options):
-    """Two questions venue_split splits and one it does not, the bench and the retrieval run."""
+def bench_sources(root, **bench_options):
+    """Two questions `venue_split` splits and one it does not, the bench and the retrieval run."""
     write_sources(root, ["binance", "bybit", "okx"])
     write_gold(
         root,
@@ -129,37 +129,43 @@ def test_time_outside_the_rerank_step_is_averaged_by_position_in_the_pair():
 
 
 def test_the_bench_times_the_questions_venue_split_splits(tmp_path):
-    src = write_fixture(tmp_path)
+    src = bench_sources(tmp_path)
     assert bench.timed_question_count(src) == 2
     assert bench.times_split_questions(src)
 
 
 def test_a_slice_below_the_tested_size_with_a_saving_excluding_zero_is_descriptive(tmp_path):
-    src = write_fixture(tmp_path)
+    src = bench_sources(tmp_path)
     rerank = bench.paired_difference(src, "rerank_ms")
     assert (rerank.value, rerank.low, rerank.high) == pytest.approx((10.0, 10.0, 10.0))
     assert bench.descriptive_with_saving(src)
 
 
+def test_a_paired_difference_of_a_column_other_than_total_ms_or_rerank_ms_is_an_error(tmp_path):
+    src = bench_sources(tmp_path)
+    with pytest.raises(ValueError, match="has no 'outside_first'"):
+        bench.paired_difference(src, "outside_first")
+
+
 def test_the_modes_agree_only_on_equal_pairs_and_identical_retrievals(tmp_path):
-    assert bench.modes_agree(write_fixture(tmp_path / "same"))
+    assert bench.modes_agree(bench_sources(tmp_path / "same"))
     fewer_pairs = [summary_row("per_venue"), summary_row("one_call", pairs=39.0)]
-    assert not bench.modes_agree(write_fixture(tmp_path / "pairs", summary=fewer_pairs))
+    assert not bench.modes_agree(bench_sources(tmp_path / "pairs", summary=fewer_pairs))
     one_differs = [summary_row("per_venue"), summary_row("one_call", identical=1)]
-    assert not bench.modes_agree(write_fixture(tmp_path / "ids", summary=one_differs))
+    assert not bench.modes_agree(bench_sources(tmp_path / "ids", summary=one_differs))
 
 
 def test_mode_rows_list_the_bench_columns_per_mode_in_order(tmp_path):
-    rows = bench.mode_rows(write_fixture(tmp_path))
+    rows = bench.mode_rows(bench_sources(tmp_path))
     assert [m for m, _ in rows] == ["per_venue", "one_call"]
     assert rows[1][1] == [1.0, 40.0, 100.0, 130.0, 122.5]
 
 
 def test_a_machine_record_without_load_or_cpus_is_an_error(tmp_path):
-    src = write_fixture(tmp_path / "full")
+    src = bench_sources(tmp_path / "full")
     assert bench.load_average(src) == (1.5, 2.5)
     assert bench.cpu_count(src) == 8
-    bare = write_fixture(tmp_path / "bare", cpu_count=None, load=LoadDuring())
+    bare = bench_sources(tmp_path / "bare", cpu_count=None, load=LoadDuring())
     with pytest.raises(ValueError, match="records no load while timing"):
         bench.load_average(bare)
     with pytest.raises(ValueError, match="records no CPU count"):
@@ -168,13 +174,13 @@ def test_a_machine_record_without_load_or_cpus_is_an_error(tmp_path):
 
 def test_evaluation_p50_below_the_bench_is_given_with_the_bench_p50(tmp_path):
     rows = [summary_row("per_venue", total_p50_ms=100.0), summary_row("one_call")]
-    src = write_fixture(tmp_path, summary=rows)
+    src = bench_sources(tmp_path, summary=rows)
     # venue_split's p50 on the two split questions is 80 ms; cv-0003 is not split.
     assert bench.eval_below_bench(src) == pytest.approx((20.0, 100.0))
 
 
 def test_timing_as_many_questions_as_venue_split_splits_but_others_is_refused(tmp_path):
-    write_fixture(tmp_path)
+    bench_sources(tmp_path)
     write_gold(
         tmp_path,
         [
@@ -201,7 +207,7 @@ def test_a_question_without_both_modes_or_a_third_position_is_a_value_error(rows
 
 
 def test_a_summary_without_a_mode_is_a_value_error(tmp_path):
-    src = write_fixture(tmp_path, summary=[summary_row("one_call")])
+    src = bench_sources(tmp_path, summary=[summary_row("one_call")])
     with pytest.raises(ValueError, match=r"summary\.csv has no 'per_venue'"):
         bench.mode_value(src, "per_venue", "total_p50_ms")
     with pytest.raises(ValueError, match=r"summary\.csv has no 'per_venue'"):

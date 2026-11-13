@@ -10,7 +10,7 @@ from crossvenue_rag.dataset.questions import load_questions, save_questions
 from crossvenue_rag.errors import UserError
 from crossvenue_rag.labeling.review import review_session
 from crossvenue_rag.labeling.session import LabelTarget
-from tests.conftest import journal_dict, write_journal
+from tests.conftest import augmentation, journal_dict, write_journal
 from tests.labeling.conftest import VERSION, Script, ThreeChunkRetriever, comparison, quiet
 
 
@@ -77,7 +77,7 @@ def test_review_records_a_round_1_correction_and_keeps_the_previous_set(cfg, tmp
     assert "*1" in console.export_text()
 
 
-def test_review_shows_the_recorded_pool_and_writes_nothing_when_unchanged(cfg, tmp_path):
+def test_review_writes_nothing_when_unchanged(cfg, tmp_path):
     path = setup_labelled(tmp_path)
     before = (Path(path).read_bytes(), journal_dict(path))
     changed = review_session(
@@ -92,7 +92,41 @@ def test_review_shows_the_recorded_pool_and_writes_nothing_when_unchanged(cfg, t
     assert (Path(path).read_bytes(), journal_dict(path)) == before
 
 
-def test_review_refuses_unknown_or_unlabelled_ids(cfg, tmp_path):
+def test_review_shows_augmentation_gold_and_a_changed_review_keeps_it(cfg, tmp_path):
+    """Gold an augmentation added, outside the recorded pool, is on screen and kept."""
+    path = tmp_path / "questions.jsonl"
+    save_questions(path, [comparison(gold_chunk_ids=["c1", "c3"], annotation_round=1)])
+    write_journal(
+        path,
+        {
+            "cv-0001": {
+                "1": {
+                    "annotator": "me",
+                    "annotated_at": "2026-09-24T21:00:00Z",
+                    "index_version": VERSION,
+                    "pool": ["c1", "c2"],
+                    "relevant": ["c1", "c3"],
+                    "augmentations": [augmentation(["c3"], ["c3"])],
+                }
+            }
+        },
+    )
+    console = quiet()
+    changed = review_session(
+        cfg,
+        ThreeChunkRetriever(cfg),
+        LabelTarget(str(path), VERSION, "me"),
+        ["cv-0001"],
+        console=console,
+        prompt=Script("1 2 3"),
+    )
+    assert changed == 1
+    assert "*3" in console.export_text()
+    [question] = load_questions(path)
+    assert question.gold_chunk_ids == ["c1", "c2", "c3"]
+
+
+def test_review_refuses_unknown_or_unjudged_ids(cfg, tmp_path):
     path = setup_labelled(tmp_path)
     with pytest.raises(UserError, match="not in"):
         review_session(

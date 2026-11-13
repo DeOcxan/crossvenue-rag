@@ -1,4 +1,4 @@
-"""Index commands: index, id-map, remap-ids."""
+"""Index commands: `index`, `id-map`, `remap-ids`."""
 
 from __future__ import annotations
 
@@ -10,9 +10,9 @@ from rich.text import Text
 
 from .. import formatting
 from ..config_loading import DEFAULT_CONFIG
+from ..confined_paths import require_out_file
 from ..corpus.artifacts import CHUNKS_FILENAME
 from ..dataset.remap import RemapRequest, remap_file
-from ..errors import UserError
 from ..index.build import build_indexes
 from ..index.migrate import write_id_map
 from ..index_version import index_meta_path, require_built_index_version
@@ -37,8 +37,8 @@ def index(
     )
     if built.dense_rows is None:
         console.print(
-            "[yellow]skipped dense index[/yellow]: eval and label will refuse to run "
-            "until Postgres is rebuilt at the same index_version"
+            "[yellow]skipped dense index[/yellow]: eval and the label modes that query "
+            "Postgres refuse to run unless Postgres holds rows at this index_version"
         )
         return
     say(
@@ -59,8 +59,7 @@ def id_map(
 ) -> None:
     """Maps every old chunk id onto the current chunk with the same venue and text."""
     cfg = load(config, set_)
-    if out.is_dir():
-        raise UserError(f"--out {out} is a directory", hint="pass --out the path of the map file")
+    require_out_file(out, folder_must_exist=False)
     mapping = write_id_map(cfg, old_chunks, out)
     say(
         console,

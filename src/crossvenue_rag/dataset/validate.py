@@ -4,7 +4,7 @@ The checks catch what corrupts an evaluation without crashing it, such as a dupl
 question or a venue the corpus does not have.
 
 Near-duplicate detection needs an encoder and is skipped with a warning when the encoder
-cannot be loaded, so CI does not download the encoder's weights for it.
+cannot be loaded.
 """
 
 from __future__ import annotations
@@ -47,7 +47,7 @@ DocumentEncoder = Callable[[list[str]], np.ndarray]
 PAIR = 2
 
 
-# The warning's threshold: the busiest venue named by more than this many times the
+# The warning's threshold: the busiest venue named in more than this many times the
 # questions of the quietest. It is a judgment for the report; no standard sets it.
 LOPSIDED_VENUE_RATIO = 4
 
@@ -112,7 +112,7 @@ def _check_note_cross_references(
 ) -> None:
     """Checks the question ids one `notes` field uses to point at another.
 
-    Notes carry the reasoning a question rests on ("the answerable sibling is
+    Notes carry the reasoning behind a question ("the answerable sibling is
     cv-0108", "this is the control for cv-0045"), and an annotator follows those
     pointers while judging. A dangling pointer, whose target does not exist, is
     an error. A pointer whose target became a different question when
@@ -136,7 +136,7 @@ def _check_note_cross_references(
                 report.warn(
                     f"{record.id} (venues {', '.join(sorted(record.venues))}) references {target} "
                     f"(venues {', '.join(sorted(known[target].venues))}), which shares no venue "
-                    "with it; check that the pointer still names the question it was written for"
+                    "with it"
                 )
 
 
@@ -190,11 +190,11 @@ def _check_source_chunks(
 def check_venue_coverage(
     records: Sequence[QuestionRecord], chunk_venues: dict[str, str], report: ValidationReport
 ) -> None:
-    """A labeled answerable comparison must account for every venue it names.
+    """A judged answerable comparison must account for every venue it names.
 
     `venue_coverage` says, per venue, `covered` / `absent_in_docs` /
     `missing_from_pool`. `covered` must be backed by a gold chunk from that
-    venue, and a venue that has a gold chunk must be `covered`: the field is a
+    venue, and a venue that has a gold chunk must be `covered`. The field is a
     claim about the gold set, so the two cannot disagree. Without it a one-sided
     gold set is indistinguishable from a deliberately one-sided answer.
     """
@@ -244,7 +244,7 @@ def _check_balance(records: Sequence[QuestionRecord], report: ValidationReport) 
             report.warn(
                 f"category {category!r} has only {formatting.plural(count, 'question')}; "
                 "its breakdown row will be noise "
-                f"(want >= {formatting.count(MIN_QUESTIONS_PER_CATEGORY)})"
+                f"(minimum {formatting.count(MIN_QUESTIONS_PER_CATEGORY)})"
             )
     if by_venue:
         busiest, most = by_venue.most_common(1)[0]
@@ -263,7 +263,10 @@ def _check_near_duplicates(
     report: ValidationReport,
     encode_documents: DocumentEncoder,
 ) -> None:
-    """Warns of each question pair at or above the configured cosine similarity.
+    """Warns of each question pair at or above the configured similarity.
+
+    The similarity is the vectors' inner product, which is the cosine under
+    `embedding.normalize: true`.
 
     Two phrasings of the same information need are one question counted twice:
     it doubles that need's weight in every average without adding information.
@@ -319,7 +322,10 @@ def longest_shared_run(question: str, chunk: str) -> list[str]:
 def check_ngram_leakage(
     records: Sequence[QuestionRecord], chunk_texts: dict[str, str], report: ValidationReport
 ) -> None:
-    """Warns on a question that shares LEAKAGE_NGRAM or more words with a gold chunk."""
+    """Warns on a question sharing LEAKAGE_NGRAM or more consecutive words with a gold chunk.
+
+    The run is the question's `longest_shared_run` with the chunk, quoted spans cut out.
+    """
     for record in records:
         worst: tuple[list[str], str] = ([], "")
         for chunk_id in record.gold_chunk_ids:
@@ -358,7 +364,7 @@ def _check_meta(
 def _check_meta_counts(
     name: str, records: Sequence[QuestionRecord], meta: DatasetMeta, report: ValidationReport
 ) -> None:
-    """Each count the meta declares, against the counts `_check_balance` put in `report.stats`."""
+    """Each `DatasetCounts` field the meta declares, against the count recomputed from `records`."""
     stats = report.stats
     recomputed: dict[str, int | dict[str, int]] = {
         "total": stats.total,
@@ -427,7 +433,7 @@ def _check_journal_gold(
     try:
         journal = read_journal(journal_path)
     except UserError as exc:
-        report.error(str(exc))
+        report.error(exc.with_hint())
         return
     for record in records:
         entries = journal.get(record.id)
@@ -496,7 +502,7 @@ def _check_records(
     manifest_rows = read_manifest(cfg.paths.manifest)
     corpus_venues = {row.venue for row in manifest_rows}
     if not corpus_venues:
-        report.warn(f"{cfg.paths.manifest} is empty; skipped venue check")
+        report.warn(f"{cfg.paths.manifest} has no rows or does not exist; skipped venue check")
 
     # Without a corpus (CI ingests none), the checks against it are skipped with a warning.
     corpus_built = chunks_path(cfg).exists()
@@ -519,7 +525,7 @@ def _check_records(
 def _check_meta_file(
     dataset_path: Path, records: Sequence[QuestionRecord], cfg: Config, report: ValidationReport
 ) -> None:
-    """The metadata file beside a dataset: parsed, then checked by `_check_meta`."""
+    """The metadata file beside a dataset: parsed, then `_check_meta` checks it."""
     meta_file = meta_path(dataset_path)
     if not meta_file.exists():
         if DATASETS_DIR.name in dataset_path.parts:

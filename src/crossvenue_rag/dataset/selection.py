@@ -1,7 +1,7 @@
-"""Choosing 105 questions out of a candidate pool against the target composition.
+"""Choosing a question set out of a candidate pool against the category targets, which are floors.
 
-Every decision is recorded with a reason in `evals/selection/selection.jsonl`, so
-the rejections are part of the output.
+Every decision is recorded in `evals/selection/selection.jsonl`, a rejection with its
+reason, so the rejections are part of the output.
 """
 
 from __future__ import annotations
@@ -31,20 +31,17 @@ TARGETS: dict[str, int] = {
     "noisy": MIN_QUESTIONS_PER_CATEGORY,
 }
 
-# Thin categories first, then comparison, then the deep ones: the order follows the
-# risk of running out. ambiguous, noisy and version_sensitive hold barely more
-# candidates than their targets, so whether the pool can fill them is answered in
-# the first twenty minutes rather than after an hour of comparison work.
-# comparison, adversarial, fact and multihop all have double-digit headroom.
+# The order `crossvenue select` walks: whether the pool can fill the first group is known
+# before the comparison work starts.
 CATEGORY_ORDER: list[str] = [
-    # thin: decided first, because the answer might be "generate more"
+    # decided first, because the answer might be "generate more"
     "ambiguous",
     "noisy",
     "version_sensitive",
     "unanswerable",
     # the headline subgroup, while attention is still good
     "comparison",
-    # deep pools: genuine selection, no risk of exhaustion
+    # the rest
     "adversarial",
     "multihop",
     "fact",
@@ -68,7 +65,7 @@ def target_size() -> int:
 
 
 @dataclass(slots=True)
-class Decision:
+class SelectionDecision:
     """One accept/reject, appended as it is made so Ctrl-C loses nothing."""
 
     id: str
@@ -77,7 +74,7 @@ class Decision:
     ts: str
 
     @classmethod
-    def now(cls, question_id: str, decision: str, reason: str = "") -> Decision:
+    def now(cls, question_id: str, decision: str, reason: str = "") -> SelectionDecision:
         """A decision on the question, stamped with `utc_now()`."""
         return cls(
             id=question_id,
@@ -92,7 +89,7 @@ def selection_path(questions_path: str | Path) -> Path:
     return Path(questions_path).parent / SELECTION_FILENAME
 
 
-def load_decisions(path: str | Path) -> dict[str, Decision]:
+def load_decisions(path: str | Path) -> dict[str, SelectionDecision]:
     """The last decision recorded per question, replayed from the log.
 
     The log is append-only and the last line per question wins, so a changed
@@ -100,15 +97,15 @@ def load_decisions(path: str | Path) -> dict[str, Decision]:
 
     Raises:
         UserError: A line is not UTF-8, not JSON, or not a decision record (`id`, `decision`,
-            `reason`, `ts`).
+            `reason`, `ts`). A directory is at `path`.
     """
     path = Path(path)
     if not path.exists():
         return {}
-    decisions: dict[str, Decision] = {}
+    decisions: dict[str, SelectionDecision] = {}
     for number, row in jsonl.iter_rows(path):
         try:
-            decision = Decision(**row)
+            decision = SelectionDecision(**row)
         except TypeError as exc:
             raise UserError(
                 f"{formatting.location(path, number)}: not a decision record ({exc})",
@@ -118,7 +115,7 @@ def load_decisions(path: str | Path) -> dict[str, Decision]:
     return decisions
 
 
-def append_decision(path: str | Path, decision: Decision) -> None:
+def append_decision(path: str | Path, decision: SelectionDecision) -> None:
     """Appends one decision to the selection log, creating its directory."""
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -158,7 +155,9 @@ class Progress:
         return target_size()
 
 
-def progress(candidates: Sequence[QuestionRecord], decisions: dict[str, Decision]) -> Progress:
+def progress(
+    candidates: Sequence[QuestionRecord], decisions: dict[str, SelectionDecision]
+) -> Progress:
     """Where selection stands against the targets, per category."""
     accepted: Counter[str] = Counter()
     remaining: Counter[str] = Counter()
@@ -181,14 +180,16 @@ def progress(candidates: Sequence[QuestionRecord], decisions: dict[str, Decision
 
 def queue(
     candidates: Sequence[QuestionRecord],
-    decisions: dict[str, Decision],
-    categories: Sequence[str] | None = None,
+    decisions: dict[str, SelectionDecision],
+    categories: Sequence[str] | None,
     *,
-    include_skipped: bool = False,
+    include_skipped: bool,
 ) -> Iterator[QuestionRecord]:
-    """Undecided candidates, grouped by category in `CATEGORY_ORDER`.
+    """Undecided candidates, grouped by category in the order of `categories`.
 
-    Skipped questions are held back by default: a skip defers the question, and
+    With `categories` None or empty, the order is `CATEGORY_ORDER`.
+
+    Skipped questions are held back unless `include_skipped`: a skip defers the question, and
     re-offering it immediately turns the skip key into a no-op.
     """
     wanted = list(categories) if categories else CATEGORY_ORDER
@@ -241,7 +242,7 @@ class CompositionReport:
 
 
 def check_composition(
-    candidates: Sequence[QuestionRecord], decisions: dict[str, Decision]
+    candidates: Sequence[QuestionRecord], decisions: dict[str, SelectionDecision]
 ) -> CompositionReport:
     """The accepted set against `TARGETS` (evals/methodology.md decision 2).
 
@@ -273,7 +274,7 @@ def check_composition(
 
 
 def accepted_records(
-    candidates: Sequence[QuestionRecord], decisions: dict[str, Decision]
+    candidates: Sequence[QuestionRecord], decisions: dict[str, SelectionDecision]
 ) -> list[QuestionRecord]:
     """Accepted candidates, in candidate-file order so the output is stable."""
     keep = {i for i, d in decisions.items() if d.decision == "accept"}
@@ -281,7 +282,7 @@ def accepted_records(
 
 
 def rejection_summary(
-    candidates: Sequence[QuestionRecord], decisions: dict[str, Decision]
+    candidates: Sequence[QuestionRecord], decisions: dict[str, SelectionDecision]
 ) -> Counter[str]:
     """Reject reasons, for the CHANGELOG entry of the resulting gold set."""
     known = {r.id for r in candidates}

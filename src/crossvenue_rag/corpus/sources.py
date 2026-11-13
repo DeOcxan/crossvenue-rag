@@ -39,8 +39,9 @@ GROUP_REF_RE = re.compile(r"\{(\d+)\}")
 class MetadataRule(BaseModel):
     """One metadata rule: the `value` a field takes where the rule matches.
 
-    `value` applies when `path` matches the doc path and/or `heading` matches
-    any one heading of the chunk's breadcrumb (both regexes, `re.search`).
+    `value` applies when every pattern the rule gives matches: `path` the doc
+    path, `heading` any one heading of the chunk's breadcrumb (both regexes,
+    `re.search`).
     `value` may reference capture groups of `path` as `{1}`; `value: null` is a
     stop rule: it matches and assigns nothing, so later rules cannot fire.
     """
@@ -115,7 +116,8 @@ class SourceSpec(BaseModel):
                 compiled = re.compile(alias)
             except re.error as exc:
                 raise ValueError(f"bad alias regex {alias!r}: {exc}") from exc
-            # An alias that matches nothing at all would find the venue in every question.
+            # An alias that matches the empty string would find the venue in questions
+            # that do not name it.
             if compiled.search("") is not None:
                 raise ValueError(f"alias regex {alias!r} matches the empty string")
         return v
@@ -184,7 +186,8 @@ def load_global_metadata_rules(path: str | Path) -> dict[str, list[MetadataRule]
     """The top-level `metadata:` block: rules tried after every venue's own.
 
     Raises:
-        UserError: A rule names an unknown field or a value outside its field's vocabulary.
+        UserError: Nothing is at `path`, or a directory is. A rule names an unknown field or
+            a value outside its field's vocabulary.
     """
     rules = dict(read_model(path, SourcesFile, hint=_sources_hint(path)).metadata or {})
     unknown = set(rules) - set(METADATA_FIELDS)
@@ -201,7 +204,11 @@ def load_global_metadata_rules(path: str | Path) -> dict[str, list[MetadataRule]
 
 
 def venue_types(path: str | Path) -> dict[str, str]:
-    """Each venue of sources.yaml mapped to its venue type."""
+    """Each venue of sources.yaml mapped to its venue type.
+
+    Raises:
+        UserError: Nothing is at `path`, or a directory is.
+    """
     return {spec.venue: spec.venue_type for spec in load_sources(path)}
 
 
@@ -209,7 +216,8 @@ def load_sources(path: str | Path) -> list[SourceSpec]:
     """The sources of sources.yaml.
 
     Raises:
-        UserError: A venue repeats, which is refused since venue is a join key.
+        UserError: Nothing is at `path`, or a directory is. A venue repeats, which is
+            refused since venue is a join key.
     """
     specs = read_model(path, SourcesFile, hint=_sources_hint(path)).sources
 

@@ -1,14 +1,14 @@
 """Paired tests for two retrieval methods, or two answer configurations, on the same questions.
 
 The tests are paired by question because an unpaired test would count the
-question-to-question variance, far larger than the effect compared, as noise between the two.
+question-to-question variance as noise between the two.
 """
 
 from __future__ import annotations
 
-from collections.abc import Callable, Collection, Hashable, Sequence
+from collections.abc import Callable, Collection, Hashable, Iterator, Sequence
 from dataclasses import dataclass
-from math import comb
+from itertools import islice
 from typing import Literal
 
 import numpy as np
@@ -84,6 +84,11 @@ def mcnemar_exact(a: Sequence[float], b: Sequence[float]) -> float:
     return mcnemar_p(only_a, only_a + only_b)
 
 
+def smaller_side(k: int, discordant: int) -> int:
+    """The count on the smaller side of a split where k of `discordant` favor one side."""
+    return min(k, discordant - k)
+
+
 def mcnemar_p(k: int, discordant: int) -> float:
     """The exact two-sided McNemar p of a split: k of `discordant` questions favor one side.
 
@@ -99,9 +104,30 @@ def mcnemar_p(k: int, discordant: int) -> float:
         )
     if discordant == 0:
         return 1.0
+    tail = next(islice(binomial_tails(discordant), smaller_side(k, discordant), None))
+    return exact_two_sided_p(tail, discordant)
+
+
+def binomial_tails(discordant: int) -> Iterator[int]:
+    """The tails C(`discordant`, 0) + ... + C(`discordant`, k), for k from 0 to `discordant` // 2.
+
+    Each is summed as integers, so a p computed from it is the same float wherever it is
+    computed.
+    """
+    tail, coefficient = 0, 1
+    for k in range(discordant // 2 + 1):
+        tail += coefficient
+        coefficient = coefficient * (discordant - k) // (k + 1)
+        yield tail
+
+
+def exact_two_sided_p(tail: int, discordant: int) -> float:
+    """The exact two-sided McNemar p of a tail: `tail` of the 2^`discordant` splits.
+
+    `tail` is summed as integers, so a split's p is the same float wherever it is computed.
+    """
     outcomes: int = 2**discordant
-    tail = sum(comb(discordant, i) for i in range(min(k, discordant - k) + 1)) / outcomes
-    return min(1.0, 2 * tail)
+    return min(1.0, 2 * (tail / outcomes))
 
 
 @dataclass(slots=True)

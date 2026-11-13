@@ -16,15 +16,15 @@ from tests.conftest import write_journal
 
 def test_labels_from_another_index_are_reported(tmp_path: Path):
     labelled = Question("q1", "a?", "gold", ["bybit"], "fact", gold_chunk_ids=["c1"])
-    unlabelled = Question("q2", "b?", "gold", ["bybit"], "fact")
+    unjudged = Question("q2", "b?", "gold", ["bybit"], "fact")
     rounds = Journal.from_json(
         {"q1": {"1": {"index_version": "old", "pool": ["c1"], "relevant": ["c1"]}}}
     )
-    assert label_version_problems([labelled, unlabelled], rounds, "new") == [
-        "q1 round 1: labeled against old"
+    assert label_version_problems([labelled, unjudged], rounds, "new", all_rounds=False) == [
+        "q1 round 1: judged against old"
     ]
-    assert label_version_problems([labelled], rounds, "old") == []
-    assert label_version_problems([labelled], Journal(), "new") == [
+    assert label_version_problems([labelled], rounds, "old", all_rounds=False) == []
+    assert label_version_problems([labelled], Journal(), "new", all_rounds=False) == [
         "q1 round 1: no index_version recorded"
     ]
 

@@ -15,7 +15,7 @@ from typing import TYPE_CHECKING
 from ..config_pipeline import RerankerConfig
 from ..errors import UserError
 from ..formatting import revision_text
-from ..index.embeddings import MODEL_HINT, resolve_device
+from ..index.model_loading import load_hint, resolve_device
 from ..models import Result
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -58,7 +58,7 @@ class Reranker:
                 raise UserError(
                     f"cannot load reranker.model_name {self.cfg.model_name}"
                     f"{revision_text(self.cfg.revision)}: {exc}",
-                    hint=MODEL_HINT,
+                    hint=load_hint(exc),
                 ) from exc
         return self._model
 

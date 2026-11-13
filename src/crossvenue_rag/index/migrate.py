@@ -17,7 +17,7 @@ from pydantic import BaseModel
 
 from .. import formatting, jsonl, listing
 from ..config import Config
-from ..corpus.artifacts import CHUNKS_FILENAME, load_chunks, read_chunk_keys
+from ..corpus.artifacts import CHUNKS_FILENAME, ChunkKey, load_chunks, read_chunk_keys
 from ..errors import UserError, require_file
 from ..index_version import index_meta_path, require_built_index_version
 from ..models import Chunk, make_chunk_id
@@ -43,7 +43,7 @@ class IdMap:
 
     @property
     def canonical_ids(self) -> int:
-        """The distinct rebuilt ids the old ids map onto."""
+        """The number of distinct rebuilt ids the old ids map onto."""
         return len(set(self.mapping.values()))
 
     def save(self, path: str | Path) -> None:
@@ -68,9 +68,13 @@ class IdMap:
 
     @classmethod
     def load(cls, path: str | Path) -> IdMap:
-        """The map saved at `path` by `save`."""
+        """The map saved at `path` by `save`.
+
+        Raises:
+            UserError: Nothing is at `path`, or a directory is.
+        """
         saved = read_json_model(
-            Path(path), IdMapFile, hint="pass --map a map written by `crossvenue id-map`"
+            Path(path), IdMapFile, hint="pass --map a map that `crossvenue id-map` wrote"
         )
         return cls(saved.map, saved.old_chunks_sha256, saved.to_index_version)
 
@@ -84,27 +88,42 @@ def build_id_map(
     byte-identical copies. Returns the map and the old ids whose text has no
     counterpart in `new_chunks`; a non-empty list means the index changed more
     than ids, and the migration is not mechanical.
+
+    Raises:
+        UserError: Nothing is at `old_chunks_path`, or a directory is.
+    """
+    olds = read_chunk_keys(
+        old_chunks_path, hint=f"pass the {CHUNKS_FILENAME} of the index before the rebuild"
+    )
+    mapping, orphans = map_old_chunks(olds, new_chunks)
+    return IdMap(mapping, file_sha256(Path(old_chunks_path)), to_index_version), orphans
+
+
+def map_old_chunks(
+    olds: Sequence[ChunkKey], new_chunks: Sequence[Chunk]
+) -> tuple[dict[str, str], list[str]]:
+    """Each id of `olds` mapped onto the chunk of the same venue and text in `new_chunks`.
+
+    Returns the map and the old ids whose text has no counterpart in `new_chunks`.
     """
     new_ids = {c.chunk_id for c in new_chunks}
     mapping: dict[str, str] = {}
     orphans: list[str] = []
-    olds = read_chunk_keys(
-        old_chunks_path, hint=f"pass the {CHUNKS_FILENAME} of the index before the rebuild"
-    )
     for old in olds:
         new_id = make_chunk_id(old.venue, old.text)
         if new_id in new_ids:
             mapping[old.chunk_id] = new_id
         else:
             orphans.append(old.chunk_id)
-    return IdMap(mapping, file_sha256(Path(old_chunks_path)), to_index_version), orphans
+    return mapping, orphans
 
 
 def write_id_map(cfg: Config, old_chunks_path: Path, out: Path) -> IdMap:
     """The map of `old_chunks_path`'s chunk ids onto the built index's chunks, written to `out`.
 
     Raises:
-        UserError: An old chunk has no identical text in the current corpus.
+        UserError: Nothing is at `old_chunks_path`, or a directory is. An old chunk has no
+            identical text in the current corpus.
     """
     built = require_built_index_version(index_meta_path(cfg))
     mapping, orphans = build_id_map(old_chunks_path, load_chunks(cfg), built)
@@ -119,7 +138,10 @@ def write_id_map(cfg: Config, old_chunks_path: Path, out: Path) -> IdMap:
 
 
 def map_ids(ids: list[str], mapping: dict[str, str], unmapped: set[str]) -> list[str]:
-    """Maps a list of ids, collapsing duplicates the map creates, keeping order."""
+    """Maps a list of ids, keeping order and each id once.
+
+    An id `mapping` lacks is kept as it is and added to `unmapped`.
+    """
     out: list[str] = []
     for chunk_id in ids:
         new_id = mapping.get(chunk_id)
@@ -188,7 +210,33 @@ def remap_jsonl(
     fields: Sequence[str],
     only: set[str] | None,
 ) -> RemapReport:
-    """Writes `target` = `source` with `fields` mapped through `id_map`.
+    """Writes `target` = `source` with `fields` mapped through `id_map` (`remap_text`).
+
+    Every check runs before writing.
+
+    Raises:
+        UserError: Nothing is at `source`, or a directory is. The source is not UTF-8, or `only`
+            names an id no record has.
+        ValueError: A field outside `fields` changed, which would be a defect here.
+    """
+    hint = "pass the dataset to remap"
+    try:
+        original = require_file(source, hint=hint).read_text(encoding="utf-8")
+    except UnicodeDecodeError as exc:
+        raise UserError(f"{source} is not UTF-8 text: {exc.reason}", hint=hint) from exc
+    remapped, report = remap_text(original, source, id_map, fields, only)
+    Path(target).write_text(remapped, encoding="utf-8")
+    return report
+
+
+def remap_text(
+    original: str,
+    source: str | Path,
+    id_map: IdMap,
+    fields: Sequence[str],
+    only: set[str] | None,
+) -> tuple[str, RemapReport]:
+    """The JSONL text `original`, read from `source`, with `fields` mapped through `id_map`.
 
     `only` restricts the check of `fields` and the rewrite to records with those
     ids; every other record is copied verbatim, with its `fields` unchecked.
@@ -196,22 +244,16 @@ def remap_jsonl(
     a line that does not round-trip through `json.dumps` is refused rather than
     re-serialized. Ids missing from the map are left as they are and reported in
     `RemapReport.unmapped`: they were dangling before the migration, and the
-    migration gives them no target. Every check runs before writing.
+    migration gives them no target. `source` names the file in messages.
 
     Raises:
-        UserError: Nothing is at `source`, or a directory is. The source is not UTF-8, or `only`
-            names an id no record has.
+        UserError: `only` names an id no record has.
         ValueError: A field outside `fields` changed, which would be a defect here.
     """
     fields = list(dict.fromkeys(fields))  # a field named twice is rewritten and counted once
     report = RemapReport()
     lines_out: list[str] = []
     seen: set[str] = set()
-    hint = "pass the dataset to remap"
-    try:
-        original = require_file(source, hint=hint).read_text(encoding="utf-8")
-    except UnicodeDecodeError as exc:
-        raise UserError(f"{source} is not UTF-8 text: {exc.reason}", hint=hint) from exc
     for number, line in enumerate(original.splitlines(), start=1):
         if not line.strip():
             lines_out.append(line)
@@ -248,8 +290,7 @@ def remap_jsonl(
 
     require_known_ids(only, seen, source)
     trailing = "\n" if original.endswith("\n") else ""
-    Path(target).write_text("\n".join(lines_out) + trailing, encoding="utf-8")
-    return report
+    return "\n".join(lines_out) + trailing, report
 
 
 def _record(line: str, source: str | Path, number: int) -> dict[str, object]:
@@ -259,6 +300,6 @@ def _record(line: str, source: str | Path, number: int) -> dict[str, object]:
         raise UserError(
             f"{formatting.location(source, number)} does not round-trip through json.dumps; "
             "refusing to re-serialize it, since that could change bytes outside the id fields",
-            hint="remap a file written by crossvenue: one JSON object per line",
+            hint="remap a file crossvenue wrote: one JSON object per line",
         )
     return record

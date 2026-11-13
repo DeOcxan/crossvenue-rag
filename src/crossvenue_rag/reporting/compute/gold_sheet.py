@@ -8,6 +8,7 @@ from dataclasses import dataclass
 
 from ...config import SCHEMA_DEFAULTS
 from ...dataset.questions import load_questions
+from ...dataset.records import candidate_pools
 from ...dataset.selection import load_decisions, selection_path
 from ...dataset.validate import longest_shared_run
 from ...models import MULTI_VENUE, Question
@@ -102,9 +103,38 @@ def answerable_without_gold(src: Sources) -> int:
     return sum(q.is_answerable and not q.is_labelled for q in src.questions.values())
 
 
-def candidate_count(src: Sources) -> int:
-    """Questions of the last candidate set, which holds every earlier one."""
-    return len(load_questions(src.path(CANDIDATES_FINAL)))
+def candidate_count(src: Sources, path: str) -> int:
+    """Questions of the candidate set at `path`."""
+    return len(load_questions(src.path(path)))
+
+
+@dataclass(frozen=True)
+class SourceSplit:
+    """Questions of a set with and without `source_chunk_ids`.
+
+    `exactly_answerable`: whether the questions with them are the set's answerable ones.
+    """
+
+    sourced: int
+    unsourced: int
+    exactly_answerable: bool
+
+
+def source_split(src: Sources, path: str) -> SourceSplit:
+    """The questions of the set at `path`, by whether they have `source_chunk_ids`."""
+    questions = load_questions(src.path(path))
+    sourced = sum(bool(q.source_chunk_ids) for q in questions)
+    return SourceSplit(
+        sourced,
+        len(questions) - sourced,
+        all(bool(q.source_chunk_ids) == q.is_answerable for q in questions),
+    )
+
+
+def candidate_id_count(src: Sources) -> int:
+    """Distinct question ids across the candidate sets beside `CANDIDATES_FINAL`."""
+    pools = candidate_pools(src.path(CANDIDATES_FINAL).parent)
+    return len({q.id for pool in pools for q in load_questions(pool)})
 
 
 def decisions(src: Sources) -> Counter[str]:
@@ -173,11 +203,6 @@ def added_gold(src: Sources) -> dict[str, set[str]]:
     return {q: chunks for q, chunks in added.items() if chunks}
 
 
-def added_gold_count(src: Sources) -> int:
-    """The gold chunks augmentation added, over every question."""
-    return sum(len(chunks) for chunks in added_gold(src).values())
-
-
 def removed_gold(src: Sources) -> int:
     """Gold chunks of the set before augmentation that the gold set does not have."""
     now = src.questions
@@ -194,18 +219,6 @@ def _pool_ranks(src: Sources) -> dict[tuple[str, str, str], int]:
         for r in src.run(POOL_RUN).per_query
         for rank, cid in enumerate(r.ids, start=1)
     }
-
-
-def added_below(src: Sources, rank: int) -> int:
-    """Added gold chunks whose best rank in the pool run is below `rank`."""
-    best: dict[tuple[str, str], int] = {}
-    for (qid, _, cid), r in _pool_ranks(src).items():
-        best[(qid, cid)] = min(r, best.get((qid, cid), r))
-    return sum(
-        best.get((qid, cid), rank + 1) > rank
-        for qid, chunks in added_gold(src).items()
-        for cid in chunks
-    )
 
 
 def coverage_changes(src: Sources) -> Counter[tuple[str, str]]:
@@ -231,7 +244,7 @@ def coverage_change_results(src: Sources) -> set[str]:
 
 
 def changed_venue_rank(src: Sources, venue: str, was: str, method: str) -> int | None:
-    """The rank in `method`'s pool-run list of the added gold chunk of `venue`.
+    """The rank in `method`'s `pool-run` list of the added gold chunk of `venue`.
 
     Over the questions whose `venue` coverage was `was` before augmentation and is
     `covered` after it; None unless exactly one such chunk is in the list.

@@ -57,8 +57,7 @@ def test_gitbook_blocks_are_removed_but_prose_survives():
     assert "&#x20;" not in out and "clamped to <= 4%" in out
 
 
-def test_code_blocks_are_never_modified():
-    """The one invariant everything else is built around."""
+def test_code_block_lines_are_kept_verbatim():
     out = normalize_markdown(DOCUSAURUS)
     assert '"timeInForce": "PostOnly"' in out
     assert "X-BAPI-SIGN: XXXXX" in out

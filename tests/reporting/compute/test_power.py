@@ -1,4 +1,4 @@
-"""Tests for `reporting.compute.power`: a power.json under tmp_path."""
+"""Tests for `reporting.compute.power`: a `power.json` under `tmp_path`."""
 
 from __future__ import annotations
 

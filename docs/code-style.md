@@ -17,7 +17,7 @@ The governing rule is that a module has one responsibility that its name states,
 
 5. Input and output stay at the edges. `cli/` and `service/` parse arguments, call one library function and render its result; they hold no computation. A function that reads or writes files is separate from the function that computes on the data, so the computation is testable without files.
 
-6. Classes only where there is state or several implementations of one contract; everything else is functions. A record passed between functions is a dataclass or a pydantic model with named fields, never a `dict[str, Any]` whose keys the reader has to guess. One exception, with its reason. Where JSON leaves the program, a function that serializes a record for its writer returns `dict[str, Any]` (`AnswerRecord.to_json`, the `to_dict` of `models`, `CsvRow.cells`, a search hit's metadata), because the writer takes any mapping. The judgment journal is a model, `dataset.journal`, read and written as its records.
+6. Classes only where there is state or several implementations of one contract; everything else is functions. A record passed between functions is a dataclass or a pydantic model with named fields, never a `dict[str, Any]` whose keys the reader has to guess. One exception, with its reason. Where JSON or CSV leaves the program, a function that serializes a record for its writer returns `dict[str, Any]` (`AnswerRecord.to_json`, the `to_dict` of `models`, `CsvRow.cells`), because the writer takes any mapping. The judgment journal is a model, `dataset.journal`, read and written as its records.
 
 7. Dependencies are passed in: models, clients, token counters, clocks. Tests pass fakes, so no test loads weights, calls a network or needs a database.
 
@@ -74,7 +74,7 @@ The governing rule is that a module has one responsibility that its name states,
 ## Tests
 
 27. `tests/` mirrors `src/`: every module has one test file of its name (`tests/labeling/test_judge.py` tests `labeling/judge.py`), and every test file is named after a module. A test calls the public function and checks behavior, never a private helper's internals. The exceptions are exactly these, and `tests/test_repo_hygiene.py` checks both directions against the same list:
-    - suite-level tests, which exercise no single module: `test_mutations.py`, `test_pipeline_smoke.py`, `test_repo_hygiene.py`, `test_code_hygiene.py`, `test_claims_adr.py`, `test_input_domains.py`;
+    - suite-level tests, which are named after no module: `test_mutations.py`, `test_pipeline_smoke.py`, `test_repo_hygiene.py`, `test_code_hygiene.py`, `test_claims_adr.py`, `test_input_domains.py`;
     - modules under `reporting/claims/`, which `make reproduce` and the mutation test check against the documents;
     - modules with no behavior, only constants or Protocol classes: `reporting/run_ids.py`, `retrieval/protocols.py`.
 

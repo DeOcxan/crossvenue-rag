@@ -26,6 +26,8 @@ CHUNKS_FILENAME = "chunks.jsonl"
 STATS_FILENAME = "corpus_stats.json"
 # What a missing chunks.jsonl is told to do: `ingest` writes it.
 INGEST_HINT = "run `crossvenue ingest` first"
+# What a damaged corpus file, or one that lacks a field, is told to do.
+INGEST_AGAIN = "run `crossvenue ingest` again"
 
 
 def chunks_path(cfg: Config) -> Path:
@@ -137,15 +139,23 @@ def write_corpus_stats(cfg: Config, stats: CorpusStats) -> None:
 
 
 def read_corpus_stats(cfg: Config) -> CorpusStats:
-    """corpus_stats.json of the last ingest.
+    """corpus_stats.json of the last `ingest`.
 
     Raises:
         UserError: There is no corpus_stats.json.
     """
-    path = stats_path(cfg)
+    return read_corpus_stats_at(stats_path(cfg))
+
+
+def read_corpus_stats_at(path: Path) -> CorpusStats:
+    """The corpus statistics at `path`.
+
+    Raises:
+        UserError: There is no file at `path`.
+    """
     if not path.exists():
         raise UserError(f"no corpus statistics at {path}", hint=INGEST_HINT)
-    return read_json_model(path, CorpusStats, hint="run `crossvenue ingest` again")
+    return read_json_model(path, CorpusStats, hint=INGEST_AGAIN)
 
 
 def save_chunks(cfg: Config, chunks: Sequence[Chunk]) -> Path:
@@ -165,16 +175,16 @@ def read_chunks(path: Path) -> list[Chunk]:
     """Every chunk of a chunks.jsonl at `path`, in file order.
 
     Raises:
-        UserError: A record is not a chunk record: it, or one of its `sources`, lacks a
-            field (`chunk_id` among them), holds a value of the wrong type in one, or has an
-            unknown one. The message names the line.
+        UserError: Nothing is at `path`, or a directory is. A record is not a chunk record:
+            it, or one of its `sources`, lacks a field (`chunk_id` among them), holds a value
+            of the wrong type in one, or has an unknown one. The message names the line.
     """
     chunks: list[Chunk] = []
     for number, row in jsonl.iter_rows(path):
         if problems := _chunk_record_problems(row):
             raise UserError(
                 f"{formatting.location(path, number)}: the record {listing.prose(problems)}",
-                hint="run `crossvenue ingest` again",
+                hint=INGEST_AGAIN,
             )
         chunks.append(Chunk.from_dict(row))
     return chunks
@@ -235,8 +245,8 @@ def count_term(cfg: Config, term: str, venue: str | None) -> TermCount:
     are cited in `notes` fields and CHANGELOG entries.
 
     Raises:
-        UserError: `term` is empty or only whitespace, which every chunk or none
-            contains, or `venue` is not a venue of the corpus.
+        UserError: `term` is empty or only whitespace, or `venue` is not a venue
+            of the corpus.
     """
     not_blank("the term to count", term)
     texts = lowered_texts(load_chunks(cfg))
@@ -285,7 +295,11 @@ def venue_chunk_counts(cfg: Config) -> dict[str, int]:
 
 
 def read_chunk_venues(path: Path) -> dict[str, str]:
-    """`chunk_id` -> `venue` of a chunks.jsonl at `path`."""
+    """`chunk_id` -> `venue` of a chunks.jsonl at `path`.
+
+    Raises:
+        UserError: Nothing is at `path`, or a directory is.
+    """
     return read_chunk_field(path, "venue")
 
 
@@ -303,7 +317,7 @@ def read_chunk_field(path: Path, name: str) -> dict[str, str]:
     for number, row in jsonl.iter_rows(require_file(path, hint=INGEST_HINT)):
         record = {name: "", **row}
         if problem := _string_problem(path, number, record, ("chunk_id", name)):
-            raise UserError(problem, hint="run `crossvenue ingest` again")
+            raise UserError(problem, hint=INGEST_AGAIN)
         fields[record["chunk_id"]] = record[name]
     return fields
 
@@ -324,8 +338,8 @@ def read_chunk_keys(path: str | Path, *, hint: str) -> list[ChunkKey]:
     its records have beside these three.
 
     Raises:
-        UserError: A record lacks a string `chunk_id`, `venue` or `text`, with `hint` as
-            the fix.
+        UserError: Nothing is at `path`, or a directory is. A record lacks a string
+            `chunk_id`, `venue` or `text`, with `hint` as the fix.
     """
     rows = list(jsonl.iter_rows(path))
     keys: list[ChunkKey] = []

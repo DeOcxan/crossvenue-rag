@@ -96,7 +96,7 @@ def cohens_kappa(first: Sequence[bool], second: Sequence[bool]) -> Kappa:
         raise ValueError("no overlapping judgments to compare")
 
     agree = sum(1 for a, b in zip(first, second, strict=True) if a == b)
-    observed = agree / n
+    observed = observed_agreement(agree, n)
 
     p_first = sum(first) / n
     p_second = sum(second) / n
@@ -106,6 +106,11 @@ def cohens_kappa(first: Sequence[bool], second: Sequence[bool]) -> Kappa:
         # Both raters used one and the same label throughout, so they agreed.
         return Kappa(1.0, observed, expected)
     return Kappa(kappa_value(observed, expected), observed, expected)
+
+
+def observed_agreement[N: (float, NDArray[np.float64])](agreed: N, pairs: N) -> N:
+    """Kappa's observed agreement: the share of the `pairs` whose two labels agree, element-wise."""
+    return agreed / pairs
 
 
 def chance_agreement[N: (float, NDArray[np.float64])](p_first: N, p_second: N) -> N:

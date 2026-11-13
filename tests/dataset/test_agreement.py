@@ -7,12 +7,15 @@ from pathlib import Path
 import pytest
 
 from crossvenue_rag.dataset.agreement import (
+    Bootstrap,
     Judgements,
     KappaRequest,
     KappaStudy,
     compare_rounds,
+    compared_questions,
     kappa_study,
     round_agreement,
+    shared_pairs,
 )
 from crossvenue_rag.dataset.journal import Journal
 from crossvenue_rag.dataset.questions import save_questions
@@ -20,11 +23,14 @@ from crossvenue_rag.errors import UserError
 from crossvenue_rag.models import Question
 from tests.conftest import augmentation, correction, journal_dict, write_journal
 
+# Few resamples, so that the tests stay fast.
+BOOT = Bootstrap(10, 0)
+
 
 def test_rounds_compare_only_pairs_judged_twice():
     """A chunk absent from a round's pool is unjudged in that round and enters no comparison."""
-    first = Judgements(1, "amo", {("q1", "c1"): True, ("q1", "c2"): False, ("q2", "c3"): True})
-    second = Judgements(2, "amo", {("q1", "c1"): True, ("q1", "c2"): True})
+    first = Judgements(1, {("q1", "c1"): True, ("q1", "c2"): False, ("q2", "c3"): True})
+    second = Judgements(2, {("q1", "c1"): True, ("q1", "c2"): True})
 
     report = compare_rounds(first, second)
     assert report.pairs == 2  # ("q2", "c3") was not shown in round 2
@@ -33,7 +39,15 @@ def test_rounds_compare_only_pairs_judged_twice():
     assert report.interpretation
 
     with pytest.raises(UserError, match="share no judged"):
-        compare_rounds(first, Judgements(2, "amo", {("q9", "c9"): True}))
+        compare_rounds(first, Judgements(2, {("q9", "c9"): True}))
+
+
+def test_a_kappa_below_zero_reads_poor_on_the_landis_and_koch_bands():
+    first = Judgements(1, {("q1", "c1"): True, ("q1", "c2"): False})
+    second = Judgements(2, {("q1", "c1"): False, ("q1", "c2"): True})
+    report = compare_rounds(first, second)
+    assert report.kappa < 0
+    assert report.interpretation == "poor"
 
 
 def _rounds() -> Journal:
@@ -66,7 +80,7 @@ def test_first_pass_is_the_verdict_before_the_earliest_correction_plus_augmentat
 def test_agreement_variants_are_the_four_registered_readings_in_order():
     from crossvenue_rag.dataset.agreement import agreement_variants
 
-    variants = agreement_variants(_rounds(), 1, 2, exposed=["q2"])
+    variants = agreement_variants(_rounds(), 1, 2, ["q2"], BOOT)
     readings = [(v.reference, v.scope) for v in variants]
     assert readings == [
         ("corrected", "all"),
@@ -86,7 +100,7 @@ def test_agreement_variants_are_the_four_registered_readings_in_order():
 def test_no_exposed_list_gives_the_two_references_over_all_questions():
     from crossvenue_rag.dataset.agreement import agreement_variants
 
-    assert [(v.reference, v.scope) for v in agreement_variants(_rounds(), 1, 2)] == [
+    assert [(v.reference, v.scope) for v in agreement_variants(_rounds(), 1, 2, (), BOOT)] == [
         ("corrected", "all"),
         ("first pass", "all"),
     ]
@@ -95,8 +109,8 @@ def test_no_exposed_list_gives_the_two_references_over_all_questions():
 def test_kappa_by_category_puts_the_most_disagreement_first():
     from crossvenue_rag.dataset.agreement import kappa_by_category
 
-    first = Judgements(1, "a", {("q1", "c1"): True, ("q1", "c2"): False, ("q2", "c3"): True})
-    second = Judgements(2, "a", {("q1", "c1"): True, ("q1", "c2"): False, ("q2", "c3"): False})
+    first = Judgements(1, {("q1", "c1"): True, ("q1", "c2"): False, ("q2", "c3"): True})
+    second = Judgements(2, {("q1", "c1"): True, ("q1", "c2"): False, ("q2", "c3"): False})
     rows = kappa_by_category(first, second, {"q1": "fact", "q2": "comparison", "q3": "noisy"})
     assert [(c, r.disagreements, r.pairs) for c, r in rows] == [
         ("comparison", 1, 1),
@@ -117,13 +131,12 @@ def test_retest_gaps_are_days_between_the_two_judgements():
     assert retest_gaps(rounds, 1, 2) == {"q1": pytest.approx(15.5)}
 
 
-def entry(stamp: str, relevant: list[str], **extra) -> dict:
+def entry(stamp: str, relevant: list[str]) -> dict:
     return {
         "pool": ["c1", "c2"],
         "relevant": relevant,
         "index_version": "v",
         "annotated_at": stamp,
-        **extra,
     }
 
 
@@ -152,7 +165,7 @@ def test_the_study_holds_every_reading(tmp_path: Path):
     path = two_rounds(tmp_path)
     exposed = tmp_path / "exposed.txt"
     exposed.write_text("q2\n", encoding="utf-8")
-    study = kappa_study(KappaRequest(str(path), exposed=exposed))
+    study = kappa_study(KappaRequest(str(path), BOOT, exposed=exposed))
     assert isinstance(study, KappaStudy)
     assert study.report.pairs == 4 and study.report.disagreements == 1
     assert study.gaps == {"q1": 19.0, "q2": 19.0} and study.short == []
@@ -170,15 +183,15 @@ def test_the_study_holds_every_reading(tmp_path: Path):
 def test_a_missing_exposed_list_gives_the_readings_over_all_questions(tmp_path: Path):
     path = two_rounds(tmp_path)
     for exposed in (None, tmp_path / "absent.txt"):
-        study = kappa_study(KappaRequest(str(path), exposed=exposed))
+        study = kappa_study(KappaRequest(str(path), BOOT, exposed=exposed))
         assert [v.scope for v in study.variants] == ["all", "all"]
 
 
 def test_a_short_retest_gap_is_refused_unless_asked_for(tmp_path: Path):
     path = two_rounds(tmp_path, second_stamp="2026-09-05T12:00:00Z")
     with pytest.raises(UserError, match="2 questions re-judged less than 14 days"):
-        kappa_study(KappaRequest(str(path)))
-    study = kappa_study(KappaRequest(str(path), short_gap=True))
+        kappa_study(KappaRequest(str(path), BOOT))
+    study = kappa_study(KappaRequest(str(path), BOOT, short_gap=True))
     assert study.short == ["q1", "q2"] and study.gaps["q1"] == 4.0
 
 
@@ -186,7 +199,7 @@ def test_no_round_history_is_refused(tmp_path: Path):
     path = tmp_path / "q.jsonl"
     save_questions(path, [Question("q1", "a?", "gold", ["bybit"], "fact")])
     with pytest.raises(UserError, match="no annotation history"):
-        kappa_study(KappaRequest(str(path)))
+        kappa_study(KappaRequest(str(path), BOOT))
 
 
 def test_an_exposed_list_naming_every_round_2_question_is_refused_by_cause(tmp_path: Path):
@@ -194,7 +207,7 @@ def test_an_exposed_list_naming_every_round_2_question_is_refused_by_cause(tmp_p
     exposed = tmp_path / "exposed.txt"
     exposed.write_text("q1\nq2\n", encoding="utf-8")
     with pytest.raises(UserError, match="every question judged in round 2 is listed as exposed"):
-        kappa_study(KappaRequest(str(path), exposed=exposed))
+        kappa_study(KappaRequest(str(path), BOOT, exposed=exposed))
 
 
 def _naive_interval(first: Judgements, second: Judgements, resamples: int, seed: int):
@@ -203,8 +216,8 @@ def _naive_interval(first: Judgements, second: Judgements, resamples: int, seed:
 
     from crossvenue_rag.stats import cohens_kappa_or_none
 
-    shared = set(first.labels) & set(second.labels)
-    questions = sorted({q for q, _ in shared})
+    shared = shared_pairs(first, second)
+    questions = sorted(compared_questions(first, second))
     by_question = {
         q: [(first.labels[k], second.labels[k]) for k in sorted(shared) if k[0] == q]
         for q in questions
@@ -221,12 +234,12 @@ def _naive_interval(first: Judgements, second: Judgements, resamples: int, seed:
 
 
 def _three_questions() -> tuple[Judgements, Judgements]:
-    first = Judgements(1, "a", {
+    first = Judgements(1, {
         ("q1", "c1"): True, ("q1", "c2"): False, ("q1", "c3"): False,
         ("q2", "c4"): True, ("q2", "c5"): True,
         ("q3", "c6"): False, ("q3", "c7"): False, ("q3", "c8"): True,
     })  # fmt: skip
-    second = Judgements(2, "a", {
+    second = Judgements(2, {
         ("q1", "c1"): True, ("q1", "c2"): True, ("q1", "c3"): False,
         ("q2", "c4"): True, ("q2", "c5"): False,
         ("q3", "c6"): False, ("q3", "c7"): True, ("q3", "c8"): True,
@@ -250,8 +263,8 @@ def test_a_resample_with_one_label_throughout_is_counted_undefined():
     from crossvenue_rag.dataset.agreement import Bootstrap, kappa_interval
 
     # Every pair irrelevant in both rounds: kappa is undefined in every resample.
-    first = Judgements(1, "a", {("q1", "c1"): False, ("q2", "c2"): False})
-    second = Judgements(2, "a", {("q1", "c1"): False, ("q2", "c2"): False})
+    first = Judgements(1, {("q1", "c1"): False, ("q2", "c2"): False})
+    second = Judgements(2, {("q1", "c1"): False, ("q2", "c2"): False})
     interval = kappa_interval(first, second, Bootstrap(50, 1))
     assert (interval.low, interval.high, interval.undefined) == (None, None, 50)
 
@@ -276,24 +289,20 @@ def test_source_chunks_are_counted_by_verdict_or_as_unjudged():
     from crossvenue_rag.dataset.agreement import source_chunk_verdicts
 
     first, second = _three_questions()
-    # c5 was dropped in round 2; c0 was never shown; q4 was not judged in round 1.
+    # c5 was relevant in round 1 only; c0 was never shown; q4 was not judged in round 1.
     sources = source_chunk_verdicts(first, second, {"q2": ["c5", "c0"], "q3": ["c8"], "q4": ["c9"]})
     v = sources.verdicts
     assert (v.both_relevant, v.first_only, v.second_only, v.both_irrelevant) == (1, 1, 0, 0)
     assert sources.unjudged == 1
 
 
-def test_the_study_carries_intervals_only_when_a_bootstrap_is_given(tmp_path: Path):
-    from crossvenue_rag.dataset.agreement import Bootstrap
-
+def test_each_reading_of_the_study_carries_an_interval_from_the_bootstrap_given(tmp_path: Path):
     path = two_rounds(tmp_path)
-    plain = kappa_study(KappaRequest(str(path)))
-    assert all(v.interval is None for v in plain.variants)
-    assert (plain.direction.first_only, plain.direction.second_only) == (0, 1)
-    assert [c for c, _ in plain.direction_by_category] == ["comparison", "fact"]
-    assert plain.sources.unjudged == 0 and plain.sources.verdicts.disagreements == 0
-    study = kappa_study(KappaRequest(str(path), bootstrap=Bootstrap(200, 3)))
-    assert all(v.interval is not None and v.interval.resamples == 200 for v in study.variants)
+    study = kappa_study(KappaRequest(str(path), Bootstrap(200, 3)))
+    assert all(v.interval.resamples == 200 for v in study.variants)
+    assert (study.direction.first_only, study.direction.second_only) == (0, 1)
+    assert [c for c, _ in study.direction_by_category] == ["comparison", "fact"]
+    assert study.sources.unjudged == 0 and study.sources.verdicts.disagreements == 0
 
 
 def _third_round(tmp_path: Path) -> Path:
@@ -309,14 +318,14 @@ def _third_round(tmp_path: Path) -> Path:
 
 
 def test_kappa_does_not_move_when_round_3_is_in_the_journal(tmp_path: Path):
-    before = kappa_study(KappaRequest(str(two_rounds(tmp_path))))
-    after = kappa_study(KappaRequest(str(_third_round(tmp_path))))
+    before = kappa_study(KappaRequest(str(two_rounds(tmp_path)), BOOT))
+    after = kappa_study(KappaRequest(str(_third_round(tmp_path)), BOOT))
     assert after.report == before.report and after.variants == before.variants
 
 
 @pytest.mark.parametrize(("first", "second"), [(1, 3), (2, 3), (3, 1)])
 def test_kappa_with_round_3_is_refused(tmp_path: Path, first: int, second: int):
-    request = KappaRequest(str(_third_round(tmp_path)), first, second)
+    request = KappaRequest(str(_third_round(tmp_path)), BOOT, first, second)
     with pytest.raises(UserError, match="no test-retest reliability") as refused:
         kappa_study(request)
     assert "round-agreement" in refused.value.with_hint()

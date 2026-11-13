@@ -22,7 +22,7 @@ from .. import formatting, jsonl
 from ..errors import UserError
 from .context import Citation
 from .metrics import AnswerMetrics
-from .schemas import GeneratedAnswer, Judgement
+from .schemas import GeneratedAnswer, Judgement, outcome
 
 ANSWERS_FILE = "answers.jsonl"
 
@@ -51,9 +51,9 @@ class SavedRecord(BaseModel):
 class CallRecord(SavedRecord):
     """What one model call was and cost, as the cache and every answer record save it.
 
-    The optional fields are absent from records of the earliest format, which
-    carry `cost_source` instead; a record saved without them is written back
-    without them.
+    `reasoning_tokens`, `invalid_responses` and `params` are absent from records of
+    the earliest format, which carry `cost_source` instead; a record saved without
+    them is written back without them.
     """
 
     requested_model: str
@@ -66,7 +66,9 @@ class CallRecord(SavedRecord):
     cost_source: str | None = None
     latency_ms: float
     retries: int  # HTTP retries
-    invalid_responses: int | None = None  # responses rejected by the schema check, then retried
+    # Replies retried as unusable: not an OpenRouter response, no text, not a JSON object, or
+    # refused by the validator.
+    invalid_responses: int | None = None
     cache_key: str
     params: dict[str, Any] | None = None
     cached: bool = False
@@ -86,7 +88,7 @@ class CallRecord(SavedRecord):
         """The record of a cache entry, marked cached.
 
         Only the fields `LLM.complete` writes into a call record are kept: an
-        entry written by an earlier record format carries extra ones. An entry
+        entry in an earlier record format carries extra ones. An entry
         without `params` gets `{}`.
         """
         fields = {name: saved[name] for name in _WRITTEN_FIELDS if name in saved}
@@ -178,6 +180,14 @@ class AnswerRecord(SavedRecord):
             raise ValueError(f"{self.answer_id} has no judgment: {self.judge_error}")
         return self.judge
 
+    def is_wrong_refusal(self) -> bool:
+        """Whether the answer is refused (`schemas.outcome`) on a question that expects no refusal.
+
+        Raises:
+            ValueError: The record's generation failed and its question expects no refusal.
+        """
+        return self.expected_behavior != "refuse" and outcome(self.generated().answer) == "refused"
+
 
 def named_judges(records: Sequence[AnswerRecord]) -> list[str]:
     """The judges the records name, sorted; a record judged before judges were named adds none."""
@@ -226,8 +236,8 @@ def read_answers(path: str | Path) -> list[AnswerRecord]:
     index `GenerationRecord.numbered_chunk_ids` by them.
 
     Raises:
-        UserError: A claim cites a chunk number outside its record's `chunk_ids`. The error
-            names the file and the line.
+        UserError: Nothing is at `path`, or a directory is. A claim cites a chunk number
+            outside its record's `chunk_ids`. The error names the file and the line.
     """
     records: list[AnswerRecord] = []
     for number, record in jsonl.iter_models(path, AnswerRecord):
@@ -258,6 +268,9 @@ def read_judgements(path: str | Path) -> list[JudgementRow]:
     records with `reasoning_tokens`, `invalid_responses` and `params`), or
     `error`. An `error` is the message of a judgment that stayed invalid or of a model
     call that failed after its retries.
+
+    Raises:
+        UserError: Nothing is at `path`, or a directory is.
     """
     return jsonl.read_models(path, JudgementRow)
 
@@ -272,6 +285,9 @@ def read_ratings(path: str | Path) -> list[RatingRow]:
 
     Accepts ratings with and without `index_version`; the committed ratings
     have none.
+
+    Raises:
+        UserError: A directory is at `path`.
     """
     if not Path(path).exists():
         return []

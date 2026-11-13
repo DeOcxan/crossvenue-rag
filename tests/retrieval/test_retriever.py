@@ -12,9 +12,9 @@ from crossvenue_rag.config_pipeline import RetrievalMethod
 from crossvenue_rag.index.bm25_index import BM25Index
 from crossvenue_rag.models import Result, Timings
 from crossvenue_rag.retrieval.filters import Filters
+from crossvenue_rag.retrieval.methods import AD_HOC_METHODS
 from crossvenue_rag.retrieval.retriever import Retriever, compare_methods
 from tests.conftest import (
-    AD_HOC_METHODS,
     CORPUS,
     VENUE_CHUNKS,
     InMemoryRetriever,
@@ -53,7 +53,7 @@ def test_bm25_method_reports_search_latency_only(cfg, bm25: BM25Index):
 
 
 def test_venue_filter_separates_near_duplicate_pages(cfg: Config):
-    """The control condition: the same sentence on two venues, one asked for."""
+    """The same sentence on two venues, one asked for."""
     chunks = build_corpus(cfg)
     retriever = InMemoryRetriever(cfg, chunks, BM25Index.build(chunks))
 
@@ -77,7 +77,7 @@ def test_venue_filter_separates_near_duplicate_pages(cfg: Config):
 
 
 def test_venues_are_resolved_against_the_sources_yaml_the_options_are_checked_against(cfg: Config):
-    """A venue of data/sources.yaml with no chunk here passes `--venue` and matches nothing;
+    """A venue of `data/sources.yaml` with no chunk here passes `--venue` and matches nothing;
     a venue outside it never reaches the retriever, which refuses it as a precondition."""
     chunks = build_corpus(cfg)
     retriever = InMemoryRetriever(cfg, chunks, BM25Index.build(chunks))
@@ -137,7 +137,7 @@ def test_oracle_without_venues_is_an_error(cfg: Config):
 
 
 def test_one_call_and_per_venue_reranking_give_the_same_retrieval(cfg: Config):
-    """bench-rerank times the two against each other; they must differ only in
+    """`bench-rerank` times the two against each other; they must differ only in
     how the pairs are split into cross-encoder calls."""
     chunks = build_corpus(cfg)
     retriever = InMemoryRetriever(cfg, chunks, BM25Index.build(chunks))
@@ -164,17 +164,17 @@ def test_venue_split_drops_a_named_venue_outside_the_venue_type_filter(cfg: Conf
     assert {r.venue for r in split} <= {"uniswap", "pancakeswap"}
 
 
-class MethodNameRetriever:
-    """Returns the method's name as its only chunk and records every call."""
+class FixedChunkRetriever:
+    """Returns one fixed chunk and records every call."""
 
-    opened: ClassVar[list[MethodNameRetriever]] = []
+    opened: ClassVar[list[FixedChunkRetriever]] = []
 
     def __init__(self, cfg: Config) -> None:
         self.cfg = cfg
         self.warmups: list[bool] = []
         self.calls: list[tuple[str, str, int, object]] = []
         self.closed = False
-        MethodNameRetriever.opened.append(self)
+        FixedChunkRetriever.opened.append(self)
 
     def warmup(self, *, load_reranker: bool = True) -> None:
         self.warmups.append(load_reranker)
@@ -194,7 +194,7 @@ class MethodNameRetriever:
         timings.search_ms += 1.0
         return [Result.from_chunk(VENUE_CHUNKS[0], 1.0)]
 
-    def __enter__(self) -> MethodNameRetriever:
+    def __enter__(self) -> FixedChunkRetriever:
         return self
 
     def __exit__(self, *exc: object) -> None:
@@ -204,9 +204,9 @@ class MethodNameRetriever:
 def test_each_method_runs_after_one_warmup_with_its_own_timings():
     filters: Filters = {"venue": ["binance"]}
     out = compare_methods(
-        Config(), "rate limits", ["bm25", "hybrid"], 3, filters, open_retriever=MethodNameRetriever
+        Config(), "rate limits", ["bm25", "hybrid"], 3, filters, open_retriever=FixedChunkRetriever
     )
-    retriever = MethodNameRetriever.opened[-1]
+    retriever = FixedChunkRetriever.opened[-1]
     assert retriever.warmups == [False]  # no hybrid_rerank: the reranker stays unloaded
     assert retriever.calls == [
         ("rate limits", "bm25", 3, filters),
@@ -220,13 +220,8 @@ def test_each_method_runs_after_one_warmup_with_its_own_timings():
 
 def test_a_reranking_method_alone_loads_the_reranker_in_the_warmup():
     for method in ("hybrid_rerank", "venue_split", "venue_split_oracle"):
-        compare_methods(Config(), "q", [method], 3, None, open_retriever=MethodNameRetriever)
-        assert MethodNameRetriever.opened[-1].warmups == [True], method
-
-
-def test_hybrid_rerank_loads_the_reranker_during_the_warmup():
-    compare_methods(Config(), "q", ["hybrid_rerank"], 5, None, open_retriever=MethodNameRetriever)
-    assert MethodNameRetriever.opened[-1].warmups == [True]
+        compare_methods(Config(), "q", [method], 3, None, open_retriever=FixedChunkRetriever)
+        assert FixedChunkRetriever.opened[-1].warmups == [True], method
 
 
 class _RecordingRetriever(Retriever):
@@ -279,7 +274,7 @@ def test_a_failed_check_loads_no_model_and_closes_the_retriever(cfg):
     events.clear()
 
     def refuse(version: str, chunk_ids: set[str]) -> None:
-        raise UserError("labeled against another index")
+        raise UserError("judged against another index")
 
     with (
         pytest.raises(UserError),

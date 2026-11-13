@@ -88,16 +88,18 @@ def ingest(cfg: Config, count_tokens: TokenCounter | None = None) -> list[Chunk]
 
     Every raw file must match the sha256 the manifest records: `index_version`
     hashes the manifest, not the files, so a changed file would change chunk
-    ids under an unchanged version.
+    ids under an unchanged version. When nothing is at `paths.sources`, the chunks get no
+    structural metadata.
 
     Raises:
-        UserError: The manifest is empty or missing, or a raw file is missing or differs
-            from it.
+        UserError: The manifest is empty or missing, a directory is at `paths.manifest`, or
+            a raw file is missing or differs from it.
     """
     rows = read_manifest(cfg.paths.manifest)
     if not rows:
         raise UserError(
-            f"{cfg.paths.manifest} is empty or missing", hint="run `crossvenue fetch` first"
+            f"{cfg.paths.manifest} is empty or missing",
+            hint="restore it, or write it with `crossvenue fetch --follow-branch`",
         )
     bad = unverified_files(rows, cfg.paths.raw)
     if bad:
@@ -211,6 +213,3 @@ def corpus_stats(chunks: list[Chunk], doc_counts: dict[str, int]) -> CorpusStats
         tokens_p95=_percentile(all_lengths, P95),
     )
     return CorpusStats(totals=totals, by_venue=venues, chunk_length_histogram=histogram)
-
-
-__all__ = ["corpus_stats", "ingest", "load_document", "unverified_files"]

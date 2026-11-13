@@ -380,6 +380,80 @@
         "summary.csv": "88a009ac9da754b463fdee1b75c4663b8405d1c1f3ca88c8e0ee5f51ca5256ff",
         "summary.json": "40cfb8d5466b42f310a0cc19c9e4ccfb46eab1c229819fc2832ed1664e33ac16"
       }
+    },
+    "20261031T202503Z": {
+      "index_version": "2825a7160c4d09bf",
+      "index_version_from": "index.json",
+      "notes": [
+        "The six retrieval methods on v0.3-gold, beside 20261010T214504Z and 20261010T222553Z (methodology deviation D27).",
+        "Device effect: eval on v0.2.1-gold with embedding.device=cpu (20261010T222553Z) and the MPS run 20260925T012314Z differ in 25 of 684 retrieval lists. On the 50 comparison questions only nDCG and MRR differ, in the fourth decimal, and dense's unjudged@10 is 0.086 on CPU against 0.078 on MPS. In other categories recall and precision differ too; the largest difference is version_sensitive hybrid recall@10, 0.717 on CPU against 0.750 on MPS. The registered results are from the MPS runs 20260925T012314Z and 20260925T132613Z; the v0.2.2-gold sensitivity check pairs the two CPU runs 20261010T222553Z and 20261010T214504Z."
+      ],
+      "files": {
+        "by_category.csv": "a39c8dddd68e76517517a053747feb9d314e2756c72fae4042632b2f05186a71",
+        "by_qtype.csv": "b6a2cf68a6bd4365f8444cf655a2b2a481095e4cb4ce29a6dedc3b2e2dea40d0",
+        "by_venue.csv": "c5088330e1b3a8e3eddf737e4b93635893059e21b76b5e228867e7ff914ec9d9",
+        "config.yaml": "30c2792583ace86711d54db193279db6d88c8bbe981a7fe182407b78fef35fba",
+        "index.json": "8288e1a271b40c408bd814bbab002fabbea9118ed9d008854d6220f32c40007a",
+        "off_venue.csv": "51c4151c6d0d2d195a1ac605c79b5f26938eed658dc3e8f8d46a82409803bae7",
+        "paired.csv": "d61280460c96f10b534e278c9afa5f18daf3e9c411e2e4653e24f754c38c26e2",
+        "per_query.csv": "37175ec7928e994943be63d991f54cf002045be6b85f2071e5b294a1af38ef5a",
+        "report.md": "528a21d44f702138375e3855534c9086039c72ca3aad90bdb3607def4be2267d",
+        "summary.csv": "7d8827a62769988e1fa00f4da29a0dc200e74e2737a4e4cb25eb7bbf4abfa3fd",
+        "summary.json": "a0d37a56ae8a05f143716b3d5c4e00b2e4dcf0a9090c3f440937b06a42baf3f3"
+      }
+    },
+    "20261031T213610Z_judged": {
+      "index_version": "2825a7160c4d09bf",
+      "index_version_from": "index.json",
+      "notes": [
+        "Prompt v1's answers judged again on v0.3-gold; 20261031T204925Z_judged, partial, is not committed.",
+        "The judge calibration, measured on v0.2.1-gold, was not repeated.",
+        "report.md and paired.csv show venue_attribution_error with no mark; its judge dimension (venue_correct) passes calibration on the point estimate only, and methodology section 9 reports it as unresolved.",
+        "config.yaml records generator_prompt prompts/generator.v1.md with generator_prompt_sha256 826c1cf9..., the sha256 of prompt v2 (prompts/generator.md). judge-run makes no generator call and does not load the generator prompt. The answers it judges come from 20260925T175128Z_answers, whose config.yaml records prompts/generator.v1.md and whose every answer's prompt_sha256 is the v1 hash (519bd2c2...); no number depends on the recorded pin."
+      ],
+      "files": {
+        "answers.jsonl": "671370a51f891213b190908bdfa87ac7d974fa1a6acaf08b5bf861fad430efee",
+        "config.yaml": "ae866c9b3c97bcc24109c87866dec412e3beacd871179b46f2ca4c5b5eada1d1",
+        "index.json": "f5d162f5956572ee5acdd9b9b4926ed9848362399d07ef96577fa3ee8b191c13",
+        "paired.csv": "dc1c080437219ccf59915e1de14c2f4d168c0205fc829d336acd9befeb0d5284",
+        "per_answer.csv": "8667f44e033db7a68fd487f131857f9595628bf384a32c21f4c7b2aba20402aa",
+        "report.md": "e46259087d6bb43c87a6d6c1aaf021d8fccbe5d13d7b877ffec63fc5fce9df26",
+        "source.json": "aa8264c4cfd04e57d12c87bc5dd65711b3a84b4c2063f20fbb431f9fe5b06683",
+        "summary.csv": "dda3804ef06a2c4d452ce011635ca7c8531ef79f18db75a6539d7ac124a3c053"
+      }
+    },
+    "20261031T220102Z_judged": {
+      "index_version": "2825a7160c4d09bf",
+      "index_version_from": "index.json",
+      "notes": [
+        "Prompt v2's answers judged again on v0.3-gold.",
+        "The judge calibration, measured on v0.2.1-gold, was not repeated.",
+        "report.md and paired.csv show venue_attribution_error with no mark; its judge dimension (venue_correct) passes calibration on the point estimate only, and methodology section 9 reports it as unresolved."
+      ],
+      "files": {
+        "answers.jsonl": "423f1aefd910d433acd3a46c995b6ffdf6cefab5ecee87177ceaa1ee0126ab7e",
+        "config.yaml": "26ab78d41def703ae87d43f80080f61561ce3fac94d1d4e37a38f409a8a59c50",
+        "index.json": "f5d162f5956572ee5acdd9b9b4926ed9848362399d07ef96577fa3ee8b191c13",
+        "paired.csv": "63eb9d3cb94fc937aa5cea3aab5c400a3287b19879d82a9572e9bebdbc617eb6",
+        "per_answer.csv": "d49fd8dbc7340b58891568c6302a8d1f630d950d6d146405318dd8e0983870be",
+        "report.md": "a1b7e81b3051ae5bfad55be1cf0a1b5fbc12df47cbddd718d7e9e5a3b758556d",
+        "source.json": "a5fec5d36d435837fe3f9b72ef876ae6d7e9d111723fb2d420bbf777953028a2",
+        "summary.csv": "fb1dda2fabe8b13f1419d973a0bca4d0ed8c9e3d24d0fdc7b2e725b7129fb13a"
+      }
+    },
+    "20261031T220111Z_prompts": {
+      "index_version": "2825a7160c4d09bf",
+      "index_version_from": "index.json",
+      "notes": [
+        "compare-prompts over the two judged runs on v0.3-gold."
+      ],
+      "files": {
+        "comparison.csv": "70fc18b230c3d6e5104066168a13f4c10a4714088f8025dafcc20c063824a731",
+        "index.json": "74e00a5c693c933c4ce66ff5211209b94ff2011017e8e5a302b31185b14978a2",
+        "report.md": "396c644f53db73053800035e9380c7db21676d8a015d9f5becbeb807fb99ee45",
+        "side_effects.jsonl": "64f5ceb6f9d77a29053422816f65491d458ee0735704f9833795813ac1c054b8",
+        "source.json": "77d8a8f729f6eb7de1bd712be47abac59ba7b6760a59d69126d9fea911cfb157"
+      }
     }
   }
 }

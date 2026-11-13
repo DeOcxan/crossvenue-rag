@@ -91,7 +91,6 @@ class Retriever:
         cfg: Config,
         chunks: Sequence[Chunk] | None = None,
         bm25: BM25Index | None = None,
-        embedder: Embedder | None = None,
         reranker: Reranker | None = None,
     ) -> None:
         """A retriever for `cfg`; each component not given is built or loaded from `cfg`."""
@@ -100,7 +99,7 @@ class Retriever:
         self._by_id: dict[str, Chunk] | None = None
         self._venue_types: dict[str, str] | None = None
         self._bm25 = bm25
-        self._embedder = embedder or Embedder(cfg.embedding)
+        self._embedder = Embedder(cfg.embedding)
         self._reranker = reranker or Reranker(cfg.reranker, cfg.embedding.device)
         self._store = ChunkStore(cfg)
         self._conn: psycopg.Connection | None = None
@@ -150,7 +149,7 @@ class Retriever:
         """Loads the models and opens the connection before anything is timed.
 
         Otherwise the weight loading (and, on MPS, kernel compilation) is timed as part
-        of the first query's `encode` step, which makes the reported latency of
+        of the first query's steps, which makes the reported latency of
         whichever method runs first meaningless.
         """
         self._embedder.encode_query("warmup")
@@ -305,13 +304,13 @@ class Retriever:
             Result(
                 chunk_id=hit.chunk_id,
                 score=hit.similarity,
-                text=hit.metadata["text"],
-                venue=hit.metadata["venue"],
-                venue_type=hit.metadata["venue_type"],
-                doc_path=hit.metadata["doc_path"],
-                heading_path=hit.metadata["heading_path"],
-                source_url=hit.metadata["source_url"],
-                sources=hit.metadata["sources"],
+                text=hit.metadata.text,
+                venue=hit.metadata.venue,
+                venue_type=hit.metadata.venue_type,
+                doc_path=hit.metadata.doc_path,
+                heading_path=hit.metadata.heading_path,
+                source_url=hit.metadata.source_url,
+                sources=hit.metadata.sources,
             )
             for hit in rows
         ]
@@ -325,7 +324,7 @@ class Retriever:
         timings: Timings | None = None,
         venues_hint: Sequence[str] | None = None,
     ) -> list[Result]:
-        """Top k for `query`. `venues_hint` is read only by `venue_split_oracle`.
+        """Top k for `query`. Only `venue_split_oracle` reads `venues_hint`.
 
         `venue_split` retrieves per venue the question names and interleaves the lists.
         `venue_split_oracle` runs it with the question's labeled venues in place of the
@@ -334,8 +333,8 @@ class Retriever:
 
         Raises:
             UserError: A metadata filter of `filters` names a value no chunk carries.
-            ValueError: `method` is not in `METHODS`, or `venue_split_oracle` has no
-                `venues_hint`.
+            ValueError: `method` is not in `METHODS`, `venue_split_oracle` has no
+                `venues_hint`, or `filters` fails a precondition of `filters.resolve_venues`.
         """
         if method not in METHODS:
             raise ValueError(f"unknown method {method!r}; expected one of {', '.join(METHODS)}")
@@ -346,7 +345,7 @@ class Retriever:
         if method == "venue_split_oracle":
             if venues_hint is None:
                 raise ValueError(
-                    "venue_split_oracle reads the question's labeled venues; pass venues_hint"
+                    "venue_split_oracle reads the question's labeled venues; venues_hint is None"
                 )
             venues_named = list(dict.fromkeys(venues_hint))
             return self._venue_split(query, venues_named, k, filters, timings)
@@ -436,14 +435,15 @@ def compare_methods(
 ) -> list[MethodRun]:
     """Each method's top k for one query, with its step timings, after a warmup.
 
-    Without the warmup the first query's `encode` step reports the model loading
-    as if it were encoding latency. `open_retriever` builds the
+    Without the warmup the first query's steps report the model loading
+    as if it were their latency. `open_retriever` builds the
     retriever from `cfg`; `Retriever` unless given.
 
     Raises:
         UserError: A metadata filter of `filters` names a value no chunk carries.
         ValueError: A method of `methods` is not in `METHODS`, or is `venue_split_oracle`,
-            which needs the question's labeled venues and gets none here.
+            which needs the question's labeled venues and gets none here, or `filters`
+            fails a precondition of `filters.resolve_venues`.
     """
     out: list[MethodRun] = []
     with (open_retriever or Retriever)(cfg) as retriever:

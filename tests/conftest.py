@@ -14,34 +14,35 @@ from __future__ import annotations
 import re
 import time
 from pathlib import Path
-from typing import Any
+from typing import Any, ClassVar
 
 import numpy as np
 import pytest
 
 from crossvenue_rag.config import Config
 from crossvenue_rag.config_loading import load_config
+from crossvenue_rag.corpus.artifacts import load_chunks
 from crossvenue_rag.corpus.ingest import ingest
 from crossvenue_rag.corpus.manifest import ManifestRow, write_manifest
 from crossvenue_rag.evaluation.power import PowerStudy
 from crossvenue_rag.generation.calibration_file import Calibration, DimensionStatistics
 from crossvenue_rag.index.bm25_index import BM25Index
+from crossvenue_rag.index_version import require_current_index
 from crossvenue_rag.models import (
     Chunk,
     ChunkSource,
-    Document,
     Result,
     Timings,
     VenueType,
     make_chunk_id,
 )
-from crossvenue_rag.retrieval.methods import METHODS, ORACLE_METHODS
 from crossvenue_rag.retrieval.retriever import Retriever
 from crossvenue_rag.run_files import Registry, RegistryEntry, file_sha256, registry_json
 
 
 def default_config(root: Path) -> Config:
-    """configs/default.yaml with every data path redirected under `root`."""
+    """`configs/default.yaml` with `paths.raw`, `paths.processed`, `paths.index`, `paths.results`
+    and `paths.manifest` redirected under `root`."""
     config = load_config(REPO / "configs/default.yaml")
     config.paths.raw = root / "raw"
     config.paths.processed = root / "processed"
@@ -53,19 +54,8 @@ def default_config(root: Path) -> Config:
 
 @pytest.fixture
 def cfg(tmp_path: Path) -> Config:
-    """Default config with all paths redirected into a tmp directory."""
+    """Default config with the paths `default_config` names redirected into a tmp directory."""
     return default_config(tmp_path)
-
-
-@pytest.fixture
-def doc() -> Document:
-    return Document(
-        venue="bybit",
-        venue_type="cex",
-        doc_path="v5/order/create.md",
-        source_url="https://example.invalid/create.md",
-        text=(FIXTURES / "sample_docusaurus.md").read_text(encoding="utf-8"),
-    )
 
 
 def make_chunk(chunk_id: str, venue: str, text: str, venue_type: VenueType = "cex") -> Chunk:
@@ -80,16 +70,6 @@ def make_chunk(chunk_id: str, venue: str, text: str, venue_type: VenueType = "ce
         token_count=len(text.split()),
         position=0,
     )
-
-
-@pytest.fixture
-def fake_embedder() -> FakeEmbedder:
-    return FakeEmbedder()
-
-
-@pytest.fixture
-def fake_reranker() -> FakeReranker:
-    return FakeReranker()
 
 
 @pytest.fixture(scope="module")
@@ -151,9 +131,6 @@ def build_corpus(
     return ingest(cfg, count_tokens=count_words)
 
 
-FIXTURES = Path(__file__).parent / "fixtures"
-
-
 def count_words(text: str) -> int:
     """The token counter tests chunk with: whitespace words, so no tokenizer is loaded.
 
@@ -163,7 +140,7 @@ def count_words(text: str) -> int:
     return len(text.split())
 
 
-# Near-duplicate text on purpose: the same sentence, four venues.
+# Near-duplicate text on purpose: two sentences, each on two venues.
 VENUE_CHUNKS = [
     make_chunk("c-binance", "binance", "Rate limits are expressed as request weight per minute."),
     make_chunk("c-bybit", "bybit", "Rate limits are expressed as requests per second per UID."),
@@ -182,8 +159,7 @@ VENUE_CHUNKS = [
 ]
 
 
-# Four pages that say nearly the same thing in nearly the same words: the
-# corpus in miniature.
+# Two pairs of pages on the same topic: the corpus in miniature.
 CORPUS: dict[str, tuple[str, VenueType, str]] = {
     "binance/rest-api.md": (
         "binance",
@@ -258,15 +234,11 @@ HEAVY_MODULES = (
 )  # fmt: skip
 
 
-# Oracle methods need a question's labeled venues; ad-hoc queries have none.
-AD_HOC_METHODS = [m for m in METHODS if m not in ORACLE_METHODS]
-
-
 class FakeEmbedder:
-    """Deterministic hashed bag-of-words encoder.
+    """Hashed bag-of-words encoder: a text gets the same vector within one process.
 
     Real enough for the pipeline to run end to end (similar texts get similar
-    vectors), and it needs no network, no GPU and no 400 MB download.
+    vectors), and it needs no network, no GPU and no model download.
     """
 
     def __init__(self, dimension: int = 64) -> None:
@@ -307,9 +279,9 @@ class FakeReranker:
 class InMemoryRetriever(Retriever):
     """Dense search against a numpy matrix instead of pgvector.
 
-    Overriding the one method that needs a database keeps the production code
-    free of a test-only seam, and every other stage (fusion, reranking,
-    filtering, timing) runs exactly as it does in production.
+    Overriding dense search keeps the production code free of a test-only seam;
+    fusion, filtering and timing run as they do in production, and
+    reranking runs through `FakeReranker`.
     """
 
     def __init__(self, cfg: Config, chunks: list[Chunk], bm25: BM25Index) -> None:
@@ -345,6 +317,22 @@ class InMemoryRetriever(Retriever):
                 break
         timings.search_ms += (time.perf_counter() - start) * 1000
         return results
+
+
+class MemoryRetriever(InMemoryRetriever):
+    """`Retriever` as commands and jobs open it, over the fixture corpus: no model, no Postgres."""
+
+    warmups: ClassVar[list[bool]] = []
+
+    def __init__(self, cfg: Config) -> None:
+        chunks = load_chunks(cfg)
+        super().__init__(cfg, chunks, BM25Index.build(chunks))
+
+    def warmup(self, *, load_reranker: bool = True) -> None:
+        MemoryRetriever.warmups.append(load_reranker)
+
+    def require_current_index(self) -> str:
+        return require_current_index(self.cfg)
 
 
 # Output defects docs/code-style.md rule 25 forbids in text a person reads.
@@ -384,7 +372,7 @@ def output_defects(text: str) -> list[str]:
 
 
 def power_study_of(**fields: Any) -> PowerStudy:
-    """A power.json study: `fields` over a small two-comparison study with no points."""
+    """A `power.json` study: `fields` over a small two-comparison study with no points."""
     base: dict[str, Any] = {
         "run": "results/run", "metric": "recall@10", "category": "comparison", "questions": 50,
         "family": [["a", "b"], ["a", "c"]], "fractional_values": 0, "values": 150,
@@ -401,7 +389,7 @@ def dimension_of(**fields: Any) -> DimensionStatistics:
 
 
 def calibration_of(**fields: Any) -> Calibration:
-    """A calibration.json: `fields` over an empty one.
+    """A `calibration.json`: `fields` over an empty one.
 
     A candidate or a dimension may be given as a partial dict; the rest is filled in.
     """
@@ -424,7 +412,7 @@ def calibration_of(**fields: Any) -> Calibration:
 
 
 def registry_json_of(runs: dict[str, dict[str, Any]]) -> str:
-    """results/runs.json listing `runs`, each entry's fields over an unversioned run's."""
+    """`results/runs.json` listing `runs`, each entry's fields over an unversioned run's."""
     empty: dict[str, Any] = {
         "index_version": None,
         "index_version_from": None,

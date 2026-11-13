@@ -97,10 +97,11 @@ def paired(src: Sources) -> PairedBench:
 def paired_difference(src: Sources, column: str) -> Estimate:
     """The mean of per-venue minus one-call on `column`, with its interval.
 
-    `column` is `total_ms` or `rerank_ms`.
+    Raises:
+        ValueError: `column` is neither `total_ms` nor `rerank_ms`.
     """
-    difference: Estimate = getattr(paired(src), column)
-    return difference
+    p = paired(src)
+    return entry({"total_ms": p.total_ms, "rerank_ms": p.rerank_ms}, column, "the paired bench")
 
 
 def one_call_faster(src: Sources) -> int:
@@ -146,7 +147,10 @@ def mode_rows(src: Sources) -> list[tuple[str, list[float]]]:
 
 
 def modes_agree(src: Sources) -> bool:
-    """Whether both modes score the same pairs and retrieve the same ids on every question."""
+    """Whether both modes score as many pairs per question on average and retrieve the same ids.
+
+    The ids are compared on every question.
+    """
     rows = [entry(src.bench.summary, m, f"the bench {SUMMARY_FILE}") for m in MODES]
     pairs = {row.pairs_per_query_mean for row in rows}
     same = min(row.identical_retrievals for row in rows)

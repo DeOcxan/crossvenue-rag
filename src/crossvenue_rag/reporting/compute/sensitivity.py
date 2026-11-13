@@ -1,7 +1,8 @@
-"""The retrieval evaluation on `v0.2.2-gold` beside its baseline on `v0.2.1-gold`.
+"""The retrieval evaluation on a later gold version beside a run on an earlier one.
 
-Both runs were made with the same config on the CPU (`run_ids.SENSITIVITY_RUN`,
-`run_ids.SENSITIVITY_BASE_RUN`), so a difference between them comes from the gold labels.
+A pair defaults to `v0.2.2-gold` (`run_ids.SENSITIVITY_RUN`) against `v0.2.1-gold`
+(`run_ids.SENSITIVITY_BASE_RUN`), two runs made with the same config on the CPU, so a
+difference between them comes from the gold labels.
 """
 
 from __future__ import annotations
@@ -11,10 +12,10 @@ from dataclasses import dataclass
 from ...evaluation.comparisons import PairedRow
 from ...evaluation.results import breakdown_file
 from ...run_files import PAIRED_FILE
-from ..run_ids import SENSITIVITY_BASE_RUN, SENSITIVITY_RUN
+from ..run_ids import ROUND3_RUN, SENSITIVITY_BASE_RUN, SENSITIVITY_RUN
 from ..sources import Sources
 from .distinct import shared_value
-from .estimates import Estimate, is_significant
+from .estimates import Estimate, is_significant, same_reading
 from .lookup import entry
 
 
@@ -62,6 +63,19 @@ def tested_p(row: PairedRow) -> float:
     return p
 
 
+def primary_comparison(src: Sources) -> Comparison:
+    """The one comparison the baseline run marks primary.
+
+    Raises:
+        StopIteration: the baseline run marks none.
+    """
+    return next(
+        c
+        for c in tested_comparisons(src)
+        if paired_row(src, SENSITIVITY_BASE_RUN, c).role == "primary"
+    )
+
+
 def tested_comparisons(src: Sources) -> list[Comparison]:
     """The primary and secondary comparisons of the baseline run, in file order."""
     rows = src.run(SENSITIVITY_BASE_RUN).paired.values()
@@ -71,7 +85,7 @@ def tested_comparisons(src: Sources) -> list[Comparison]:
 
 
 def tested_questions(src: Sources, run: str, scope: str) -> int:
-    """Questions the tested comparisons of `run` over `scope` pair, their paired.csv `n`.
+    """Questions the baseline's tested comparisons over `scope` pair in `run`, their paired.csv `n`.
 
     Raises:
         ValueError: The comparisons over `scope` pair different numbers of questions, or none
@@ -84,34 +98,55 @@ def tested_questions(src: Sources, run: str, scope: str) -> int:
     return n
 
 
-def same_conclusion(src: Sources, comparison: Comparison) -> bool:
+def same_conclusion(
+    src: Sources,
+    comparison: Comparison,
+    base: str,
+    run: str,
+) -> bool:
     """Whether a comparison keeps its sign, its significance and whether its interval excludes 0.
 
     Raises:
         ValueError: A run lacks the comparison or its p-value.
     """
-    old, new = (paired_row(src, run, comparison) for run in (SENSITIVITY_BASE_RUN, SENSITIVITY_RUN))
-    old_ci, new_ci = Estimate.of(old), Estimate.of(new)
-    same_sign = (old.diff > 0) == (new.diff > 0) and (old.diff < 0) == (new.diff < 0)
-    return (
-        same_sign
-        and is_significant(tested_p(old)) == is_significant(tested_p(new))
-        and old_ci.includes_zero() == new_ci.includes_zero()
-    )
+    old, new = paired_row(src, base, comparison), paired_row(src, run, comparison)
+    return same_reading(old, new, tested_p(old), tested_p(new))
 
 
 def conclusions_unchanged(src: Sources) -> bool:
     """Whether every primary and secondary comparison keeps its conclusion on `v0.2.2-gold`."""
-    return all(same_conclusion(src, c) for c in tested_comparisons(src))
+    return not changed_conclusions(src)
 
 
-def identical(src: Sources, comparison: Comparison) -> bool:
-    """Whether a comparison's difference and interval are the same in both runs.
+def changed_conclusions(
+    src: Sources, base: str = SENSITIVITY_BASE_RUN, run: str = SENSITIVITY_RUN
+) -> list[Comparison]:
+    """The primary and secondary comparisons whose conclusion differs between two runs."""
+    return [c for c in tested_comparisons(src) if not same_conclusion(src, c, base, run)]
+
+
+def retrieval_changes(src: Sources) -> tuple[list[Comparison], int]:
+    """The tested comparisons that change on `v0.3-gold` against `v0.2.1-gold`, and their number.
+
+    Returns the comparisons that change, then the count of primary and secondary comparisons.
+    """
+    changed = changed_conclusions(src, SENSITIVITY_BASE_RUN, ROUND3_RUN)
+    return changed, len(tested_comparisons(src))
+
+
+def identical(
+    src: Sources,
+    comparison: Comparison,
+    base: str = SENSITIVITY_BASE_RUN,
+    run: str = SENSITIVITY_RUN,
+) -> bool:
+    """Whether a comparison's difference and interval are the same in `base` and `run`.
 
     Raises:
         ValueError: A run lacks the comparison.
     """
-    old, new = (paired_row(src, run, comparison) for run in (SENSITIVITY_BASE_RUN, SENSITIVITY_RUN))
+    old = paired_row(src, base, comparison)
+    new = paired_row(src, run, comparison)
     return (old.diff, old.low, old.high) == (new.diff, new.low, new.high)
 
 
@@ -123,7 +158,7 @@ def inconclusive(src: Sources) -> list[Comparison]:
     """
     out = []
     for c in tested_comparisons(src):
-        rows = [paired_row(src, run, c) for run in (SENSITIVITY_BASE_RUN, SENSITIVITY_RUN)]
+        rows = [paired_row(src, r, c) for r in (SENSITIVITY_BASE_RUN, SENSITIVITY_RUN)]
         if all(
             not Estimate.of(r).includes_zero() and not is_significant(tested_p(r)) for r in rows
         ):

@@ -74,6 +74,6 @@ jobs:
 
       # Schema, duplicate and balance checks on every versioned dataset. The
       # near-duplicate check needs an encoder, so it is skipped here rather than
-      # pulling 400 MB of weights into CI; run it locally with `make validate-evals`.
+      # pulling the encoder's weights into CI; run it locally with `make validate-evals`.
       - name: Validate evaluation datasets
         run: uv run crossvenue validate-evals --skip-near-duplicates

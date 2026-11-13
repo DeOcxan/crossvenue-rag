@@ -1,4 +1,5 @@
-"""Tests for `reporting.runs`: the registry of committed runs and re-derived tables."""
+"""Tests for `reporting.runs`: the registry of committed runs and the `index_version` derived
+for an answer run."""
 
 from __future__ import annotations
 
@@ -23,7 +24,7 @@ def test_the_registry_lists_committed_runs_and_catches_a_changed_file(tmp_path: 
     (run / "report.md").write_text("x\n", encoding="utf-8")
     assert committed_runs(tmp_path) == ["a"]
     assert verify_registry(tmp_path) == [
-        "results/runs.json is missing; write it with `crossvenue runs-manifest`"
+        "results/runs.json is missing (`crossvenue runs-manifest` writes it)"
     ]
     (tmp_path / "results" / "runs.json").write_text(registry_json(build_registry(tmp_path)))
     assert verify_registry(tmp_path) == []

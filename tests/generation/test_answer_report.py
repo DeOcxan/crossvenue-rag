@@ -1,4 +1,4 @@
-"""Tests for `generation.answer_report`: the report.md of an answer run."""
+"""Tests for `generation.answer_report`: the `report.md` of an answer run."""
 
 from __future__ import annotations
 
@@ -83,6 +83,15 @@ def test_the_header_counts_questions_and_configurations_and_names_the_judge(tmp_
     assert text.endswith("|\n")
 
 
+def test_the_report_names_the_question_file_at_its_start_and_in_every_table_caption(tmp_path):
+    config = answer_config(tmp_path).with_questions(Path("evals/q.jsonl"))
+    lines = make_report(tmp_path, judged_records(), [pair()], config=config).splitlines()
+    assert lines[3] == "- `eval.questions`: `evals/q.jsonl`"
+    for head in ("| config | answers |", "| config | tokens in |", "| a vs b |"):
+        caption = lines[lines.index(next(line for line in lines if line.startswith(head))) - 2]
+        assert "`evals/q.jsonl`" in caption
+
+
 def test_a_run_without_a_judge_says_so_and_marks_no_metric_uncalibrated(tmp_path):
     records = [record(CONFIGS[0], "cv-0001")]
     text = make_report(tmp_path, records)
@@ -119,7 +128,7 @@ def test_only_the_metrics_of_a_failed_dimension_are_marked_uncalibrated(tmp_path
 
 def test_answers_graded_by_two_judges_are_refused_naming_both(tmp_path):
     records = [*judged_records("opus")[:2], *judged_records("sonnet")[2:]]
-    with pytest.raises(UserError, match="more than one judge: opus, sonnet"):
+    with pytest.raises(UserError, match="more than one judge judged the answers: opus, sonnet"):
         make_report(tmp_path, records)
 
 
@@ -137,7 +146,7 @@ def test_the_metric_and_cost_tables_have_a_row_per_configuration(tmp_path):
 
 
 def test_the_parameters_sent_are_readable_text_with_no_raw_dict(tmp_path):
-    """The params cell of summary.csv is JSON for programs; the report prints it as text."""
+    """The params cell of `summary.csv` is JSON for programs; the report prints it as text."""
     sent = {
         "max_tokens": 4000,
         "provider": {"order": ["a/b", "c"], "require_parameters": True},
@@ -167,6 +176,14 @@ def test_a_paired_row_shows_its_interval_p_values_and_role(tmp_path):
     )
     assert "| \u22120.200 |" in secondary
     assert secondary.endswith("| secondary, uncalibrated | - |")
+
+
+def test_the_interval_column_of_the_paired_table_is_right_aligned(tmp_path):
+    lines = make_report(tmp_path, judged_records(), [pair()]).splitlines()
+    rule = lines[lines.index(next(line for line in lines if line.startswith("| a vs b |"))) + 1]
+    assert rule.split("|")[1:-1] == [
+        "---", "---", "---", "---:", "---:", "---:", "---:", "---", "---:",
+    ]  # fmt: skip
 
 
 def test_a_report_without_pairs_keeps_an_empty_paired_table(tmp_path):

@@ -7,11 +7,11 @@ from pathlib import Path
 
 import pytest
 
-from crossvenue_rag.dataset.journal import RELABELED, Judgment
+from crossvenue_rag.dataset.journal import RELABELED
 from crossvenue_rag.dataset.questions import load_questions, save_questions
 from crossvenue_rag.errors import UserError
 from crossvenue_rag.labeling.adjudicate import CRITERION_DATE
-from crossvenue_rag.labeling.relabel import RelabelTarget, relabel_candidates, relabel_session
+from crossvenue_rag.labeling.relabel import RelabelTarget, relabel_session
 from crossvenue_rag.models import Question
 from tests.conftest import journal_dict, write_journal
 from tests.labeling.conftest import VERSION, Script, chunk, quiet
@@ -35,12 +35,11 @@ def _file(tmp_path: Path) -> str:
     return str(path)
 
 
-def test_candidates_are_the_recorded_pool_then_the_added_chunks_once():
-    entry = Judgment(pool=["p1", "p2"])
-    ids = [r.chunk_id for r in relabel_candidates(CHUNKS, "q1", entry, ["x1", "p1", "x1"])]
-    assert ids == ["p1", "p2", "x1"]
-    with pytest.raises(UserError, match="not in the corpus"):
-        relabel_candidates(CHUNKS, "q1", entry, ["zz"])
+def test_an_added_chunk_missing_from_the_chunks_is_refused(tmp_path):
+    path = _file(tmp_path)
+    target = RelabelTarget(path, ["q1"], {"q1": ["zz"]}, CHUNKS, VERSION, "me")
+    with pytest.raises(UserError, match="q1: 1 chunk not in the current index"):
+        relabel_session(target, console=quiet())
 
 
 def test_a_verdict_is_journaled_under_relabeled_and_nothing_else_changes(tmp_path):
@@ -62,8 +61,10 @@ def test_a_verdict_is_journaled_under_relabeled_and_nothing_else_changes(tmp_pat
 
 def test_a_question_without_round_1_is_refused(tmp_path):
     path = _file(tmp_path)
-    with pytest.raises(UserError, match="no round-1 judgment"):
-        relabel_session(RelabelTarget(path, ["q9"], {}, CHUNKS, VERSION, "me"), console=quiet())
+    q3 = Question("q3", "never judged?", "gold", ["bybit"], "fact", category="fact")
+    save_questions(path, [*load_questions(path), q3])
+    with pytest.raises(UserError, match="no round-1 judgment to start from: q3"):
+        relabel_session(RelabelTarget(path, ["q3"], {}, CHUNKS, VERSION, "me"), console=quiet())
 
 
 def test_an_interrupt_keeps_the_verdicts_given(tmp_path):

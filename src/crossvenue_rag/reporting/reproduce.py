@@ -124,7 +124,7 @@ def reproduce(root: str | Path) -> Report:
     The runs come first: every committed run's files must match the sha256 in
     `results/runs.json`. Every retrieval run whose question file is unchanged must have
     metric tables equal to what the evaluation code re-derives from its per_query.csv
-    (`reporting.rederive`). A number read from such a run's aggregate file is then one the
+    (`reporting.rederive`). A metric read from such a run's aggregate file is then one the
     evaluator would write again. A run whose question file changed, or that records none,
     is skipped.
 

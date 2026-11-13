@@ -2,13 +2,13 @@
 
 Everything here is a plain dataclass rather than a pydantic model, so an object the program
 builds is not validated: these objects cross function boundaries thousands of times per run.
-A chunk or question record read from a file, which may be written by hand, is checked against
-its dataclass by its loader, through `wrongly_typed_fields`, before it is built.
+A loader checks a chunk or question record read from a file, which may be written by hand,
+against its dataclass, through `wrongly_typed_fields`, before the record is built.
 """
 
 from __future__ import annotations
 
-from collections.abc import Mapping
+from collections.abc import Iterable, Mapping
 from dataclasses import MISSING, asdict, dataclass, field, fields
 from functools import cache
 from typing import TYPE_CHECKING, Any, Literal, get_args, get_type_hints
@@ -131,7 +131,7 @@ def make_chunk_id(venue: str, text: str) -> str:
 
     Byte-identical text within a venue gets one id wherever it occurs (the id is
     what deduplication collapses on), so the id cannot depend on position. The
-    venue is hashed in because identical text on two *different* venues is never
+    venue is hashed in because identical text on two different venues is never
     collapsed: which venue says something is exactly what this corpus measures.
     Re-running ingestion over an unchanged corpus reproduces the same ids.
     """
@@ -151,7 +151,7 @@ class Result:
     doc_path: str
     heading_path: list[str]
     source_url: str
-    # Rank each contributing method gave it, kept for debugging fusion.
+    # Rank each contributing method gave it, shown in the labeling screen's "found by" column.
     component_ranks: dict[str, int] = field(default_factory=dict)
     # Every occurrence of this text; more than one means it was deduplicated.
     sources: list[ChunkSource] = field(kw_only=True)
@@ -185,7 +185,7 @@ MS_PER_SECOND = 1000
 class Timings:
     """Wall-clock milliseconds per retrieval step.
 
-    Passed into `Retriever.retrieve` by callers that record timings (the eval harness), so
+    Callers that record timings (the eval harness) pass one into `Retriever.retrieve`, so
     the retrieval signature stays `-> list[Result]` and the retriever keeps no
     timing state between calls.
     """
@@ -234,10 +234,12 @@ VenueCoverage = Literal["covered", "absent_in_docs", "missing_from_pool"]
 COMPARISON = "comparison"
 # The category of an adversarial question.
 ADVERSARIAL = "adversarial"
+# The categories whose save check shows the notes once a chunk is marked (methodology 5b).
+NOTES_SHOWN = (ADVERSARIAL, "version_sensitive")
 
 
 def effective_category(category: str | None, qtype: str) -> str:
-    """A question's category, or its qtype when it was saved without one.
+    """A question's `category`, or its `qtype` when it was saved without one.
 
     The one fallback every breakdown, comparison scope and answer record uses; a
     dataset record always has a category.
@@ -249,11 +251,11 @@ def effective_category(category: str | None, qtype: str) -> str:
 class Question:
     """One eval question. `gold_chunk_ids` is empty until a human labels it.
 
-    The first five fields are what the retrieval harness needs. The rest is
-    dataset bookkeeping (provenance, difficulty, expected behavior, annotation
-    round), carried on the same record so a question and the reason it exists
-    never drift into separate files. All of it is optional, so a hand-written
-    question with only the first five fields loads too.
+    The first five fields are the ones a record must have; every other field has a
+    default, so a hand-written question with only those five loads too. The dataset
+    bookkeeping (provenance, difficulty, expected behavior, annotation round) is
+    carried on the same record so a question and the reason it exists never drift
+    into separate files.
     """
 
     id: str
@@ -301,7 +303,7 @@ class Question:
 
     @property
     def effective_category(self) -> str:
-        """The category, or the qtype for a question saved without one (`effective_category`)."""
+        """The `category`, or the `qtype` if saved without one (`effective_category`)."""
         return effective_category(self.category, self.qtype)
 
     @property
@@ -326,18 +328,23 @@ class Question:
 
     @property
     def is_judged(self) -> bool:
-        """Round 1 recorded a verdict: gold chunks, or an explicit empty judgment."""
+        """An annotation round recorded a verdict: gold chunks, or an explicit empty judgment."""
         return bool(self.gold_chunk_ids or self.annotated_at)
 
     @property
     def needs_venue_coverage(self) -> bool:
         """Answerable comparisons must say, per venue, why it is or is not covered.
 
-        Wider than `is_comparison`: a question whose qtype is comparison needs coverage
-        whatever its category (three gold questions have a comparison qtype and another
-        category), so the labels of every multi-venue question say which venues they cover.
+        Wider than `is_comparison`. A question whose `qtype` is comparison needs coverage
+        whatever its `category` (three gold questions have a comparison `qtype` and another
+        `category`), so the labels of every answerable comparison say which venues they cover.
         """
         return self.is_answerable and (self.qtype == COMPARISON or self.is_comparison)
+
+    def uncovered_venues(self, chunk_venues: Iterable[str | None]) -> list[str]:
+        """The venues the question names that none of `chunk_venues` is, in the question's order."""
+        covered = set(chunk_venues)
+        return [v for v in self.venues if v not in covered]
 
     def slice_labels(self, dimension: str) -> list[str]:
         """Values this question contributes to a metric breakdown.

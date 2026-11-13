@@ -1,7 +1,7 @@
 """What docs/adr/0007-venue-split.md claims.
 
 The coverage failure of the first run on `v0.2-gold` (`run_ids.FIRST_GOLD_RUN`), and the BNB
-Chain counts, by the count-term convention.
+Chain counts, by the `count-term` convention.
 """
 
 from __future__ import annotations
@@ -12,7 +12,7 @@ from ...check import Doc
 from ...compute import corpus, datasets, retrieval, retrieval_earlier
 from ...run_ids import FIRST_GOLD_RUN
 from ...sources import Sources
-from ..comparisons import top_k_text
+from ..comparisons import share_parts, top_k_text
 
 BNB_CHAIN = "BNB Chain"
 
@@ -30,17 +30,15 @@ def venue_split_record(doc: Doc, src: Sources) -> None:
 
 def _share(src: Sources, method: str) -> list[str]:
     """A method's coverage on `v0.2-gold`, for the holes of `0.52 (26/50)`."""
-    return [
-        formatting.fixed(
-            retrieval_earlier.first_gold_coverage(src, method), formatting.SHARE_DECIMALS
-        ),
-        formatting.count(retrieval_earlier.first_gold_covered(src, method)),
-        formatting.count(datasets.comparison_count_before_augmentation(src)),
-    ]
+    return share_parts(
+        retrieval_earlier.first_gold_coverage(src, method),
+        retrieval_earlier.first_gold_covered(src, method),
+        datasets.comparison_count_before_augmentation(src),
+    )
 
 
 def _coverage(doc: Doc, src: Sources) -> None:
-    """Context: no method covered every named venue on most comparison questions."""
+    """Context: the coverage failure of the first run on `v0.2-gold`."""
     doc.ref("(`v0.2-gold`, `results/{}`)", FIRST_GOLD_RUN)
     doc.check(
         "none of the {} methods put a chunk from every named venue into the top {} of more "

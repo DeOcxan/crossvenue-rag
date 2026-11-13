@@ -69,6 +69,42 @@
         "index_version": null
       },
       "index_version": "2825a7160c4d09bf"
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:08:09Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "44209603aa1061c9",
+        "8e329afd7150dc1e",
+        "a831ffc2053c2aea",
+        "eab060194d24c369",
+        "d0083abb00906b9c",
+        "6fe9d033622750bb",
+        "ee9a962e97559e23",
+        "38fc729194a1d9e2",
+        "84ce4b94d4ce3817",
+        "aad98a5de0b7836c",
+        "0dfcddd7bf09643f",
+        "37307fddc807a0fd",
+        "3b10d539ba08e959",
+        "7cf003ff3a8bcb7e",
+        "3290240681e0ed87",
+        "de694e9148dfd7f2",
+        "c4a60bd54018d654",
+        "395edf1237d6bbfb",
+        "403ac0f51cd1c592",
+        "7ab52e6050ed8294",
+        "f84b2da85154cf89",
+        "fd158d1d4dfa8662",
+        "3bdc24e6fb608829"
+      ],
+      "relevant": [
+        "eab060194d24c369",
+        "de694e9148dfd7f2"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0002": {
@@ -117,6 +153,43 @@
         "87f8adf4c1a7f915",
         "b352f5695e8e7fa4"
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:09:55Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "15d5455e874a57ef",
+        "6ca5040c70dd1231",
+        "87f8adf4c1a7f915",
+        "5ee72b7a59b1c69c",
+        "de694e9148dfd7f2",
+        "bf51ca30ea8725ce",
+        "82c94c8742a61d78",
+        "eab060194d24c369",
+        "fd13580695538899",
+        "998da96cbf86855c",
+        "7b2bee40a02df4ad",
+        "41b8ee592f72cfe0",
+        "8e2bb0cdb21b9bd3",
+        "e6ded549d28b58fb",
+        "eb33e78300a86115",
+        "c848e436b638ae92",
+        "b352f5695e8e7fa4",
+        "4c9ccfc9dbc11dc7",
+        "0f506ceb64a14467",
+        "08d694c731837bb0",
+        "dbcc414946a41cf3",
+        "d27f62cdc0081f12",
+        "42c38291fe46ed96",
+        "453e379a237bd61e",
+        "153a75b6e2887175"
+      ],
+      "relevant": [
+        "e6ded549d28b58fb"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0003": {
@@ -194,6 +267,44 @@
       ],
       "shuffle_seed": 20260924
     },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:11:48Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "b15b629dd1b08355",
+        "456bdedb639b5536",
+        "418c52965195c40e",
+        "bfa78f6cdaf4a836",
+        "2b231cb52626f70e",
+        "e6683ba4c189e0a6",
+        "31beb4a0668effe4",
+        "d1b10a509b48651c",
+        "640d4498f2af6c60",
+        "0317f8a0f9d502f5",
+        "95a4b84d9d7ed947",
+        "0e7cbc60c0e191d1",
+        "9372e7af283d5470",
+        "6617adcb6b59f1b5",
+        "eee9e35b7f9f7b6b",
+        "e680cb2b135dd5ba",
+        "e9a0a1c9ba73b8e5",
+        "f75197ecfc3b6d00",
+        "067a219af84d0186",
+        "c893da7dde82ee9e",
+        "04170f186da297a8",
+        "931da4dffff7add2",
+        "bb1fbbb8ab405558",
+        "2551900a671eb9ff",
+        "2b369c6613d48ffa"
+      ],
+      "relevant": [
+        "067a219af84d0186",
+        "9372e7af283d5470"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
+    },
     "adjudicated": {
       "annotator": "lord",
       "criterion": "2026-10-10",
@@ -242,6 +353,43 @@
       "relevant": [
         "6617adcb6b59f1b5"
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:14:15Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "f7e420d751d93606",
+        "2e6f082adeaa6015",
+        "9a7b27f8f01dbb62",
+        "cb69ae916d32dd77",
+        "2551900a671eb9ff",
+        "6617adcb6b59f1b5",
+        "b57cf16ea1eba1fe",
+        "e15e153fdfb529f7",
+        "4e3b874bb73081e2",
+        "e7233f5c74b230c3",
+        "415a71f491bd553f",
+        "5c51f2fb7dd3b647",
+        "529792f40a739e16",
+        "4d0c1c3ff7cdb62b",
+        "facffec16b04896c",
+        "4e53707a5d0e27fa",
+        "ae850b671b86e217",
+        "0317f8a0f9d502f5",
+        "7efb42d9522017b6",
+        "e62bef6db1e28af5",
+        "dc61f1258c9a2782",
+        "d6aa36bb192acfc1",
+        "e9a0a1c9ba73b8e5",
+        "754f1ddafd5a42a0",
+        "c92df3e417c11eab"
+      ],
+      "relevant": [
+        "6617adcb6b59f1b5"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0005": {
@@ -279,6 +427,43 @@
       "relevant": [
         "3584bdce0ac5c7d1"
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:14:33Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "137f23e3f1887126",
+        "3336838b6d2226a9",
+        "b3ff952be7f79e83",
+        "44f4cf125e07b436",
+        "3584bdce0ac5c7d1",
+        "1ea3d663d6b9e830",
+        "067a219af84d0186",
+        "88c27f6ec13e4318",
+        "468043410cc0c27e",
+        "a7b55444a8bdcf9f",
+        "5311c230ced41dbd",
+        "e93ce1a816d2867d",
+        "b5d878ccbf092a04",
+        "6e50c56989a5b97f",
+        "35f6bc2d78e84002",
+        "c4ceff5514253837",
+        "8981dc033b80276d",
+        "5306a63f1716511f",
+        "395fa4a95b3d3877",
+        "5004ec38c5d2f1ec",
+        "8af42d40f8ecc202",
+        "d1175f63bc486de1",
+        "6ccf702400ef09ad",
+        "183d111cd7537a7c",
+        "b5dcf8d7cf5b0610"
+      ],
+      "relevant": [
+        "3584bdce0ac5c7d1"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0006": {
@@ -355,6 +540,41 @@
       ],
       "shuffle_seed": 20260924
     },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:15:20Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "411ce195949a5df8",
+        "5004ec38c5d2f1ec",
+        "60080f8d07418c8f",
+        "678e129df2e8d8e8",
+        "5401d2a1029c97ee",
+        "d9cd2f8eb2632657",
+        "f5897806bac8d33f",
+        "718f19bb64fceacf",
+        "e93ce1a816d2867d",
+        "243e6d70ffb0ce18",
+        "a1b2a17a7240953e",
+        "24234d84a1dac409",
+        "5d0407daa99f5686",
+        "12e5b7cc1d275a16",
+        "6aee37548a3dfb37",
+        "94887f33a2ce6b4e",
+        "b4f80d3991057445",
+        "c11520e5fa244df0",
+        "42d881d46b755594",
+        "b5d878ccbf092a04",
+        "35f6bc2d78e84002",
+        "19a500fc9f4ddae5",
+        "b17d4f613a91851f",
+        "9317ddb8c686ec9c",
+        "271f983a4f222076"
+      ],
+      "relevant": [],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
+    },
     "adjudicated": {
       "annotator": "lord",
       "criterion": "2026-10-10",
@@ -415,6 +635,44 @@
       "relevant": [
         "468043410cc0c27e"
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:15:56Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "6ccf702400ef09ad",
+        "6df59c30ad8b6bb9",
+        "468043410cc0c27e",
+        "2763c12d46e6d6b1",
+        "fd874c5a97bd898c",
+        "608898aa04e65672",
+        "6421d8427fd40eb9",
+        "c4ceff5514253837",
+        "44f4cf125e07b436",
+        "4fe832b090d38c63",
+        "243e6d70ffb0ce18",
+        "c10ee451372cb002",
+        "174337f4633cd769",
+        "36b4a88a5718568b",
+        "5ddd2987739032c3",
+        "e3a808587d76f0cb",
+        "f20f4f04968c7233",
+        "1f0c55315bb7918a",
+        "6ca9903b36f628f0",
+        "12e5b7cc1d275a16",
+        "f8d570087aa76c0c",
+        "943519877c1134cb",
+        "e74c6fd63adebac7",
+        "b3ff952be7f79e83",
+        "5d0407daa99f5686"
+      ],
+      "relevant": [
+        "468043410cc0c27e",
+        "6421d8427fd40eb9"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0008": {
@@ -452,6 +710,43 @@
       "relevant": [
         "f20f4f04968c7233"
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:16:17Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "156462c0073b118a",
+        "205249bc8d99c323",
+        "26a5d23b0cd22879",
+        "c059580b26230e11",
+        "f20f4f04968c7233",
+        "5eabfa1c8da9cab2",
+        "27161becaa9fb29f",
+        "847ff1e94c580249",
+        "f6eaa82ff8198f10",
+        "1e428b95334a6066",
+        "ca1adf65b763fe72",
+        "0c8e0886719f2344",
+        "e9e3428ae7f7b6e1",
+        "6250f6176a1e2f6c",
+        "44f4cf125e07b436",
+        "df262bc5068dd789",
+        "34c96e54bb693a4f",
+        "468043410cc0c27e",
+        "65e24af2bcd912c0",
+        "d7202564d15ac547",
+        "0b8a85d6374a5aa9",
+        "a8b39903379c68d3",
+        "5ddd2987739032c3",
+        "581fa2ea77f4104b",
+        "27856102ec10463c"
+      ],
+      "relevant": [
+        "f20f4f04968c7233"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0043": {
@@ -531,6 +826,55 @@
           "coverage_changes": []
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:17:38Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "79a403c6d9bc25a9",
+        "47a711d004f13682",
+        "6cb4f744e4e1c7df",
+        "431a41573fb9568e",
+        "0256bed34949440a",
+        "56a97f48cc7f03d1",
+        "f13bb9bf53c3aa20",
+        "52affe72106418bd",
+        "3bdc24e6fb608829",
+        "96e1b8fb37f036eb",
+        "9f2bb8116cd0c309",
+        "07523fd7ba09f474",
+        "0d5c72a13bbf2001",
+        "54b065200e70e533",
+        "9c9615cbbf95339b",
+        "e580fd4f3c3d6e23",
+        "fd158d1d4dfa8662",
+        "702da9102bd8c810",
+        "f3511dba13aca074",
+        "8ebc4d4a8899d579",
+        "d046fcc6ae9adaa6",
+        "b3e3aed35afe2f71",
+        "166bd1e333dce201",
+        "6b174e0d39ed334b",
+        "6d2251c8d4adda0c",
+        "00d799fd7df2ad19",
+        "b7119f4aeea1beff",
+        "d0083abb00906b9c",
+        "8062fc694752a863",
+        "5126900d85cd69b6",
+        "a6385389cd7a62a6",
+        "134ea4ceae3aa1a8",
+        "981a5a0309661340"
+      ],
+      "relevant": [
+        "79a403c6d9bc25a9"
+      ],
+      "venue_coverage": {
+        "binance": "missing_from_pool",
+        "bybit": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0044": {
@@ -660,6 +1004,58 @@
           "coverage_changes": []
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:18:59Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "4c9ccfc9dbc11dc7",
+        "7ab52e6050ed8294",
+        "326cbb232318d246",
+        "eab060194d24c369",
+        "e6ded549d28b58fb",
+        "42c38291fe46ed96",
+        "15d5455e874a57ef",
+        "1c0d5c9a83f1aec4",
+        "5ee72b7a59b1c69c",
+        "6b174e0d39ed334b",
+        "998da96cbf86855c",
+        "87f8adf4c1a7f915",
+        "b352f5695e8e7fa4",
+        "84ce4b94d4ce3817",
+        "8e2bb0cdb21b9bd3",
+        "eb33e78300a86115",
+        "c4a60bd54018d654",
+        "5681daa4302fc5df",
+        "7b2bee40a02df4ad",
+        "0bdc717beeceef8d",
+        "dbcc414946a41cf3",
+        "c848e436b638ae92",
+        "fd384e377124ed3e",
+        "b9393c0a9f97adf3",
+        "ecb7b644f8ef6f9a",
+        "fd158d1d4dfa8662",
+        "fd13580695538899",
+        "08d694c731837bb0",
+        "41b8ee592f72cfe0",
+        "69f44e6cc370d65a",
+        "de694e9148dfd7f2",
+        "d0083abb00906b9c",
+        "58929420f512f88f",
+        "21538818b884fabe"
+      ],
+      "relevant": [
+        "eab060194d24c369",
+        "de694e9148dfd7f2",
+        "e6ded549d28b58fb"
+      ],
+      "venue_coverage": {
+        "binance": "covered",
+        "bingx": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0045": {
@@ -750,6 +1146,62 @@
           "coverage_changes": []
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:19:43Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "88833db650cc1f42",
+        "af7dcd9b64855c26",
+        "25e1c607497bdaf0",
+        "800613908a3315e4",
+        "0317f8a0f9d502f5",
+        "22deada8e97de01b",
+        "456bdedb639b5536",
+        "c893da7dde82ee9e",
+        "27a498c45e1b0cc6",
+        "067a219af84d0186",
+        "6617adcb6b59f1b5",
+        "4f74081f143fee12",
+        "2b369c6613d48ffa",
+        "9372e7af283d5470",
+        "0921143740c562b3",
+        "95a4b84d9d7ed947",
+        "facffec16b04896c",
+        "88ec2049e5181199",
+        "bcd78c9f48a787fe",
+        "e183859cab350362",
+        "bddc4dd8df425396",
+        "011d200bb2540c73",
+        "b57cf16ea1eba1fe",
+        "14c136b489c814a6",
+        "eec8c1a905a872ca",
+        "fc6186a1ae67fd41",
+        "eee9e35b7f9f7b6b",
+        "3563572f7f2cf859",
+        "b15b629dd1b08355",
+        "f0a4ad73afe1e978",
+        "e2d0d765a8680975",
+        "7cb924ec142c553d",
+        "9d6fd4242b03f9a6",
+        "92042d0e65b64c45",
+        "27d94293e8ddb024",
+        "f8752275e41e94d3",
+        "d514134cef844f6e"
+      ],
+      "relevant": [
+        "6617adcb6b59f1b5",
+        "067a219af84d0186",
+        "9372e7af283d5470",
+        "c893da7dde82ee9e"
+      ],
+      "venue_coverage": {
+        "binance": "covered",
+        "bybit": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0046": {
@@ -879,6 +1331,51 @@
       },
       "shuffle_seed": 20260924
     },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:20:37Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "28b2264c47608e5c",
+        "1f4db897d218ab7e",
+        "4c9ccfc9dbc11dc7",
+        "92ea64479009ad83",
+        "95175d8b1ad60441",
+        "96a55103122a8cad",
+        "dbcc414946a41cf3",
+        "be5963f91d74f274",
+        "cac8db4d96c5371f",
+        "6617adcb6b59f1b5",
+        "5ee72b7a59b1c69c",
+        "0fc0eb3e10b9b480",
+        "847ff1e94c580249",
+        "d27f62cdc0081f12",
+        "2a2d0ada27e51781",
+        "dc61f1258c9a2782",
+        "557b45d80ca70778",
+        "c309b7d8cabebd41",
+        "facffec16b04896c",
+        "e152999e8f80c9db",
+        "6518f8e88e83d24f",
+        "662e224fbe68a241",
+        "d49fa8f9674ccdaa",
+        "b57cf16ea1eba1fe",
+        "cc377f98dcf85252",
+        "81cc1c9f5d87f8ea",
+        "960805df4cc60bfd",
+        "f6da2b246fee1244"
+      ],
+      "relevant": [
+        "4c9ccfc9dbc11dc7",
+        "6617adcb6b59f1b5"
+      ],
+      "venue_coverage": {
+        "bingx": "covered",
+        "bybit": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
+    },
     "adjudicated": {
       "annotator": "lord",
       "criterion": "2026-10-10",
@@ -1007,6 +1504,58 @@
           "coverage_changes": []
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:21:26Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "156d37bfd55cf535",
+        "519f68e75b7b2fb0",
+        "ff2e4003ca86838c",
+        "a94bd97101b3789b",
+        "558cbd45db7fcc1b",
+        "ea342d17c26e44cc",
+        "c8bfd64663494758",
+        "7ec7e585376f2f34",
+        "32b3754fea13f359",
+        "33eb6ae076f1007b",
+        "363636f4d8e971a6",
+        "c676b2dc7900d32a",
+        "bb25d26bed66a927",
+        "83fda5abfffd853e",
+        "d305c585f5c77976",
+        "ec4cd39fa66bf676",
+        "76ae1dca5ae0a1b6",
+        "599e59788f73842e",
+        "e4a4c3da6b750981",
+        "810f635c44da5b16",
+        "9a727f01d1afed3f",
+        "dab23ec5453784f7",
+        "a10fe76e11c90f25",
+        "017a8d3a43038d1d",
+        "07bb751441bbbdd4",
+        "a8107aed01bf135c",
+        "f694444c921bc387",
+        "7fb4e55687bf1aea",
+        "d6eca88f944b0986",
+        "43d9a7ef836b2dc1",
+        "64a6e3e96df6d553",
+        "ac38a8ffc1ae83ab",
+        "55e1f327c0ec1613"
+      ],
+      "relevant": [
+        "a94bd97101b3789b",
+        "c676b2dc7900d32a",
+        "d305c585f5c77976",
+        "519f68e75b7b2fb0"
+      ],
+      "venue_coverage": {
+        "uniswap": "covered",
+        "pancakeswap": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0048": {
@@ -1092,6 +1641,58 @@
           "coverage_changes": []
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:23:05Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "7ec7e585376f2f34",
+        "9a18f4741c7efee6",
+        "0ddb837d28b9d493",
+        "6bc3dcb254e73bc7",
+        "dee6b7fabe2997ad",
+        "b0da9cbefe10240d",
+        "46e923a0d6c7aec2",
+        "33eb6ae076f1007b",
+        "095124949b7ed5ab",
+        "696de940933b0825",
+        "fea1996b2f2c3af0",
+        "2a8c3ff5724f66ae",
+        "be4ac42f9d0ac40d",
+        "3868b43c6ffc220c",
+        "2aebe19979379f69",
+        "2ecd7b850ed33738",
+        "123c11f40e1df4bc",
+        "f694444c921bc387",
+        "853ffa7fc6925807",
+        "e203d4dc3d99b4c8",
+        "cf9f95ea60c995bb",
+        "eb8410f17bf7519f",
+        "a10fe76e11c90f25",
+        "cad1846c00568b2f",
+        "558cbd45db7fcc1b",
+        "7e91df01527fc1ff",
+        "64f5add048a7adf7",
+        "26063ca2722e2d93",
+        "e5b3d4b6d2c797ec",
+        "9c78b4f0de755977",
+        "962470b14bb24bd4",
+        "4df773617474f2a6",
+        "d305c585f5c77976",
+        "64a6e3e96df6d553",
+        "dab23ec5453784f7"
+      ],
+      "relevant": [
+        "26063ca2722e2d93",
+        "696de940933b0825"
+      ],
+      "venue_coverage": {
+        "uniswap": "covered",
+        "pancakeswap": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0049": {
@@ -1184,6 +1785,58 @@
           ]
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:24:38Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "97d8565b9ce8c70a",
+        "6009a658ee6920b5",
+        "ad78cdd1332bbc2c",
+        "1b3ba428054107c5",
+        "0b4fb0357f61e98e",
+        "82c89640ecedd387",
+        "13f1058d69ff8bc0",
+        "7c9614ca524253f5",
+        "3663f04f973d0422",
+        "73f666f6f0cee7fb",
+        "d744645ed3c552c7",
+        "cd1b0c69e9a89a5a",
+        "c5ceb7bd9e4d577b",
+        "50a36d41c2d4411d",
+        "719ab8ea4b483aaa",
+        "e7f8ad318d38c30d",
+        "a797a636ac456822",
+        "f67987b114ca0bd7",
+        "4fe12faf19933750",
+        "d9bfb3504b968309",
+        "48a09f63d6e71ac1",
+        "24f94182f3fb5398",
+        "ac303f8b38e42b12",
+        "d900ab8da4914122",
+        "c869df6ffa043995",
+        "59b05edbd4050dd4",
+        "215abcc93305893b",
+        "f45e84c585f90b57",
+        "6d9e8bc12e9c4077",
+        "7e91df01527fc1ff",
+        "5b9924bb209e9f23",
+        "605567da62c37f98",
+        "a380c22165c329c5",
+        "edeb3a2c3bef2308",
+        "70062e530cd3db9a"
+      ],
+      "relevant": [
+        "7c9614ca524253f5",
+        "6d9e8bc12e9c4077"
+      ],
+      "venue_coverage": {
+        "uniswap": "covered",
+        "pancakeswap": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0050": {
@@ -1270,6 +1923,55 @@
           "coverage_changes": []
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:25:15Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "6b9bb87d14298e94",
+        "2ecd7b850ed33738",
+        "59fc2b56991a1fd8",
+        "2af6a86f1a8dab91",
+        "647479e7c651674b",
+        "b0ba7bc7dc5e5576",
+        "cbf3f436b8cecda5",
+        "8ebc4d4a8899d579",
+        "08f2c9451c5b4dd2",
+        "5bcc8198c642ab03",
+        "a10fe76e11c90f25",
+        "6eea84913a175f31",
+        "30a3baa5e3b6c167",
+        "05ef21164835548e",
+        "557659c5b539e9ff",
+        "ac38a8ffc1ae83ab",
+        "d6eca88f944b0986",
+        "7da8a37b0b9f6da9",
+        "f694444c921bc387",
+        "83fda5abfffd853e",
+        "edb29c3404cd307e",
+        "6bc3dcb254e73bc7",
+        "008ba7626461ca50",
+        "fe4d7e8f3138884d",
+        "26063ca2722e2d93",
+        "b3d4df5c9992cfee",
+        "0a32032ae302620a",
+        "ef8f81c3d402365f",
+        "7ec7e585376f2f34",
+        "dab23ec5453784f7"
+      ],
+      "relevant": [
+        "dab23ec5453784f7",
+        "6b9bb87d14298e94",
+        "ac38a8ffc1ae83ab",
+        "26063ca2722e2d93"
+      ],
+      "venue_coverage": {
+        "uniswap": "covered",
+        "pancakeswap": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0051": {
@@ -1363,6 +2065,58 @@
           ]
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:25:47Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "24299d605a184600",
+        "183d111cd7537a7c",
+        "aac3502627e988e0",
+        "44c895875031555f",
+        "dc0197b040e80514",
+        "b7bfaaf52ac58c89",
+        "68d3177591d9701e",
+        "fa752a5fac39b06d",
+        "243e6d70ffb0ce18",
+        "aa24b6b900196519",
+        "f772c48dfe4c503c",
+        "68405ec214663564",
+        "c45803ff89a47bd9",
+        "88df1b3b1e5c6052",
+        "04fbcb9ff896cf84",
+        "7c4f5eadcf017845",
+        "2c40b841911b5169",
+        "b5a9754018809b04",
+        "9f614c961d141cc4",
+        "52bc7cf533744d63",
+        "e7ee8a0eaf5ea524",
+        "b38929dc7db27a1a",
+        "6df59c30ad8b6bb9",
+        "51bb38ac8e08b940",
+        "adee07156b5dd3e2",
+        "411ce195949a5df8",
+        "2bc8257330f96e33",
+        "c1b23e17336faa02",
+        "4ca106e2cdca7cb3",
+        "5c06ed04e25116cb",
+        "a9b53f1c2cfe1ac1",
+        "9a9f21cfb5f2fc3f",
+        "58bf67c70b1545ab",
+        "aa1a013a43f00ff1"
+      ],
+      "relevant": [
+        "58bf67c70b1545ab",
+        "aa24b6b900196519",
+        "adee07156b5dd3e2"
+      ],
+      "venue_coverage": {
+        "dydx": "covered",
+        "hyperliquid": "missing_from_pool"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0052": {
@@ -1501,6 +2255,58 @@
       },
       "shuffle_seed": 20260924
     },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:26:23Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "c1206922eb3fb864",
+        "d0ad1ba273020bfd",
+        "5755ea1444b408c1",
+        "a6529e063d99cb87",
+        "f9fc0016fa1de7f2",
+        "b3ff952be7f79e83",
+        "c8c093383f5eab22",
+        "f71056f7d283c394",
+        "c891953628d0cd4f",
+        "47ab13702ea8353b",
+        "6ccf702400ef09ad",
+        "51bb38ac8e08b940",
+        "84973d31c0767d8f",
+        "f772c48dfe4c503c",
+        "943fc861117d29e4",
+        "b550e3936bb17e54",
+        "6df59c30ad8b6bb9",
+        "c608577e594e6b6e",
+        "764a5519a57516f5",
+        "411ce195949a5df8",
+        "0cf5ed476fc47c9b",
+        "a73aa35435d5605a",
+        "cde7ff9b83378682",
+        "073d46adb307b919",
+        "6df9433197929887",
+        "b5dcf8d7cf5b0610",
+        "1c5a7f902fb27a07",
+        "606bfc2c22e69c4e",
+        "a2012b76e74a6842",
+        "24234d84a1dac409",
+        "028dbe8b3eb9289d",
+        "3336838b6d2226a9",
+        "c6de2c2268036f2c",
+        "702891b16e5cf017",
+        "d1175f63bc486de1"
+      ],
+      "relevant": [
+        "51bb38ac8e08b940",
+        "943fc861117d29e4"
+      ],
+      "venue_coverage": {
+        "dydx": "covered",
+        "hyperliquid": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
+    },
     "adjudicated": {
       "annotator": "lord",
       "criterion": "2026-10-10",
@@ -1597,6 +2403,58 @@
           "coverage_changes": []
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:26:51Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "b575e113c638aba7",
+        "bf2fb994b7cae832",
+        "b3ff952be7f79e83",
+        "d0ad1ba273020bfd",
+        "b5dcf8d7cf5b0610",
+        "4f95826a28c3805e",
+        "1adb28c14be21c56",
+        "dd4f2dcd1777fb7b",
+        "9dfd49406e2465dd",
+        "60da23574f1fd943",
+        "2a6aae3733844aa4",
+        "5fcdcee6f8045064",
+        "c891953628d0cd4f",
+        "e26df725eb40ba22",
+        "f772c48dfe4c503c",
+        "c38a01ccd87772f3",
+        "812056c86bef060f",
+        "84973d31c0767d8f",
+        "d1175f63bc486de1",
+        "c3509cd6dc7fa43e",
+        "67456433876ae03f",
+        "596645af7a6c5d9a",
+        "cde7ff9b83378682",
+        "7ef955628579da5e",
+        "e51e349be9e467f2",
+        "6eaa485a150c1376",
+        "899ea105b353e83c",
+        "c608577e594e6b6e",
+        "5755ea1444b408c1",
+        "6ccf702400ef09ad",
+        "6716525f2d577bb4",
+        "b550e3936bb17e54",
+        "608898aa04e65672",
+        "817919caf2388132",
+        "5476b4e037c79835"
+      ],
+      "relevant": [
+        "5476b4e037c79835",
+        "1adb28c14be21c56"
+      ],
+      "venue_coverage": {
+        "dydx": "covered",
+        "hyperliquid": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0054": {
@@ -1684,6 +2542,59 @@
           "coverage_changes": []
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:27:44Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "b5568177ee827392",
+        "382e6822330f1ffe",
+        "86deffd659b7cc0e",
+        "785c60a388de7222",
+        "28515268c87b1a53",
+        "e7c3aa3a10375fa1",
+        "f29f43bf72cc96f5",
+        "0921143740c562b3",
+        "44304b0e480a866d",
+        "f8752275e41e94d3",
+        "f84b2da85154cf89",
+        "aef6dd51c2526661",
+        "2633b7f52fdbe7ae",
+        "00d799fd7df2ad19",
+        "75e8a33270bca899",
+        "7cf003ff3a8bcb7e",
+        "1d0d0e34c68d166d",
+        "ed3790108f67c813",
+        "db6648980c568d95",
+        "8c1416cf6f04b9c0",
+        "51bf68afd2e76010",
+        "841800951b813820",
+        "fb2ebb2af45c9c48",
+        "35670683fab9e667",
+        "d62a2bd8d404dc6e",
+        "6ffdd6d59d52b5eb",
+        "a7b0f3a1c06eb9a2",
+        "e2d0d765a8680975",
+        "f3878adde0a5cc99",
+        "011d200bb2540c73",
+        "91e2bc6c9110a5e6",
+        "25e1c607497bdaf0",
+        "27a498c45e1b0cc6",
+        "39f8fc2e97399b7f",
+        "44209603aa1061c9",
+        "088f9f76272778df",
+        "e183859cab350362"
+      ],
+      "relevant": [
+        "f3878adde0a5cc99"
+      ],
+      "venue_coverage": {
+        "binance": "missing_from_pool",
+        "bybit": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0055": {
@@ -1773,6 +2684,62 @@
           "coverage_changes": []
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:28:09Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "4e53707a5d0e27fa",
+        "960805df4cc60bfd",
+        "08d694c731837bb0",
+        "bbdd6c592acd0d2e",
+        "b09039cba8518e1f",
+        "864e1a8bad1fce58",
+        "7bcaa043760e1e32",
+        "556e0d0675f24bed",
+        "15d5455e874a57ef",
+        "fdee7aedc64dc14b",
+        "22d0b151455b4782",
+        "e73d9ded9941d3b1",
+        "dadd27c455a825f3",
+        "6c7f66ba333dc863",
+        "8316aa0e8a96a837",
+        "6f9fbae0263ef3a7",
+        "39f8fc2e97399b7f",
+        "f3878adde0a5cc99",
+        "5ef02625214ee080",
+        "500dcde9d81623e2",
+        "a9932f461710b0d6",
+        "5a60a722521928f5",
+        "9acb66c1c6e2e4d2",
+        "cf85154baee17f03",
+        "4eeda603f2a09388",
+        "cbdec05a6568fe19",
+        "43d14513b3621a7a",
+        "c28c9b63eddbf6ad",
+        "bc6b8adad2624928",
+        "2710f325ffcfdbb3",
+        "89b5beed2f19754b",
+        "6326b23949c51f8d",
+        "8e2bb0cdb21b9bd3",
+        "dbcc414946a41cf3",
+        "e67a29fd8a721871",
+        "eb33e78300a86115",
+        "94d380dcf17a942e",
+        "a72267932994e969",
+        "ad6167f4a30342ce"
+      ],
+      "relevant": [
+        "f3878adde0a5cc99",
+        "cbdec05a6568fe19"
+      ],
+      "venue_coverage": {
+        "bybit": "covered",
+        "bingx": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0056": {
@@ -1866,6 +2833,60 @@
           ]
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:28:52Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "9bcf4b564b87b087",
+        "f9fc0016fa1de7f2",
+        "2c66b133bc1cca98",
+        "b18cdb4953c59d1c",
+        "24234d84a1dac409",
+        "183d111cd7537a7c",
+        "db7a2deea1a81f18",
+        "073d46adb307b919",
+        "f772c48dfe4c503c",
+        "b5dcf8d7cf5b0610",
+        "028dbe8b3eb9289d",
+        "b2b1879f04eb1753",
+        "6df59c30ad8b6bb9",
+        "87812a5f41dc51ff",
+        "7c4f5eadcf017845",
+        "c930f26b06d9d3ec",
+        "44209603aa1061c9",
+        "affa1e619cc03b38",
+        "fd158d1d4dfa8662",
+        "d1175f63bc486de1",
+        "24299d605a184600",
+        "f593702a107329b4",
+        "b3ff952be7f79e83",
+        "411ce195949a5df8",
+        "8a3c4e717d9f8af9",
+        "bccf8efc6d05e029",
+        "5fe32e832cbfd7d9",
+        "ecb7b644f8ef6f9a",
+        "3bdc24e6fb608829",
+        "e3b3fd2975ae7119",
+        "88df1b3b1e5c6052",
+        "6ccf702400ef09ad",
+        "5306a63f1716511f",
+        "f6f998db3909944c",
+        "d79af0fcaef44b49",
+        "91e2bc6c9110a5e6",
+        "b5568177ee827392"
+      ],
+      "relevant": [
+        "9bcf4b564b87b087",
+        "affa1e619cc03b38"
+      ],
+      "venue_coverage": {
+        "hyperliquid": "covered",
+        "binance": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0057": {
@@ -1968,6 +2989,67 @@
           ]
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:29:20Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "86b446fc190f521b",
+        "c17ae801b7f7b9d6",
+        "8fd060f1852a4b6a",
+        "f34615022b70c5c5",
+        "0690355726801205",
+        "8bd5935359ef9338",
+        "5b06bda952f4e1dc",
+        "7a82f6b6a0640704",
+        "e690bdcc297b12a2",
+        "a1b65d965f359993",
+        "9e52c0a4ed34f7db",
+        "023b60fa07584cae",
+        "e42c464e93ac007b",
+        "9acb66c1c6e2e4d2",
+        "90ebc934d9b280d5",
+        "64322e99df290a60",
+        "c728060e1dc98275",
+        "c71ffb202050ff70",
+        "3a6e090339f295a4",
+        "7e23f0121dc85aba",
+        "a4b4937ea13bd21a",
+        "f7af3628e43eba62",
+        "4f989bbb3bb95910",
+        "86c319bd316fb40c",
+        "f11fbf63b29ba6a5",
+        "34c96e54bb693a4f",
+        "3e1d25fac68ee166",
+        "9bf61a69a3c1b5a2",
+        "3ecc3ab56ece9eeb",
+        "0f2c8547144d08a3",
+        "b57cf16ea1eba1fe",
+        "edda69554abb2248",
+        "66d4728f3cc0c373",
+        "0a548b6c0ebe70ae",
+        "23e33b56d475d25a",
+        "1b5e9fee03d569d1",
+        "647603b642985f8a",
+        "589d0b7abe1d0e7e",
+        "b07601d2383ca65c",
+        "f17b56484d0fd639",
+        "700856279195e41f",
+        "e11dd55a252c4be8",
+        "d83157df2237c4df"
+      ],
+      "relevant": [
+        "3e1d25fac68ee166",
+        "e690bdcc297b12a2",
+        "9bf61a69a3c1b5a2"
+      ],
+      "venue_coverage": {
+        "binance": "covered",
+        "bybit": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0058": {
@@ -2069,6 +3151,61 @@
           "coverage_changes": []
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:31:45Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "0f2c8547144d08a3",
+        "935325ec8dc0d0d3",
+        "bc8e70e01990263c",
+        "3020481cb73b0be1",
+        "dbcc414946a41cf3",
+        "7e0481a324a911d4",
+        "bc906ab95b680b76",
+        "1998e92b49fe20e3",
+        "3dca35691f265de7",
+        "d75eb508f1b5b51a",
+        "7c329f603ce2ecf8",
+        "a1b94b8aaf0b8fa9",
+        "f9f60f7e969a58f8",
+        "96e1b8fb37f036eb",
+        "dabb65280de57016",
+        "e69843ec4b495494",
+        "07d2c2ca3d129417",
+        "69eb80e605d4fb08",
+        "cf32a3fb30ddf2e6",
+        "42ccfdcd05b3a575",
+        "2138bb4db90d4ec1",
+        "887df7bd4e217d11",
+        "50c484f11207732f",
+        "b9e37f8b386d69f1",
+        "6546e416a3e3211e",
+        "5c5147a685114e7f",
+        "823a56d6b4a40192",
+        "670210bb072c0aa9",
+        "7b2bee40a02df4ad",
+        "b7ce61ba7e60628d",
+        "ad6167f4a30342ce",
+        "6b541a7b0efc8075",
+        "500dcde9d81623e2",
+        "5e6535a5a258e98e",
+        "5871608493fcbe1f",
+        "d8560d7059feb9fb",
+        "724cf40f7ab5ed43",
+        "4eeda603f2a09388",
+        "25e1c607497bdaf0"
+      ],
+      "relevant": [
+        "0f2c8547144d08a3"
+      ],
+      "venue_coverage": {
+        "bybit": "covered",
+        "bingx": "missing_from_pool"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0059": {
@@ -2182,6 +3319,62 @@
           "coverage_changes": []
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:32:09Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "ea02eec53f6a19ae",
+        "f84b2da85154cf89",
+        "cba11b85b2e811ac",
+        "42c153e84f9ea7d7",
+        "f7f203972c5aaf5b",
+        "3290240681e0ed87",
+        "e9899e17626a6c76",
+        "86f4d3e67f0d12ed",
+        "9d6fd4242b03f9a6",
+        "b2b1879f04eb1753",
+        "6b1430d5b8363184",
+        "28d3e745a8fef6af",
+        "44f10772ae6ce105",
+        "7cb924ec142c553d",
+        "5306a63f1716511f",
+        "088f9f76272778df",
+        "894b16c922fce97f",
+        "f843309b4e0d1e5f",
+        "0679475df00e4844",
+        "6a5dd3c09bdffadd",
+        "e1153090179911c8",
+        "55996c9000de7f1f",
+        "cc3448f44fbd64ae",
+        "fce80c7ad09658c4",
+        "4bc48c86a88b42b8",
+        "d86d8851dd42b178",
+        "e2e37c1d8e13da12",
+        "7cf003ff3a8bcb7e",
+        "193b8cd6d2d0aee0",
+        "a751f0cd0d63d47a",
+        "3bdc24e6fb608829",
+        "54b065200e70e533",
+        "185f079396a3b594",
+        "7ab52e6050ed8294",
+        "bebd46f6e900ae43",
+        "95175d8b1ad60441",
+        "21538818b884fabe",
+        "cac9fcb061b240f1",
+        "d06965216ba3a5d2"
+      ],
+      "relevant": [
+        "f84b2da85154cf89",
+        "6a5dd3c09bdffadd"
+      ],
+      "venue_coverage": {
+        "binance": "covered",
+        "bybit": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0060": {
@@ -2346,6 +3539,63 @@
       },
       "shuffle_seed": 20260924
     },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:32:55Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "ba0937c65d921115",
+        "1f4db897d218ab7e",
+        "264bbf6dee3381e4",
+        "d75eb508f1b5b51a",
+        "8316aa0e8a96a837",
+        "06a6e10457612a4d",
+        "98e8867863073db9",
+        "cc3448f44fbd64ae",
+        "07d2c2ca3d129417",
+        "28d3e745a8fef6af",
+        "d46ff38f197607a8",
+        "883b9d55cb504498",
+        "d86d8851dd42b178",
+        "cba11b85b2e811ac",
+        "587ac5d2f75d478e",
+        "e2e37c1d8e13da12",
+        "b2b1879f04eb1753",
+        "42ccfdcd05b3a575",
+        "52a4c1b0d7f46c59",
+        "3fb51b1e49d7d6bc",
+        "bc8e70e01990263c",
+        "ecb7b644f8ef6f9a",
+        "385ff4e415413b3a",
+        "eb33e78300a86115",
+        "58929420f512f88f",
+        "7ab52e6050ed8294",
+        "b66bf393e2ac148e",
+        "21538818b884fabe",
+        "4fe832b090d38c63",
+        "d27f62cdc0081f12",
+        "460c8233bbb14ee4",
+        "69f44e6cc370d65a",
+        "1a13f3850852b739",
+        "de9c21f00be77787",
+        "050be6c4d80ca4d9",
+        "8415b7ae6017e5f9",
+        "c28c9b63eddbf6ad",
+        "a9932f461710b0d6"
+      ],
+      "relevant": [
+        "a9932f461710b0d6",
+        "b2b1879f04eb1753",
+        "d46ff38f197607a8",
+        "58929420f512f88f"
+      ],
+      "venue_coverage": {
+        "binance": "covered",
+        "bingx": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
+    },
     "adjudicated": {
       "annotator": "lord",
       "criterion": "2026-10-10",
@@ -2478,6 +3728,60 @@
           "coverage_changes": []
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:33:19Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "6ccf702400ef09ad",
+        "9b8276a90b8fc5bd",
+        "7a2890e4a172c100",
+        "5306a63f1716511f",
+        "174337f4633cd769",
+        "db055d14395281aa",
+        "980cc39c72d81e0a",
+        "137f23e3f1887126",
+        "943519877c1134cb",
+        "f20f4f04968c7233",
+        "156462c0073b118a",
+        "44f4cf125e07b436",
+        "6421d8427fd40eb9",
+        "c14a820295788bfd",
+        "600c7299771712c5",
+        "b35b09c7bb847a02",
+        "6f45fe6a11ce7531",
+        "847ff1e94c580249",
+        "e5ccec630b9a5efd",
+        "0c8e0886719f2344",
+        "243e6d70ffb0ce18",
+        "12e5b7cc1d275a16",
+        "4ec49368769bd62f",
+        "581fa2ea77f4104b",
+        "c9623862eafdd1eb",
+        "2c8a53c020ef9ab6",
+        "7cf5b016c9910ec6",
+        "e74c6fd63adebac7",
+        "2763c12d46e6d6b1",
+        "979a6f8a0fea5570",
+        "468043410cc0c27e",
+        "c4ceff5514253837",
+        "b5dcf8d7cf5b0610",
+        "8af42d40f8ecc202",
+        "fa210600c0846c27",
+        "5ddd2987739032c3"
+      ],
+      "relevant": [
+        "468043410cc0c27e",
+        "f20f4f04968c7233",
+        "6421d8427fd40eb9"
+      ],
+      "venue_coverage": {
+        "bybit": "covered",
+        "hyperliquid": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0062": {
@@ -2565,6 +3869,60 @@
           "coverage_changes": []
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:34:08Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "686177000bf0917b",
+        "84973d31c0767d8f",
+        "030e5f6cf74b6a63",
+        "e5d0b05196481383",
+        "980500dc01622011",
+        "06430f8c38844e19",
+        "83aab6fd27e28887",
+        "1b5e9fee03d569d1",
+        "d37e22842f7b7b2c",
+        "f772c48dfe4c503c",
+        "382e6822330f1ffe",
+        "f8d570087aa76c0c",
+        "f9fc0016fa1de7f2",
+        "b3ff952be7f79e83",
+        "b18cdb4953c59d1c",
+        "d7382be849533547",
+        "c37337f709ebad48",
+        "6971876cc33cc7b4",
+        "a80c2520591af6e9",
+        "4888022ed4405efa",
+        "b5dcf8d7cf5b0610",
+        "8267549cc2daed52",
+        "097306afd50bbb41",
+        "9ae1dc95e8a3cf1d",
+        "785dc4554ab8b02a",
+        "74e92a0c7d2a8be9",
+        "183d111cd7537a7c",
+        "a9b53f1c2cfe1ac1",
+        "894b16c922fce97f",
+        "0c786b8e2174ca32",
+        "88df1b3b1e5c6052",
+        "6a9addb995a205ad",
+        "7d7d88e110ea0648",
+        "d1175f63bc486de1",
+        "3b8dfbe4721cfb7f",
+        "6df59c30ad8b6bb9",
+        "411ce195949a5df8",
+        "5a130fdebeb6d998"
+      ],
+      "relevant": [
+        "097306afd50bbb41"
+      ],
+      "venue_coverage": {
+        "hyperliquid": "covered",
+        "bybit": "missing_from_pool"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0063": {
@@ -2644,6 +4002,54 @@
           "coverage_changes": []
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:34:25Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "23d5e6a5d00e3459",
+        "0dc92c8e0db371dc",
+        "a03c4289dcce694e",
+        "8b97648a0c0cd240",
+        "86c319bd316fb40c",
+        "5d5a715c89b9e3c4",
+        "ed43d55a04476d19",
+        "ae9725ee605c567b",
+        "bfa78f6cdaf4a836",
+        "22deada8e97de01b",
+        "684b4fbf5aa8cd59",
+        "d128815d695838e6",
+        "4daab1d25905e4c4",
+        "55f8610a74d5ccc3",
+        "fdd82911e074bdf4",
+        "73500e68b87a2359",
+        "0c786b8e2174ca32",
+        "67bd990e3c8ceb7f",
+        "f0dab458e805567f",
+        "2c4bb1327144b6f5",
+        "f7af3628e43eba62",
+        "8502ea4b5ed7971e",
+        "4ea88c73a6ff1f6a",
+        "a27b0db1e281f53c",
+        "2cd9cd5322506ce6",
+        "7d479867e074803c",
+        "b57cf16ea1eba1fe",
+        "2b603cc2dbc440b5",
+        "c94d659e095ad247",
+        "7e23f0121dc85aba",
+        "29706f7a37bc79f7",
+        "9fa150a91d06db0c"
+      ],
+      "relevant": [
+        "0dc92c8e0db371dc"
+      ],
+      "venue_coverage": {
+        "binance": "covered",
+        "bybit": "missing_from_pool"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0064": {
@@ -2727,6 +4133,59 @@
           "coverage_changes": []
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:34:50Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "52e98500b53c64de",
+        "3868b43c6ffc220c",
+        "558cbd45db7fcc1b",
+        "3498810408150cd2",
+        "32bc9feb92d05c75",
+        "dee6b7fabe2997ad",
+        "4d366c890c0252b8",
+        "0caa0683ee647d73",
+        "26063ca2722e2d93",
+        "f087d7f8290b46fa",
+        "032eafb523d75877",
+        "123c11f40e1df4bc",
+        "add69c0c47e6be0f",
+        "4d765962226f50c5",
+        "f2cd51166ffca6f9",
+        "9fcbdd3b1f693b96",
+        "158367e4175c25e1",
+        "7e2b76bce718a897",
+        "eb8410f17bf7519f",
+        "76ae1dca5ae0a1b6",
+        "64cb3b3c12b39528",
+        "8e5d035c3e15629c",
+        "565cdbd8b3cd8f2d",
+        "7467eab0ff2f106d",
+        "cad1846c00568b2f",
+        "b4fe68d56f7d2374",
+        "2d423b589704f59a",
+        "962470b14bb24bd4",
+        "7e91df01527fc1ff",
+        "68e627726165aa4b",
+        "dab23ec5453784f7",
+        "be4ac42f9d0ac40d",
+        "d9b95996888f4286",
+        "1e8f18d30a218b5a",
+        "b0da9cbefe10240d",
+        "7da6f0ce8e4552ed",
+        "ee541d454ed7707a"
+      ],
+      "relevant": [
+        "9fcbdd3b1f693b96"
+      ],
+      "venue_coverage": {
+        "uniswap": "missing_from_pool",
+        "pancakeswap": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0065": {
@@ -2812,6 +4271,55 @@
           "coverage_changes": []
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:35:12Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "8ef4086c5565a24f",
+        "d34c6dcdd7ab8849",
+        "07d2c2ca3d129417",
+        "e69843ec4b495494",
+        "e1e58940913becc5",
+        "b01c9636ddf6029d",
+        "83d52811e8535390",
+        "a9932f461710b0d6",
+        "7239c230f49b258a",
+        "724cf40f7ab5ed43",
+        "15b967250c214a07",
+        "05955c15a78f287d",
+        "8c8ba80d83304c27",
+        "32dd770c5e4e65eb",
+        "a86efd3e7574e12d",
+        "ecb0cbcd77fbbef9",
+        "9b6adbeba6c0e6d8",
+        "7cb3929e3e74b88e",
+        "406b90eb0c096e2a",
+        "8e2bb0cdb21b9bd3",
+        "dbcc414946a41cf3",
+        "24718ce5b2dafe7e",
+        "35553ad5ad46a887",
+        "56402da932494bd6",
+        "34701be12aac73c2",
+        "42ccfdcd05b3a575",
+        "25dceb2165c28861",
+        "2b944dc9a14be97a",
+        "ae25d73a223d3d58",
+        "4950f759dd1aaf22",
+        "5b9a5c1dbbae88dc",
+        "eb5d5111ae5aa6f1"
+      ],
+      "relevant": [
+        "35553ad5ad46a887",
+        "724cf40f7ab5ed43"
+      ],
+      "venue_coverage": {
+        "ccxt": "covered",
+        "bingx": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0066": {
@@ -2949,6 +4457,58 @@
         "bybit": "covered"
       },
       "shuffle_seed": 20260924
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:35:33Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "e73d9ded9941d3b1",
+        "39f8fc2e97399b7f",
+        "647603b642985f8a",
+        "b23c70672c27c692",
+        "e1ddaeab178deab4",
+        "617294be3a2715c1",
+        "5b06bda952f4e1dc",
+        "864e1a8bad1fce58",
+        "0068741d9d0d2bad",
+        "1707e675ce750b38",
+        "43ac749f88ba1f28",
+        "34c96e54bb693a4f",
+        "db7e2d216602b85b",
+        "7a82f6b6a0640704",
+        "4d2c3ee78c8540d1",
+        "a25794143452dee1",
+        "482d997ed7ae8e0c",
+        "b38929dc7db27a1a",
+        "589d0b7abe1d0e7e",
+        "392a23d77d107884",
+        "7f3755b9244cc5d1",
+        "8009c3406c5bc3be",
+        "bc11f0be827f9c4d",
+        "241bd01e2c4badf6",
+        "e69843ec4b495494",
+        "556e0d0675f24bed",
+        "be4b52cee805a3af",
+        "f3878adde0a5cc99",
+        "a7b0f3a1c06eb9a2",
+        "7f5f14e55e8b1fe6",
+        "7b7f69c466af17f9",
+        "5ffba5848dd8fd6d",
+        "20ccb2453b63142a",
+        "0690355726801205",
+        "0921143740c562b3",
+        "dee3cf03b40e7c1b"
+      ],
+      "relevant": [
+        "f3878adde0a5cc99"
+      ],
+      "venue_coverage": {
+        "ccxt": "missing_from_pool",
+        "bybit": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0067": {
@@ -2984,6 +4544,41 @@
         "b0f7ffa6694027b9"
       ],
       "relevant": []
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:35:53Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "6617adcb6b59f1b5",
+        "abf673b5edb83fe2",
+        "a2fa815af77cbb35",
+        "6f4b2e3cdfd87e36",
+        "9560cf0beb8aa978",
+        "b0f7ffa6694027b9",
+        "0c786b8e2174ca32",
+        "2a2d0ada27e51781",
+        "023b60fa07584cae",
+        "c7e5004f0f93a1e2",
+        "f385a5f09432b074",
+        "7c9ee7e8421009bb",
+        "174337f4633cd769",
+        "b57cf16ea1eba1fe",
+        "cc377f98dcf85252",
+        "5311c230ced41dbd",
+        "355b97ff9f9d37c0",
+        "7e23f0121dc85aba",
+        "79a403c6d9bc25a9",
+        "6131b66ff28896a4",
+        "32eda422403a508d",
+        "67bd990e3c8ceb7f",
+        "05d64a3c9036b9dc",
+        "3daceb8fb610bedc",
+        "55f8610a74d5ccc3"
+      ],
+      "relevant": [],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0068": {
@@ -3021,6 +4616,41 @@
       "relevant": [
         "3df5f9b56583a36e"
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:36:15Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "21d444859bad7c4e",
+        "e9a0a1c9ba73b8e5",
+        "ffb0bbe31af1de8b",
+        "c59ccfd973c095b7",
+        "5ed3e6db44f83aae",
+        "506b571b4d4184be",
+        "21eaf77cda7a27e5",
+        "8d2d9a565f083bfa",
+        "52a257cc92147df6",
+        "367409658fa14af0",
+        "23a40af9e9200950",
+        "d01e799b2b398b88",
+        "675b6deb2e72093a",
+        "6ae4160a5e89a4e7",
+        "6971876cc33cc7b4",
+        "b131c74892437f01",
+        "67c73f9804403637",
+        "5ad337e5b5b78ea5",
+        "166bd1e333dce201",
+        "af111b7385ab1baa",
+        "2561fb7af23c55ca",
+        "f824483d09ac5cd1",
+        "894b16c922fce97f",
+        "5004ec38c5d2f1ec",
+        "3df5f9b56583a36e"
+      ],
+      "relevant": [],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0069": {
@@ -3060,6 +4690,45 @@
         "45ea96533ead5db8",
         "a37b1e10e2f97bbf"
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:36:34Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "a37b1e10e2f97bbf",
+        "e0e9d4f5a7575d7e",
+        "5069179c7a7f3728",
+        "2a2649bd2dd5038d",
+        "2c960099917c1a28",
+        "45ea96533ead5db8",
+        "c72b9bc04aef0c7d",
+        "fe724f80f9f66850",
+        "55fe3ee1c996ede5",
+        "e42e5a8546f36f0f",
+        "1b9e2258439677fc",
+        "dc0197b040e80514",
+        "a7e02d71fbd4315d",
+        "3f43e205b288cab0",
+        "d0f5b2d53bfb7188",
+        "5d10948cdb4820b0",
+        "bdc1471641a52f93",
+        "7dd3849ac11e467c",
+        "3d895e4b2e51a089",
+        "5f0d44ae556339c8",
+        "67bd990e3c8ceb7f",
+        "5f3e359fc458d87e",
+        "51550b266b8d54de",
+        "fef1614afd44a744",
+        "46949d2fdd9c6f29"
+      ],
+      "relevant": [
+        "5f3e359fc458d87e",
+        "45ea96533ead5db8",
+        "a37b1e10e2f97bbf"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0070": {
@@ -3137,6 +4806,43 @@
       ],
       "shuffle_seed": 20260924
     },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:39:47Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "df4f806fdb6156d1",
+        "94cf87aab9c41db4",
+        "9d4dc569ca98b63e",
+        "3d65e5f8b62a67c0",
+        "0bc4081da7ab6758",
+        "eaed9e967fa872a6",
+        "74e3a2ed8206ec04",
+        "4b1e7949d3d90bfe",
+        "81819d4d09fe2cbf",
+        "ac99d228cf94ae08",
+        "cd8bcb17078ea2cc",
+        "eb568d43967d9ff2",
+        "a159c717683bb93e",
+        "5b7135865149cb85",
+        "46e72e92399263fe",
+        "81837b9dfe0b743b",
+        "f5a91dec953cab38",
+        "90942404105d25ed",
+        "88fefa3913d9b895",
+        "be5612700e7fcdfc",
+        "11ffa017065279e3",
+        "3a6637ef623b8cb1",
+        "b736213370bc7468",
+        "6e2e28e5bb9a530c",
+        "d8ef6367ff724d05"
+      ],
+      "relevant": [
+        "f5a91dec953cab38"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
+    },
     "adjudicated": {
       "annotator": "lord",
       "criterion": "2026-10-10",
@@ -3188,6 +4894,44 @@
         "cb6d7170ad7c6516",
         "c28c9b63eddbf6ad"
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:40:04Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "5681daa4302fc5df",
+        "5ee72b7a59b1c69c",
+        "41b8ee592f72cfe0",
+        "c28c9b63eddbf6ad",
+        "6f296102d5c24729",
+        "87f8adf4c1a7f915",
+        "eb33e78300a86115",
+        "0bdc717beeceef8d",
+        "15d5455e874a57ef",
+        "42c38291fe46ed96",
+        "cb6d7170ad7c6516",
+        "de9c21f00be77787",
+        "fd384e377124ed3e",
+        "a9ed15d0e2912528",
+        "7b2bee40a02df4ad",
+        "8e2bb0cdb21b9bd3",
+        "c848e436b638ae92",
+        "998da96cbf86855c",
+        "724cf40f7ab5ed43",
+        "fd13580695538899",
+        "282a0324bd14f312",
+        "42ccfdcd05b3a575",
+        "28b2264c47608e5c",
+        "bf51ca30ea8725ce",
+        "453e379a237bd61e"
+      ],
+      "relevant": [
+        "724cf40f7ab5ed43",
+        "cb6d7170ad7c6516"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0081": {
@@ -3265,6 +5009,43 @@
       ],
       "shuffle_seed": 20260924
     },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:40:43Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "c51e06974426eaec",
+        "dbcc414946a41cf3",
+        "de694e9148dfd7f2",
+        "eb33e78300a86115",
+        "e5eb08d0076deea3",
+        "42c38291fe46ed96",
+        "71752c3eb9118063",
+        "f1154152250a5231",
+        "b90a5e54fcef2a18",
+        "c40d7e96372db35c",
+        "e2ad0de333811d58",
+        "49fe689a3bafd0b3",
+        "1ba954a0cfdc84de",
+        "eab060194d24c369",
+        "6ca5040c70dd1231",
+        "15d5455e874a57ef",
+        "153a75b6e2887175",
+        "3209e1a3516e3b09",
+        "e6ded549d28b58fb",
+        "a991ba77c36671c1",
+        "58929420f512f88f",
+        "35c88a89eb99b112",
+        "67e4237218b3611f",
+        "7b3022c2cfcc3bb7",
+        "d0a53c5376a0e621"
+      ],
+      "relevant": [
+        "e6ded549d28b58fb"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
+    },
     "adjudicated": {
       "annotator": "lord",
       "criterion": "2026-10-10",
@@ -3321,6 +5102,43 @@
       "relevant": [
         "6617adcb6b59f1b5"
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:41:10Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "6617adcb6b59f1b5",
+        "facffec16b04896c",
+        "4b715b10b0f0a685",
+        "418c52965195c40e",
+        "3dccd9cc43b46932",
+        "e9a0a1c9ba73b8e5",
+        "662e224fbe68a241",
+        "4765428058b177d4",
+        "067a219af84d0186",
+        "b15b629dd1b08355",
+        "89e404c49b7d7133",
+        "8593b635f34e1376",
+        "cc377f98dcf85252",
+        "97f6da0f52be7936",
+        "cfc6348be3d0b8d4",
+        "9372e7af283d5470",
+        "2e6d984825bacc96",
+        "95a4b84d9d7ed947",
+        "543ab2d92471603c",
+        "6f11d024b0ae2b3b",
+        "42b264906b54ad24",
+        "2b369c6613d48ffa",
+        "ba0e992a8f5969ac",
+        "7efb42d9522017b6",
+        "e6ded549d28b58fb"
+      ],
+      "relevant": [
+        "6617adcb6b59f1b5"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0083": {
@@ -3361,6 +5179,45 @@
         "519f68e75b7b2fb0",
         "c676b2dc7900d32a"
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:41:41Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "ff2e4003ca86838c",
+        "5c9c635aa283b63e",
+        "b02abf5944d66561",
+        "02011be23b90ba59",
+        "3059030fc7b80da3",
+        "c676b2dc7900d32a",
+        "e81839347be47258",
+        "f73a2c1d2d5459ce",
+        "0aefdfb712e1b680",
+        "519f68e75b7b2fb0",
+        "afbd9f15389e95a6",
+        "e64ef9cb34e120d8",
+        "a10fe76e11c90f25",
+        "aec1a013b0b8f205",
+        "e25377924066d5ed",
+        "bb25d26bed66a927",
+        "33eb6ae076f1007b",
+        "79da4d55e4e7ac2d",
+        "f87de8fa1137466b",
+        "7e0d11b2814599cd",
+        "f7af3628e43eba62",
+        "9c517f197e767be6",
+        "31fee7b6bf17914c",
+        "f2430567e12203e5",
+        "a94bd97101b3789b"
+      ],
+      "relevant": [
+        "a94bd97101b3789b",
+        "519f68e75b7b2fb0",
+        "c676b2dc7900d32a"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0084": {
@@ -3399,6 +5256,44 @@
         "14681c32d3192767",
         "6d9e8bc12e9c4077"
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:42:19Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "97d8565b9ce8c70a",
+        "14681c32d3192767",
+        "ea7acf1d821e8d7f",
+        "0b4fb0357f61e98e",
+        "dc8b869a11d2ff3a",
+        "cd5fc3c4bd33dac4",
+        "cd485e5dcc07635d",
+        "7b6de1ea9ad572e7",
+        "269320e70141352f",
+        "e6c72b0fae0beef6",
+        "719ab8ea4b483aaa",
+        "9b9eb7173241941e",
+        "605567da62c37f98",
+        "e48975197e34630c",
+        "7fb4e55687bf1aea",
+        "7ba0b08d40a1a748",
+        "e7f8ad318d38c30d",
+        "de2af0af4f674c9d",
+        "f416e0e969e3f800",
+        "8f8ee0bca0fa1b7c",
+        "ac71f96e7a94b936",
+        "cd1b0c69e9a89a5a",
+        "7437d17fb896c37e",
+        "4f72aa2b9f2f0212",
+        "6d9e8bc12e9c4077"
+      ],
+      "relevant": [
+        "14681c32d3192767",
+        "6d9e8bc12e9c4077"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0085": {
@@ -3436,6 +5331,43 @@
       "relevant": [
         "a81334fa7a5a7931"
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:42:50Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "ff27bc3682ddad72",
+        "158367e4175c25e1",
+        "1c19b6f1fd3175c2",
+        "73007c5f7f496059",
+        "88c375ad25163ca0",
+        "3dfce29a6f80d353",
+        "4edc5e6015e8a048",
+        "7fb4e55687bf1aea",
+        "253a79b232a489cc",
+        "0ef9645320196eab",
+        "da0974c50cb83607",
+        "d744645ed3c552c7",
+        "573d5ef7d2438680",
+        "a81334fa7a5a7931",
+        "c5ceb7bd9e4d577b",
+        "38a297c454f7b5d8",
+        "b3fa1daa4bde00bf",
+        "156d37bfd55cf535",
+        "f963900cb3743343",
+        "823a7aa4e5c26dab",
+        "a75dc1dd2ce7da52",
+        "3663f04f973d0422",
+        "99faa437355f1903",
+        "90a2be87ef99c749",
+        "258f071f5b91ff7f"
+      ],
+      "relevant": [
+        "a81334fa7a5a7931"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0086": {
@@ -3477,6 +5409,44 @@
         "c676b2dc7900d32a",
         "a94bd97101b3789b"
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:43:22Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "9c78b4f0de755977",
+        "7ec7e585376f2f34",
+        "4df773617474f2a6",
+        "ac38a8ffc1ae83ab",
+        "519f68e75b7b2fb0",
+        "054f99f8d6fecdc5",
+        "7e98a97a89cb284d",
+        "4f1c21c5649261ba",
+        "2902fb89f5c8220b",
+        "6b364b04365fca60",
+        "8c0497ecb19ac496",
+        "de5c31ee9e8d4c2b",
+        "1cc3511cf6139225",
+        "9a391650c74765ae",
+        "1acfac5fd5bdee88",
+        "c676b2dc7900d32a",
+        "a94bd97101b3789b",
+        "095124949b7ed5ab",
+        "2766e3da5ff61984",
+        "4dc0c25fd33c9dac",
+        "853ffa7fc6925807",
+        "33eb6ae076f1007b",
+        "563bd999a0f64b41",
+        "810f635c44da5b16",
+        "dbaff1e81d208391"
+      ],
+      "relevant": [
+        "810f635c44da5b16",
+        "c676b2dc7900d32a"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0087": {
@@ -3514,6 +5484,43 @@
       "relevant": [
         "9bcf4b564b87b087"
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:43:58Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "9bcf4b564b87b087",
+        "87812a5f41dc51ff",
+        "e0ed046af94cbf93",
+        "c4ceff5514253837",
+        "86c9a1958d12c165",
+        "e73d9ded9941d3b1",
+        "55affe4e2d7298e7",
+        "b18cdb4953c59d1c",
+        "a7b0f3a1c06eb9a2",
+        "24299d605a184600",
+        "5fe32e832cbfd7d9",
+        "e3b3fd2975ae7119",
+        "7f3755b9244cc5d1",
+        "6f45fe6a11ce7531",
+        "4ca106e2cdca7cb3",
+        "151d535e1617b8b7",
+        "ab214e9fb6fdf6d8",
+        "81bdd8cddcb63d4b",
+        "39f8fc2e97399b7f",
+        "a9b53f1c2cfe1ac1",
+        "93141464fd84abf3",
+        "f469e2e77150c6c7",
+        "b7bfaaf52ac58c89",
+        "7a3c28a16e918eaf",
+        "3d9a68f2edc6772d"
+      ],
+      "relevant": [
+        "9bcf4b564b87b087"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0088": {
@@ -3549,6 +5556,41 @@
         "dadd27c455a825f3"
       ],
       "relevant": []
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:44:15Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "ef0036db41b91a15",
+        "088f9f76272778df",
+        "a7b0f3a1c06eb9a2",
+        "6d2720f11242fa1d",
+        "5ef02625214ee080",
+        "dadd27c455a825f3",
+        "931da4dffff7add2",
+        "ff512190cb21b601",
+        "8ed0261c592d62ee",
+        "a9b53f1c2cfe1ac1",
+        "39f8fc2e97399b7f",
+        "19a500fc9f4ddae5",
+        "6c7f66ba333dc863",
+        "2def14a111f47126",
+        "6f9fbae0263ef3a7",
+        "28d3e745a8fef6af",
+        "7855e88bb916a52f",
+        "d86d8851dd42b178",
+        "cf85154baee17f03",
+        "a72267932994e969",
+        "eee9e35b7f9f7b6b",
+        "ed43d55a04476d19",
+        "31beb4a0668effe4",
+        "43d14513b3621a7a",
+        "185f079396a3b594"
+      ],
+      "relevant": [],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0089": {
@@ -3622,6 +5664,43 @@
         "943fc861117d29e4"
       ],
       "shuffle_seed": 20260924
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:44:46Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "e38c04759e2e2126",
+        "0757cc121617ba62",
+        "d23dc9f1d50604f7",
+        "cd1b0c69e9a89a5a",
+        "deabef655d4c9412",
+        "e4813f22b571ddea",
+        "c148cbd3736b879d",
+        "c4be04bcef2295f0",
+        "a6529e063d99cb87",
+        "624c1daf1b097a09",
+        "9626aa138f0bb93b",
+        "dc8b869a11d2ff3a",
+        "61ba343cd98fb611",
+        "998705bb64a56c68",
+        "85c87327f025a5d8",
+        "fd8dd49749c5d7fe",
+        "c413054d02fb6f3d",
+        "6ea344d61a70b2f3",
+        "0b4fb0357f61e98e",
+        "51bb38ac8e08b940",
+        "b6c5c172b1cd64c2",
+        "179ff82fe758f1ee",
+        "e6c72b0fae0beef6",
+        "943fc861117d29e4",
+        "97d8565b9ce8c70a"
+      ],
+      "relevant": [
+        "943fc861117d29e4"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0090": {
@@ -3657,6 +5736,41 @@
         "51bb38ac8e08b940"
       ],
       "relevant": []
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:45:38Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "24234d84a1dac409",
+        "581fa2ea77f4104b",
+        "a528d301d9aff3ca",
+        "e1e84d9b99b2562a",
+        "b8803ca98e1d2d0c",
+        "7ac35c91766929d3",
+        "05606412259f69d0",
+        "9251b3aa36fd0171",
+        "562131e8ec29e42f",
+        "e84d573ec30ca9c4",
+        "b183ece9ba8cc950",
+        "f6f8747bad3a9134",
+        "5a7026711c01185e",
+        "a2742d197326e04b",
+        "9d1d4749b882bfc2",
+        "51bb38ac8e08b940",
+        "4b5c916f0c0ad634",
+        "7062bd48edcfd554",
+        "7941804a22a3acc4",
+        "a2012b76e74a6842",
+        "6d682e568a562fff",
+        "468d052abf919911",
+        "030e5f6cf74b6a63",
+        "c14a820295788bfd",
+        "3ab7fd15a8f2afd8"
+      ],
+      "relevant": [],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0091": {
@@ -3734,6 +5848,44 @@
       ],
       "shuffle_seed": 20260924
     },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:46:10Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "d06965216ba3a5d2",
+        "6d2720f11242fa1d",
+        "5c869ec6c307ed3c",
+        "8ed0261c592d62ee",
+        "1d56e8a2fc5ed924",
+        "2bf2782579f0653c",
+        "684b4fbf5aa8cd59",
+        "31beb4a0668effe4",
+        "de0f809703fb5240",
+        "b15b629dd1b08355",
+        "ce6f451fe628febb",
+        "b565aa2c82b77964",
+        "04170f186da297a8",
+        "0b896cc122e7502e",
+        "067a219af84d0186",
+        "08a21697bcec76ff",
+        "72619445848285b0",
+        "d1b10a509b48651c",
+        "124b0a8125f13427",
+        "6617adcb6b59f1b5",
+        "e22dc951bca08362",
+        "2b369c6613d48ffa",
+        "3e636d8bd17079a7",
+        "9372e7af283d5470",
+        "c6f7d000f14bef97"
+      ],
+      "relevant": [
+        "067a219af84d0186",
+        "9372e7af283d5470"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
+    },
     "adjudicated": {
       "annotator": "lord",
       "criterion": "2026-10-10",
@@ -3784,6 +5936,41 @@
         "5f3e359fc458d87e",
         "a37b1e10e2f97bbf"
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:46:30Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "00a7c9d886e7be37",
+        "6ccf702400ef09ad",
+        "97c5df72c4e86854",
+        "fd2f657d65353fe6",
+        "5c6af81f0d137eb4",
+        "87812a5f41dc51ff",
+        "7a3c28a16e918eaf",
+        "88df1b3b1e5c6052",
+        "e3b3fd2975ae7119",
+        "d4083a436d6ff34c",
+        "fc9be05664ed637e",
+        "5fe32e832cbfd7d9",
+        "124e9107408d0622",
+        "998705bb64a56c68",
+        "5f3e359fc458d87e",
+        "b14ae0c2a4281eb7",
+        "b297a022993ed02b",
+        "b18cdb4953c59d1c",
+        "a37b1e10e2f97bbf",
+        "d0f5b2d53bfb7188",
+        "3b2904b44c5f63c8",
+        "598ba3eb02b93d6a",
+        "073d46adb307b919",
+        "9290e4839560d703",
+        "46949d2fdd9c6f29"
+      ],
+      "relevant": [],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0093": {
@@ -3846,6 +6033,44 @@
           "venue_coverage": {}
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:47:14Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "de0f809703fb5240",
+        "8ed0261c592d62ee",
+        "3e636d8bd17079a7",
+        "d6406a00265baefb",
+        "4748dfe1cdefc5ba",
+        "00d799fd7df2ad19",
+        "b996c649431a4211",
+        "9228109adbc73c27",
+        "08a21697bcec76ff",
+        "c5792ff2f6937047",
+        "a6eb9194ea4c9367",
+        "57595477c4abd5dd",
+        "981a5a0309661340",
+        "2bf2782579f0653c",
+        "ce6f451fe628febb",
+        "1471dca0053a4b87",
+        "128faf5f8a2adac6",
+        "04170f186da297a8",
+        "ba58fed722f53d05",
+        "8c53bb77fabbbf35",
+        "bfbbba5740ab4a93",
+        "d0083abb00906b9c",
+        "f13bb9bf53c3aa20",
+        "b565aa2c82b77964",
+        "e6683ba4c189e0a6"
+      ],
+      "relevant": [
+        "d6406a00265baefb",
+        "4748dfe1cdefc5ba"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0105": {
@@ -3881,6 +6106,41 @@
         "4b038aee826be1e2"
       ],
       "relevant": []
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:47:34Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "3275793a43b311dc",
+        "f20f4f04968c7233",
+        "6421d8427fd40eb9",
+        "6eaa4644ce39d2a7",
+        "6df59c30ad8b6bb9",
+        "85d468a3febcabb6",
+        "14712e275e00b38f",
+        "bde0f1e8973c3482",
+        "1e428b95334a6066",
+        "e6fc65720e16eca6",
+        "8ddc36a9192b12fd",
+        "4b038aee826be1e2",
+        "654b4d645b04f96c",
+        "e0524d34b6b597d7",
+        "c2ccd09906a0c598",
+        "cca5dad0144ff0e5",
+        "36a13fe22738f7af",
+        "2c8a53c020ef9ab6",
+        "afbd9f15389e95a6",
+        "ca1adf65b763fe72",
+        "cc244187a7ad7402",
+        "5ddd2987739032c3",
+        "27161becaa9fb29f",
+        "bb0ca9f1b44a8dcf",
+        "6130a14ce32c8b9b"
+      ],
+      "relevant": [],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0106": {
@@ -3951,6 +6211,41 @@
       "relevant": [],
       "shuffle_seed": 20260924
     },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:48:19Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "ac02a1bf2e012517",
+        "22deada8e97de01b",
+        "40b1cc7ec3bc0e32",
+        "65fab91c2ed09c22",
+        "87f06407b39b1481",
+        "feefae26b8d2b80a",
+        "9ddcca7a3198339b",
+        "d685f1afebe4b595",
+        "b5cb5c4ef4472736",
+        "65ce58913ccd3ff7",
+        "29f832ad289eaa3e",
+        "e18eed765436a46b",
+        "2ad3ec356b2f723c",
+        "f3e198ebcef13fb1",
+        "20fdbbdddbfc8eff",
+        "3ca513672ed2a4d1",
+        "7e0481a324a911d4",
+        "83bf51d6abb455f8",
+        "3798f05921420e8f",
+        "2c636a399b2771f8",
+        "f09c6c66ff4484ef",
+        "bc8e70e01990263c",
+        "428fecde2fdd7138",
+        "21611bd81c7fa18b",
+        "9ced5d752b9f0fc4"
+      ],
+      "relevant": [],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
+    },
     "relabeled": {
       "annotator": "lord",
       "annotated_at": "2026-10-10T20:24:00Z",
@@ -4019,6 +6314,41 @@
         "a9075510df00022c"
       ],
       "relevant": []
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:48:43Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "1e503c79f551a4cd",
+        "f09c6c66ff4484ef",
+        "c7f874817cb6b0d1",
+        "c654f4143d136f66",
+        "14aad4abbd10de0b",
+        "a394ffa6f50e224e",
+        "cc0f27f32537d173",
+        "dc72b184217597db",
+        "b7d80042c206a850",
+        "6ca9903b36f628f0",
+        "6184850e33c32adc",
+        "6d75f19c41338b5e",
+        "69f80e4899fb3267",
+        "1e9fcaadc7db5a1d",
+        "86d8ff369fd221f1",
+        "131123d7df42abd7",
+        "1e16066076f506e5",
+        "2c636a399b2771f8",
+        "5c43876f4eb61748",
+        "c303b99a3e857ed7",
+        "c3ec746309c6b08a",
+        "77545487ebe8b542",
+        "00655c0c97988740",
+        "b9a15df53b91c803",
+        "a9075510df00022c"
+      ],
+      "relevant": [],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0108": {
@@ -4054,6 +6384,41 @@
         "9bcf4b564b87b087"
       ],
       "relevant": []
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:49:13Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "bf141cfa20f24ee5",
+        "9725b120d3dec8bf",
+        "60782f3f1aef8d8d",
+        "a7b55444a8bdcf9f",
+        "bb47d1a2d235ce86",
+        "735d40af3f05ec29",
+        "c0afa5001da87169",
+        "d17c541468972205",
+        "93d7c50e9d3ca74e",
+        "d67b7e7e1331f014",
+        "fac2fc24a5cc3079",
+        "c6de2c2268036f2c",
+        "a02da28006175fb3",
+        "359df446403e8434",
+        "6ffdd6d59d52b5eb",
+        "86deffd659b7cc0e",
+        "9bcf4b564b87b087",
+        "ab214e9fb6fdf6d8",
+        "aef6dd51c2526661",
+        "7d06120f95cb387f",
+        "7d7c0c4a65d61717",
+        "44c895875031555f",
+        "c508bfe010be06b1",
+        "f132c38485505d1c",
+        "68b8fc11d83f29e2"
+      ],
+      "relevant": [],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0109": {
@@ -4089,6 +6454,41 @@
         "1efd0904065e0705"
       ],
       "relevant": []
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:49:37Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "c893da7dde82ee9e",
+        "52a257cc92147df6",
+        "0c786b8e2174ca32",
+        "b0128b066c528929",
+        "382e6822330f1ffe",
+        "d128815d695838e6",
+        "16cc25f36586507a",
+        "b6fb0f49aaed2c6e",
+        "1efd0904065e0705",
+        "cfc6348be3d0b8d4",
+        "153a75b6e2887175",
+        "919078f73e3facf4",
+        "fe629944d244b191",
+        "2a2d0ada27e51781",
+        "73500e68b87a2359",
+        "0766540c71dfbadf",
+        "5f45b3a8a984c216",
+        "29706f7a37bc79f7",
+        "bbdd6c592acd0d2e",
+        "b57cf16ea1eba1fe",
+        "6b174e0d39ed334b",
+        "55f8610a74d5ccc3",
+        "953dc54092f0ce8e",
+        "7e23f0121dc85aba",
+        "916ee539c62fb666"
+      ],
+      "relevant": [],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0111": {
@@ -4124,6 +6524,41 @@
         "729c02e120996380"
       ],
       "relevant": []
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:50:07Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "7c807540a0f9fe74",
+        "dbcc414946a41cf3",
+        "5258f99b5aa7abe8",
+        "7ef955628579da5e",
+        "a3e818bca3cfb6f5",
+        "de694e9148dfd7f2",
+        "5db5d576fdc3b633",
+        "c6de2c2268036f2c",
+        "06639c7055c3cfe9",
+        "b38929dc7db27a1a",
+        "6ca5040c70dd1231",
+        "fc020bec5402260a",
+        "eab060194d24c369",
+        "729c02e120996380",
+        "47252039578c1fd0",
+        "c1b23e17336faa02",
+        "af39ffcf937ecdce",
+        "c608577e594e6b6e",
+        "aa1a013a43f00ff1",
+        "60782f3f1aef8d8d",
+        "c286a5fd7515cc96",
+        "817919caf2388132",
+        "edfbca3b95297faa",
+        "aac3502627e988e0",
+        "2c40b841911b5169"
+      ],
+      "relevant": [],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0112": {
@@ -4193,6 +6628,41 @@
       ],
       "relevant": [],
       "shuffle_seed": 20260924
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:50:28Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "aa24b6b900196519",
+        "c92c2f69ba298149",
+        "ef0036db41b91a15",
+        "cf9f95ea60c995bb",
+        "c0d6e3b9a998d5b0",
+        "b76b3903f7b6ce35",
+        "9d88fd83c07ce7a8",
+        "ff512190cb21b601",
+        "023a1babde76ba9a",
+        "cbdec05a6568fe19",
+        "eafa5b4160612a6d",
+        "1de12b9e2ba0807c",
+        "bc20b4c35a58c011",
+        "23c0c27d61ed22f2",
+        "7c408dc79a0f9f92",
+        "f3878adde0a5cc99",
+        "6667bf0a25ba94a0",
+        "681bee2fc058e243",
+        "9e237e704b5490a0",
+        "f9c76436a011a15c",
+        "aa12d9cea79ee8fe",
+        "940f9f56a69a6308",
+        "194a803bec020bfe",
+        "05d885d9b370914d",
+        "a27b0db1e281f53c"
+      ],
+      "relevant": [],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0113": {
@@ -4262,6 +6732,41 @@
       ],
       "relevant": [],
       "shuffle_seed": 20260924
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:50:46Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "c86bedfe65a2e9fb",
+        "bb5a9d5c643a1c85",
+        "55a5a88b5e4af1ae",
+        "1e428b95334a6066",
+        "1217567e59f77c49",
+        "c059580b26230e11",
+        "28b2264c47608e5c",
+        "df262bc5068dd789",
+        "d50b8d1f8bbd5141",
+        "e18fbc94867e3842",
+        "232037f33bdc0ba5",
+        "c113eeed614484ee",
+        "641ce974df21dcfd",
+        "bddb60575e3a99e4",
+        "183d6dc9935cb13b",
+        "54b11e8bc4b74b79",
+        "0827b17a7d11c2ed",
+        "a61224164176c9eb",
+        "f3bf982f5668a2ec",
+        "01857ac8e14ab02d",
+        "557b45d80ca70778",
+        "342dd42b2370d697",
+        "69d77b53efad5c53",
+        "ed43d55a04476d19",
+        "27161becaa9fb29f"
+      ],
+      "relevant": [],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0114": {
@@ -4331,6 +6836,41 @@
       ],
       "relevant": [],
       "shuffle_seed": 20260924
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:51:25Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "b9a15df53b91c803",
+        "a4e32afd076d0007",
+        "b7119f4aeea1beff",
+        "3d0096439e1a95d8",
+        "c0afa5001da87169",
+        "9df753d1bbdbbd30",
+        "c9787a3678a5e9e8",
+        "85c9f1ecee196846",
+        "51f8e27951304038",
+        "7ebcfc54d1f5d33a",
+        "93d7c50e9d3ca74e",
+        "f1a069b85ea2f38b",
+        "bd54e325086084d9",
+        "12994358e6a71ae5",
+        "3ac390c4fe91dec8",
+        "35670683fab9e667",
+        "7019b9ca2016a80e",
+        "f132c38485505d1c",
+        "a1b2a17a7240953e",
+        "d8d8ea800c205aa3",
+        "82f02d4512d81bc0",
+        "68b8fc11d83f29e2",
+        "84822a1482691617",
+        "5a5c9ea9f10581a8",
+        "14aad4abbd10de0b"
+      ],
+      "relevant": [],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0115": {
@@ -4366,6 +6906,46 @@
         "5b114b54f065171a"
       ],
       "relevant": []
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:51:53Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "31a2a7c3a3351661",
+        "0f945f345bd0220c",
+        "ff6e7e50f15d9506",
+        "6b222ca656cdab2d",
+        "5bf6b2f8f3c302f4",
+        "98adaf8cecfeeee5",
+        "cbe2c14a3c8e0d61",
+        "fcd1fbcfb582acfb",
+        "371460928623af89",
+        "851ee5c58a31aff7",
+        "00d799fd7df2ad19",
+        "00aaae0e06208c8d",
+        "c34b84f3ca13e1f9",
+        "b23c70672c27c692",
+        "facffec16b04896c",
+        "29f832ad289eaa3e",
+        "8e2fc0c7eaf9f92f",
+        "e183859cab350362",
+        "cbd3c75c42ab7317",
+        "9d23b38bce76d190",
+        "898cf6e55aa4defa",
+        "85961c221492de8e",
+        "75089ee19205a95e",
+        "b67fc642ccbfc9e8",
+        "5c524bd7fb96bc08",
+        "f9fd251d36d9c4f4",
+        "5b114b54f065171a"
+      ],
+      "relevant": [
+        "898cf6e55aa4defa",
+        "851ee5c58a31aff7"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     },
     "relabeled": {
       "annotator": "lord",
@@ -4441,6 +7021,41 @@
         "e3b3fd2975ae7119"
       ],
       "relevant": []
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:52:15Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "573f363fa78b4d9a",
+        "81bdd8cddcb63d4b",
+        "ab214e9fb6fdf6d8",
+        "be5612700e7fcdfc",
+        "b297a022993ed02b",
+        "c9c1e518bf94cc67",
+        "9a9f21cfb5f2fc3f",
+        "55affe4e2d7298e7",
+        "2c66b133bc1cca98",
+        "6f61e68701c633a1",
+        "4f95826a28c3805e",
+        "9f614c961d141cc4",
+        "5fe32e832cbfd7d9",
+        "02246592a7b298f5",
+        "fc305927ca243037",
+        "724e178cac430bd3",
+        "e3b3fd2975ae7119",
+        "0fe409e947d49e53",
+        "c374ffbdb2f6bef0",
+        "b5f1ec327057ba05",
+        "a2742d197326e04b",
+        "6249b5f4d5a876bf",
+        "9b9b649557f50a8b",
+        "9251b3aa36fd0171",
+        "97f1c3eb4f9af752"
+      ],
+      "relevant": [],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0117": {
@@ -4476,6 +7091,41 @@
         "bc1014de28a7fba8"
       ],
       "relevant": []
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:52:48Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "5d32b55b68314cce",
+        "3b5dfb88843becf7",
+        "4bd28c240f96337c",
+        "39cfd15c5d4df720",
+        "6dbf6553a5a67ccf",
+        "352b0ca9e1ef791e",
+        "69fcacfef11e7066",
+        "9b0ad34613c1b6aa",
+        "5c6537eeb63ff1f7",
+        "20c3059989405c91",
+        "43dd1a1a4396b634",
+        "bc1014de28a7fba8",
+        "86c2732793048f49",
+        "843a181edad3cf19",
+        "a39dce9802b00298",
+        "0fe9575d82da519a",
+        "2f362aa9000c26cf",
+        "0e82440f0066fe11",
+        "28396cdb46a05253",
+        "d16e4e190aa67b69",
+        "a714cdce87fdbf74",
+        "711d65eee90f5b77",
+        "5b9788cf84aedc45",
+        "d305c585f5c77976",
+        "7534b367cb4e50e7"
+      ],
+      "relevant": [],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0118": {
@@ -4511,6 +7161,41 @@
         "eee9e35b7f9f7b6b"
       ],
       "relevant": []
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:53:26Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "9fa150a91d06db0c",
+        "a3e818bca3cfb6f5",
+        "eee9e35b7f9f7b6b",
+        "6b174e0d39ed334b",
+        "a03c4289dcce694e",
+        "ff32845d95b93a00",
+        "573f363fa78b4d9a",
+        "456bdedb639b5536",
+        "b2fe3d16948d385c",
+        "2b369c6613d48ffa",
+        "dbad8717ad2e6ea4",
+        "08635bd2c07b5ec9",
+        "ac01fe04b339ce59",
+        "1179e29658d55afb",
+        "dd61be4ff7293975",
+        "31beb4a0668effe4",
+        "120df13437ac895a",
+        "ae9725ee605c567b",
+        "2b231cb52626f70e",
+        "0679475df00e4844",
+        "66c1d6ca4a821a52",
+        "60146198d92b5c94",
+        "c7375b345c209337",
+        "27c87dc392b558fa",
+        "bfa78f6cdaf4a836"
+      ],
+      "relevant": [],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0119": {
@@ -4546,6 +7231,42 @@
         "0a32032ae302620a"
       ],
       "relevant": []
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:54:08Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "2c636a399b2771f8",
+        "74dc0bcab4d89d9a",
+        "810f635c44da5b16",
+        "c676b2dc7900d32a",
+        "5c6537eeb63ff1f7",
+        "ec4cd39fa66bf676",
+        "74f76624fef672c3",
+        "1a6974e65114da82",
+        "44df63d99d2ede3d",
+        "2059adc778bc7efa",
+        "43d9a7ef836b2dc1",
+        "093e6abb6376766d",
+        "33eb6ae076f1007b",
+        "f09c6c66ff4484ef",
+        "574512eea42b94c1",
+        "edb29c3404cd307e",
+        "fccc2bed69f13e7c",
+        "32b3754fea13f359",
+        "ea342d17c26e44cc",
+        "ffd826bca3feb22c",
+        "0a32032ae302620a",
+        "5fc6849c5c7925ae",
+        "e50c37b36b8a95e4",
+        "d305c585f5c77976",
+        "9a727f01d1afed3f"
+      ],
+      "relevant": [],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10",
+      "flagged": true
     }
   },
   "cv-0120": {
@@ -4581,6 +7302,41 @@
         "d36caa2f8c45cbc8"
       ],
       "relevant": []
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:54:24Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "dd5f984bbcd6eae0",
+        "7da8a37b0b9f6da9",
+        "c698042d7fe97569",
+        "55e03b4a9f5375a1",
+        "a8107aed01bf135c",
+        "f20f4f04968c7233",
+        "468043410cc0c27e",
+        "6421d8427fd40eb9",
+        "2a8c3ff5724f66ae",
+        "bde0f1e8973c3482",
+        "5ddd2987739032c3",
+        "6821383e6e8ff125",
+        "7da6f0ce8e4552ed",
+        "009e7d39834bf9fd",
+        "1f0c55315bb7918a",
+        "4df773617474f2a6",
+        "d36caa2f8c45cbc8",
+        "fea1996b2f2c3af0",
+        "afbd9f15389e95a6",
+        "08f2c9451c5b4dd2",
+        "232b545d9dd39ffd",
+        "2c8a53c020ef9ab6",
+        "a10fe76e11c90f25",
+        "890fbdf1c911cfce",
+        "eb3b994c107c6a38"
+      ],
+      "relevant": [],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0121": {
@@ -4616,6 +7372,44 @@
         "54b11e8bc4b74b79"
       ],
       "relevant": []
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:56:00Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "27161becaa9fb29f",
+        "ca1adf65b763fe72",
+        "eb33e78300a86115",
+        "c41fc4e0fd57dca5",
+        "04f42911d507ed9b",
+        "205249bc8d99c323",
+        "557b45d80ca70778",
+        "e18fbc94867e3842",
+        "5ddd2987739032c3",
+        "01857ac8e14ab02d",
+        "eb53f8145b15c68a",
+        "49700e93da96cbe0",
+        "df262bc5068dd789",
+        "f20f4f04968c7233",
+        "e0524d34b6b597d7",
+        "54b11e8bc4b74b79",
+        "1b6656f1b3284e42",
+        "64a0848106f2d0e6",
+        "c2ccd09906a0c598",
+        "e9e3428ae7f7b6e1",
+        "34c96e54bb693a4f",
+        "232037f33bdc0ba5",
+        "28b2264c47608e5c",
+        "22ef5b61ca7b4df4",
+        "980cc39c72d81e0a",
+        "f6eaa82ff8198f10"
+      ],
+      "relevant": [
+        "232037f33bdc0ba5"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     },
     "relabeled": {
       "annotator": "lord",
@@ -4692,6 +7486,46 @@
         "f20f4f04968c7233",
         "2c8a53c020ef9ab6"
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:56:49Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "f3b2174d4a2af823",
+        "1f0c55315bb7918a",
+        "ecebe18408c70fa8",
+        "1e62e8aad753a2b0",
+        "1cd479d881224222",
+        "ab935200319f0fa4",
+        "5ddd2987739032c3",
+        "1ae8a387bd2636a0",
+        "d50b8d1f8bbd5141",
+        "c2ccd09906a0c598",
+        "bdbc73972cdfcfc3",
+        "afbd9f15389e95a6",
+        "f20f4f04968c7233",
+        "8ddc36a9192b12fd",
+        "2a8c3ff5724f66ae",
+        "6df59c30ad8b6bb9",
+        "bde0f1e8973c3482",
+        "468043410cc0c27e",
+        "e5b3d4b6d2c797ec",
+        "cca5dad0144ff0e5",
+        "10ad4a210a9daa1f",
+        "6eaa4644ce39d2a7",
+        "2c8a53c020ef9ab6",
+        "6421d8427fd40eb9",
+        "cdab714298490a06"
+      ],
+      "relevant": [
+        "6421d8427fd40eb9",
+        "468043410cc0c27e",
+        "f20f4f04968c7233",
+        "1f0c55315bb7918a"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0123": {
@@ -4734,6 +7568,46 @@
         "a991ba77c36671c1",
         "e2ad0de333811d58"
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:57:09Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "24299d605a184600",
+        "e638d0218d41905e",
+        "dbcc414946a41cf3",
+        "187ca04055ad3fd4",
+        "de694e9148dfd7f2",
+        "e2ad0de333811d58",
+        "1ea2e3a3701f4188",
+        "a991ba77c36671c1",
+        "6ca5040c70dd1231",
+        "b9393c0a9f97adf3",
+        "4d3ae32f0cbd5c69",
+        "6b174e0d39ed334b",
+        "eab060194d24c369",
+        "e6ded549d28b58fb",
+        "da4ccf1412683f81",
+        "c0afa5001da87169",
+        "bc23727e8b46d7a5",
+        "06639c7055c3cfe9",
+        "153a75b6e2887175",
+        "e4d755a4b7cd33fc",
+        "58929420f512f88f",
+        "62d89a1c4cd66209",
+        "c47a7aac276d6f2f",
+        "3df5f9b56583a36e",
+        "a2fa815af77cbb35"
+      ],
+      "relevant": [
+        "eab060194d24c369",
+        "de694e9148dfd7f2",
+        "e6ded549d28b58fb",
+        "6ca5040c70dd1231"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0124": {
@@ -4772,6 +7646,47 @@
         "93b1a602a150faeb",
         "33eb6ae076f1007b"
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:57:29Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "e29b162f766d6070",
+        "336294bacfb6bfbe",
+        "563bd999a0f64b41",
+        "10d8cbc6fd1d54c2",
+        "cc0ec8215ee5e853",
+        "2059adc778bc7efa",
+        "726028956ff0cca6",
+        "ea342d17c26e44cc",
+        "17f137ceb1253c1e",
+        "93b1a602a150faeb",
+        "18a8f5089c47ba58",
+        "2a211d4d06aaf870",
+        "6e56b58166eef88c",
+        "01ad0174e898b46c",
+        "7180e75207a326ef",
+        "853ffa7fc6925807",
+        "c6388466f76bd00e",
+        "4ba71d126becd885",
+        "33eb6ae076f1007b",
+        "42dd02e650ac8c23",
+        "0aefdfb712e1b680",
+        "1a6974e65114da82",
+        "8adaa8fb8f01f135",
+        "920bc93692e8df01",
+        "869554c5a53b34bb"
+      ],
+      "relevant": [
+        "93b1a602a150faeb",
+        "ea342d17c26e44cc",
+        "cc0ec8215ee5e853",
+        "10d8cbc6fd1d54c2",
+        "8adaa8fb8f01f135"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0125": {
@@ -4812,6 +7727,46 @@
         "e9a0a1c9ba73b8e5",
         "6617adcb6b59f1b5"
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:57:47Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "067a219af84d0186",
+        "7bae7b6cd81d4034",
+        "b5e81d8f9e03f968",
+        "9372e7af283d5470",
+        "53538be7b9e01175",
+        "355b97ff9f9d37c0",
+        "55f8610a74d5ccc3",
+        "2b369c6613d48ffa",
+        "332347b82d331468",
+        "0317f8a0f9d502f5",
+        "6cd05d2110d058bb",
+        "e9a0a1c9ba73b8e5",
+        "f75197ecfc3b6d00",
+        "0dae49b67f8a9d22",
+        "407cfb88f4fcdb60",
+        "188c4d2d6664761a",
+        "bb1fbbb8ab405558",
+        "6617adcb6b59f1b5",
+        "5311c230ced41dbd",
+        "cee26159c70526aa",
+        "8ef45188c120f546",
+        "ffb0bbe31af1de8b",
+        "08a21697bcec76ff",
+        "4aa73e44aec79b7e",
+        "b15b629dd1b08355"
+      ],
+      "relevant": [
+        "067a219af84d0186",
+        "9372e7af283d5470",
+        "e9a0a1c9ba73b8e5",
+        "6617adcb6b59f1b5"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0126": {
@@ -4852,6 +7807,45 @@
         "a751f0cd0d63d47a",
         "246b39b94d590ba1"
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:58:13Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "246b39b94d590ba1",
+        "0fe409e947d49e53",
+        "7b1d787ac2e901ce",
+        "ab214e9fb6fdf6d8",
+        "76dd537f0f94393a",
+        "a751f0cd0d63d47a",
+        "76d97b9481d1993a",
+        "9bcf4b564b87b087",
+        "59075ebbf43fe0f7",
+        "87cf95b86bb3eba5",
+        "a1b2a17a7240953e",
+        "12994358e6a71ae5",
+        "106cc14e896939fa",
+        "68b8fc11d83f29e2",
+        "fc305927ca243037",
+        "39c31469a816b99a",
+        "3aaa7209d38d0115",
+        "e4aaec34e674909c",
+        "1b3a63f89b71f1e6",
+        "7a3a3ffe5ae742ec",
+        "b5f1ec327057ba05",
+        "c4be04bcef2295f0",
+        "b0ff3c8fe27ab0e5",
+        "c508bfe010be06b1",
+        "93d7c50e9d3ca74e"
+      ],
+      "relevant": [
+        "9bcf4b564b87b087",
+        "a751f0cd0d63d47a",
+        "246b39b94d590ba1"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0127": {
@@ -4932,6 +7926,49 @@
         "ecb05a7728981d1f"
       ],
       "shuffle_seed": 20260924
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:58:33Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "60befe6e6649d0e2",
+        "4df81ca525ea2f76",
+        "0aff94a4c28d14cd",
+        "b79fb2da2849a9b8",
+        "7447b3fc8a3eca9c",
+        "11ff0288ae97c8d0",
+        "af4665bf5dd455ad",
+        "5c5147a685114e7f",
+        "4b66fb098a32963a",
+        "6db82a15b53e232e",
+        "b7ce61ba7e60628d",
+        "8d78fec8f362121f",
+        "a18dd28a898ea133",
+        "61c75bf61a38108f",
+        "3971a0d7976caf70",
+        "4128a3b2fbf7c87e",
+        "dc7e07cfb5c95855",
+        "94a825a1d414fa30",
+        "d8cee09729854083",
+        "22d728b1ce60c868",
+        "c8f4f8ba055e7fb2",
+        "23e33b56d475d25a",
+        "ecb05a7728981d1f",
+        "60e9390f7498f0c6",
+        "2da8051c50f8c8db"
+      ],
+      "relevant": [
+        "0aff94a4c28d14cd",
+        "a18dd28a898ea133",
+        "dc7e07cfb5c95855",
+        "ecb05a7728981d1f",
+        "b79fb2da2849a9b8",
+        "7447b3fc8a3eca9c",
+        "2da8051c50f8c8db"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     },
     "adjudicated": {
       "annotator": "lord",
@@ -5056,6 +8093,45 @@
       ],
       "shuffle_seed": 20260924
     },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T18:59:59Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "724cf40f7ab5ed43",
+        "0b896cc122e7502e",
+        "b15b629dd1b08355",
+        "2f5dbc131c154c5f",
+        "3216bf5f7d95c110",
+        "08a21697bcec76ff",
+        "067a219af84d0186",
+        "d804fc254211cf6f",
+        "684b4fbf5aa8cd59",
+        "3e636d8bd17079a7",
+        "2b369c6613d48ffa",
+        "b565aa2c82b77964",
+        "2fa28ef35535e71e",
+        "91a7a32595288f7f",
+        "d06965216ba3a5d2",
+        "75fe3834c85d6778",
+        "04170f186da297a8",
+        "4748dfe1cdefc5ba",
+        "9372e7af283d5470",
+        "e22dc951bca08362",
+        "fce80c7ad09658c4",
+        "15b3ecab80a9ed81",
+        "de0f809703fb5240",
+        "5c869ec6c307ed3c",
+        "95a4b84d9d7ed947"
+      ],
+      "relevant": [
+        "684b4fbf5aa8cd59",
+        "9372e7af283d5470",
+        "067a219af84d0186"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
+    },
     "adjudicated": {
       "annotator": "lord",
       "criterion": "2026-10-10",
@@ -5127,6 +8203,43 @@
           "venue_coverage": {}
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:00:53Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "2bf2782579f0653c",
+        "aa93a009b8a0a615",
+        "bfbbba5740ab4a93",
+        "981a5a0309661340",
+        "26e2ec683b0bb8ec",
+        "3e636d8bd17079a7",
+        "5126900d85cd69b6",
+        "b996c649431a4211",
+        "1078cd14cca82b82",
+        "f13bb9bf53c3aa20",
+        "1471dca0053a4b87",
+        "9d6fd4242b03f9a6",
+        "ba58fed722f53d05",
+        "91e3f2f740eadb5f",
+        "5e67a814a440f6b3",
+        "38fc729194a1d9e2",
+        "fc4f1b0fd2aa6ca0",
+        "d6406a00265baefb",
+        "4748dfe1cdefc5ba",
+        "00d799fd7df2ad19",
+        "839c60efd88c4fbc",
+        "c42c9ec8715191b3",
+        "134ea4ceae3aa1a8",
+        "088f9f76272778df",
+        "93af990e3377cc2a"
+      ],
+      "relevant": [
+        "d6406a00265baefb"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0130": {
@@ -5184,6 +8297,44 @@
       "venue_coverage": {
         "uniswap": "covered"
       }
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:03:07Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "76933a32f3b54512",
+        "3868b43c6ffc220c",
+        "dcdffdbcc72ca245",
+        "6009a658ee6920b5",
+        "f8c5e8e029674764",
+        "258f071f5b91ff7f",
+        "e19097e72a1e0ea8",
+        "64e60ae6ed8347b3",
+        "70062e530cd3db9a",
+        "f52f432ba23f70be",
+        "30a3baa5e3b6c167",
+        "cad1846c00568b2f",
+        "b0da9cbefe10240d",
+        "c65d75e798e38860",
+        "ad78cdd1332bbc2c",
+        "1ca3036639d26ccc",
+        "7fab7a509cedc133",
+        "823a7aa4e5c26dab",
+        "cbf3f436b8cecda5",
+        "07bb751441bbbdd4",
+        "f694444c921bc387",
+        "123c11f40e1df4bc",
+        "aa27ad84ab900c05",
+        "c8023db7f74c50ee",
+        "f2cd51166ffca6f9"
+      ],
+      "relevant": [],
+      "venue_coverage": {
+        "uniswap": "missing_from_pool"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0131": {
@@ -5226,6 +8377,43 @@
         "322a335c729c9953",
         "292033e1b6419090"
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:04:18Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "42b4764836e1cf8a",
+        "f367dd493c060543",
+        "9ef779df8e1fddac",
+        "b3ae2a1dc4185f5e",
+        "d59ed45f239c2ed8",
+        "0ac99247b8703446",
+        "9d58973910b52f92",
+        "322a335c729c9953",
+        "32f248844143aeab",
+        "d73fba0e0dd7bfb2",
+        "c297d78aa9a75c76",
+        "dcdffdbcc72ca245",
+        "292033e1b6419090",
+        "c5f56ac9742e04c9",
+        "1bee98094b879355",
+        "afbabe9ffebefce9",
+        "0415e1a52d90604e",
+        "c9867feba5e4a740",
+        "8415b7ae6017e5f9",
+        "a5317723e8692222",
+        "235128d0d606ae73",
+        "d9bb921613aa14b5",
+        "3f2238c50b6c29fb",
+        "a857dbdded252cf2",
+        "5c524bd7fb96bc08"
+      ],
+      "relevant": [
+        "dcdffdbcc72ca245"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0132": {
@@ -5274,6 +8462,43 @@
           "venue_coverage": {}
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:05:39Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "38cd970d625d659a",
+        "a6385389cd7a62a6",
+        "3d9a68f2edc6772d",
+        "c303b99a3e857ed7",
+        "cf5aeae972331bc2",
+        "50001a98d23ce4be",
+        "693d50b5b242c65f",
+        "97c7bff5451827c5",
+        "bfe1074a3c1c304b",
+        "9bbeaee386dd39cc",
+        "d3f40a8378ea8868",
+        "aa0fab3d8e09babb",
+        "1d487535bd153f9c",
+        "933e6c1f9acc4abc",
+        "6751db5ac6f5733c",
+        "66d371893270a55b",
+        "86a0a196e141113c",
+        "2d55d46f102ff172",
+        "5d30db527fe97163",
+        "8702c01557387b3c",
+        "1030374083a61019",
+        "0fa6f06d71f87c34",
+        "cf6425c1131308b4",
+        "6527d58a4cf03021",
+        "5d10948cdb4820b0"
+      ],
+      "relevant": [
+        "0fa6f06d71f87c34"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0133": {
@@ -5314,6 +8539,45 @@
         "26063ca2722e2d93",
         "a94bd97101b3789b"
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:06:09Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "7fb4e55687bf1aea",
+        "a94bd97101b3789b",
+        "cd06884cc48914bc",
+        "ff5ef394140e96a8",
+        "7e0d11b2814599cd",
+        "33eb6ae076f1007b",
+        "008ba7626461ca50",
+        "853ffa7fc6925807",
+        "a10fe76e11c90f25",
+        "1a6974e65114da82",
+        "76ae1dca5ae0a1b6",
+        "7ec7e585376f2f34",
+        "fdc1547f77cdc29a",
+        "4df773617474f2a6",
+        "519f68e75b7b2fb0",
+        "759ea0bf52fe5d0c",
+        "d6eca88f944b0986",
+        "7da8a37b0b9f6da9",
+        "26063ca2722e2d93",
+        "0a32032ae302620a",
+        "fea1996b2f2c3af0",
+        "810f635c44da5b16",
+        "dab23ec5453784f7",
+        "2a8c3ff5724f66ae",
+        "0ddb837d28b9d493"
+      ],
+      "relevant": [
+        "519f68e75b7b2fb0",
+        "26063ca2722e2d93",
+        "a94bd97101b3789b"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0135": {
@@ -5354,6 +8618,44 @@
         "de694e9148dfd7f2",
         "6ca5040c70dd1231"
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:06:27Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "9ba6138387ea13ed",
+        "06639c7055c3cfe9",
+        "da47fd5c77f718e8",
+        "1f798a2506028a53",
+        "de694e9148dfd7f2",
+        "3df5f9b56583a36e",
+        "6b174e0d39ed334b",
+        "e9a0a1c9ba73b8e5",
+        "6ca5040c70dd1231",
+        "f3924cc4bc505cba",
+        "1ea2e3a3701f4188",
+        "eab060194d24c369",
+        "f843309b4e0d1e5f",
+        "e6ded549d28b58fb",
+        "30cea8c1ed463ee6",
+        "25fc4bf4be549bc2",
+        "e4d755a4b7cd33fc",
+        "c47a7aac276d6f2f",
+        "752a706073892292",
+        "6a5dd3c09bdffadd",
+        "ae16db8ac03ac0d5",
+        "054962a8321c2042",
+        "ffb0bbe31af1de8b",
+        "153a75b6e2887175",
+        "dbcc414946a41cf3"
+      ],
+      "relevant": [
+        "eab060194d24c369",
+        "de694e9148dfd7f2"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0136": {
@@ -5391,6 +8693,43 @@
       "relevant": [
         "6617adcb6b59f1b5"
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:06:46Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "8e5e757d2ccd4daa",
+        "6617adcb6b59f1b5",
+        "facffec16b04896c",
+        "9abed7d07bc3cca7",
+        "1585e26b555d7b20",
+        "2551900a671eb9ff",
+        "cdb5bb855fa4a2d6",
+        "4d000a0667ac8f82",
+        "f01c3cb8c10c7eed",
+        "4fcf480269ce1481",
+        "e9a0a1c9ba73b8e5",
+        "800613908a3315e4",
+        "aa1024a1df9ca0f2",
+        "b57cf16ea1eba1fe",
+        "023b60fa07584cae",
+        "b607821d549a05b5",
+        "249ae6b38e74f11c",
+        "f3f8c58046334cc8",
+        "e62bef6db1e28af5",
+        "a792fd752f259cb6",
+        "eadd5ce5e20591b0",
+        "4d0c1c3ff7cdb62b",
+        "6cb4f744e4e1c7df",
+        "702da9102bd8c810",
+        "66c25daed1bc7f09"
+      ],
+      "relevant": [
+        "6617adcb6b59f1b5"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0137": {
@@ -5431,6 +8770,45 @@
         "980500dc01622011",
         "f5a91dec953cab38"
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:07:00Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "980500dc01622011",
+        "04ae05e9861a3a56",
+        "e3b3fd2975ae7119",
+        "7dcacb8757fc9cd8",
+        "2c5e438b070d4e48",
+        "9798edde095d34b2",
+        "120df13437ac895a",
+        "4077187c0979bdd9",
+        "25c64b8c34bcae50",
+        "183d111cd7537a7c",
+        "f5a91dec953cab38",
+        "e370915f6783df6b",
+        "097306afd50bbb41",
+        "b18cdb4953c59d1c",
+        "439a19cfe82dcf52",
+        "2dc1519306033273",
+        "c5f56ac9742e04c9",
+        "c3ceb0c684a0c7c3",
+        "f772c48dfe4c503c",
+        "bc6b8adad2624928",
+        "fb2beef42fa8ab33",
+        "5fe32e832cbfd7d9",
+        "68405ec214663564",
+        "9f614c961d141cc4",
+        "94d380dcf17a942e"
+      ],
+      "relevant": [
+        "097306afd50bbb41",
+        "2dc1519306033273",
+        "980500dc01622011"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0138": {
@@ -5468,6 +8846,43 @@
       "relevant": [
         "d1a18c4737e0782f"
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:07:12Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "011c253892412355",
+        "2af2e29f8cbac31d",
+        "cd4940f9e09123a8",
+        "573f363fa78b4d9a",
+        "ddf8dd7fbb94df52",
+        "d72803c391e60315",
+        "960ebc88abb70249",
+        "1bee98094b879355",
+        "896c8308ed9a4155",
+        "e1e58940913becc5",
+        "b2fe3d16948d385c",
+        "c29c48930b665528",
+        "e47ae5ebdd235f56",
+        "4d366c890c0252b8",
+        "7fab7a509cedc133",
+        "15536f7dc80a95ad",
+        "32f691d55757a3c9",
+        "cb3f814fcb4a0c1d",
+        "03025a45fcda1f52",
+        "b2a3c29a34ce69c2",
+        "d1a18c4737e0782f",
+        "cc39b0702fba4844",
+        "719ab8ea4b483aaa",
+        "8a0384235e9aee68",
+        "8190929de71f2eec"
+      ],
+      "relevant": [
+        "d1a18c4737e0782f"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0140": {
@@ -5547,6 +8962,45 @@
       ],
       "shuffle_seed": 20260924
     },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:07:45Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "c1b23e17336faa02",
+        "8543e082ec457c93",
+        "adee07156b5dd3e2",
+        "ff1d3fc18cb1bfb9",
+        "b9143a90f4b341af",
+        "aa24b6b900196519",
+        "eb4cf5bffd71c685",
+        "4a01f141609eb774",
+        "1925f3a11f8c623c",
+        "aa1a013a43f00ff1",
+        "1539dc96a735d5f9",
+        "68d3177591d9701e",
+        "ed8e5788aa411dc9",
+        "23060fecdb0d9e2b",
+        "88fe521948ec73df",
+        "58bf67c70b1545ab",
+        "488acd1cdb5ece81",
+        "fd49022f201e099a",
+        "640d4498f2af6c60",
+        "76d97b9481d1993a",
+        "5341691531aaf0ef",
+        "52bc7cf533744d63",
+        "953dc54092f0ce8e",
+        "d26f88007d4fa04a",
+        "1b9cfcc0e47b61e4"
+      ],
+      "relevant": [
+        "58bf67c70b1545ab",
+        "1b9cfcc0e47b61e4",
+        "adee07156b5dd3e2"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
+    },
     "adjudicated": {
       "annotator": "lord",
       "criterion": "2026-10-10",
@@ -5593,6 +9047,41 @@
         "f416e0e969e3f800"
       ],
       "relevant": []
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:07:59Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "af111b7385ab1baa",
+        "74dc0bcab4d89d9a",
+        "6e957fa325376dc7",
+        "b288f5fcd338ebcd",
+        "02011be23b90ba59",
+        "5cacaecd3b321f3d",
+        "33eb6ae076f1007b",
+        "9c517f197e767be6",
+        "38cf5a61dd676a54",
+        "73f666f6f0cee7fb",
+        "e53d99f4f3a5d2df",
+        "6a04924b5da61434",
+        "31fee7b6bf17914c",
+        "dbaff1e81d208391",
+        "ff5ef394140e96a8",
+        "a10fe76e11c90f25",
+        "97834e4173de6526",
+        "a797a636ac456822",
+        "a380c22165c329c5",
+        "a94bd97101b3789b",
+        "f416e0e969e3f800",
+        "773cb42da0fef8ac",
+        "b3d4df5c9992cfee",
+        "b905fbdfad2a9ef5",
+        "facf0d07427b61dd"
+      ],
+      "relevant": [],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0142": {
@@ -5678,6 +9167,57 @@
           "coverage_changes": []
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:08:23Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "56f1a06524984f27",
+        "edc64c0b89d250f6",
+        "71d1370b5ab32ea7",
+        "8aa8fa81b01046bc",
+        "832d966538072263",
+        "ee541d454ed7707a",
+        "5cd4770ea3bcb07e",
+        "e67a29fd8a721871",
+        "382e6822330f1ffe",
+        "47d04afb15afff7e",
+        "74a812ce4c25a1af",
+        "a8ca6c5bb5362aeb",
+        "8acfa999c07d3b61",
+        "5935ce0686f342a2",
+        "3c7ab39b79197335",
+        "5611bfc249b78622",
+        "03b33f168157ec32",
+        "28c7f2db754dd3e5",
+        "65e24af2bcd912c0",
+        "b4030e4f54b4b572",
+        "c0888c8286de9f8e",
+        "79a403c6d9bc25a9",
+        "1206c6e592429809",
+        "0c8e0886719f2344",
+        "7f6416d4d40a1edf",
+        "e60c8533c3337408",
+        "d13ce1dc6ebbee4e",
+        "fcc40bc13e2c648f",
+        "06f8676be7918164",
+        "cd991c5a53b9f60f",
+        "24718ce5b2dafe7e",
+        "69eb80e605d4fb08",
+        "44787758dac4c3b7",
+        "79064c4542ada79a",
+        "efdddf14dcf689aa"
+      ],
+      "relevant": [
+        "ee541d454ed7707a"
+      ],
+      "venue_coverage": {
+        "binance": "covered",
+        "bybit": "missing_from_pool"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0143": {
@@ -5765,6 +9305,56 @@
           "coverage_changes": []
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:08:43Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "64912fbc4c794b93",
+        "dac0f2b56799341e",
+        "0a783c96536a7e27",
+        "22d0b151455b4782",
+        "4888022ed4405efa",
+        "7e23f0121dc85aba",
+        "f727d546a02180e4",
+        "fe0fd0dc171c014e",
+        "b31a66f48fcdda8b",
+        "6b174e0d39ed334b",
+        "1b5e9fee03d569d1",
+        "0ef10caf70b2f789",
+        "4766fb4aa066d11b",
+        "e73d9ded9941d3b1",
+        "453df2674b855fa6",
+        "0c786b8e2174ca32",
+        "d632b73afc078f8b",
+        "bdc1471641a52f93",
+        "d5134b479833feb6",
+        "c5d14cb09ff73d17",
+        "fe724f80f9f66850",
+        "d72ecde573bc0dc1",
+        "d36ff6ee6af55c53",
+        "ae9725ee605c567b",
+        "d473eeb974732d23",
+        "463b49b4dd010e2a",
+        "382997ad14a61b99",
+        "6681e64ca6618e15",
+        "fac2fc24a5cc3079",
+        "382e6822330f1ffe",
+        "a59d484f846e2f4e",
+        "25c64b8c34bcae50",
+        "7d4aabd4ce8f3f80",
+        "b3f30a85fd861118"
+      ],
+      "relevant": [
+        "b31a66f48fcdda8b"
+      ],
+      "venue_coverage": {
+        "binance": "covered",
+        "bybit": "missing_from_pool"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0144": {
@@ -5852,6 +9442,65 @@
           "coverage_changes": []
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:09:18Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "b5cb5c4ef4472736",
+        "ac02a1bf2e012517",
+        "1b5e9fee03d569d1",
+        "b5568177ee827392",
+        "120df13437ac895a",
+        "7d06120f95cb387f",
+        "57595477c4abd5dd",
+        "7cf003ff3a8bcb7e",
+        "a3686f0837821efa",
+        "9798edde095d34b2",
+        "979a6f8a0fea5570",
+        "453df2674b855fa6",
+        "e67a29fd8a721871",
+        "0c786b8e2174ca32",
+        "6de67cfbff272243",
+        "f84b2da85154cf89",
+        "6cf47088a3f4f047",
+        "556e0d0675f24bed",
+        "382e6822330f1ffe",
+        "267bca4b99846925",
+        "bbdd6c592acd0d2e",
+        "aad98a5de0b7836c",
+        "4aba4eb43d82fad4",
+        "907cf741688501a6",
+        "c7376460a156647a",
+        "b3693ad46f3183cf",
+        "1e503c79f551a4cd",
+        "98163518b19f2af7",
+        "b00502b939e9e985",
+        "6fce863cca935cca",
+        "88ec2049e5181199",
+        "3a81d41cedbbc7d7",
+        "7339bb658cc117cd",
+        "d978273afe0ba514",
+        "c45409f15a73140f",
+        "36ccd074a592a7ce",
+        "86d8ff369fd221f1",
+        "6ffdd6d59d52b5eb",
+        "43d5c047fb398780",
+        "5a21da83494ad0b9",
+        "785dc4554ab8b02a",
+        "47b0dc5aede405e2",
+        "44209603aa1061c9"
+      ],
+      "relevant": [
+        "382e6822330f1ffe"
+      ],
+      "venue_coverage": {
+        "binance": "missing_from_pool",
+        "bybit": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0145": {
@@ -5991,6 +9640,59 @@
         "bybit": "missing_from_pool"
       },
       "shuffle_seed": 20260924
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:09:36Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "23d5e6a5d00e3459",
+        "49b21475cb4b90b9",
+        "dd61be4ff7293975",
+        "218598be94ac49c0",
+        "86a1385d9541d485",
+        "3584bdce0ac5c7d1",
+        "89d804cc1d0a9b6d",
+        "6d2720f11242fa1d",
+        "e183859cab350362",
+        "52401c67eca0e6f8",
+        "067a219af84d0186",
+        "6de67cfbff272243",
+        "931da4dffff7add2",
+        "caa7f6fd0f0b2870",
+        "4dad97dac34312e9",
+        "2b231cb52626f70e",
+        "81837b9dfe0b743b",
+        "9ffa2eb01c53bd9a",
+        "326cbb232318d246",
+        "79a403c6d9bc25a9",
+        "ed43d55a04476d19",
+        "2b369c6613d48ffa",
+        "d58431a5d779b35b",
+        "894b16c922fce97f",
+        "feb15d8bdf8e2ce3",
+        "03586f1b48fd05c8",
+        "2d1775567d0097f7",
+        "c2041c936d5125a1",
+        "5702829a81f3cb8f",
+        "73500e68b87a2359",
+        "5c51f2fb7dd3b647",
+        "edda69554abb2248",
+        "8593b635f34e1376",
+        "166bd1e333dce201",
+        "b15b629dd1b08355",
+        "8ed0261c592d62ee",
+        "e706cdc408aa23ef"
+      ],
+      "relevant": [
+        "4dad97dac34312e9"
+      ],
+      "venue_coverage": {
+        "binance": "covered",
+        "bybit": "missing_from_pool"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     },
     "adjudicated": {
       "annotator": "lord",
@@ -6156,6 +9858,59 @@
       },
       "shuffle_seed": 20260924
     },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:10:32Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "f75197ecfc3b6d00",
+        "c8cd66dc22fe47a8",
+        "894b16c922fce97f",
+        "c1c584e381a20416",
+        "e91cff49ac10a9aa",
+        "931da4dffff7add2",
+        "9d88fd83c07ce7a8",
+        "9fa1a8d92765f5a0",
+        "1078cd14cca82b82",
+        "fe4d30ccad541f80",
+        "e6683ba4c189e0a6",
+        "0d5c72a13bbf2001",
+        "5e67a814a440f6b3",
+        "f14dfd0fb1e882ea",
+        "8ed0261c592d62ee",
+        "44f10772ae6ce105",
+        "1d56e8a2fc5ed924",
+        "91583470380f6600",
+        "cc377f98dcf85252",
+        "32b1a7f2d1bd3207",
+        "32f248844143aeab",
+        "0898ba42ca54ae33",
+        "156462c0073b118a",
+        "4daab1d25905e4c4",
+        "32d38ce915ada017",
+        "31beb4a0668effe4",
+        "9b8c35283d6ffee6",
+        "149467b3bd105b64",
+        "0cf1f7beb0aafe28",
+        "eee9e35b7f9f7b6b",
+        "6d2720f11242fa1d",
+        "011d200bb2540c73",
+        "04170f186da297a8",
+        "2b231cb52626f70e",
+        "79a403c6d9bc25a9",
+        "5c51f2fb7dd3b647"
+      ],
+      "relevant": [
+        "e6683ba4c189e0a6",
+        "91583470380f6600"
+      ],
+      "venue_coverage": {
+        "binance": "covered",
+        "bybit": "missing_from_pool"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
+    },
     "adjudicated": {
       "annotator": "lord",
       "criterion": "2026-10-10",
@@ -6257,6 +10012,61 @@
           "coverage_changes": []
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:11:09Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "754f1ddafd5a42a0",
+        "b3d422ab596eca46",
+        "2c9f7dc7c7e54ecf",
+        "7b2bee40a02df4ad",
+        "326cbb232318d246",
+        "facffec16b04896c",
+        "60146198d92b5c94",
+        "011c253892412355",
+        "96a55103122a8cad",
+        "6ffdd6d59d52b5eb",
+        "42ccfdcd05b3a575",
+        "6617adcb6b59f1b5",
+        "af7dcd9b64855c26",
+        "93156d245f1bb88f",
+        "5cf251a94669edc0",
+        "a2faf6a6f5a97831",
+        "e712f098e750bca6",
+        "4c9ccfc9dbc11dc7",
+        "52a4c1b0d7f46c59",
+        "c28c9b63eddbf6ad",
+        "14c136b489c814a6",
+        "50c484f11207732f",
+        "e6683ba4c189e0a6",
+        "92ea64479009ad83",
+        "bddc4dd8df425396",
+        "dbcc414946a41cf3",
+        "456bdedb639b5536",
+        "c893da7dde82ee9e",
+        "fd13580695538899",
+        "5ca8f382ffd7f585",
+        "e62bef6db1e28af5",
+        "fd158d1d4dfa8662",
+        "0bdc717beeceef8d",
+        "ad6167f4a30342ce",
+        "e1e58940913becc5",
+        "2551900a671eb9ff",
+        "ed43d55a04476d19"
+      ],
+      "relevant": [
+        "456bdedb639b5536",
+        "c893da7dde82ee9e",
+        "2551900a671eb9ff"
+      ],
+      "venue_coverage": {
+        "binance": "covered",
+        "bingx": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0148": {
@@ -6369,6 +10179,53 @@
           "coverage_changes": []
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:12:41Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "6aacfb1db2a855ca",
+        "bf51ca30ea8725ce",
+        "070d1d221e5258ae",
+        "07d30c512776ba30",
+        "35cb2de3a173e834",
+        "73a7804134f1d7b6",
+        "d514134cef844f6e",
+        "14c136b489c814a6",
+        "ed43d55a04476d19",
+        "41f87617c87b0517",
+        "d87bb8721d437ba3",
+        "6213a08f1de69f7a",
+        "bc30a9c2d5fc88ee",
+        "d7ce39bbc5d6951a",
+        "bbdc719013d895a2",
+        "073cc9d7cdaa19a2",
+        "91e3f2f740eadb5f",
+        "453e379a237bd61e",
+        "d1906a45c0032ce2",
+        "5681daa4302fc5df",
+        "8ef4086c5565a24f",
+        "dac3f20e962b4949",
+        "bddc4dd8df425396",
+        "af7dcd9b64855c26",
+        "7c85e149356ae760",
+        "98dcfab8446a3172",
+        "282a0324bd14f312",
+        "45548f68c9f904c9",
+        "83d52811e8535390"
+      ],
+      "relevant": [
+        "bbdc719013d895a2",
+        "73a7804134f1d7b6",
+        "35cb2de3a173e834"
+      ],
+      "venue_coverage": {
+        "binance": "covered",
+        "bingx": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0149": {
@@ -6460,6 +10317,55 @@
           "coverage_changes": []
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:13:01Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "b3b200e321aabe89",
+        "5681daa4302fc5df",
+        "ecb7b644f8ef6f9a",
+        "bf51ca30ea8725ce",
+        "088f9f76272778df",
+        "93156d245f1bb88f",
+        "8e2bb0cdb21b9bd3",
+        "d06965216ba3a5d2",
+        "84ce4b94d4ce3817",
+        "dac3f20e962b4949",
+        "d0506279a5aac23a",
+        "998da96cbf86855c",
+        "699a155da591bff2",
+        "08d694c731837bb0",
+        "f1fd5a2f749bcc0a",
+        "ed43d55a04476d19",
+        "92ea64479009ad83",
+        "323eda2d9aa5a4e9",
+        "42c153e84f9ea7d7",
+        "41b8ee592f72cfe0",
+        "dbcc414946a41cf3",
+        "326cbb232318d246",
+        "44f10772ae6ce105",
+        "b2b1879f04eb1753",
+        "135bad7b236467c5",
+        "cb6d7170ad7c6516",
+        "15d5455e874a57ef",
+        "c28c9b63eddbf6ad",
+        "185f079396a3b594",
+        "073cc9d7cdaa19a2",
+        "42ccfdcd05b3a575",
+        "7b2bee40a02df4ad"
+      ],
+      "relevant": [
+        "cb6d7170ad7c6516",
+        "84ce4b94d4ce3817"
+      ],
+      "venue_coverage": {
+        "binance": "covered",
+        "bingx": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0150": {
@@ -6538,6 +10444,54 @@
           "coverage_changes": []
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:13:37Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "06a6e10457612a4d",
+        "011c253892412355",
+        "c67e9e27a174bc6c",
+        "8e76e968bdd3fd0b",
+        "ac01fe04b339ce59",
+        "6b174e0d39ed334b",
+        "22ef5b61ca7b4df4",
+        "8cb76e33f6f455d3",
+        "5cf251a94669edc0",
+        "08635bd2c07b5ec9",
+        "8316aa0e8a96a837",
+        "3455b34811f8077f",
+        "6b541a7b0efc8075",
+        "17922d6d47537ad4",
+        "e1e58940913becc5",
+        "b5568177ee827392",
+        "ad6167f4a30342ce",
+        "9fa150a91d06db0c",
+        "5069179c7a7f3728",
+        "286720944123cb71",
+        "6cf47088a3f4f047",
+        "2c9f7dc7c7e54ecf",
+        "ae9725ee605c567b",
+        "385ff4e415413b3a",
+        "7de063b364ec96ac",
+        "32f691d55757a3c9",
+        "2cce9f88dbcec59e",
+        "bc6b8adad2624928",
+        "c61949183ee4f247",
+        "554484105bf8855f",
+        "326cbb232318d246",
+        "cbdec05a6568fe19"
+      ],
+      "relevant": [
+        "22ef5b61ca7b4df4"
+      ],
+      "venue_coverage": {
+        "binance": "missing_from_pool",
+        "bingx": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0151": {
@@ -6644,6 +10598,56 @@
           "coverage_changes": []
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:13:56Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "15d5455e874a57ef",
+        "b7353cc9ba9f8af5",
+        "af111b7385ab1baa",
+        "87f8adf4c1a7f915",
+        "9dfd49406e2465dd",
+        "8bf4d3582f01806e",
+        "4a566c9ba7956dee",
+        "4f3225f26416480b",
+        "f3f8c58046334cc8",
+        "453e379a237bd61e",
+        "9aff2b31094cf241",
+        "d575ad6c1fc2b5fb",
+        "960805df4cc60bfd",
+        "d27f62cdc0081f12",
+        "dc61f1258c9a2782",
+        "f4d1ddc2575962ec",
+        "08d694c731837bb0",
+        "7b2bee40a02df4ad",
+        "bf51ca30ea8725ce",
+        "41b8ee592f72cfe0",
+        "b09039cba8518e1f",
+        "282a0324bd14f312",
+        "c50c85b532e3fd66",
+        "a9932f461710b0d6",
+        "5476b4e037c79835",
+        "c183d0d88594c16f",
+        "6617adcb6b59f1b5",
+        "c848e436b638ae92",
+        "1f4db897d218ab7e",
+        "4e3b874bb73081e2",
+        "88b1704246af47e9",
+        "dbcc414946a41cf3"
+      ],
+      "relevant": [
+        "8bf4d3582f01806e",
+        "d575ad6c1fc2b5fb",
+        "c183d0d88594c16f"
+      ],
+      "venue_coverage": {
+        "bybit": "covered",
+        "bingx": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0152": {
@@ -6793,6 +10797,59 @@
         "bingx": "covered"
       },
       "shuffle_seed": 20260924
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:14:15Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "dbcc414946a41cf3",
+        "42c38291fe46ed96",
+        "0bdc717beeceef8d",
+        "65e24af2bcd912c0",
+        "87f8adf4c1a7f915",
+        "724cf40f7ab5ed43",
+        "fd13580695538899",
+        "a5e304b550de3070",
+        "864e1a8bad1fce58",
+        "b352f5695e8e7fa4",
+        "f2c7fc4ed675e767",
+        "35a0e8649f1b3c61",
+        "c848e436b638ae92",
+        "11af0b262e719719",
+        "03dfceafcb541521",
+        "15d5455e874a57ef",
+        "5681daa4302fc5df",
+        "c6a64d5563d1377d",
+        "a9ed15d0e2912528",
+        "42ccfdcd05b3a575",
+        "8e2bb0cdb21b9bd3",
+        "fd384e377124ed3e",
+        "998da96cbf86855c",
+        "156462c0073b118a",
+        "eb33e78300a86115",
+        "847ff1e94c580249",
+        "08d694c731837bb0",
+        "4d0c1c3ff7cdb62b",
+        "b9a1bd7cf16390c0",
+        "81cc1c9f5d87f8ea",
+        "92ea64479009ad83",
+        "7f6416d4d40a1edf",
+        "26a5d23b0cd22879",
+        "3a05088df511c510",
+        "5ee72b7a59b1c69c",
+        "69eb80e605d4fb08",
+        "41b8ee592f72cfe0"
+      ],
+      "relevant": [
+        "724cf40f7ab5ed43"
+      ],
+      "venue_coverage": {
+        "bybit": "missing_from_pool",
+        "bingx": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     },
     "adjudicated": {
       "annotator": "lord",
@@ -7009,6 +11066,64 @@
       },
       "shuffle_seed": 20260924
     },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:14:32Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "488acd1cdb5ece81",
+        "61984dacf15cad42",
+        "9dfd49406e2465dd",
+        "98adaf8cecfeeee5",
+        "9d23b38bce76d190",
+        "bda426f2372916b2",
+        "023e260d685b68d5",
+        "ca73fefb2b55872f",
+        "1c0d5c9a83f1aec4",
+        "9e8c87a306f7784f",
+        "c67e9e27a174bc6c",
+        "32f691d55757a3c9",
+        "c83d962198c7e9a6",
+        "363400755b78ca63",
+        "4ab074af4f61fafb",
+        "382e6822330f1ffe",
+        "ffd79bf242ce1a8f",
+        "5cf251a94669edc0",
+        "8cc751e12655d32a",
+        "5bf6b2f8f3c302f4",
+        "1486d10b496017ac",
+        "011c253892412355",
+        "e1e58940913becc5",
+        "22deada8e97de01b",
+        "76d97b9481d1993a",
+        "50e8b4bc5a54a8b9",
+        "1b5e9fee03d569d1",
+        "898cf6e55aa4defa",
+        "e2f083ab8fb0515e",
+        "d93652bd582c0583",
+        "c34b84f3ca13e1f9",
+        "2cce9f88dbcec59e",
+        "75089ee19205a95e",
+        "f9fd251d36d9c4f4",
+        "9e66d661684bd707",
+        "d62a2bd8d404dc6e",
+        "228a0f63dccb7982",
+        "e4aaec34e674909c",
+        "5829d730ca17484c",
+        "4e1a6adb6fb383c9",
+        "fc44935f236cd8f2"
+      ],
+      "relevant": [
+        "9dfd49406e2465dd",
+        "5829d730ca17484c"
+      ],
+      "venue_coverage": {
+        "bybit": "covered",
+        "bingx": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
+    },
     "adjudicated": {
       "annotator": "lord",
       "criterion": "2026-10-10",
@@ -7157,6 +11272,57 @@
       },
       "shuffle_seed": 20260924
     },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:15:13Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "bb25d26bed66a927",
+        "01e20ad1e8ee0a4a",
+        "f416e0e969e3f800",
+        "021676b2a3433dbe",
+        "757ac448f9818fba",
+        "6f0a14514abe5f0e",
+        "defeedb2c62da07a",
+        "1b4a2d57534d89a0",
+        "e25377924066d5ed",
+        "2743bf5c90255bc8",
+        "2ec7425bd49b60cc",
+        "39e5a53dcb0534fa",
+        "a94bd97101b3789b",
+        "8b12b8678b1cf3c3",
+        "b8f8cba99680a9e9",
+        "fb0980446b426f5e",
+        "08f2c9451c5b4dd2",
+        "e152999e8f80c9db",
+        "9a727f01d1afed3f",
+        "7d8db0f6d9269b34",
+        "d5de60970c75a6f6",
+        "36391f9fc5821e49",
+        "a10503fd7b9afb80",
+        "1234ff9f28020ace",
+        "363636f4d8e971a6",
+        "0a68b95ec2047357",
+        "48981a6726961b83",
+        "dab23ec5453784f7",
+        "6c388fffc982e86b",
+        "fa23a0b8b708e568",
+        "97895d6b45554838",
+        "962470b14bb24bd4",
+        "4a8edc43a00fd99a",
+        "a10fe76e11c90f25",
+        "4bf5f8cb26888f80"
+      ],
+      "relevant": [
+        "a94bd97101b3789b"
+      ],
+      "venue_coverage": {
+        "uniswap": "missing_from_pool",
+        "pancakeswap": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
+    },
     "adjudicated": {
       "annotator": "lord",
       "criterion": "2026-10-10",
@@ -7269,6 +11435,59 @@
           "coverage_changes": []
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:15:32Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "28396cdb46a05253",
+        "347d14a6c0761308",
+        "ff5ef394140e96a8",
+        "01a116b3e251fef0",
+        "8b9473ac093aeeec",
+        "38930b722743cd84",
+        "97b7ec059b018efb",
+        "3b5dfb88843becf7",
+        "9f20c47df648aa36",
+        "5198ecfecb4039e0",
+        "9115ca4a974ab07c",
+        "9b22822c893db61b",
+        "851f144533516a39",
+        "a797a636ac456822",
+        "34547f38f752eee0",
+        "ad4ff27a65d3e518",
+        "58fcee5d50e6efa1",
+        "08f2c9451c5b4dd2",
+        "a3523843ae7acef3",
+        "8bc97063a8db2aec",
+        "faed710c94d17485",
+        "7534b367cb4e50e7",
+        "ef8f81c3d402365f",
+        "46cbf1c08981bb61",
+        "9b0ad34613c1b6aa",
+        "8d3c66c4922c587b",
+        "8abe7b6f02f0c64f",
+        "9c517f197e767be6",
+        "5d32b55b68314cce",
+        "7da8a37b0b9f6da9",
+        "a10fe76e11c90f25",
+        "892d1eeaf78f0699",
+        "dbee8cebab3db9c7",
+        "5013e4d63371a505",
+        "05ff34e559638c46",
+        "3e151c782126d77f"
+      ],
+      "relevant": [
+        "a797a636ac456822",
+        "faed710c94d17485"
+      ],
+      "venue_coverage": {
+        "uniswap": "covered",
+        "pancakeswap": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0156": {
@@ -7358,6 +11577,56 @@
           "coverage_changes": []
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:15:55Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "8b12b8678b1cf3c3",
+        "db60405f908a403e",
+        "35715f5e66e837ec",
+        "b0e64cae0d0d8ef4",
+        "bd8e8b5ee668c1d3",
+        "191751f1054abd5f",
+        "b4fe68d56f7d2374",
+        "b320344efac3ab12",
+        "320db850444018cf",
+        "618a44980a7bc9f4",
+        "24683c114a28da42",
+        "939804afa2941b15",
+        "daad6e75c1d4fc2b",
+        "8ebc4d4a8899d579",
+        "460193b755e82d98",
+        "9137dcccfdddcf02",
+        "a249b459b4d77f15",
+        "263185bbb78097df",
+        "43b673f393d26d0a",
+        "08f2c9451c5b4dd2",
+        "2743bf5c90255bc8",
+        "8e5b2871bc3a2788",
+        "6fd0e2cd7b8f6e71",
+        "c2c5bab6922df254",
+        "e19c39c4434c5987",
+        "2ec7425bd49b60cc",
+        "2a43fc7e881ac78a",
+        "e95b5dd16341a820",
+        "d234c94f597c3bb8",
+        "add69c0c47e6be0f",
+        "ba68d1a10a27a364",
+        "463f2bf938d98749",
+        "e26d6a1724b55bc1"
+      ],
+      "relevant": [
+        "e95b5dd16341a820",
+        "463f2bf938d98749"
+      ],
+      "venue_coverage": {
+        "uniswap": "covered",
+        "pancakeswap": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0157": {
@@ -7438,6 +11707,56 @@
           "coverage_changes": []
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:16:13Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "c2c5bab6922df254",
+        "0e22b52bcb1baa28",
+        "647479e7c651674b",
+        "fa23a0b8b708e568",
+        "0a68b95ec2047357",
+        "64a6e3e96df6d553",
+        "8ebc4d4a8899d579",
+        "d5de60970c75a6f6",
+        "757ac448f9818fba",
+        "b296d28c7c0698be",
+        "9397a95f25857c98",
+        "20da3ee0700b22bf",
+        "7e0d11b2814599cd",
+        "36391f9fc5821e49",
+        "514c202a18d00be4",
+        "a10503fd7b9afb80",
+        "799dc0b8817dc700",
+        "d96fe7fd25d3b908",
+        "5c06ed04e25116cb",
+        "6b364b04365fca60",
+        "2cecc2c7ab41d743",
+        "d30cd1c077c3575a",
+        "3faaa32e5c28ddec",
+        "1b4a2d57534d89a0",
+        "05d885d9b370914d",
+        "e0985b55b2f4118b",
+        "6bc3dcb254e73bc7",
+        "009e7d39834bf9fd",
+        "1234ff9f28020ace",
+        "c29c48930b665528",
+        "b0ff3c8fe27ab0e5",
+        "8b12b8678b1cf3c3",
+        "4fc847f76881fe64",
+        "4bf5f8cb26888f80"
+      ],
+      "relevant": [
+        "d96fe7fd25d3b908"
+      ],
+      "venue_coverage": {
+        "pancakeswap": "covered",
+        "uniswap": "missing_from_pool"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0158": {
@@ -7532,6 +11851,61 @@
           ]
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:16:32Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "ccbe5e2d3b2b7b73",
+        "f6455e855c2fb80a",
+        "a66e50574219e8be",
+        "62bff85a7f0f211c",
+        "188c4d2d6664761a",
+        "1b43e0cb7e7b3381",
+        "1b4a2d57534d89a0",
+        "3e3ba8d92c30aaa5",
+        "208bebd6e61278c8",
+        "3fdc781ea72c6516",
+        "05ef21164835548e",
+        "0a15a08de3203acb",
+        "15e886c3bf710819",
+        "563c90a6be3cf641",
+        "d5de60970c75a6f6",
+        "e18eae0bbb071a5c",
+        "fdcbf23afc6ec100",
+        "032eafb523d75877",
+        "f963900cb3743343",
+        "b7de8ab468a82835",
+        "05d885d9b370914d",
+        "2766e3da5ff61984",
+        "246dd02a6cd76145",
+        "cbdc228164e1951c",
+        "b0e64cae0d0d8ef4",
+        "375f575e8cf5c0c1",
+        "e19097e72a1e0ea8",
+        "4bf5f8cb26888f80",
+        "96e1b8fb37f036eb",
+        "2d423b589704f59a",
+        "733d19d46f01f9c7",
+        "cd1b0c69e9a89a5a",
+        "357789caf855e32b",
+        "bc1014de28a7fba8",
+        "3e70948812553ea1",
+        "d30cd1c077c3575a",
+        "3c2b0e96bb44f0e4",
+        "c86bedfe65a2e9fb"
+      ],
+      "relevant": [
+        "e18eae0bbb071a5c",
+        "375f575e8cf5c0c1"
+      ],
+      "venue_coverage": {
+        "uniswap": "covered",
+        "pancakeswap": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0159": {
@@ -7679,6 +12053,59 @@
       },
       "shuffle_seed": 20260924
     },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:16:50Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "44f4cf125e07b436",
+        "90946c5ce4ca6302",
+        "55f8610a74d5ccc3",
+        "04f42911d507ed9b",
+        "5004ec38c5d2f1ec",
+        "1217567e59f77c49",
+        "563bd999a0f64b41",
+        "35f6bc2d78e84002",
+        "6875967e53ba97ee",
+        "9433d580383daaad",
+        "dccbc1a39928ce81",
+        "e50935b28fe1e75d",
+        "c148cbd3736b879d",
+        "ed42b89b99998f41",
+        "c3509cd6dc7fa43e",
+        "05ee3c91c85f9e00",
+        "029a1305eed7eaeb",
+        "2aff22dc9b7c50ce",
+        "0964d2b075f06724",
+        "0138656692156097",
+        "bbbc45c5b058241a",
+        "5e6dcb303780622c",
+        "67ca23b358a2aeac",
+        "1b87f4679aec817a",
+        "b4f80d3991057445",
+        "558dd09d9957a81e",
+        "13064c2565b69005",
+        "b55a7201de9be6ba",
+        "53e4faf74c2d161d",
+        "60080f8d07418c8f",
+        "dbedf023665c8840",
+        "664221826cd2e09a",
+        "b5d878ccbf092a04",
+        "b5a9754018809b04",
+        "1675e0e4248c604a",
+        "372350b9e26342eb",
+        "6e50c56989a5b97f"
+      ],
+      "relevant": [
+        "55f8610a74d5ccc3"
+      ],
+      "venue_coverage": {
+        "dydx": "missing_from_pool",
+        "hyperliquid": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
+    },
     "adjudicated": {
       "annotator": "lord",
       "criterion": "2026-10-10",
@@ -7781,6 +12208,57 @@
           "coverage_changes": []
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:17:07Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "b5a9754018809b04",
+        "563bd999a0f64b41",
+        "d6974a566103be88",
+        "b60879889dbb072c",
+        "57cf3200553d04c6",
+        "1f0c55315bb7918a",
+        "920bc93692e8df01",
+        "61ba343cd98fb611",
+        "c148cbd3736b879d",
+        "12e5b7cc1d275a16",
+        "b01dd92d3c9ecde2",
+        "d4083a436d6ff34c",
+        "876bc1483ad4b8ac",
+        "5262a8abbdd8ac49",
+        "2286e593246ecd01",
+        "61e8e26d8b05af0a",
+        "e13457673c41a404",
+        "c9623862eafdd1eb",
+        "1ef23262bd5e3f43",
+        "9b8276a90b8fc5bd",
+        "fda7dd40772eb93d",
+        "2059adc778bc7efa",
+        "e50935b28fe1e75d",
+        "1d0ec2924779acb7",
+        "6875967e53ba97ee",
+        "b1c5b829bbd2e81a",
+        "42d881d46b755594",
+        "cd73ace2e62d13ab",
+        "5ddd2987739032c3",
+        "f772c48dfe4c503c",
+        "c2182706a4563af7",
+        "372350b9e26342eb",
+        "6ccf702400ef09ad",
+        "8d0874f32800c1e9"
+      ],
+      "relevant": [
+        "e13457673c41a404",
+        "5262a8abbdd8ac49"
+      ],
+      "venue_coverage": {
+        "dydx": "covered",
+        "hyperliquid": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0161": {
@@ -7875,6 +12353,61 @@
           ]
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:18:29Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "8981dc033b80276d",
+        "98b01e4110ccca98",
+        "e1e84d9b99b2562a",
+        "f772c48dfe4c503c",
+        "b4f80d3991057445",
+        "9ad8ec4caa386276",
+        "a7827b68ce43320d",
+        "aac3502627e988e0",
+        "073d46adb307b919",
+        "15c0a44be0c2e4e4",
+        "f2abebc342af8b6f",
+        "68405ec214663564",
+        "386616869c1ed076",
+        "4ca106e2cdca7cb3",
+        "c1206922eb3fb864",
+        "c1b23e17336faa02",
+        "98e3b35e3a4fe32e",
+        "a80f261b4620fc80",
+        "764a5519a57516f5",
+        "aa1a013a43f00ff1",
+        "a1b2a17a7240953e",
+        "24299d605a184600",
+        "c3509cd6dc7fa43e",
+        "b5a9754018809b04",
+        "76b5e469d3ddca85",
+        "5d0407daa99f5686",
+        "0964d2b075f06724",
+        "9663952541897f3e",
+        "d96852c8d7981b64",
+        "7e0e210c45714c14",
+        "76dd537f0f94393a",
+        "94981b7fbe0959ef",
+        "86c94185c7827ad3",
+        "f586e67f52a6f2af",
+        "1e8330388561ed3b",
+        "26b5faa7b7898bcc",
+        "8c3a9bc385af5139"
+      ],
+      "relevant": [
+        "e1e84d9b99b2562a",
+        "8981dc033b80276d",
+        "98e3b35e3a4fe32e"
+      ],
+      "venue_coverage": {
+        "dydx": "covered",
+        "hyperliquid": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0162": {
@@ -8016,6 +12549,62 @@
         "hyperliquid": "covered"
       },
       "shuffle_seed": 20260924
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:19:12Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "68405ec214663564",
+        "06430f8c38844e19",
+        "c608577e594e6b6e",
+        "3336838b6d2226a9",
+        "c51771b5351be54c",
+        "3249617f6fa75019",
+        "5b7135865149cb85",
+        "899ea105b353e83c",
+        "eb9925d80f22d373",
+        "e13457673c41a404",
+        "fc1cbd0f9da76342",
+        "a4e78d97b15ef91a",
+        "d0d28c0934ee233a",
+        "1ca3036639d26ccc",
+        "f595c700e02619d0",
+        "a8db880034640223",
+        "26b5faa7b7898bcc",
+        "c226ac0e38a8cf7f",
+        "d7e304de55be1f2f",
+        "5ad5ccdd7a387a48",
+        "2118ca76c68cf5e7",
+        "de070afe85d9b710",
+        "286c7e31da12f23b",
+        "0514802da03b4ef1",
+        "c65d75e798e38860",
+        "b550e3936bb17e54",
+        "79721a61a0a88ea7",
+        "c1206922eb3fb864",
+        "d9362cdb41462e97",
+        "33c94b601c24756a",
+        "f772c48dfe4c503c",
+        "af39ffcf937ecdce",
+        "f5a91dec953cab38",
+        "ced7de961d5bad5f",
+        "c930f26b06d9d3ec",
+        "3c1c6fc46e58a07d",
+        "2fb5f535953ac3d1",
+        "5db5d576fdc3b633",
+        "ba003b9d2c928ed8",
+        "d2fa551ce73a9c15"
+      ],
+      "relevant": [
+        "f5a91dec953cab38"
+      ],
+      "venue_coverage": {
+        "dydx": "missing_from_pool",
+        "hyperliquid": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0163": {
@@ -8103,6 +12692,57 @@
           "coverage_changes": []
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:19:27Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "624c1daf1b097a09",
+        "abfefaf1c3d8f5ae",
+        "719ab8ea4b483aaa",
+        "a9ed533ed0f1e317",
+        "b5dcf8d7cf5b0610",
+        "f1149435532cbad3",
+        "5401d2a1029c97ee",
+        "f9fc0016fa1de7f2",
+        "de2af0af4f674c9d",
+        "24299d605a184600",
+        "60080f8d07418c8f",
+        "fddbcda18f766332",
+        "411ce195949a5df8",
+        "6ea344d61a70b2f3",
+        "f9f60f7e969a58f8",
+        "640d4498f2af6c60",
+        "51bb38ac8e08b940",
+        "998705bb64a56c68",
+        "5b9924bb209e9f23",
+        "23fab404ff6e1900",
+        "2c66b133bc1cca98",
+        "dbad8717ad2e6ea4",
+        "78b8237f30f271fe",
+        "6ccf702400ef09ad",
+        "d1175f63bc486de1",
+        "2a9e1d0befbc3354",
+        "e48975197e34630c",
+        "c891953628d0cd4f",
+        "e22842460ddcb3cb",
+        "35d70052405dba18",
+        "3336838b6d2226a9",
+        "a3e818bca3cfb6f5",
+        "c7375b345c209337",
+        "6f61d2176961003f"
+      ],
+      "relevant": [
+        "5401d2a1029c97ee",
+        "411ce195949a5df8"
+      ],
+      "venue_coverage": {
+        "uniswap": "covered",
+        "hyperliquid": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0164": {
@@ -8189,6 +12829,59 @@
           "coverage_changes": []
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:20:09Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "7c4f5eadcf017845",
+        "23d5e6a5d00e3459",
+        "d1175f63bc486de1",
+        "7c807540a0f9fe74",
+        "4aa73e44aec79b7e",
+        "6ccf702400ef09ad",
+        "6df59c30ad8b6bb9",
+        "395fa4a95b3d3877",
+        "e29b162f766d6070",
+        "3584bdce0ac5c7d1",
+        "dd61be4ff7293975",
+        "137f23e3f1887126",
+        "ac79b983811f42b6",
+        "764a5519a57516f5",
+        "21538818b884fabe",
+        "e6683ba4c189e0a6",
+        "b5d878ccbf092a04",
+        "998705bb64a56c68",
+        "44f4cf125e07b436",
+        "067a219af84d0186",
+        "35f6bc2d78e84002",
+        "6d2720f11242fa1d",
+        "f772c48dfe4c503c",
+        "e93ce1a816d2867d",
+        "6e50c56989a5b97f",
+        "eee9e35b7f9f7b6b",
+        "456bdedb639b5536",
+        "220bb97ceb04e20e",
+        "b2b1879f04eb1753",
+        "243e6d70ffb0ce18",
+        "71fa4a64e5eda62a",
+        "468043410cc0c27e",
+        "8af42d40f8ecc202",
+        "183d111cd7537a7c",
+        "b5dcf8d7cf5b0610",
+        "411ce195949a5df8"
+      ],
+      "relevant": [
+        "3584bdce0ac5c7d1",
+        "067a219af84d0186"
+      ],
+      "venue_coverage": {
+        "binance": "covered",
+        "hyperliquid": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0165": {
@@ -8280,6 +12973,63 @@
           "coverage_changes": []
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:20:31Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "69f44e6cc370d65a",
+        "5cf2cd39eb1fa872",
+        "26bff666e1ec0f8e",
+        "ecb7b644f8ef6f9a",
+        "7c4f5eadcf017845",
+        "073d46adb307b919",
+        "d08bbcf580dcb1c3",
+        "60da23574f1fd943",
+        "7cf003ff3a8bcb7e",
+        "04fbcb9ff896cf84",
+        "6df59c30ad8b6bb9",
+        "d0083abb00906b9c",
+        "3b10d539ba08e959",
+        "b5dcf8d7cf5b0610",
+        "411ce195949a5df8",
+        "6ca5040c70dd1231",
+        "e18eae0bbb071a5c",
+        "b3ff952be7f79e83",
+        "a831ffc2053c2aea",
+        "dbcc414946a41cf3",
+        "6ccf702400ef09ad",
+        "b5d878ccbf092a04",
+        "eab060194d24c369",
+        "de694e9148dfd7f2",
+        "9b8276a90b8fc5bd",
+        "fdff3cf4dcf5f52c",
+        "7ab52e6050ed8294",
+        "9a9f21cfb5f2fc3f",
+        "153a75b6e2887175",
+        "c4ceff5514253837",
+        "f84b2da85154cf89",
+        "f3924cc4bc505cba",
+        "fd158d1d4dfa8662",
+        "24299d605a184600",
+        "c4a60bd54018d654",
+        "3bdc24e6fb608829",
+        "688fe563be00c461",
+        "b0c810b9eed4d6a1"
+      ],
+      "relevant": [
+        "eab060194d24c369",
+        "de694e9148dfd7f2",
+        "6ca5040c70dd1231",
+        "411ce195949a5df8"
+      ],
+      "venue_coverage": {
+        "binance": "covered",
+        "hyperliquid": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0166": {
@@ -8388,6 +13138,63 @@
           ]
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:20:55Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "f232683e7b86d9fa",
+        "1e8330388561ed3b",
+        "3f2238c50b6c29fb",
+        "456bdedb639b5536",
+        "067a219af84d0186",
+        "5f45b3a8a984c216",
+        "11ba6f8c2de4281b",
+        "c891953628d0cd4f",
+        "6ccf702400ef09ad",
+        "a9b53f1c2cfe1ac1",
+        "a1b2a17a7240953e",
+        "bf18e2df03166d48",
+        "24299d605a184600",
+        "aa12d9cea79ee8fe",
+        "c893da7dde82ee9e",
+        "f9fc0016fa1de7f2",
+        "1efd0904065e0705",
+        "764a5519a57516f5",
+        "415a71f491bd553f",
+        "fdff3cf4dcf5f52c",
+        "a0317a80854c06db",
+        "f772c48dfe4c503c",
+        "c4ceff5514253837",
+        "42d881d46b755594",
+        "4ca106e2cdca7cb3",
+        "cf444122ca55305a",
+        "7c4f5eadcf017845",
+        "94887f33a2ce6b4e",
+        "8a1637671259f069",
+        "e50935b28fe1e75d",
+        "4984c6c135a9c74f",
+        "af111b7385ab1baa",
+        "1998e92b49fe20e3",
+        "19a500fc9f4ddae5",
+        "9372e7af283d5470",
+        "8c06201c0a7504c2",
+        "b5dcf8d7cf5b0610",
+        "5004ec38c5d2f1ec",
+        "593e38b974d1413c",
+        "5b416902e3309ff8"
+      ],
+      "relevant": [
+        "5004ec38c5d2f1ec",
+        "9372e7af283d5470"
+      ],
+      "venue_coverage": {
+        "hyperliquid": "covered",
+        "binance": "covered"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0167": {
@@ -8472,6 +13279,58 @@
           "coverage_changes": []
         }
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:21:18Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "6ffdd6d59d52b5eb",
+        "598ba3eb02b93d6a",
+        "01e86268bf3bdb73",
+        "91e3f2f740eadb5f",
+        "5306a63f1716511f",
+        "6875967e53ba97ee",
+        "8e329afd7150dc1e",
+        "24234d84a1dac409",
+        "3f234763d742134b",
+        "14c136b489c814a6",
+        "bddc4dd8df425396",
+        "36b4a88a5718568b",
+        "e50935b28fe1e75d",
+        "dac3f20e962b4949",
+        "d6406a00265baefb",
+        "94887f33a2ce6b4e",
+        "f0c3890799c3a5ef",
+        "fc4f1b0fd2aa6ca0",
+        "bebd46f6e900ae43",
+        "38fc729194a1d9e2",
+        "f84b2da85154cf89",
+        "411ce195949a5df8",
+        "254a99d1726749af",
+        "bf18e2df03166d48",
+        "7cb924ec142c553d",
+        "028dbe8b3eb9289d",
+        "af7dcd9b64855c26",
+        "88262a77ca0894af",
+        "3119b395ea657aec",
+        "185f079396a3b594",
+        "c891953628d0cd4f",
+        "1e8330388561ed3b",
+        "b3ff952be7f79e83",
+        "1471dca0053a4b87",
+        "ed43d55a04476d19"
+      ],
+      "relevant": [
+        "7cb924ec142c553d",
+        "24234d84a1dac409"
+      ],
+      "venue_coverage": {
+        "binance": "covered",
+        "hyperliquid": "missing_from_pool"
+      },
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0187": {
@@ -8509,6 +13368,43 @@
       "relevant": [
         "2f9d65ce3ea297ea"
       ]
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:21:31Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "bbdd6c592acd0d2e",
+        "785dc4554ab8b02a",
+        "1b5e9fee03d569d1",
+        "34d0e3714e094571",
+        "44c895875031555f",
+        "2f9d65ce3ea297ea",
+        "ff512190cb21b601",
+        "aac3502627e988e0",
+        "e7f61ba6b2f73280",
+        "2bd44c08bb5cca4f",
+        "4ad792bdafd4aece",
+        "940f9f56a69a6308",
+        "cbdec05a6568fe19",
+        "a27b0db1e281f53c",
+        "f3878adde0a5cc99",
+        "c0d6e3b9a998d5b0",
+        "ef0036db41b91a15",
+        "b76b3903f7b6ce35",
+        "9d88fd83c07ce7a8",
+        "2bc3d5fc91e79547",
+        "f69e3b2e20ebae28",
+        "aa1a013a43f00ff1",
+        "8e76e968bdd3fd0b",
+        "ec31b60d2f619cea",
+        "cdffb43f5402f9a6"
+      ],
+      "relevant": [
+        "2f9d65ce3ea297ea"
+      ],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0200": {
@@ -8578,6 +13474,41 @@
       ],
       "relevant": [],
       "shuffle_seed": 20260924
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:22:06Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "987135e53b5b0907",
+        "df2d670fa587df25",
+        "96a55103122a8cad",
+        "d49fa8f9674ccdaa",
+        "563bd999a0f64b41",
+        "93b1a602a150faeb",
+        "7b2bee40a02df4ad",
+        "5ee72b7a59b1c69c",
+        "4c9ccfc9dbc11dc7",
+        "6b541a7b0efc8075",
+        "81cc1c9f5d87f8ea",
+        "4ba71d126becd885",
+        "b967e0d799272412",
+        "bb5e2823ce503ce4",
+        "4e1fab073ba7f642",
+        "bb6447939def4ecc",
+        "665900278b90aba8",
+        "769705b86eec4a3f",
+        "97895d6b45554838",
+        "07182fc69a9a5914",
+        "264bbf6dee3381e4",
+        "cd73ace2e62d13ab",
+        "8d0874f32800c1e9",
+        "75de6fa4a5e7a638",
+        "b1c5b829bbd2e81a"
+      ],
+      "relevant": [],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0201": {
@@ -8613,6 +13544,41 @@
         "67eab8db14a0f9ce"
       ],
       "relevant": []
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:22:19Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "80f76d7def5c68a3",
+        "460322fecfee50d6",
+        "45725771faf01e2a",
+        "b71da1e9f48b751b",
+        "a43ae6b397d17d2c",
+        "593f8ea7334e5456",
+        "727c27f5ecb62ee9",
+        "232b545d9dd39ffd",
+        "7da8a37b0b9f6da9",
+        "afdf86565c04af48",
+        "6ffdd6d59d52b5eb",
+        "278a8fa532a67a1e",
+        "191751f1054abd5f",
+        "bb6770cf3757b499",
+        "2962907bd7bba4a3",
+        "67eab8db14a0f9ce",
+        "3059030fc7b80da3",
+        "c46e2a457644ec7c",
+        "8ebc4d4a8899d579",
+        "ccb548315f5a6c0c",
+        "76ae1dca5ae0a1b6",
+        "103ce18ed46b9f04",
+        "009e7d39834bf9fd",
+        "55a5a88b5e4af1ae",
+        "e53d99f4f3a5d2df"
+      ],
+      "relevant": [],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   },
   "cv-0202": {
@@ -8648,6 +13614,41 @@
         "c6de2c2268036f2c"
       ],
       "relevant": []
+    },
+    "3": {
+      "annotator": "lord",
+      "annotated_at": "2026-10-31T19:22:45Z",
+      "index_version": "2825a7160c4d09bf",
+      "pool": [
+        "ff1d3fc18cb1bfb9",
+        "b9143a90f4b341af",
+        "56f1a06524984f27",
+        "acd8957e00072f3f",
+        "817919caf2388132",
+        "a8ca6c5bb5362aeb",
+        "c45803ff89a47bd9",
+        "47d04afb15afff7e",
+        "b38929dc7db27a1a",
+        "aac3502627e988e0",
+        "c922ac3a29958c17",
+        "b654ba0413061a99",
+        "2a6aae3733844aa4",
+        "9725b120d3dec8bf",
+        "2c40b841911b5169",
+        "ee771035bac4f744",
+        "44c895875031555f",
+        "5258f99b5aa7abe8",
+        "aa24b6b900196519",
+        "86cdd487696ce168",
+        "c1206922eb3fb864",
+        "a05c35339ba4977d",
+        "af39ffcf937ecdce",
+        "c6de2c2268036f2c",
+        "47252039578c1fd0"
+      ],
+      "relevant": [],
+      "shuffle_seed": 20261031,
+      "criterion": "2026-10-10"
     }
   }
 }

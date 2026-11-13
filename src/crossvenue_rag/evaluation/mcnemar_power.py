@@ -11,8 +11,8 @@ import functools
 import math
 
 from .. import formatting
-from .paired import mcnemar_p
-from .power import SIGNIFICANCE_LEVEL, TARGET_POWER
+from .paired import binomial_tails, exact_two_sided_p, mcnemar_p, smaller_side
+from .power import SIGNIFICANCE_LEVEL, TARGET_POWER, favor_probability
 
 # Below this probability a number of discordant questions adds nothing to the power.
 NEGLIGIBLE = 1e-12
@@ -47,6 +47,10 @@ def _require_model(size: int, psi: float, delta: float) -> None:
         )
 
 
+def _expected_discordant(size: int, psi: float) -> float:
+    return size * psi
+
+
 def binomial_pmf(k: int, trials: int, prob: float) -> float:
     """P(k successes in `trials`) for success probability `prob` in [0, 1]."""
     if prob in (0.0, 1.0):
@@ -68,19 +72,16 @@ def binomial_pmf(k: int, trials: int, prob: float) -> float:
 def rejections(discordant: int) -> tuple[int, ...]:
     """Splits k of `discordant` questions that the exact two-sided McNemar test rejects.
 
-    The p of a split grows with min(k, discordant - k), so the rejected splits are
-    both tails up to the last one within `SIGNIFICANCE_LEVEL`. The tail is summed as integers,
-    as `paired.mcnemar_p` sums it, so each p is the same float.
+    The p of a split grows with its smaller side (`paired.smaller_side`), so the rejected
+    splits are both tails up to the last one within `SIGNIFICANCE_LEVEL`. The tails are
+    `paired.binomial_tails`, as `paired.mcnemar_p`'s are, so each p is the same float.
     """
-    outcomes: int = 2**discordant
-    tail, coefficient, last = 0, 1, -1
-    for k in range(discordant // 2 + 1):
-        tail += coefficient
-        coefficient = coefficient * (discordant - k) // (k + 1)
-        if min(1.0, 2 * (tail / outcomes)) > SIGNIFICANCE_LEVEL:
+    last = -1
+    for k, tail in enumerate(binomial_tails(discordant)):
+        if exact_two_sided_p(tail, discordant) > SIGNIFICANCE_LEVEL:
             break
         last = k
-    return tuple(k for k in range(discordant + 1) if min(k, discordant - k) <= last)
+    return tuple(k for k in range(discordant + 1) if smaller_side(k, discordant) <= last)
 
 
 @functools.cache
@@ -91,7 +92,7 @@ def mcnemar_power(size: int, psi: float, delta: float) -> float:
         ValueError: `size`, `psi` or `delta` is outside the model (`_require_model`).
     """
     _require_model(size, psi, delta)
-    favor = 0.5 + delta / (2 * psi)
+    favor = favor_probability(psi, delta)
     total = 0.0
     for d in range(1, size + 1):
         weight = binomial_pmf(d, size, psi)
@@ -155,8 +156,8 @@ def expected_split(size: int, psi: float, delta: float) -> tuple[int, int]:
         ValueError: `size`, `psi` or `delta` is outside the model (`_require_model`).
     """
     _require_model(size, psi, delta)
-    discordant = size * psi
-    wins = discordant * (0.5 + delta / (2 * psi))
+    discordant = _expected_discordant(size, psi)
+    wins = discordant * favor_probability(psi, delta)
     return round(wins), round(discordant - wins)
 
 
@@ -170,4 +171,4 @@ def expected_split_p(size: int, psi: float, delta: float) -> float:
     Raises:
         ValueError: `size`, `psi` or `delta` is outside the model (`expected_split`).
     """
-    return mcnemar_p(expected_split(size, psi, delta)[0], round(size * psi))
+    return mcnemar_p(expected_split(size, psi, delta)[0], round(_expected_discordant(size, psi)))

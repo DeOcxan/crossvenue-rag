@@ -112,7 +112,11 @@ def refusals(doc: Doc, src: Sources) -> None:
 
 
 def prompt_v2(doc: Doc, src: Sources) -> None:
-    """Prompt v2: refusals, partial answers and clarifying questions against v1."""
+    """Prompt v2: refusals and partial answers against v1."""
+    doc.definition(
+        "Prompt v2 replaces rule 5 with three outcomes",
+        reason="full answer, partial answer and refusal, the outcomes prompt v2 allows",
+    )
     rows: dict[str, list[object]] = {
         r.category: [
             formatting.count(r.questions),
@@ -214,7 +218,7 @@ def mercury(doc: Doc, src: Sources) -> None:
         "Opus grades its behavior correct on {} of them under v2, against {} under v1. The {} "
         "unanswerable questions are a category of fewer than {}, so under methodology \u00a77 "
         "the counts carry no p-value. {} of its {} non-refusals are partial answers, and {} of "
-        "its answers flagged partial carry no claim",
+        "its answers flagged partial, over all categories, carry no claim",
         formatting.count(answers.outcome_count(src, MERCURY, "unanswerable", "refused", PROMPT_V2)),
         size,
         formatting.count(answers.outcome_count(src, MERCURY, "unanswerable", "refused", PROMPT_V1)),
@@ -282,10 +286,28 @@ def cost_claims(doc: Doc, src: Sources) -> None:
             for v in answers_costs.judge_cost_ratios(src)
         ],
     )
+    doc.check(
+        "The gemini@hybrid_rerank configuration shares {} cached calls with gemini@venue_split, "
+        "so v2 spent ${} on uncached generator calls.",
+        formatting.count(answers_costs.cached_calls(src, "gemini@hybrid_rerank", PROMPT_V2)),
+        formatting.cost_figure(answers_costs.uncached_cost(src, PROMPT_V2)),
+    )
+    v2, v1 = answers_costs.slow_calls(src, PROMPT_V2), answers_costs.slow_calls(src, PROMPT_V1)
+    doc.check(
+        "Mercury's p95 is its calls with an invalid response: {} of its {} such calls took over "
+        "{} s under v2 (the longest {} s, with {} invalid responses), and {} of {} under v1.",
+        formatting.count(v2.over),
+        formatting.count(v2.calls),
+        formatting.count(answers_costs.SLOW_CALL_S),
+        formatting.call_seconds(v2.longest_s),
+        formatting.count(v2.longest_invalid),
+        formatting.count(v1.over),
+        formatting.count(v1.calls),
+    )
 
 
 def judge_cost(doc: Doc, src: Sources) -> None:
-    """What judging and calibrating cost, and the slow calls."""
+    """What judging and calibrating cost."""
     judge = src.judged_v1.config.generation.chosen_judge()
     judged1, judged2 = (
         answers_costs.judge_calls(src, PROMPT_V1),
@@ -309,22 +331,4 @@ def judge_cost(doc: Doc, src: Sources) -> None:
         formatting.cost_figure(calibration.judgement_cost(src, judge)),
         formatting.cost_figure(calibration.judgement_cost(src, judge, 1)),
         formatting.count(answers_costs.invalid_judgements(src)),
-    )
-    doc.check(
-        "The gemini@hybrid_rerank configuration shares {} cached calls with gemini@venue_split, "
-        "so v2 spent ${} on uncached calls.",
-        formatting.count(answers_costs.cached_calls(src, "gemini@hybrid_rerank", PROMPT_V2)),
-        formatting.cost_figure(answers_costs.uncached_cost(src, PROMPT_V2)),
-    )
-    v2, v1 = answers_costs.slow_calls(src, PROMPT_V2), answers_costs.slow_calls(src, PROMPT_V1)
-    doc.check(
-        "Mercury's p95 is its calls with an invalid response: {} of its {} such calls took over "
-        "{} s under v2 (the longest {} s, with {} invalid responses), and {} of {} under v1.",
-        formatting.count(v2.over),
-        formatting.count(v2.calls),
-        formatting.count(answers_costs.SLOW_CALL_S),
-        formatting.call_seconds(v2.longest_s),
-        formatting.count(v2.longest_invalid),
-        formatting.count(v1.over),
-        formatting.count(v1.calls),
     )

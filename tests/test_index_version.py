@@ -95,6 +95,15 @@ def test_a_damaged_index_meta_is_a_user_error_naming_the_file(tmp_path, content)
     assert "make ingest index" in refused.value.hint
 
 
+def test_a_missing_manifest_is_refused_with_a_hint_to_restore_it_or_fetch_the_branch_heads(cfg):
+    from crossvenue_rag.index_version import index_components
+
+    with pytest.raises(UserError, match="not found") as refused:
+        index_components(cfg)
+    assert "restore it" in refused.value.hint
+    assert "`crossvenue fetch --follow-branch`" in refused.value.hint
+
+
 def test_a_directory_where_index_meta_or_the_manifest_should_be_is_a_user_error(cfg):
     from crossvenue_rag.index_version import (
         index_components,

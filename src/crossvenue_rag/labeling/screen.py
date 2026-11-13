@@ -1,7 +1,7 @@
 """The labeling screen: what a candidate row shows, and how.
 
-A row is compact by default. It shows the venue, the heading path, the methods that found it,
-the first body line and a window around a later question term. A screen does not hold 25 full
+A row is compact by default: the venue, the heading path, the methods that found it, the first
+body line and a window around a later question term. A screen does not hold 25 full
 chunks, and the annotator would end up judging by scroll position; `v<n>` shows candidate n in
 full.
 """
@@ -23,7 +23,7 @@ from ..rich_text import add_text_row
 
 # Shorter words of a question are too common to screen chunks by.
 MIN_TERM_LENGTH = 3
-# The other venues a line names before it says how many more there are.
+# The other copies' paths a row names before it says how many more there are.
 OTHERS_SHOWN = 2
 
 # How a screen asks: rich's `Prompt.ask`, or a test's scripted answers.
@@ -55,7 +55,7 @@ doesn't isn't aren't cant can't
 _STOPWORDS = frozenset(_STOPWORD_TEXT.split())
 
 
-_TERM_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9_./-]*[A-Za-z0-9]|[A-Za-z0-9]{3,}")
+_TERM_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9_./-]*[A-Za-z0-9]")
 
 
 def question_terms(question: str) -> list[str]:
@@ -79,7 +79,7 @@ def highlight(text: str, terms: Sequence[str]) -> Text:
 
 
 def _body_lines(result: Result) -> list[str]:
-    """Lines of the body, flattened: no breadcrumb, heading lines or code fences.
+    """Lines of the body, flattened: no breadcrumb, fence lines or lines that start with `#`.
 
     Headings are skipped because they repeat the breadcrumb, which already
     carries the venue and section words a question is likely to share.
@@ -95,23 +95,17 @@ def _body_lines(result: Result) -> list[str]:
 
 
 def first_line(result: Result) -> str:
-    """The first line of the body, past the breadcrumb, heading lines and code fences.
-
-    A chunk that opens with a code sample shows its first line of code.
-    """
+    """The first body line past the breadcrumb, fence lines and lines that start with `#`."""
     lines = _body_lines(result)
     if not lines:
         return "(heading only)"
-    flat = lines[0]
-    return flat[:FIRST_LINE_CHARS] + (" ..." if len(flat) > FIRST_LINE_CHARS else "")
+    return formatting.preview(lines[0], FIRST_LINE_CHARS)
 
 
-def match_window(
-    result: Result, terms: Sequence[str], width: int = MATCH_WINDOW_CHARS
-) -> str | None:
-    """About `width` characters around the first question term in the body.
+def match_window(result: Result, terms: Sequence[str]) -> str | None:
+    """About `MATCH_WINDOW_CHARS` characters around the first question term in the body.
 
-    Searched *after* the first line, which the compact row already shows with
+    Searched after the first line, which the compact row already shows with
     its terms highlighted; repeating it would add nothing to the row.
     The window is centered on the match, shifted inward at either end of the
     text, and trimmed to whole words. None when no term occurs.
@@ -123,9 +117,9 @@ def match_window(
     match = pattern.search(rest)
     if match is None:
         return None
-    start = max(0, match.start() - (width - (match.end() - match.start())) // 2)
-    end = min(len(rest), start + width)
-    start = max(0, end - width)
+    start = max(0, match.start() - (MATCH_WINDOW_CHARS - (match.end() - match.start())) // 2)
+    end = min(len(rest), start + MATCH_WINDOW_CHARS)
+    start = max(0, end - MATCH_WINDOW_CHARS)
     # Trim a word cut in half at either edge, never past the match itself.
     if start > 0 and rest[start - 1] != " ":
         space = rest.find(" ", start, match.start())
@@ -184,7 +178,7 @@ def render(
     question: Question,
     candidates: Sequence[Result],
     marked: set[str],
-    view: ScreenView = ScreenView(),
+    view: ScreenView,
 ) -> None:
     """Question panel, then `view.between()` if given, then the candidate table."""
     blind = view.blind
@@ -224,7 +218,7 @@ def _render_question(
             f"{formatting.count(len(question.source_chunk_ids))}"
             + (f" (#{', #'.join(found)})" if found else "")
         )
-        missed = "  (pool missed the source: note it)" if not in_pool else ""
+        missed = "  (pool missed the source)" if not in_pool else ""
     notes = f"\nnotes: {question.notes or formatting.MISSING}" if with_notes else ""
     show: Show = console.print
     show(
@@ -253,7 +247,7 @@ def _render_table(
     marked: set[str],
     *,
     compact: bool,
-    blind: bool = False,
+    blind: bool,
 ) -> None:
     terms = question_terms(question.question)
     table = Table(show_lines=not compact, expand=True)

@@ -42,7 +42,7 @@ def test_the_estimate_retrieves_exactly_as_the_run_does_oracle_hint_included(tmp
     rows = estimate_answers(cfg, estimated, QUESTIONS, llm, judge_name=None)
     assert estimated.calls == ran.calls
     assert all(hint == q.venues for q, (*_, hint) in zip(QUESTIONS, ran.calls, strict=True))
-    # Every answer the run made is found in the cache by the estimate.
+    # The estimate finds every answer the run made in the cache.
     assert rows[0].cached == rows[0].calls == len(QUESTIONS)
 
 

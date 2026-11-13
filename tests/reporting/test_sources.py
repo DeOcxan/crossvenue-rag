@@ -40,8 +40,8 @@ def test_a_judgment_of_more_claims_than_the_answer_has_is_refused_where_answers_
 
 
 def test_the_latency_table_reads_the_committed_and_the_formatted_report(tmp_path):
-    """A committed run is read from its report.md as written; a run whose
-    summary.csv predates the latency columns but whose report.md uses
+    """A committed run is read from its `report.md` as written; a run whose
+    `summary.csv` predates the step columns but whose `report.md` uses
     `formatting.ms` reads back as plain decimals."""
 
     from crossvenue_rag.reporting.sources import RetrievalRun
@@ -180,9 +180,9 @@ def test_a_report_step_cell_that_is_no_number_is_a_user_error(tmp_path):
         _ = RetrievalRun(run).step_table
 
 
-# Keys of a run's saved config that `reporting` reads other than as
-# `src.<run>.config.<section>.<key>`, which the test below finds in the code itself.
-# A key its run did not save would read as today's default (`run_files.read_run_config`).
+# Keys of judged_v1's saved config that `reporting` reads through a local name, beside the
+# `src.<run>.config.<section>.<key>` reads the test below finds in the code itself.
+# A key its run did not save would read as `Config`'s default (`run_files.read_run_config`).
 INDIRECT_CONFIG_KEYS = {
     "judged_v1": ["generation.judge", "generation.judges"],
 }
@@ -200,7 +200,7 @@ def config_reads() -> dict[str, set[str]]:
     return reads
 
 
-def test_every_config_key_reporting_reads_is_saved_by_its_run():
+def test_each_config_key_read_as_src_run_config_section_key_is_saved_by_its_run():
     src = Sources(REPO)
     reads = config_reads()
     assert "retrieval" in reads and "v1" in reads

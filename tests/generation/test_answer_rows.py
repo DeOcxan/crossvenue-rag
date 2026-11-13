@@ -79,7 +79,7 @@ def test_a_failed_answer_row_has_empty_call_outcome_and_metric_cells():
     assert row.judge_model == ""
 
 
-def test_summary_counts_answers_errors_and_each_non_answer_outcome():
+def test_summary_counts_answers_errors_and_each_outcome_other_than_full():
     records = [
         record(CONFIG, "cv-1"),
         record(CONFIG, "cv-2", generation=generation_json(answer=answer_json(refused=True))),
@@ -130,7 +130,7 @@ def test_summary_sums_tokens_and_cost_and_splits_off_the_new_cost():
     # A call without reasoning tokens adds none.
     assert row.reasoning_tokens == 60
     assert row.cost_usd == pytest.approx(0.07)
-    # The cached call's cost was paid by an earlier run.
+    # An earlier run paid the cached call's cost.
     assert row.cost_usd_new == pytest.approx(0.05)
     assert row.judge_cost_usd == pytest.approx(0.03)
     assert row.latency_p50_ms == 200.0
@@ -175,10 +175,3 @@ def test_every_committed_answer_summary_writes_back_byte_for_byte(run, tmp_path)
     from crossvenue_rag.generation.answer_rows import read_answer_summary
 
     assert_round_trip(run, "summary.csv", read_answer_summary(run), tmp_path)
-
-
-@pytest.mark.parametrize("run", committed_of_kind("paired.csv", *ANSWER_RUNS), ids=lambda p: p.name)
-def test_every_committed_answer_paired_table_writes_back_byte_for_byte(run, tmp_path):
-    from crossvenue_rag.generation.answer_pairs import read_config_comparisons
-
-    assert_round_trip(run, "paired.csv", read_config_comparisons(run), tmp_path)

@@ -50,6 +50,11 @@ class FetchReport:
         """True when any venue has a changed, missing or extra file."""
         return any(self.changed.values()) or any(self.missing.values()) or any(self.extra.values())
 
+    @property
+    def matched_total(self) -> int:
+        """The number of files matching the manifest, over every venue."""
+        return sum(self.matched.values())
+
 
 def _compare(
     venue: str,
@@ -83,7 +88,7 @@ def _compare(
 
 
 def _require_raw_directory(raw: Path) -> None:
-    """`paths.raw` is a directory or can be made one: no file stands on its path.
+    """`paths.raw` is a directory or can be made one: no file is at it or at one of its parents.
 
     Raises:
         UserError: `raw` or one of its parents is a file, so the sources cannot be written.
@@ -120,7 +125,8 @@ def fetch_all(
     the GitBook pages (`gitbook_source.fetch_gitbook_source`).
 
     Raises:
-        UserError: A venue of `only` is unknown.
+        UserError: A venue of `only` is unknown, `paths.raw` or one of its parents is a
+            file, or a directory is at `paths.manifest`.
     """
     specs = _selected_sources(cfg, only)
     _require_raw_directory(cfg.paths.raw)

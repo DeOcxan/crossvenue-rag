@@ -40,8 +40,7 @@ def parse_llms_index(text: str, section: str | None) -> list[tuple[str, str]]:
     """The ``(title, url)`` pairs of a GitBook llms.txt.
 
     When ``section`` is given, only links under that ``## <section>`` heading are
-    returned: PancakeSwap lists fifteen translations of the same pages, and a
-    corpus of the same text in fifteen languages measures the wrong thing.
+    returned: PancakeSwap lists fifteen translations of the same pages.
 
     Raises:
         UserError: `section` is given and the index has no such heading.
@@ -75,15 +74,14 @@ def parse_llms_index(text: str, section: str | None) -> list[tuple[str, str]]:
 def url_to_local_path(url: str) -> str:
     """The filesystem path under the venue directory that a page URL maps onto.
 
-    ``https://host/space/a/b.md`` -> ``a/b.md``. The space prefix is dropped so
-    every document's path starts at the first real section. A ``..`` segment is
-    kept, so the result can lead outside the venue directory: the writer refuses
+    ``https://host/space/a/b.md`` -> ``a/b.md``. The first path part is dropped.
+    A ``..`` segment is kept, so the result can lead outside the venue directory: the writer refuses
     such a path (`confined`).
     """
     without_scheme = url.split("://", 1)[-1]
     parts = [p for p in without_scheme.split("/")[1:] if p]  # the host is not part of the path
     if len(parts) > 1:
-        parts = parts[1:]  # the first part is the GitBook space slug
+        parts = parts[1:]
     safe = [re.sub(r"[^A-Za-z0-9._-]", "_", p) for p in parts]
     return "/".join(safe) or "index.md"
 
@@ -107,7 +105,7 @@ def fetch_gitbook_source(
     failures: list[str],
     recorded: dict[str, str] | None,
 ) -> list[ManifestRow]:
-    """Rows for every page `llms.txt` lists.
+    """Rows for every page of `llms.txt` that `parse_llms_index` returns.
 
     A page that cannot be downloaded is left out and its URL appended to
     `failures`. `http` is a client built from `cfg.fetch` that waits with `time.sleep`
@@ -201,7 +199,7 @@ def _get_with_retries(http: Http, url: str, cfg: Config) -> httpx.Response:
     """GET, retrying what `retries.is_retryable` allows, with backoff from `fetch.backoff_seconds`.
 
     Raises:
-        httpx.HTTPError: The last attempt failed with a network error.
+        httpx.HTTPError: The last attempt failed with a network error or an error status.
     """
 
     def attempt() -> Attempt[httpx.Response | httpx.TransportError]:

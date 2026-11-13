@@ -1,10 +1,9 @@
 """Structure-aware chunking of API documentation under a token budget.
 
-A fixed-window splitter cuts a parameter table away from its endpoint and a
-signature in half. This chunker breaks at headings once a chunk reaches
-`min_tokens` and keeps a fenced code block whole up to `max_code_block_tokens`. A
-chunk whose body does not start with a heading gets its heading breadcrumb as a
-prefix; one that starts with a heading keeps that heading alone (docs/reference/corpus.md).
+The chunker breaks at headings once a chunk reaches `min_tokens` and, with
+`keep_code_blocks_intact`, keeps fenced code blocks whole up to `max_code_block_tokens`. A
+chunk whose body does not start with `#` gets its heading breadcrumb as a prefix; one
+that starts with a heading keeps that heading alone (docs/reference/corpus.md).
 """
 
 from __future__ import annotations
@@ -83,14 +82,14 @@ def _split_oversized(
 ) -> Iterator[Block]:
     """Breaks a single block that cannot fit in a chunk on its own.
 
-    Code blocks are kept whole up to ``max_code_block_tokens``: an oversized
-    chunk is a smaller sin than an unusable one. Above that they are split on
-    line boundaries, which keeps statements intact.
+    With `keep_code_blocks_intact`, code blocks are kept whole up to ``max_code_block_tokens``:
+    an oversized chunk is a smaller sin than an unusable one. Above that they are split
+    as prose is.
 
     Prose is split on lines first and, only when a single line does not fit, on
-    words. Some sources have such lines: a PancakeSwap farm list is, after
-    normalization, one 5,661-character table row of 3,736 tokens. Left whole it
-    becomes a chunk of which a 512-token encoder silently sees about the first seventh.
+    words. A PancakeSwap farm list is, after normalization, one 5,661-character
+    table row of 3,736 tokens. Left whole it becomes a chunk of which a 512-token
+    encoder silently sees about the first seventh.
     """
     tokens = count(block.text)
     if tokens <= max_tokens:
@@ -131,8 +130,7 @@ def _split_on_words(
     """Last-resort split of one unreasonably long line, on whitespace.
 
     A "word" that does not fit is split on characters. Only space-free junk
-    reaches that case (a table rule hundreds of columns wide), but without it a
-    single token blob can break the budget outright.
+    reaches that case, but without it a single token blob can break the budget outright.
     """
     current: list[str] = []
     for word in line.split(" "):
@@ -150,8 +148,7 @@ def _split_on_words(
 def _fit_on_characters(word: str, max_tokens: int, count: TokenCounter) -> list[str]:
     if count(word) <= max_tokens:
         return [word]
-    # The first width comes from the observed characters-per-token ratio, so the
-    # shrinking takes two or three iterations in practice.
+    # The first width comes from the observed characters-per-token ratio.
     width = max(1, int(len(word) * max_tokens / max(1, count(word))))
     while width > 1 and count(word[:width]) > max_tokens:
         width = width * _SHRINK_NUMERATOR // _SHRINK_DENOMINATOR
@@ -201,7 +198,7 @@ class Chunker:
 
         for block in blocks:
             # A heading starts another chunk, but only once the running chunk is
-            # substantial; this is what merges "## Parameters" into its body.
+            # substantial; this merges a short section into the next one.
             if (
                 block.kind == "heading"
                 and current
@@ -212,7 +209,7 @@ class Chunker:
             if current and self._tokens_of([*current, block]) > self.cfg.max_tokens:
                 flush(seed_overlap=True)
                 # The flush may have left carried-over overlap behind, or been a
-                # no-op because `current` was *only* carried-over overlap. Either
+                # no-op because `current` was only carried-over overlap. Either
                 # way, if the block still does not fit, the overlap is dropped:
                 # losing context is better than silently exceeding the budget,
                 # and the heading stays so the chunk still says where it is.
@@ -237,7 +234,7 @@ class Chunker:
     def _body_tokens(self, blocks: list[Block]) -> int:
         """Token count of the blocks alone, without the heading breadcrumb.
 
-        `min_tokens` and `overlap_tokens` are about how much *document* a chunk
+        `min_tokens` and `overlap_tokens` are about how much document a chunk
         carries; counting the breadcrumb toward them would let a deep heading
         path fill an overlap budget entirely and silently switch overlap off.
         """

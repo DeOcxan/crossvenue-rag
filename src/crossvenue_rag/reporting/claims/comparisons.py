@@ -1,4 +1,4 @@
-"""Formatted values that several claim modules state.
+"""Formatted values that claim modules state.
 
 The comparisons the documents quote with their statistics, the annotator's kappa with its
 interval, the sizes of the question sets and of the sensitivity runs, and the venues' fee tiers.
@@ -34,6 +34,12 @@ def estimate(difference: Estimate) -> str:
     return f"{formatting.signed(difference.value)} {interval}"
 
 
+def estimate_and_p(src: Sources, run: str, comparison: sensitivity.Comparison) -> list[str]:
+    """The two table cells of a comparison in `run`: the difference and its tested p."""
+    row = sensitivity.paired_row(src, run, comparison)
+    return [estimate(Estimate.of(row)), formatting.p_value(sensitivity.tested_p(row))]
+
+
 def signed_parts(difference: Estimate) -> list[str]:
     """A difference and its bounds, each signed, for the three holes of a claim."""
     return [formatting.signed(v) for v in (difference.value, difference.low, difference.high)]
@@ -56,7 +62,7 @@ def kappa_bounds(reading: AgreementVariant) -> tuple[str, str]:
         ValueError: the reading has no interval.
     """
     ci = reading.interval
-    if ci is None or ci.low is None or ci.high is None:
+    if ci.low is None or ci.high is None:
         raise ValueError(f"the {reading.reference} {reading.scope} reading has no kappa interval")
     return formatting.metric(ci.low), formatting.metric(ci.high)
 
@@ -67,7 +73,7 @@ def kappa_cell(reading: AgreementVariant) -> str:
     The kappa is given without an interval when no resample defined one.
     """
     kappa, ci = reading.report.kappa, reading.interval
-    if ci is None or ci.low is None or ci.high is None:
+    if ci.low is None or ci.high is None:
         return formatting.metric(kappa)
     return f"{formatting.metric(kappa)} {formatting.bounds(ci.low, ci.high)}"
 
@@ -171,7 +177,17 @@ def retried_status_parts() -> tuple[str, list[str]]:
     return listing.prose(["{}"] * len(statuses)), statuses
 
 
+def share_parts(share: float, covered: int, total: int) -> list[str]:
+    """A share and its two counts, for the holes of `0.52 (26/50)`."""
+    return [
+        formatting.fixed(share, formatting.SHARE_DECIMALS),
+        formatting.count(covered),
+        formatting.count(total),
+    ]
+
+
 def coverage_parts(src: Sources, method: str) -> list[str]:
     """`method`'s comparison coverage and its counts, for the holes of `0.52 (26/50)`."""
-    share = formatting.fixed(retrieval.covered_share(src, method), formatting.SHARE_DECIMALS)
-    return [share, *[formatting.count(v) for v in retrieval.coverage_counts(src, method)]]
+    return share_parts(
+        retrieval.covered_share(src, method), *retrieval.coverage_counts(src, method)
+    )

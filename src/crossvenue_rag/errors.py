@@ -15,6 +15,14 @@ from pydantic import ValidationError
 from . import formatting
 from .listing import first_items
 
+# The model libraries are declared dependencies, so a failed import of one is a missing install.
+INSTALL_HINT = "install the project's dependencies with `make install`"
+
+
+def install_hint_or(exc: Exception, otherwise: str) -> str:
+    """The hint for a model load that raised `exc`: `INSTALL_HINT` for a failed import."""
+    return INSTALL_HINT if isinstance(exc, ImportError) else otherwise
+
 
 class ExpectedFailure(Exception):
     """A failure the program expects: a `UserError` or an `ExternalFailure`."""
@@ -40,7 +48,7 @@ class ExternalFailure(ExpectedFailure):
 def validation_problems(exc: ValidationError) -> str:
     """The first problems of a failed validation as text: each field's path and what is wrong.
 
-    The text holds no input value, so no raw representation of a list or dict.
+    The text leaves out each error's `input`, so no raw representation of a list or dict.
     """
     return first_items(
         [
@@ -54,7 +62,7 @@ def validation_problems(exc: ValidationError) -> str:
 
 
 def invalid_file(path: str | Path, exc: ValidationError, hint: str) -> UserError:
-    """A user-edited file that failed validation, naming the file and its first problems."""
+    """A file or override that failed validation, naming it and its first problems."""
     return UserError(f"invalid {path}: {validation_problems(exc)}", hint=hint)
 
 

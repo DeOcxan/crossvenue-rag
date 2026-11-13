@@ -9,12 +9,10 @@ from __future__ import annotations
 from collections.abc import Sequence
 from dataclasses import dataclass
 from itertools import combinations
-from typing import get_args
 
-from ...config_generation import AnswerScope
 from ...corpus.artifacts import CHUNKS_FILENAME
 from ...generation.answer_pairs import ConfigComparison
-from ...generation.answer_rows import in_scope
+from ...generation.answer_rows import SCOPES, category_in_scope
 from ...generation.answering import split_answer_id
 from ...generation.attribution import WRAPPERS, AttributionSummary
 from ...generation.records import AnswerRecord
@@ -157,7 +155,7 @@ def metric_answer_range(src: Sources, metric: str, scope: str) -> tuple[int, int
             for r in src.judged_v1.records
             if r.config == config
             and r.judge is not None
-            and in_scope(r, scope)
+            and category_in_scope(_gold_category(src, r), scope)
             and r.judged().metrics.value(metric) is not None
         )
         for config in configurations(src)
@@ -167,7 +165,7 @@ def metric_answer_range(src: Sources, metric: str, scope: str) -> tuple[int, int
 
 @dataclass(frozen=True)
 class AttributionPairRow:
-    """a - b on venue_attribution_error, prompt v1: per scope, the questions paired and the test."""
+    """a - b on `venue_attribution_error`, prompt v1: per scope, the questions paired, the test."""
 
     a: str
     b: str
@@ -178,23 +176,21 @@ class AttributionPairRow:
 
 
 def attribution_pair_rows(src: Sources) -> list[AttributionPairRow]:
-    """Every pair of configurations on venue_attribution_error, on comparison and all questions."""
+    """Each pair of configurations on `venue_attribution_error`, on comparison and all questions."""
     rows = []
     for a, b in combinations(configurations(src), 2):
         cells = [
             entry(src.judged_v1.paired, (a, b, "venue_attribution_error", scope), PAIRED_FILE)
-            for scope in get_args(AnswerScope)
+            for scope in SCOPES
         ]
         tested = [_tested(r) for r in cells]
         rows.append(AttributionPairRow(a, b, cells[0].n, tested[0], cells[1].n, tested[1]))
     return rows
 
 
-def attribution_pairs_touching_zero(src: Sources, scope: str) -> int:
-    """Pairs whose venue_attribution_error interval over `scope` includes 0 (`Estimate`)."""
-    rows = attribution_pair_rows(src)
-    tests = [r.comparison if scope == COMPARISON else r.all for r in rows]
-    return sum(1 for t in tests if t.difference.includes_zero())
+def attribution_pairs_touching_zero(src: Sources) -> int:
+    """Pairs whose `venue_attribution_error` interval over all questions includes 0."""
+    return sum(1 for r in attribution_pair_rows(src) if r.all.difference.includes_zero())
 
 
 def any_pair_significant(src: Sources, metric: str) -> bool:
@@ -241,8 +237,13 @@ def _comparison_judged(src: Sources, config: str) -> list[AnswerRecord]:
     return [
         r
         for r in src.judged_v1.records
-        if r.config == config and in_scope(r, COMPARISON) and r.judge is not None
+        if r.config == config and _gold_category(src, r) == COMPARISON and r.judge is not None
     ]
+
+
+def _gold_category(src: Sources, record: AnswerRecord) -> str:
+    """The category the gold set gives an answer's question."""
+    return entry(src.questions, record.question_id, "the gold set").effective_category
 
 
 def _coverage(record: AnswerRecord) -> float:

@@ -4,8 +4,7 @@ The key is a hash of the provider, the exact model id, the parameters, the
 prompt, the output schema and a replicate number, which makes a deliberate repeat
 (the judge's self-consistency run) a different entry. A re-run of the same
 configuration reads the cache and costs nothing for every call that succeeded; a reply
-that failed validation is not cached. Every result records the key of the entry it came
-from.
+that failed validation is not cached.
 """
 
 from __future__ import annotations
@@ -16,6 +15,7 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, JsonValue, field_validator
 
+from ..atomic_files import write_text_atomically
 from ..hashes import text_sha256
 from ..run_files import read_json_model
 from .records import CallRecord
@@ -69,13 +69,14 @@ class DiskCache:
     def put(self, key: str, entry: dict[str, Any]) -> Path:
         """Writes `entry` for `key` atomically and returns its file."""
         path = self.path(key)
-        path.parent.mkdir(parents=True, exist_ok=True)
-        tmp = path.with_suffix(".tmp")
-        tmp.write_text(json.dumps(entry, ensure_ascii=False, indent=1), encoding="utf-8")
-        tmp.replace(path)
+        write_text_atomically(path, json.dumps(entry, ensure_ascii=False, indent=1))
         return path
 
 
 def read_entry(path: Path) -> CacheEntry:
-    """The cache entry stored in `path` (`run_files.read_json_model`)."""
+    """The cache entry stored in `path` (`run_files.read_json_model`).
+
+    Raises:
+        UserError: Nothing is at `path`, or a directory is.
+    """
     return read_json_model(path, CacheEntry, hint=f"delete {path} and re-run")

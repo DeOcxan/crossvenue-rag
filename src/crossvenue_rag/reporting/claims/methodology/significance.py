@@ -9,6 +9,7 @@ from ....evaluation import mcnemar_power, t_test_size
 from ....evaluation.power import TARGET_POWER_PERCENT
 from ...check import Doc
 from ...compute import datasets, power
+from ...compute.estimates import DELTA
 from ...outcomes import Param
 from ...run_ids import POWER_RUN
 from ...sources import Sources
@@ -32,8 +33,7 @@ from .texts import (
     SAMPLE_SIZE_RULES,
 )
 
-# The differences the power model is evaluated at; its discordance is `protocol.PSI`.
-DELTA = 0.20
+# The power model is also evaluated at this difference; its discordance is `protocol.PSI`.
 SMALL_DELTA = 0.10
 # The example of a significant split: questions.
 EXAMPLE_SIZE = 120
@@ -256,8 +256,6 @@ def observed_power(doc: Doc, src: Sources) -> None:
         "a \u03b4 above {} cannot occur in this model",
         formatting.design_parameter(power.gap_ceiling(src)),
     )
-    doc.definitions(SAMPLE_SIZE_RULES, reason=REGISTERED)
-    _size_rules(doc, src)
 
 
 def _size_rules(doc: Doc, src: Sources) -> None:
@@ -325,7 +323,9 @@ def _size_rules(doc: Doc, src: Sources) -> None:
 
 
 def sample_size_decision(doc: Doc, src: Sources) -> None:
-    """Section 7: the decision on the set's size, restated with the model's numbers."""
+    """Section 7: the decision on the set's size, stated and restated with the model's numbers."""
+    doc.definitions(SAMPLE_SIZE_RULES, reason=REGISTERED)
+    _size_rules(doc, src)
     doc.check(
         "the subgroup would be n = {} and the detectable \u03b4 would rise from {} to {}.",
         Param(formatting.count(REDUCED_COMPARISON_SIZE), POWER_MODEL),
@@ -368,10 +368,11 @@ def sample_size_decision(doc: Doc, src: Sources) -> None:
         formatting.count(mcnemar_power.questions_needed(PSI, SMALL_DELTA)),
     )
     doc.check(
-        "with the observed discordance: \u03b4 = {} at Holm's first step, {} unadjusted.",
+        "with the observed discordance: \u03b4 = {} at Holm's first step, {} unadjusted (`results/",
         formatting.design_parameter(power.detectable_gap(src, "holm_first_step")),
         formatting.design_parameter(power.detectable_gap(src, "unadjusted")),
     )
+    doc.ref("unadjusted (`results/{}`). The discordance", POWER_RUN)
     _testing(doc, src)
 
 

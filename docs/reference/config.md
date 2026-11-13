@@ -1,6 +1,6 @@
 # Configuration reference
 
-Every config key the pipeline reads, with the value `configs/default.yaml` sets, and the settings kept in code: `fetch.user_agent`, which the YAML does not set, and the pool methods, a code constant. The schema is `src/crossvenue_rag/config.py` (pydantic), with its sections in `config_pipeline.py`, `config_eval.py` and `config_generation.py` beside it. `src/crossvenue_rag/config_loading.py` reads the file and applies the overrides. The Value column is what the YAML sets; where the schema default, which applies when a key is absent, differs from it, the Meaning column says so. Any field can be overridden from the command line with `--set section.field=value`, so an ablation is a config change, never a code change. The value is read as YAML (`--set eval.methods=[bm25]` gives a list). An override without `=`, with an empty key, with a key under a value that is not a section, or with a value that is not valid YAML is refused. The config file must be a UTF-8 file holding a YAML mapping of sections, and every section refuses a key it does not have and a YAML boolean (`yes`, `on`, `true`) for a number. No environment variable sets a key, except `CROSSVENUE_PG_DSN` for `store.dsn`. Every `eval` run copies the resolved config into `results/<timestamp>/config.yaml`.
+Every config key the pipeline reads, with the value `configs/default.yaml` sets, and the settings kept in code: `fetch.user_agent`, which the YAML does not set, and the pool methods, a code constant. The schema is `src/crossvenue_rag/config.py` (pydantic), with its sections in `config_pipeline.py`, `config_eval.py` and `config_generation.py` beside it. `src/crossvenue_rag/config_loading.py` reads the file and applies the overrides. The Value column is what the YAML sets; where the schema default, which applies when a key is absent, differs from it, the Meaning column says so. Any field can be overridden from the command line with `--set section.field=value`, so an ablation is a config change, never a code change. The value is read as YAML (`--set eval.methods=[bm25]` gives a list). An override without `=`, with an empty key, with a key under a value that is not a section, or with a value that is not valid YAML is refused. The config file must be a UTF-8 file holding a YAML mapping of sections, and every section refuses a key it does not have and a YAML boolean (`yes`, `on`, `true`) for a number. No environment variable sets a key, except `CROSSVENUE_PG_DSN` for `store.dsn`. Every `eval` run writes the resolved config, without `store.dsn`, to `results/<timestamp>/config.yaml`.
 
 ## `paths`
 
@@ -50,7 +50,7 @@ Every config key the pipeline reads, with the value `configs/default.yaml` sets,
 ## `retrieval`
 
 | Key | Type | Value | Meaning |
-|---|---|---|---|
+|---|---|---:|---|
 | `k` | int > 0 | 10 | Results returned per query |
 | `dense_candidates` | int > 0 | 50 | Dense candidates before fusion; at least `k` and the largest `eval.k_values` |
 | `bm25_candidates` | int > 0 | 50 | BM25 candidates before fusion; at least `k` and the largest `eval.k_values` |
@@ -60,7 +60,7 @@ Every config key the pipeline reads, with the value `configs/default.yaml` sets,
 
 | Key | Type | Value | Meaning |
 |---|---|---|---|
-| `dsn` | libpq URI (`postgresql://` or `postgres://`) or `key=value` pairs | `postgresql://crossvenue:crossvenue@localhost:5433/crossvenue` | Postgres connection; a non-empty `CROSSVENUE_PG_DSN` in the environment takes precedence and is checked the same way. `Config.to_yaml` leaves the key out of a run's saved `config.yaml`, since it can hold a password; the committed runs under `results/` were saved before it did and hold the default DSN |
+| `dsn` | libpq URI (`postgresql://` or `postgres://`) or `key=value` pairs | `postgresql://crossvenue:crossvenue@localhost:5433/crossvenue` | Postgres connection; a non-empty `CROSSVENUE_PG_DSN` in the environment takes precedence and is checked the same way. `Config.to_yaml` leaves the key out of a run's saved `config.yaml`, since it can hold a password. The committed runs up to 2026-09-26 that saved a `config.yaml` were saved before `Config.to_yaml` left the key out and hold the default DSN |
 | `table` | str, at most 49 characters | `chunks` | pgvector table; ASCII letters, digits and `_`, because it is spliced into DDL, and short enough that its index names stay within Postgres's 63-byte identifier limit |
 | `hnsw_m` | int in [2, 100] | 16 | HNSW graph degree, within pgvector's bounds |
 | `hnsw_ef_construction` | int in [4, 1000] | 64 | HNSW build-time candidate list; at least twice `hnsw_m`, as pgvector requires |
@@ -128,7 +128,7 @@ Every model is called through OpenRouter ([ADR 0009](../adr/0009-generators.md))
 | `calibration_seed` | int | 20260924 | Its seed |
 | `calibration_exclude` | list of question ids | the five trial questions | Never drawn into the calibration sample; `rate-sample` refuses an id the run did not answer. Schema default: empty |
 | `calibration_thresholds` | map of `supported`, `venue_correct`, `behaviour_correct` or `coverage` to a float in [−1, 1] | `supported`, `venue_correct`, `behaviour_correct` 0.61 (Cohen's κ); `coverage` 0.70 (Spearman) | Agreement with the human a judge dimension needs to enter a conclusion (methodology §9) |
-| `calibration_run` | path or null | `results/20260925T175128Z_answers` | Answer run whose `calibration.json` says which judge dimensions passed. `report.md` and `paired.csv` of a run mark the metrics of the others uncalibrated (schema default: null, every metric uncalibrated). The committed judged runs predate the mark. A run without `calibration.json` is refused when a report reads it |
+| `calibration_run` | path or null | `results/20260925T175128Z_answers` | Answer run whose `calibration.json` says which judge dimensions passed. `report.md` and `paired.csv` of a run mark the metrics of the others uncalibrated (schema default: null, every metric uncalibrated). The judged runs `20260926T000001Z_judged` and `20260926T004836Z_judged` predate the mark. A run without `calibration.json` is refused when a report reads it |
 | `calibration_exclude_behaviour` | list of answer ids | `qwen@venue_split:cv-0138` | Rated answers left out of `behaviour_correct` against the human; the reason is in methodology §9. `select-judge` refuses an id the run does not have. Schema default: empty |
 
 ## Validation
@@ -140,7 +140,7 @@ Loading a config fails, with the reason, when:
 | `overlap_tokens` ≥ `max_tokens` | Chunking never advances |
 | `min_tokens` > `max_tokens` | No chunk can satisfy both |
 | `reranker.top_n` < `retrieval.k`, `max(eval.k_values)`, `eval.pool_depth_per_method` or `generation.top_k` | Reranking returns fewer results than asked for |
-| `retrieval.bm25_candidates` or `dense_candidates` < `retrieval.k` or `max(eval.k_values)` | A hybrid list would come back shorter than asked for |
+| `retrieval.bm25_candidates` or `dense_candidates` < `retrieval.k` or `max(eval.k_values)` | Each side of a hybrid retrieval must give a full list |
 | `store.hnsw_ef_construction` < 2 × `store.hnsw_m`, or an HNSW value outside pgvector's range | pgvector refuses to build or search the index |
 | `eval.primary_comparison` with a metric or scope the report does not compute | Every comparison would silently become secondary |
 | `pool_depth_per_method` ≤ `max(k_values)` | Only ranks the metric already scores are judged |

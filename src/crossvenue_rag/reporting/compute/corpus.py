@@ -12,7 +12,8 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 
 from ...config import SCHEMA_DEFAULTS
-from ...corpus.artifacts import count_term_in
+from ...corpus.artifacts import MetadataCoverage, count_term_in
+from ...corpus.doc_metadata import coverage
 from ...corpus.normalize import has_code_fence
 from ...corpus.sources import SourceSpec, load_sources
 from ...evaluation.metrics import WRAPPER_VENUES
@@ -27,8 +28,7 @@ from .memo import per_sources
 CROSS_VENUE_VENUES = 2
 # The directory Binance's testnet copies of its pages are under.
 TESTNET = "testnet/"
-# The Binance pages that are not a mirrored reference page: the testnet changelog, and the
-# pages with this word in their path, case-insensitive.
+# The testnet changelog, and the Binance pages with this word in their path, case-insensitive.
 TESTNET_CHANGELOG = "testnet/CHANGELOG.md"
 TERMS = "terms"
 # Binance's REST and WebSocket pages, whose "Timing security" sections are compared.
@@ -62,7 +62,7 @@ def index_version(src: Sources) -> str:
 
 @per_sources
 def source_entries(src: Sources) -> list[SourceSpec]:
-    """The sources of data/sources.yaml, read by the fetcher's reader (`load_sources`)."""
+    """The sources of data/sources.yaml, as the fetcher's reader (`load_sources`) reads them."""
     return load_sources(src.path(SCHEMA_DEFAULTS.paths.sources))
 
 
@@ -202,14 +202,19 @@ def over_budget_chunks(src: Sources) -> tuple[int, int]:
     return len(over) - code, code
 
 
+@per_sources
+def _metadata_coverage(src: Sources) -> MetadataCoverage:
+    return coverage(src.chunks)
+
+
 def filled_chunks(src: Sources, field: MetadataField) -> int:
-    """Chunks whose metadata `field` (`doc_type`, `product`, ...) is set."""
-    return sum(getattr(c, field) is not None for c in src.chunks)
+    """Chunks whose metadata `field` (`doc_type`, ...) is set (`doc_metadata.coverage`)."""
+    return _metadata_coverage(src).fields[field].assigned
 
 
 def null_chunks_by_venue(src: Sources, field: MetadataField) -> dict[str, int]:
-    """Per venue, the chunks whose metadata `field` is null."""
-    return dict(Counter(c.venue for c in src.chunks if getattr(c, field) is None))
+    """Per venue, the chunks whose metadata `field` is null (`doc_metadata.coverage`)."""
+    return dict(_metadata_coverage(src).fields[field].unassigned_by_venue)
 
 
 def _timing_security(src: Sources) -> list[Chunk]:

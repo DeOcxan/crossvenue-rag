@@ -22,7 +22,7 @@ from ...compute import (
 )
 from ...compute import retrieval_off_venue as off_venue
 from ...compute.answers import PROMPT_V1
-from ...compute.estimates import Estimate, is_significant, is_small_effect
+from ...compute.estimates import DELTA, Estimate, is_significant, is_small_effect
 from ...outcomes import SKIP
 from ...run_ids import (
     JUDGED_V1,
@@ -34,7 +34,6 @@ from ...run_ids import (
 from ...sources import Sources
 from .. import comparisons
 from ..reasons import INTERVAL_LEVEL
-from .significance import DELTA
 
 
 def _rule(section: str, p: float) -> str:
@@ -61,7 +60,7 @@ def _d16_row(
         SKIP,
         rule,
     ]
-    return is_small_effect(difference, p, DELTA)
+    return is_small_effect(difference, p)
 
 
 def small_effects(doc: Doc, src: Sources) -> None:

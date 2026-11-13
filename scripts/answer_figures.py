@@ -158,8 +158,8 @@ def draw_calibration(src: Sources) -> None:
         f"left out of behaviour_correct). {formatting.count(INTERVAL_LEVEL_PERCENT)}% percentile "
         "bootstrap interval "
         f"resampling answers, {formatting.count(calibration.resamples(src))} resamples, seed "
-        f"{formatting.own_form(calibration.bootstrap_seed(src))}; * \u03ba undefined in part of "
-        f"the resamples. Run {report.run}, {CALIBRATION_FILE}.",
+        f"{formatting.own_form(calibration.bootstrap_seed(src))}; * \u03ba undefined in at "
+        f"least one resample. Run {report.run}, {CALIBRATION_FILE}.",
     )
     fig.tight_layout(rect=(0, 0.08, 1, 1))
     save_figure(fig, "judge_calibration")

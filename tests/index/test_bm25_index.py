@@ -42,7 +42,7 @@ def test_an_ids_file_without_venues_is_a_user_error_naming_the_file(tmp_path, bm
     assert str(ids) in str(caught.value)
 
 
-def test_bm25_id_filter_returns_k_hits_below_any_overfetch_depth():
+def test_bm25_id_filter_finds_an_allowed_chunk_below_any_overfetch_depth():
     """A selective filter must not silently shrink k."""
     chunks = [occurrence("bybit", f"d{i}.md", f"rate limit rule {i}") for i in range(300)]
     # The tail chunk shares one query token, so it scores above 0 but below all 300 others.

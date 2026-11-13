@@ -1,4 +1,4 @@
-"""Tests for `generation.records`: every saved record reads and writes back byte for byte."""
+"""Tests for `generation.records`."""
 
 from __future__ import annotations
 
@@ -36,7 +36,7 @@ COST = 0.1 + 0.2
 
 
 def _committed_record_files() -> list[str]:
-    """answers.jsonl and judgements_*.jsonl of every run results/runs.json registers."""
+    """`answers.jsonl` and `judgements_*.jsonl` of every run `results/runs.json` registers."""
     runs = read_registry(REPO / RUNS_REGISTRY).runs
     return [
         f"results/{run}/{name}"
@@ -97,8 +97,9 @@ def test_the_human_ratings_are_written_back_with_the_same_bytes(tmp_path):
 
 
 def test_a_record_of_the_first_answer_runs_keeps_its_parameters_and_cost_source(tmp_path):
-    """generation.params; call records with cost_source and without reasoning_tokens,
-    invalid_responses and params; a judge record with params and without a judge name.
+    """`generation.params`; call records with `cost_source` and without
+    `reasoning_tokens`, `invalid_responses` and `params`; a judge record with `params` and
+    without a judge name.
     """
     call = {
         "requested_model": "m",
@@ -203,7 +204,7 @@ def test_a_field_the_reader_does_not_know_is_refused_not_dropped(tmp_path):
         read_answers(_saved(tmp_path, record_json(generation=generation)))
 
 
-def test_the_judges_of_a_run_are_the_named_ones_sorted():
+def test_the_judges_of_a_run_are_the_named_ones_once_each():
     from crossvenue_rag.generation.records import AnswerRecord, named_judges
     from tests.generation.factories import judge_json, record
 
@@ -233,3 +234,13 @@ def test_a_claim_citing_a_chunk_outside_its_context_is_refused_naming_its_line_a
     ) as refused:
         read_answers(path)
     assert "crossvenue answer-eval" in refused.value.hint
+
+
+def test_a_refusal_is_wrong_unless_the_question_expects_one():
+    from crossvenue_rag.generation.records import AnswerRecord
+
+    refused = generation_json(answer=answer_json(refused=True, claims=0))
+    assert AnswerRecord.model_validate(record_json(generation=refused)).is_wrong_refusal()
+    expected = record_json(generation=refused, expected_behavior="refuse")
+    assert not AnswerRecord.model_validate(expected).is_wrong_refusal()
+    assert not AnswerRecord.model_validate(record_json()).is_wrong_refusal()

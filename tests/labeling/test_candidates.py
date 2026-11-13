@@ -22,7 +22,7 @@ from tests.labeling.conftest import (
 )
 
 
-def test_candidates_are_only_never_judged_chunks_best_rank_first(tmp_path):
+def test_candidates_are_only_chunks_round_1_has_not_judged_best_rank_first(tmp_path):
     _, candidates = setup_augment(tmp_path)
     [entry] = load_candidates(candidates)
     assert [c.chunk_id for c in entry.chunks] == ["n2", "n1"]  # n2 rank 1 (oracle)
@@ -59,6 +59,17 @@ def test_pool_run_writes_rankings_only_and_feeds_the_candidate_builder(cfg, tmp_
         k=20,
     )
     assert [c.chunk_id for c in entries[0].chunks] == ["n2", "n1"]
+
+
+def test_a_pool_run_into_a_run_directory_that_exists_is_refused(cfg, tmp_path):
+    from crossvenue_rag.labeling.candidates import PoolSpec, pool_run
+
+    path, _ = setup_augment(tmp_path)
+    run_dir = tmp_path / "20260925T000000Z_pool"
+    run_dir.mkdir()
+    spec = PoolSpec(path, ["venue_split"], 20, "comparison")
+    with pytest.raises(UserError, match="exists already"):
+        pool_run(cfg, RankingRetriever(), spec, VERSION, run_dir)
 
 
 def test_a_per_query_file_missing_a_column_is_refused(tmp_path):

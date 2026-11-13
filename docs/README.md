@@ -22,22 +22,22 @@ Every document of the repository, by the types of the [Document types](style.md#
 | [`reference/corpus.md`](reference/corpus.md) | Datasheet of the document corpus: sources, composition, collection, preprocessing, licenses, gaps |
 | [`reference/cli.md`](reference/cli.md) | Every `crossvenue` command with its arguments and options |
 | [`reference/config.md`](reference/config.md) | Every key of `configs/default.yaml` with type, value and meaning |
-| [`../evals/datasheet.md`](../evals/datasheet.md) | Datasheet of the gold set `v0.2.1-gold` |
+| [`../evals/datasheet.md`](../evals/datasheet.md) | Datasheet of the gold set `v0.2.1-gold`, including the record format, and of what `v0.2.2-gold` and `v0.3-gold` change |
 | [`../evals/methodology.md`](../evals/methodology.md) | Evaluation protocol, what it can prove, deviations from it |
-| [`../evals/domain-research.md`](../evals/domain-research.md) | The developer questions the evaluation set is drawn from: sources, ranked themes, near-duplicate traps |
+| [`../evals/domain-research.md`](../evals/domain-research.md) | The developer questions the evaluation set is drawn from: sources, themes, near-duplicate traps |
 
 ## Results
 
 | Document | Contents |
 |---|---|
 | [`results/findings.md`](results/findings.md) | Measured results, each with its run |
-| [`../evals/agreement.md`](../evals/agreement.md) | Test-retest agreement of the annotator between labeling rounds 1 and 2: κ with its interval, per category, direction of disagreement, source-chunk verdicts |
+| [`../evals/agreement.md`](../evals/agreement.md) | Test-retest agreement of the annotator between labeling rounds 1 and 2: κ with its interval, per category, direction of disagreement, source-chunk verdicts; descriptive agreement of rounds 1 and 3, and the time of each round |
 
 ## How-to
 
 | Document | Contents |
 |---|---|
-| [`how-to/reproduce.md`](how-to/reproduce.md) | How to check the numbers of the documents `crossvenue reproduce` covers against their sources, and to rerun each measurement |
+| [`how-to/reproduce.md`](how-to/reproduce.md) | How to check the numbers of the documents `crossvenue reproduce` covers against their sources, and to rerun the measurements it lists |
 | [`how-to/label.md`](how-to/label.md) | How to select, label, correct, augment, validate and freeze a question set |
 
 ## Decision records

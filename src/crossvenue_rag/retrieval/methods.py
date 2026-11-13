@@ -13,8 +13,8 @@ from ..errors import UserError
 
 METHODS: tuple[RetrievalMethod, ...] = get_args(RetrievalMethod)
 # The methods whose results make up a labeling pool. Changing it leaves the pools
-# recorded in the journal as they are, but a method added here must first have its
-# unjudged results on labeled questions judged by augmentation
+# recorded in the journal as they are. An augmentation must first judge the results
+# of a method added here that round 1 has not judged on labeled questions
 # (evals/methodology.md, section 1). The oracle can never be one: it reads the labels.
 POOL_METHODS: tuple[RetrievalMethod, ...] = (
     "bm25",

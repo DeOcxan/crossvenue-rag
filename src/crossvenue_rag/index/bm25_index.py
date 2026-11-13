@@ -1,7 +1,7 @@
 """Sparse BM25 index over the same chunks Postgres holds, built with `bm25s`.
 
-Lexical retrieval matches the tokens that distinguish venues and that dense
-models smooth away: `/v5/order/create`, `postOnly`, `X-MBX-APIKEY`, `1200`.
+Lexical retrieval matches the tokens that distinguish venues: `/v5/order/create`,
+`postOnly`, `X-MBX-APIKEY`, `1200`.
 `bm25s` keeps the index as a sparse matrix on disk and needs no service; it and
 PyStemmer are imported where first used, so importing the retriever does not
 load them.
@@ -119,7 +119,7 @@ class BM25Index:
         """Top-k `(chunk_id, bm25_score)` among chunks sharing a query token (score above 0).
 
         Venue and id filters rank the whole corpus and then drop non-matching
-        hits: bm25s has no filtered-search API, and re-indexing per filter would
+        hits: re-indexing per filter would
         change the IDF statistics and make filtered and unfiltered runs
         incomparable. A fixed over-fetch depth would return fewer than k hits
         for a selective filter such as `environment=testnet`; ranking the whole

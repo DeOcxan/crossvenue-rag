@@ -1,4 +1,4 @@
-"""Tests for `reporting.compute.answers_judged`, on judged runs written under tmp_path."""
+"""Tests for `reporting.compute.answers_judged`, on judged runs written under `tmp_path`."""
 
 from __future__ import annotations
 
@@ -23,7 +23,7 @@ from tests.reporting.conftest import (
     CONFIGS,
     complete,
     write_chunks,
-    write_csv,
+    write_csv_rows,
     write_gold,
     write_judged_run,
     write_sources,
@@ -35,7 +35,7 @@ PRIMARY = (GEMINI, RERANK)
 
 
 def paired(a, b, metric, **fields):
-    """A paired.csv row of a against b; `fields` replace role, holm_p, mean_a and mean_b."""
+    """A `paired.csv` row of a against b; `fields` replace its `role`, `holm_p` and means."""
     values = {"role": "secondary", "holm_p": 0.5, "mean_a": 0.5, "mean_b": 0.4, **fields}
     return {
         "a": a,
@@ -73,7 +73,9 @@ def test_summary_rows_read_the_v1_judged_summary(tmp_path):
         {"config": c, "coverage:comparison": v, "behaviour_correct:all": 1}
         for c, v in coverage.items()
     ]
-    write_csv(tmp_path / "results" / JUDGED_V1 / "summary.csv", complete("answer_summary", rows))
+    write_csv_rows(
+        tmp_path / "results" / JUDGED_V1 / "summary.csv", complete("answer_summary", rows)
+    )
     src = Sources(tmp_path)
     columns = ("coverage:comparison", "behaviour_correct:all")
     assert judged.judged_summary_rows(src, columns) == [(c, [v, 1.0]) for c, v in coverage.items()]
@@ -174,6 +176,17 @@ def coverage_record(question_id, coverage, *, refused=False, config=GEMINI, cate
     )
 
 
+def write_judged_with_gold(root, records, recategorized=()):
+    """The judged prompt v1 run of `records` and a gold set of their questions, each in its
+    record's category except those of `recategorized`, which the gold set makes `fact`."""
+    categories = {r["question_id"]: r["category"] for r in records}
+    questions = [
+        {"id": q, "category": "fact" if q in recategorized else c} for q, c in categories.items()
+    ]
+    write_gold(root, questions)
+    write_judged_run(root, JUDGED_V1, records=records)
+
+
 def test_coverage_is_averaged_apart_for_refusals_and_answers(tmp_path):
     records = [
         coverage_record("cv-1", 0.5, refused=True),
@@ -184,8 +197,10 @@ def test_coverage_is_averaged_apart_for_refusals_and_answers(tmp_path):
         coverage_record("cv-5", 0.0, config=QWEN),
         coverage_record("cv-6", 0.0, category="fact"),
         record_json(GEMINI, "cv-7", category="comparison"),
+        # A comparison question to its record that the gold set recategorizes: left out.
+        coverage_record("cv-8", 1.0, refused=True),
     ]
-    write_judged_run(tmp_path, JUDGED_V1, records=records)
+    write_judged_with_gold(tmp_path, records, recategorized=("cv-8",))
     src = Sources(tmp_path)
     assert judged.coverage_by_outcome(src, GEMINI) == judged.CoverageByOutcome(
         refused=judged.CoverageGroup(2, 0.25), answered=judged.CoverageGroup(2, 0.75)
@@ -195,7 +210,7 @@ def test_coverage_is_averaged_apart_for_refusals_and_answers(tmp_path):
 
 def test_a_configuration_that_never_refused_has_no_mean_for_its_refusals(tmp_path):
     records = [coverage_record("cv-1", 1.0), coverage_record("cv-2", 0.5)]
-    write_judged_run(tmp_path, JUDGED_V1, records=records)
+    write_judged_with_gold(tmp_path, records)
     by_outcome = judged.coverage_by_outcome(Sources(tmp_path), GEMINI)
     assert by_outcome.refused == judged.CoverageGroup(0, None)
     assert by_outcome.answered == judged.CoverageGroup(2, 0.75)
@@ -206,14 +221,14 @@ def test_a_configuration_that_refused_every_question_has_no_mean_for_its_answers
         coverage_record("cv-1", 0.5, refused=True),
         coverage_record("cv-2", 0.0, refused=True),
     ]
-    write_judged_run(tmp_path, JUDGED_V1, records=records)
+    write_judged_with_gold(tmp_path, records)
     by_outcome = judged.coverage_by_outcome(Sources(tmp_path), GEMINI)
     assert by_outcome.refused == judged.CoverageGroup(2, 0.25)
     assert by_outcome.answered == judged.CoverageGroup(0, None)
 
 
 def test_a_judged_comparison_answer_without_coverage_is_an_error(tmp_path):
-    write_judged_run(tmp_path, JUDGED_V1, records=[coverage_record("cv-1", None, refused=True)])
+    write_judged_with_gold(tmp_path, [coverage_record("cv-1", None, refused=True)])
     with pytest.raises(ValueError, match="has no coverage"):
         judged.refusals_stating_facts(Sources(tmp_path), GEMINI)
 
@@ -330,7 +345,7 @@ def test_the_exchanges_are_the_venues_of_the_sources_file_but_ccxt(tmp_path):
     assert not judged.partial_exchange_citations_ok(src)
 
 
-def test_attribution_rows_give_each_pair_on_both_scopes_and_count_intervals_at_zero(tmp_path):
+def test_attribution_pair_rows_give_each_pair_on_both_scopes_and_count_intervals_at_zero(tmp_path):
     rows = []
     for a, b in combinations(CONFIGS, 2):
         for scope, n in (("comparison", 20), ("all", 60)):
@@ -345,8 +360,7 @@ def test_attribution_rows_give_each_pair_on_both_scopes_and_count_intervals_at_z
     assert (table[0].comparison_questions, table[0].all_questions) == (20, 60)
     assert table[0].all.difference.low == 0.01
     # An interval that ends at 0 holds 0; the first pair's interval on all questions is above it.
-    assert judged.attribution_pairs_touching_zero(src, "comparison") == len(table)
-    assert judged.attribution_pairs_touching_zero(src, "all") == len(table) - 1
+    assert judged.attribution_pairs_touching_zero(src) == len(table) - 1
 
 
 def test_the_answers_behind_a_mean_are_those_that_carry_the_metric(tmp_path):
@@ -356,19 +370,23 @@ def test_the_answers_behind_a_mean_are_those_that_carry_the_metric(tmp_path):
         coverage_record("cv-3", 1.0, category="fact"),
         coverage_record("cv-4", 1.0, config=QWEN),
         record_json(GEMINI, "cv-5", category="comparison"),
+        # A comparison question to its record that the gold set recategorizes.
+        coverage_record("cv-6", 1.0),
     ]
     write_judged_run(tmp_path, ANSWERS_V1)
-    write_judged_run(tmp_path, JUDGED_V1, records=records)
+    write_judged_with_gold(tmp_path, records, recategorized=("cv-6",))
     src = Sources(tmp_path)
     assert judged.metric_answer_range(src, "coverage", "comparison")[1] == 1
-    assert judged.metric_answer_range(src, "coverage", "all")[1] == 2
+    assert judged.metric_answer_range(src, "coverage", "all")[1] == 3
 
 
 def test_a_configuration_or_paired_row_the_judged_run_lacks_is_a_value_error(tmp_path):
     write_judged_run(tmp_path, ANSWERS_V1)
     write_judged_run(tmp_path, JUDGED_V1, paired=[paired(GEMINI, QWEN, "coverage")])
     rows = [{"config": GEMINI, "coverage:comparison": 0.4}]
-    write_csv(tmp_path / "results" / JUDGED_V1 / "summary.csv", complete("answer_summary", rows))
+    write_csv_rows(
+        tmp_path / "results" / JUDGED_V1 / "summary.csv", complete("answer_summary", rows)
+    )
     src = Sources(tmp_path)
     with pytest.raises(ValueError, match=f"summary.csv has no '{QWEN}'"):
         judged.judged_summary(src, 1, QWEN, "coverage:comparison")

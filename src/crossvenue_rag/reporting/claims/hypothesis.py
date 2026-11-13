@@ -1,7 +1,6 @@
-"""The hypothesis paragraph that README.md shares with findings.md.
+"""The hypothesis paragraph of findings.md.
 
-Both documents state what the retrieval run and the judged answers show
-against the hypothesis in the same words, so one function checks both copies.
+It states what the retrieval run and the judged answers show against the hypothesis.
 """
 
 from __future__ import annotations
@@ -55,7 +54,7 @@ def hypothesis(doc: Doc, src: Sources) -> None:
             for v in off_venue.first_rank_counts(src, TOP_ONE_OFF_VENUE, "comparison", reranked)
         ],
         holds=off_venue.first_rank_at_most(
-            src, TOP_ONE_OFF_VENUE, "comparison", ("dense", "hybrid_rerank"), 1
+            src, TOP_ONE_OFF_VENUE, "comparison", ("dense", "hybrid_rerank")
         ),
         what="dense and hybrid_rerank put an unnamed venue first on at most one comparison "
         "question",

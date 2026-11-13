@@ -9,7 +9,7 @@ import subprocess
 import sys
 import tokenize
 import tomllib
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 from ...errors import UserError
 from ...run_files import file_sha256
@@ -29,6 +29,8 @@ CODE_TREES = ("src", "tests", "scripts")
 PACKAGE = "src/crossvenue_rag"
 SCRIPTS = "scripts"
 PYPROJECT = "pyproject.toml"
+# The test configuration that holds the fixture corpus.
+FIXTURE_CONFTEST = "tests/conftest.py"
 # The nodes whose first statement may be a docstring, and the tokens that are not code.
 _DOCUMENTED = (ast.Module, ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef)
 _NOT_CODE = frozenset(
@@ -100,6 +102,46 @@ def subpackage_count(src: Sources) -> int:
     return sum(1 for p in package.iterdir() if (p / "__init__.py").exists())
 
 
+def module_tree(src: Sources, path: str) -> ast.Module:
+    """The syntax tree of the Python file at `path`, relative to the repository."""
+    return ast.parse(src.path(path).read_text(encoding="utf-8"))
+
+
+def _bound(node: ast.stmt, name: str) -> ast.expr | None:
+    """The value `node` binds to `name` when it is `name = ...` or `name: T = ...`; else None."""
+    if isinstance(node, ast.Assign) and any(
+        isinstance(t, ast.Name) and t.id == name for t in node.targets
+    ):
+        return node.value
+    if isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name):
+        return node.value if node.target.id == name else None
+    return None
+
+
+def module_literal(src: Sources, path: str, name: str) -> object:
+    """The literal bound to `name` at module level in the file at `path`, or where it imports it.
+
+    `path` is relative to the repository; a relative import
+    `from ..package.module import name` is resolved against `path`.
+
+    Raises:
+        ValueError: neither `path` nor the module it imports `name` from binds a literal `name`.
+    """
+    for node in module_tree(src, path).body:
+        value = _bound(node, name)
+        if value is not None:
+            return ast.literal_eval(value)
+        if (
+            isinstance(node, ast.ImportFrom)
+            and node.level
+            and any(a.name == name for a in node.names)
+        ):
+            base = PurePosixPath(path).parents[node.level - 1]
+            imported = base.joinpath(*(node.module or "").split(".")).with_suffix(".py")
+            return module_literal(src, str(imported), name)
+    raise ValueError(f"no literal {name} in {path} or the module it imports it from")
+
+
 def _pyproject_value(src: Sources, *keys: str) -> object:
     """The value at the table path `keys` of pyproject.toml; None where it sets none.
 
@@ -141,7 +183,7 @@ def import_contract_count(src: Sources) -> int:
 def suite_level_test_files(src: Sources) -> list[str]:
     """Test files not named after a module: tests/a/test_b.py tests src/crossvenue_rag/a/b.py.
 
-    The suite-level tests, which exercise no single module. A test file under
+    The suite-level tests, which are named after no module. A test file under
     tests/scripts/ tests the script of its name: tests/scripts/test_b.py tests scripts/b.py.
     """
     tests = src.path("tests")
@@ -159,10 +201,15 @@ def _tested_module(src: Sources, test: Path) -> Path:
 
 
 def fixture_pages(src: Sources) -> int:
-    """Pages of the fixture corpus in tests/conftest.py (`CORPUS`)."""
-    text = src.path("tests/conftest.py").read_text(encoding="utf-8")
-    body = text.split("\nCORPUS: ", 1)[1].split("\n}\n", 1)[0]
-    return len(re.findall(r'^    "[^"]+": \(', body, flags=re.M))
+    """Pages of the fixture corpus in tests/conftest.py (`CORPUS`).
+
+    Raises:
+        ValueError: `CORPUS` is not a dict literal.
+    """
+    corpus = module_literal(src, FIXTURE_CONFTEST, "CORPUS")
+    if not isinstance(corpus, dict):
+        raise ValueError(f"CORPUS in {FIXTURE_CONFTEST} is not a dict")
+    return len(corpus)
 
 
 def same_bytes(src: Sources, first: str | Path, second: str | Path) -> bool:
@@ -187,14 +234,14 @@ def direction_count(src: Sources) -> int:
 
 
 def pytest_count(root: str, *, every: bool) -> int:
-    """Tests pytest collects under `root`: those `make test` runs, or with `every` all of them.
+    """Tests `pytest` collects under `root`: those `make test` runs, or with `every` all of them.
 
     The sum of `pytest --collect-only -q` per file: the configured `-q` makes it
     print one "path: count" line per test file. `every` clears the configured
     marker filter (`-m ""`), so the slow tests are counted too.
 
     Raises:
-        RuntimeError: pytest reports no collected test.
+        RuntimeError: `pytest` reports no collected test.
     """
     command = [sys.executable, "-m", "pytest", "--collect-only", "-q", "-p", "no:warnings"]
     out = subprocess.run(

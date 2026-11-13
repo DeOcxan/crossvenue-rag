@@ -1,8 +1,8 @@
 """Paired method comparisons for a finished run: which pairs, which scopes, which test.
 
-Each pair of `eval.paired_comparisons` ([a, b] means a minus b) is compared on
-venue_coverage@K over multi-venue questions and the comparison category, and on
-recall@K over labeled questions and labeled comparisons; the tests are in `evaluation.paired`.
+Each pair of `eval.paired_comparisons` whose methods both ran ([a, b] means a minus b) is
+compared on `venue_coverage@K` over multi-venue questions and the comparison category, and on
+`recall@K` over labeled questions and labeled comparisons. The tests are in `evaluation.paired`.
 """
 
 from __future__ import annotations
@@ -46,7 +46,7 @@ class PairedRow(PairedEstimate):
 
     - the runs of 2026-09-25 before 13:00 UTC: up to `mcnemar_p`, without
       `randomisation_p`, `role`, `holm_p` and `higher_is_better`;
-    - 20260925T132613Z and 20260925T144223Z: without `higher_is_better`;
+    - `20260925T132613Z` and `20260925T144223Z`: without `higher_is_better`;
     - the later runs: every column.
     """
 
@@ -54,9 +54,9 @@ class PairedRow(PairedEstimate):
     worse: int
     ties: int
     mcnemar_p: OptionalFloat  # binary metrics only
-    # sign-flip, any metric; None below MIN_TESTED_QUESTIONS (role descriptive)
+    # sign-flip, any metric; None below MIN_TESTED_QUESTIONS in a subset scope (role descriptive)
     randomisation_p: OptionalFloat = None
-    # "primary" for eval.primary_comparison; "descriptive" below 50 questions
+    # "primary" for eval.primary_comparison; "descriptive" below 50 questions in a subset scope
     role: Role = "secondary"
     holm_p: OptionalFloat = None  # secondary rows: Holm within (metric, scope)
     # The metric's direction; `better` and `worse` count questions in it.
@@ -64,7 +64,11 @@ class PairedRow(PairedEstimate):
 
 
 def read_paired(path: Path) -> CsvTable[PairedRow]:
-    """A retrieval run's paired.csv or off_venue.csv, in any format `PairedRow` lists."""
+    """A retrieval run's paired.csv or off_venue.csv, in any format `PairedRow` lists.
+
+    Raises:
+        UserError: Nothing is at `path`, or a directory is.
+    """
     return read_table(path, PairedRow)
 
 
@@ -165,10 +169,10 @@ class _Scopes:
 def paired_comparisons(
     cfg: Config, runs: Sequence[QueryRun], questions: Sequence[Question]
 ) -> list[PairedRow]:
-    """Every configured pair on venue_coverage@K and recall@K, K = `max(k_values)`.
+    """Every configured pair whose methods both ran, on `venue_coverage@K` and `recall@K`.
 
-    Scopes: all multi-venue questions and the comparison category for
-    venue_coverage; all labeled questions and labeled comparisons for recall.
+    K is `max(k_values)`. Scopes: all multi-venue questions and the comparison category for
+    `venue_coverage`; all labeled questions and labeled comparisons for recall.
     """
     scopes = _Scopes(questions, max(cfg.eval.k_values))
     table = _by_question_and_method(runs)
@@ -225,8 +229,8 @@ def off_venue_comparisons(
 ) -> list[PairedRow]:
     """The exploratory off-venue comparisons of methodology section 9b.
 
-    Each pair of `OFF_VENUE_PAIRS` is compared on off_venue@K (bootstrap and
-    randomization test) and off_venue@1, the top-1 off-venue rate (also exact
+    Each pair of `OFF_VENUE_PAIRS` whose methods both ran is compared on `off_venue@K`
+    (bootstrap and randomization test) and `off_venue@1`, the top-1 off-venue rate (also exact
     McNemar), per category of `OFF_VENUE_SCOPES`. A row is secondary, Holm-adjusted
     within its metric and scope, when its scope has at least `MIN_TESTED_QUESTIONS`
     questions, and descriptive, with no p-value, otherwise.
@@ -271,7 +275,7 @@ def mark_primary_and_adjust(rows: list[PairedRow], primary: Sequence[str]) -> li
 
     A family is every secondary row on one metric and one scope: the tests that
     answer one question about one set of questions. Descriptive rows (below 50
-    questions) carry no p-value and join no family.
+    questions in a subset scope) carry no p-value and join no family.
     """
     rows = [
         row.model_copy(update={"role": "primary"})
@@ -327,4 +331,7 @@ def paired_table(rows: Sequence[PairedRow]) -> str:
         ]
         for r in rows
     ]
-    return markdown_table(header, cells)
+    labels = ("a vs b", "metric", "scope", "better is", "role")
+    return markdown_table(
+        header, cells, right=[i for i, name in enumerate(header) if name not in labels]
+    )

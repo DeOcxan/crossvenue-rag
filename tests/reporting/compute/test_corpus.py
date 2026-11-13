@@ -1,4 +1,4 @@
-"""Tests for `reporting.compute.corpus`, on artifacts written under tmp_path."""
+"""Tests for `reporting.compute.corpus`, on artifacts written under `tmp_path`."""
 
 from __future__ import annotations
 

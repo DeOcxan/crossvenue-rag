@@ -13,7 +13,7 @@ from collections.abc import Callable
 from functools import lru_cache
 
 from .. import formatting
-from ..errors import UserError
+from ..errors import UserError, install_hint_or
 
 # The tokenizers kept loaded, one per (model, revision, max_tokens): a process counts with
 # one model, and a test or a config override may add a few more.
@@ -26,16 +26,14 @@ def token_counter_for(
 ) -> Callable[[str], int]:
     """Token counter backed by the embedding model's own tokenizer, at `revision`.
 
-    Cached per model, revision and `max_tokens`, because loading a tokenizer takes about
-    a second. A tokenizer that cannot be loaded is an error: a
-    different counter would chunk the corpus differently under the same
+    Cached per model, revision and `max_tokens`. A tokenizer that cannot be
+    loaded is an error: a different counter would chunk the corpus differently under the same
     `index_version`.
 
     Raises:
         UserError: The tokenizer cannot be loaded for a reason the user can fix,
             or `max_tokens` exceeds the tokens the encoder reads. The causes are a
-            model or revision in neither the cache nor the Hub (`OSError`, which
-            every Hugging Face Hub error of a missing file subclasses), a malformed
+            model or revision in neither the cache nor the Hub (`OSError`), a malformed
             name or revision (`ValueError`) and a missing transformers
             (`ImportError`). Any other exception keeps its traceback.
     """
@@ -46,8 +44,11 @@ def token_counter_for(
     except (OSError, ValueError, ImportError) as exc:
         raise UserError(
             f"cannot load the tokenizer of {model_name}{formatting.revision_text(revision)}: {exc}",
-            hint="the chunk budget is counted in this tokenizer's tokens; download the model "
-            "once with network access (it is then read from the Hugging Face cache)",
+            hint=install_hint_or(
+                exc,
+                "the chunk budget is counted in this tokenizer's tokens; download the model "
+                "once with network access (it is then read from the Hugging Face cache)",
+            ),
         ) from exc
 
     # A tokenizer that states no window is not checked. The count below leaves out the

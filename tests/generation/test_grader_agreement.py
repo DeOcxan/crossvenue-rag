@@ -14,7 +14,7 @@ from crossvenue_rag.generation.schemas import Judgement
 from tests.generation.factories import judgement, verdict
 
 
-def test_each_dimension_is_compared_over_the_answers_both_gradings_share():
+def test_each_dimension_is_compared_answer_by_answer():
     first = {
         "a": judgement(
             [verdict(1, supported=True, venue_ok=True), verdict(2, supported=False, venue_ok=True)],

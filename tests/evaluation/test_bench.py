@@ -188,7 +188,7 @@ def test_a_pair_with_a_competitor_at_its_end_is_discarded_and_repeated():
     assert all(r.load1 == 1.5 for r in rows)
 
 
-def test_a_machine_that_never_goes_quiet_is_a_user_error_naming_force():
+def test_a_machine_busy_after_every_pair_is_a_user_error_naming_force():
     retriever = TimedSplitRetriever()
     busy_after = itertools.cycle([True, False])
     with pytest.raises(

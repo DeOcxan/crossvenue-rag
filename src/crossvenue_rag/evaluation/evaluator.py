@@ -16,7 +16,13 @@ from ..models import RETRIEVAL_STEPS, Question, Timings
 from ..retrieval.filters import Filters
 from ..retrieval.protocols import TimedRanks
 from ..stats import P50, P95, mean, percentile
-from .metrics import evaluate, ndcg_condensed_at_k, off_venue_at_k, venue_coverage_at_k
+from .metrics import (
+    evaluate,
+    ndcg_condensed_at_k,
+    off_venue_at_k,
+    unjudged_at_k,
+    venue_coverage_at_k,
+)
 
 # Decimals a metric's mean is saved with in a run's tables, one past the three a person reads.
 METRIC_DECIMALS = 4
@@ -98,8 +104,9 @@ class Evaluator:
         `filter_by_question_venues` (`eval --venue-filter`) restricts retrieval to the
         venues a question names. The study measures without it whether retrieval finds
         the right venue on its own, which a pre-filter would decide in advance.
-        `judged` holds the chunks round 1 judged, by question id; with None no run gets
-        `unjudged@k` or `ndcg_prime@k`.
+        `judged` holds, by question id, the chunks round 1 judged plus what a relabel
+        showed (`dataset.journal.load_judged_sets`); with None no run gets `unjudged@k` or
+        `ndcg_prime@k`.
 
         Methods are the outer loop, so the cross-encoder's accelerator work
         cannot run into another method's `encode` and `search` timings.
@@ -162,7 +169,7 @@ def score(
     if run.labelled and judged is not None and question.id in judged:
         seen = judged[question.id]
         run.judged_metrics = {
-            **{f"unjudged@{k}": _unjudged(run.retrieved_ids, seen, k) for k in k_values},
+            **{f"unjudged@{k}": unjudged_at_k(run.retrieved_ids, seen, k) for k in k_values},
             **{
                 f"ndcg_prime@{k}": ndcg_condensed_at_k(
                     run.retrieved_ids, question.gold_chunk_ids, seen, k
@@ -200,26 +207,22 @@ def off_venue_metric_names_for(k_values: Sequence[int]) -> list[str]:
     return [f"{n}@{k}" for k in k_values for n in ("off_venue", "via_ccxt")]
 
 
-def _off_venue_means(runs: Sequence[QueryRun], k_values: Sequence[int]) -> dict[str, float]:
-    named = [r for r in runs if r.off_venue_metrics]
-    if not named:
+def _metric_means(runs: Sequence[QueryRun], source: str, names: Sequence[str]) -> dict[str, float]:
+    """The mean of each of `names` in field `source` over `runs`, at `METRIC_DECIMALS`.
+
+    Empty when there is no run.
+    """
+    if not runs:
         return {}
     return {
-        name: round(
-            mean([r.metric_value("off_venue_metrics", name) for r in named]), METRIC_DECIMALS
-        )
-        for name in off_venue_metric_names_for(k_values)
+        name: round(mean([r.metric_value(source, name) for r in runs]), METRIC_DECIMALS)
+        for name in names
     }
 
 
-def _unjudged(retrieved: Sequence[str], judged: set[str], k: int) -> float:
-    """Share of the top k that no judgment covered.
-
-    Each unjudged chunk counts as a miss whether or not it is relevant; the share
-    does not measure the pooling bias itself. 0.0 for an empty list.
-    """
-    top = list(retrieved[:k])
-    return mean([c not in judged for c in top]) if top else 0.0
+def _off_venue_means(runs: Sequence[QueryRun], k_values: Sequence[int]) -> dict[str, float]:
+    named = [r for r in runs if r.off_venue_metrics]
+    return _metric_means(named, "off_venue_metrics", off_venue_metric_names_for(k_values))
 
 
 def judged_metric_names_for(k_values: Sequence[int]) -> list[str]:
@@ -229,33 +232,17 @@ def judged_metric_names_for(k_values: Sequence[int]) -> list[str]:
 
 def _judged_means(runs: Sequence[QueryRun], k_values: Sequence[int]) -> dict[str, float]:
     covered = [r for r in runs if r.judged_metrics]
-    if not covered:
-        return {}
-    return {
-        name: round(
-            mean([r.metric_value("judged_metrics", name) for r in covered]), METRIC_DECIMALS
-        )
-        for name in judged_metric_names_for(k_values)
-    }
-
-
-def _relevance_means(labelled: Sequence[QueryRun], names: Sequence[str]) -> dict[str, float]:
-    """Each relevance metric's mean over the labeled runs; none when no run is labeled."""
-    return {
-        name: round(mean([r.metric_value("metrics", name) for r in labelled]), METRIC_DECIMALS)
-        for name in names
-        if labelled
-    }
+    return _metric_means(covered, "judged_metrics", judged_metric_names_for(k_values))
 
 
 def _venue_means(runs: Sequence[QueryRun], k_values: Sequence[int]) -> dict[str, float]:
     multi = [r for r in runs if r.multi_venue]
-    if not multi:
-        return {}
-    return {
-        name: round(mean([r.metric_value("venue_metrics", name) for r in multi]), METRIC_DECIMALS)
-        for name in venue_metric_names_for(k_values)
-    }
+    return _metric_means(multi, "venue_metrics", venue_metric_names_for(k_values))
+
+
+def _latency_percentile(values: Sequence[float], fraction: float) -> float:
+    """The latency percentile of `values` at `fraction`, in milliseconds at `LATENCY_DECIMALS`."""
+    return round(percentile(values, fraction), LATENCY_DECIMALS)
 
 
 def summarise(runs: Sequence[QueryRun], k_values: Sequence[int]) -> list[MethodSummary]:
@@ -278,14 +265,11 @@ def summarise(runs: Sequence[QueryRun], k_values: Sequence[int]) -> list[MethodS
                 method=method,
                 questions=len(method_runs),
                 labelled_questions=len(labelled),
-                metrics=_relevance_means(labelled, metric_names),
-                latency_p50_ms=round(percentile(totals, P50), LATENCY_DECIMALS),
-                latency_p95_ms=round(percentile(totals, P95), LATENCY_DECIMALS),
+                metrics=_metric_means(labelled, "metrics", metric_names),
+                latency_p50_ms=_latency_percentile(totals, P50),
+                latency_p95_ms=_latency_percentile(totals, P95),
                 step_latency_p50_ms={
-                    step: round(
-                        percentile([getattr(r.timings, step) for r in method_runs], P50),
-                        LATENCY_DECIMALS,
-                    )
+                    step: _latency_percentile([getattr(r.timings, step) for r in method_runs], P50)
                     for step in (f"{s}_ms" for s in RETRIEVAL_STEPS)
                 },
                 multi_venue_questions=sum(1 for r in method_runs if r.multi_venue),
@@ -323,9 +307,7 @@ def summarise_by(
     """Breaks the aggregate down along one dimension of the question set.
 
     The corpus is heavily unbalanced across venues (`make stats` gives the
-    counts). Question types differ in difficulty by more than methods differ
-    from each other, so an aggregate over both hides which of the two a
-    headline number measures.
+    counts).
 
     A question naming several venues counts in each of them, so venue rows do
     not sum to the total: a comparison question exercises retrieval on every
@@ -355,10 +337,8 @@ def summarise_by(
                 method=method,
                 questions=len(slice_runs),
                 labelled_questions=len(labelled),
-                metrics=_relevance_means(labelled, metric_names),
-                latency_p50_ms=round(
-                    percentile([r.timings.total_ms for r in slice_runs], P50), LATENCY_DECIMALS
-                ),
+                metrics=_metric_means(labelled, "metrics", metric_names),
+                latency_p50_ms=_latency_percentile([r.timings.total_ms for r in slice_runs], P50),
                 multi_venue_questions=sum(1 for r in slice_runs if r.multi_venue),
                 venue_metrics=_venue_means(slice_runs, k_values),
                 judged_metrics=_judged_means(slice_runs, k_values),

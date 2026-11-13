@@ -1,4 +1,4 @@
-"""Tests for `reporting.compute.gold_sheet`, on gold sets and a pool run written under tmp_path."""
+"""Tests for `reporting.compute.gold_sheet`, on gold sets and a pool run under `tmp_path`."""
 
 from __future__ import annotations
 
@@ -22,8 +22,8 @@ BEFORE: list[dict[str, Any]] = [
 ]  # fmt: skip
 
 
-def gold_sets(tmp_path, *, drop=False):
-    after = [dict(q) for q in BEFORE]
+def gold_sets(tmp_path, *, drop=False, extra=()):
+    after = [dict(q) for q in BEFORE] + list(extra)
     after[0] = {**after[0], "gold_chunk_ids": ["a", "b"],
                 "venue_coverage": {"binance": "covered", "bybit": "covered"}}  # fmt: skip
     if drop:
@@ -34,17 +34,17 @@ def gold_sets(tmp_path, *, drop=False):
 
 
 def test_a_category_row_counts_questions_answerable_labelled_and_gold(tmp_path):
-    src = gold_sets(tmp_path)
-    assert gold_sheet.category_row(src, "comparison") == gold_sheet.CategoryRow(1, 1, 1, 2)
+    # An answerable comparison question without gold.
+    src = gold_sets(tmp_path, extra=[{"id": "q4"}])
+    assert gold_sheet.category_row(src, "comparison") == gold_sheet.CategoryRow(2, 2, 1, 2)
     assert gold_sheet.category_row(src, "unanswerable") == gold_sheet.CategoryRow(1, 0, 0, 0)
     assert gold_sheet.categories(src) == ["comparison", "fact", "unanswerable"]
-    assert gold_sheet.answerable_count(src) == 2
+    assert gold_sheet.answerable_count(src) == 3
 
 
 def test_questions_are_counted_by_how_many_venues_they_name(tmp_path):
-    assert gold_sheet.named_venue_counts(gold_sets(tmp_path)) == gold_sheet.NamedVenueCounts(
-        2, 1, 0
-    )
+    src = gold_sets(tmp_path, extra=[{"id": "q4", "venues": ["binance", "bybit", "okx"]}])
+    assert gold_sheet.named_venue_counts(src) == gold_sheet.NamedVenueCounts(2, 1, 1)
 
 
 def test_augmentation_is_the_gold_added_and_the_coverage_it_changed(tmp_path):
@@ -53,7 +53,6 @@ def test_augmentation_is_the_gold_added_and_the_coverage_it_changed(tmp_path):
     assert gold_sheet.removed_gold(src) == 0
     assert gold_sheet.coverage_changes(src) == {("missing_from_pool", "covered"): 1}
     assert gold_sheet.coverage_questions(src) == gold_sheet.CoverageQuestions(1, 1, 2)
-    assert gold_sheet.added_gold_count(src) == 1
     assert gold_sheet.coverage_changes_to(src, "covered") == 1
     assert gold_sheet.coverage_change_results(src) == {"covered"}
     assert gold_sheet.coverage_value_count(src) == 2
@@ -74,10 +73,6 @@ def test_an_added_chunk_is_ranked_in_the_pool_run(tmp_path):
     write_retrieval_run(tmp_path, POOL_RUN, per_query=per_query)
     assert gold_sheet.changed_venue_rank(src, "bybit", "missing_from_pool", "venue_split") == 3
     assert gold_sheet.changed_venue_rank(src, "bybit", "missing_from_pool", "dense") is None
-
-    # Best rank over the methods: 1 (bm25), so no added chunk is below rank 1.
-    assert gold_sheet.added_below(src, 1) == 0
-    assert gold_sheet.added_below(src, 0) == 1
 
 
 def test_a_question_with_added_gold_the_earlier_set_lacks_raises_a_value_error(tmp_path):
@@ -109,7 +104,7 @@ def test_the_longest_gold_run_cuts_quoted_spans(tmp_path):
     write_gold(
         tmp_path,
         [
-            {"id": "cv-0001", "question": "is the order rate limit low?", "gold_chunk_ids": ["c1"]},
+            {"id": "cv-0001", "question": "is the rate low?", "gold_chunk_ids": ["c1"]},
             {
                 "id": "cv-0002",
                 "question": 'is "the order rate limit" ten',
@@ -118,4 +113,4 @@ def test_the_longest_gold_run_cuts_quoted_spans(tmp_path):
             {"id": "cv-0003", "question": "no gold here at all"},
         ],
     )
-    assert gold_sheet.longest_gold_run(Sources(tmp_path)) == 4
+    assert gold_sheet.longest_gold_run(Sources(tmp_path)) == 1

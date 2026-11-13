@@ -61,6 +61,9 @@ from .run_ids import (
     PROMPTS_RUN,
     PVALUE_RUN,
     RETRIEVAL_RUN,
+    ROUND3_JUDGED_V1,
+    ROUND3_JUDGED_V2,
+    ROUND3_PROMPTS_RUN,
 )
 
 CHUNKS = chunks_path(SCHEMA_DEFAULTS)
@@ -101,12 +104,12 @@ def _report_step_table(path: Path) -> dict[str, dict[str, str]]:
     """The per-step p50 table of a retrieval run's report.md, each cell a plain decimal.
 
     The only reader of latency from Markdown, for runs whose summary.csv
-    predates the latency columns. per_query.csv rounds each timing to 0.01 ms,
+    predates the step columns. per_query.csv rounds each timing to 0.01 ms,
     so a p50 recomputed from it can differ in the last digit. Two formats of the
     table are read:
 
-    - the committed runs': one decimal for every step, no thousands separator
-      (`2505.3`), the last column headed `total p50`;
+    - the committed runs of 2026-09-24 and 2026-09-25: one decimal for every step, no
+      thousands separator (`2505.3`), the last column headed `total p50`;
     - `formatting.ms`, as `eval` writes the table and the tests write it: an
       integer from 10 ms with a thousands separator (`2,505`), one decimal below,
       U+2212 for a minus sign, the last column headed `steps sum p50`.
@@ -154,8 +157,8 @@ def _report_step_table(path: Path) -> dict[str, dict[str, str]]:
 def _check_record(path: Path, record: AnswerRecord) -> None:
     """Refuses a record whose judgment grades more claims than its answer has.
 
-    The reports index a judgment's claims by the answer's. A claim citing a chunk number
-    outside its context is refused earlier, by `read_answers`.
+    The reports index a judgment's claims by the answer's. `read_answers` refuses a claim
+    citing a chunk number outside its context before this check.
 
     Raises:
         UserError: the judgment grades more claims than the answer has; the message names the
@@ -218,7 +221,7 @@ class RetrievalRun:
         Each method's row is keyed by the steps of `models.RETRIEVAL_STEPS` (`encode`,
         `search`, `fuse`, `rerank`) and by nothing else. Two formats are read:
 
-        - `summary.csv` with the columns `<step>_p50_ms`, written by `eval` at
+        - `summary.csv` with the columns `<step>_p50_ms`, which `eval` writes at
           full precision (`evaluation.evaluator.step_latency_columns`);
         - for runs whose summary.csv has none of those columns, the report.md table
           under "## Latency (p50, ms per step)" (`_report_step_table`).
@@ -351,7 +354,7 @@ class Sources:
 
     @cached_property
     def ndcg_prime(self) -> RetrievalRun:
-        """The run that adds nDCG'@10 (`run_ids.NDCG_PRIME_RUN`)."""
+        """The run that adds `nDCG'@10` (`run_ids.NDCG_PRIME_RUN`)."""
         return self.run(NDCG_PRIME_RUN)
 
     @cached_property
@@ -378,6 +381,21 @@ class Sources:
     def prompts(self) -> PromptsRun:
         """The comparison of prompt v2 with v1 (`run_ids.PROMPTS_RUN`)."""
         return PromptsRun(self.path(SCHEMA_DEFAULTS.paths.results / PROMPTS_RUN))
+
+    @cached_property
+    def round3_judged_v1(self) -> AnswerRun:
+        """Prompt v1's answers judged on `v0.3-gold` (`run_ids.ROUND3_JUDGED_V1`)."""
+        return AnswerRun(self.path(SCHEMA_DEFAULTS.paths.results / ROUND3_JUDGED_V1))
+
+    @cached_property
+    def round3_judged_v2(self) -> AnswerRun:
+        """Prompt v2's answers judged on `v0.3-gold` (`run_ids.ROUND3_JUDGED_V2`)."""
+        return AnswerRun(self.path(SCHEMA_DEFAULTS.paths.results / ROUND3_JUDGED_V2))
+
+    @cached_property
+    def round3_prompts(self) -> PromptsRun:
+        """Prompt v2 against v1 on `v0.3-gold` (`run_ids.ROUND3_PROMPTS_RUN`)."""
+        return PromptsRun(self.path(SCHEMA_DEFAULTS.paths.results / ROUND3_PROMPTS_RUN))
 
     @cached_property
     def calibration(self) -> Calibration:

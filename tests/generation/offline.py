@@ -260,7 +260,7 @@ def ask_setup(
 
 
 def calibration_config(tmp_path: Path) -> Config:
-    """`config` with results under tmp_path and 50 bootstrap resamples, for calibration runs."""
+    """`config` with results under `tmp_path` and 50 bootstrap resamples, for calibration runs."""
     cfg = config(tmp_path)
     cfg.paths.results = tmp_path / "results"
     cfg.eval.bootstrap_resamples = 50

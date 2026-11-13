@@ -2,7 +2,8 @@
 
 A name joined to a root stays inside the root (`confined`), a name that becomes part of a file
 name is plain (`PlainName`), and a directory to be made has no file at or above it
-(`file_on_path`, `DirectoryPath`).
+(`file_on_path`, `DirectoryPath`). The path a `--out` option names can hold a file
+(`require_out_file`).
 """
 
 from __future__ import annotations
@@ -78,6 +79,34 @@ def file_on_path(path: Path) -> Path | None:
         if candidate.is_file():
             return candidate
     return None
+
+
+def require_out_file(out: Path, *, folder_must_exist: bool) -> None:
+    """Refuses `out`, the file a `--out` option names, when its path cannot hold a file.
+
+    Whether a file already at `out` may be replaced is each command's own rule.
+
+    Args:
+        out: The path of the file to write.
+        folder_must_exist: The command's writer makes no missing directory of `out`.
+
+    Raises:
+        UserError: A directory is at `out`, a file is at or above its directory, or, with
+            `folder_must_exist`, its directory does not exist.
+    """
+    if out.is_dir():
+        raise UserError(f"--out {out} is a directory", hint="pass --out the path of a file")
+    blocker = file_on_path(out.parent)
+    if blocker is not None:
+        raise UserError(
+            f"--out {out} cannot be written: {blocker} is a file",
+            hint="pass --out a path whose directories are directories",
+        )
+    if folder_must_exist and not out.parent.is_dir():
+        raise UserError(
+            f"{out.parent}, the directory of --out, is not a directory",
+            hint="pass --out a path in an existing directory",
+        )
 
 
 def _directory_path(path: Path) -> Path:

@@ -2,14 +2,13 @@
 
 A document check matches its template against the collapsed text, so re-wrapping
 a paragraph changes no match. These classes move a match's offsets back to the
-text as written and test whether an offset lies in a set of spans.
+text as written.
 """
 
 from __future__ import annotations
 
 import bisect
 import re
-from collections.abc import Iterable
 
 from .patterns import WHITESPACE, collapse
 
@@ -56,23 +55,3 @@ class Found:
     def group_start(self, i: int) -> int:
         """The offset in the text as written where group `i` starts."""
         return self._flat.at(self._m.start(i))
-
-
-class Spans:
-    """A set of (start, end) spans, for testing whether an offset lies in any of them."""
-
-    def __init__(self, spans: Iterable[tuple[int, int]]) -> None:
-        """The union of `spans`."""
-        merged: list[tuple[int, int]] = []
-        for a, b in sorted(spans):
-            if merged and a <= merged[-1][1]:
-                merged[-1] = (merged[-1][0], max(merged[-1][1], b))
-            else:
-                merged.append((a, b))
-        self._starts = [a for a, _ in merged]
-        self._ends = [b for _, b in merged]
-
-    def __contains__(self, pos: int) -> bool:
-        """Whether `pos` lies in a span: start included, end excluded."""
-        i = bisect.bisect_right(self._starts, pos) - 1
-        return i >= 0 and pos < self._ends[i]

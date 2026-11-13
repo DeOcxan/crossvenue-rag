@@ -3,7 +3,7 @@
 The rank metrics take the ranked ids and the gold set and return a float in [0, 1]; the
 venue metrics take the venues of the ranked chunks and of the question.
 An empty gold set leaves a rank metric undefined, and the harness skips the question rather
-than average in a 0.0 that would raise or lower a method's mean at random.
+than average in a 0.0 that would lower a method's mean.
 """
 
 from __future__ import annotations
@@ -13,6 +13,7 @@ from math import log2
 
 from .. import formatting
 from ..models import MULTI_VENUE
+from ..stats import mean
 
 
 def _dedupe(ids: Sequence[str]) -> list[str]:
@@ -80,7 +81,7 @@ def reciprocal_rank(retrieved: Sequence[str], gold: Sequence[str]) -> float:
 
 
 def ndcg_at_k(retrieved: Sequence[str], gold: Sequence[str], k: int) -> float:
-    """nDCG@k with binary gains.
+    """`nDCG@k` with binary gains.
 
     Raises:
         ValueError: `k` is not positive, or the gold set is empty.
@@ -101,9 +102,9 @@ def ndcg_at_k(retrieved: Sequence[str], gold: Sequence[str], k: int) -> float:
 def ndcg_condensed_at_k(
     retrieved: Sequence[str], gold: Sequence[str], judged: set[str], k: int
 ) -> float:
-    """nDCG'@k on the condensed list (Sakai 2007).
+    """`nDCG'@k` on the condensed list (Sakai 2007).
 
-    Unjudged documents are removed from the ranking before nDCG@k is computed.
+    Unjudged documents are removed from the ranking before `nDCG@k` is computed.
     Sakai 2007's full entry is under References in evals/methodology.md.
 
     Plain nDCG scores an unjudged document as irrelevant; the condensed list
@@ -120,6 +121,16 @@ def ndcg_condensed_at_k(
     """
     kept = judged | set(gold)
     return ndcg_at_k([d for d in retrieved if d in kept], gold, k)
+
+
+def unjudged_at_k(retrieved: Sequence[str], judged: set[str], k: int) -> float:
+    """Share of the top k that no judgment covered.
+
+    Each unjudged chunk counts as a miss whether or not it is relevant; the share
+    does not measure the pooling bias itself. 0.0 for an empty list.
+    """
+    top = list(retrieved[:k])
+    return mean([c not in judged for c in top]) if top else 0.0
 
 
 def evaluate(
@@ -145,8 +156,7 @@ def venue_coverage_at_k(
 
     Needs no gold labels: it measures only whether retrieval returned each venue
     at all, which is the precondition for answering a comparison. Defined for
-    questions naming two or more venues; a one-venue question would measure
-    plain venue precision instead.
+    questions naming two or more venues.
 
     Raises:
         ValueError: The question names fewer than two venues.

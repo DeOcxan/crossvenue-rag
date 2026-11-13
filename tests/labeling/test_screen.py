@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
+import re
+
 from rich.console import Console
 
 from crossvenue_rag.dataset.journal import Judgment
 from crossvenue_rag.labeling.pool import RETEST_SHUFFLE_SEED, retest_candidates
 from crossvenue_rag.labeling.screen import (
+    MATCH_WINDOW_CHARS,
     ScreenView,
     first_line,
     highlight,
@@ -70,12 +73,12 @@ def test_compact_row_marks_the_source_and_names_copies():
 
 def test_match_window_is_centered_on_the_first_match_and_trimmed_to_words():
     r = result("c1", f"Limits\n\nFirst line.\n{FILLER} Maximum recvWindow is 60000 ms. {FILLER}")
-    window = match_window(r, ["recvwindow"], width=120)
+    window = match_window(r, ["recvwindow"])
     assert window is not None
     assert window.startswith("... ") and window.endswith(" ...")
     inner = window.removeprefix("... ").removesuffix(" ...")
     assert "recvWindow" in inner
-    assert len(inner) <= 120
+    assert len(inner) <= MATCH_WINDOW_CHARS
     # Centered: roughly as much context before the match as after it.
     before, _, after = inner.partition("recvWindow")
     assert abs(len(before) - len(after)) <= 20
@@ -85,19 +88,20 @@ def test_match_window_is_centered_on_the_first_match_and_trimmed_to_words():
 
 def test_match_window_shifts_inward_at_the_ends_of_the_text():
     near_start = result("c1", f"Limits\n\nFirst line.\nrecvWindow first. {FILLER}")
-    window = match_window(near_start, ["recvwindow"], width=120)
+    window = match_window(near_start, ["recvwindow"])
     assert window is not None and window.startswith("recvWindow first.")
     assert window.endswith(" ...")
 
     near_end = result("c2", f"Limits\n\nFirst line.\n{FILLER} ends with recvWindow")
-    window = match_window(near_end, ["recvwindow"], width=120)
+    window = match_window(near_end, ["recvwindow"])
     assert window is not None and window.endswith("ends with recvWindow")
     assert window.startswith("... ")
 
 
-def test_match_window_takes_the_earliest_of_several_terms():
+def test_match_window_takes_the_earliest_of_several_terms(monkeypatch):
+    monkeypatch.setattr("crossvenue_rag.labeling.screen.MATCH_WINDOW_CHARS", 12)
     r = result("c1", "Limits\n\nFirst line.\nThe order is signed, then recvWindow applies.")
-    assert match_window(r, ["recvwindow", "signed"], width=12) == "... is signed, ..."
+    assert match_window(r, ["recvwindow", "signed"]) == "... is signed, ..."
 
 
 def test_a_term_only_on_the_first_line_or_no_term_opens_no_window():
@@ -138,6 +142,8 @@ def test_blind_screen_shows_no_marks_no_found_by_and_no_source_markers():
     open_screen = seen.export_text()
     assert "found by" in open_screen and "source chunks in pool" in open_screen
     assert "* = marked" in open_screen
+    source_row = re.compile(r"\d+s \u2502")  # a row number with the source marker `s`
+    assert source_row.search(open_screen)
 
     blind = quiet()
     render(blind, question, candidates, {"c1"}, ScreenView(blind=True))
@@ -147,6 +153,7 @@ def test_blind_screen_shows_no_marks_no_found_by_and_no_source_markers():
     assert "source chunks in pool" not in screen
     assert "marked" not in screen
     assert "*" not in screen
+    assert not source_row.search(screen)
 
 
 def test_blind_screen_hides_the_question_notes_and_the_open_screen_shows_them():

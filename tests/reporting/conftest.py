@@ -32,13 +32,6 @@ ANSWER_CONFIG = {
 }
 
 
-def answer_record(
-    *, refused: bool = False, partial: bool = False, claims: int = 1, asked: bool = False
-) -> dict[str, Any]:
-    """A generated answer's JSON, as `answer_json` builds it."""
-    return answer_json(refused=refused, partial=partial, claims=claims, asked=asked)
-
-
 def write_run(root: Path, run_id: str, answers: dict[tuple[str, str], dict[str, Any]]) -> None:
     """answers: {(config, question id): answer}; every call costs 0.01."""
     directory = root / "results" / run_id
@@ -57,26 +50,19 @@ def write_run(root: Path, run_id: str, answers: dict[tuple[str, str], dict[str, 
 
 
 def write_fixture(root: Path) -> None:
-    (root / "evals/datasets").mkdir(parents=True)
-    questions: list[dict[str, Any]] = [
-        {"id": "cv-0001", "category": "comparison", "expected_behavior": "answer"},
-        {"id": "cv-0002", "category": "unanswerable", "expected_behavior": "refuse"},
-    ]
-    for q in questions:
-        q.update(
-            question="q",
-            tier="gold",
-            qtype="comparison",
-            venues=["binance", "bybit"],
-            gold_chunk_ids=[],
-        )
-    jsonl.write(root / GOLD, questions)
-    v1 = {(c, q): answer_record() for c in CONFIGS for q in ("cv-0001", "cv-0002")}
-    v1[("gemini@venue_split", "cv-0001")] = answer_record(refused=True, claims=0)
+    write_gold(
+        root,
+        [
+            {"id": "cv-0001", "category": "comparison", "expected_behavior": "answer"},
+            {"id": "cv-0002", "category": "unanswerable", "expected_behavior": "refuse"},
+        ],
+    )
+    v1 = {(c, q): answer_json() for c in CONFIGS for q in ("cv-0001", "cv-0002")}
+    v1[("gemini@venue_split", "cv-0001")] = answer_json(refused=True, claims=0)
     v2 = dict(v1)
-    v2[("gemini@venue_split", "cv-0001")] = answer_record(partial=True)
+    v2[("gemini@venue_split", "cv-0001")] = answer_json(partial=True)
     # Flagged partial, no claim: a refusal under the outcome rule.
-    v2[("mercury@venue_split", "cv-0001")] = answer_record(partial=True, claims=0)
+    v2[("mercury@venue_split", "cv-0001")] = answer_json(partial=True, claims=0)
     write_run(root, ANSWERS_V1, v1)
     write_run(root, ANSWERS_V2, v2)
     # The judged run's config pre-registers the primary pair.
@@ -91,12 +77,12 @@ def write_file(root: Path, relative: str, text: str) -> None:
 
 
 def write_chunks(root: Path, chunks: list[Chunk]) -> None:
-    """`chunks` (a list of `models.Chunk`) as data/processed/chunks.jsonl under `root`."""
+    """`chunks` (a list of `models.Chunk`) as `data/processed/chunks.jsonl` under `root`."""
     save_chunks(Config(paths=PathsConfig(processed=root / "data/processed")), chunks)
 
 
-# The columns each saved table's model requires, with a neutral value, for
-# fixtures that state only the columns a test reads.
+# The columns each saved table's model requires, other than the row's key columns (`per_query`
+# keeps `method`), with a neutral value, for fixtures that state only the columns a test reads.
 PAIRED_ESTIMATE = {"n": 0, "mean_a": 0.0, "mean_b": 0.0, "diff": 0.0, "low": 0.0, "high": 0.0}
 REQUIRED: dict[str, dict[str, Any]] = {
     "summary": {"questions": 0, "labelled_questions": 0, "p50_ms": 0.0, "p95_ms": 0.0},
@@ -142,7 +128,7 @@ def complete(kind: str, rows: Iterable[dict[str, Any]]) -> list[dict[str, Any]]:
     return [{**REQUIRED[kind], **row} for row in rows]
 
 
-def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
+def write_csv_rows(path: Path, rows: list[dict[str, Any]]) -> None:
     """`rows` (dicts, one header for all rows) as a CSV file at `path`, its directory created.
 
     The header is the first row's keys; no row writes an empty file.
@@ -164,14 +150,14 @@ def write_jsonl(path: Path, rows: Iterable[dict[str, Any]]) -> None:
 def write_retrieval_run(
     root: Path, run_id: str, *, config: dict[str, Any] | None = None, **tables: list[dict[str, Any]]
 ) -> None:
-    """A retrieval run under results/: config.yaml, and a CSV file per table
+    """A retrieval run under `results/`: `config.yaml`, and a CSV file per table
     (`summary`, `by_category`, `per_query`, `paired`) from its list of rows."""
     directory = root / "results" / run_id
     directory.mkdir(parents=True, exist_ok=True)
     (directory / "config.yaml").write_text(yaml.safe_dump(config or {}))
     for name, rows in tables.items():
         if rows:
-            write_csv(directory / f"{name}.csv", complete(name, rows))
+            write_csv_rows(directory / f"{name}.csv", complete(name, rows))
 
 
 def write_gold(root: Path, questions: list[dict[str, Any]], path: str = GOLD) -> None:
@@ -189,7 +175,7 @@ def write_gold(root: Path, questions: list[dict[str, Any]], path: str = GOLD) ->
 
 
 def write_sources(root: Path, venues: Iterable[str]) -> None:
-    """data/sources.yaml naming `venues`, each detected by its own name only."""
+    """`data/sources.yaml` naming `venues`, each detected by its own name only."""
     entries = [
         {
             "venue": v,
@@ -211,9 +197,10 @@ def write_judged_run(
     paired: Iterable[dict[str, Any]] = (),
     config: dict[str, Any] | None = None,
 ) -> None:
-    """A judged answer run under results/: answers.jsonl, paired.csv and config.yaml."""
+    """A judged answer run under `results/`: `answers.jsonl`, `config.yaml`, and `paired.csv`
+    when `paired` has rows."""
     directory = root / "results" / run_id
     write_jsonl(directory / "answers.jsonl", list(records))
     write_file(root, f"results/{run_id}/config.yaml", yaml.safe_dump(config or ANSWER_CONFIG))
     if paired:
-        write_csv(directory / "paired.csv", complete("answer_paired", paired))
+        write_csv_rows(directory / "paired.csv", complete("answer_paired", paired))

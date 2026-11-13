@@ -11,6 +11,7 @@ from crossvenue_rag.evaluation.metrics import (
     precision_at_k,
     recall_at_k,
     reciprocal_rank,
+    unjudged_at_k,
     venue_coverage_at_k,
 )
 
@@ -53,7 +54,7 @@ def test_duplicate_results_do_not_inflate_scores():
 
 
 def test_metrics_undefined_without_gold_raise():
-    """Scoring an unlabeled question as 0.0 would raise or lower methods' means at random."""
+    """Scoring an unlabeled question as 0.0 would lower methods' means."""
     for fn in (recall_at_k, ndcg_at_k):
         with pytest.raises(ValueError, match="empty gold set"):
             fn(["a"], [], 5)
@@ -130,3 +131,8 @@ def test_off_venue_needs_a_named_venue():
 def test_every_ranking_metric_is_undefined_on_an_empty_gold_set(metric):
     with pytest.raises(ValueError, match="empty gold set"):
         metric()
+
+
+def test_unjudged_at_k_is_the_unjudged_share_of_the_top_k_and_zero_for_an_empty_list():
+    assert unjudged_at_k(["a", "x", "g", "y"], {"a", "g"}, 3) == pytest.approx(1 / 3)
+    assert unjudged_at_k([], {"a"}, 3) == 0.0

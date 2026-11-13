@@ -74,8 +74,7 @@ V2_ANSWER_FIELDS = frozenset({"partial", "missing"})
 _FROZEN = ConfigDict(frozen=True)
 
 # Rationale before verdict in every object: structured output is generated in
-# schema order, and a verdict written before its reasoning can contradict it
-# (the trial run showed a rationale concluding "supported" above supported=false).
+# schema order, and a verdict written before its reasoning can contradict it.
 JUDGEMENT_SCHEMA: dict[str, Any] = _object(
     {
         "claims": {

@@ -8,7 +8,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from ...generation.answer_rows import in_scope
 from ...generation.schemas import ANSWERED, Outcome, is_absence_claim
 from ...models import QuestionCategory
 from ..sources import Sources
@@ -189,7 +188,9 @@ def judged_behaviour(src: Sources, config: str, category: str) -> tuple[int, int
         {
             r.question_id: r.judge.metrics.behaviour_correct
             for r in run.records
-            if r.config == config and in_scope(r, category) and r.judge is not None
+            if r.config == config
+            and entry(src.questions, r.question_id, "the gold set").effective_category == category
+            and r.judge is not None
         }
         for run in (src.judged_v1, src.judged_v2)
     ]

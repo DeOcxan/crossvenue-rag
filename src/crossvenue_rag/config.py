@@ -2,7 +2,7 @@
 
 `config_loading` reads the YAML file into it. A saved config holds no secret:
 `Config.to_yaml` leaves `store.dsn` out, a DSN with a password comes from
-`CROSSVENUE_PG_DSN`, and the OpenRouter key is read by `generation.llm`.
+`CROSSVENUE_PG_DSN`, and `generation.llm` reads the OpenRouter key.
 """
 
 from __future__ import annotations
@@ -50,7 +50,8 @@ class Config(Section):
     @model_validator(mode="after")
     def _rerank_depth(self) -> Config:
         # `eval` retrieves at max(k_values), `retrieve` at retrieval.k, the labeling pool
-        # at eval.pool_depth_per_method and the generator at generation.top_k.
+        # first at eval.pool_depth_per_method and the generator at generation.top_k.
+        # The pool's top-up asks deeper, and this check leaves it out.
         deepest = max(
             self.retrieval.k,
             *self.eval.k_values,
@@ -64,6 +65,10 @@ class Config(Section):
                 "eval.k_values, eval.pool_depth_per_method and generation.top_k); reranking "
                 "would return fewer results than asked for"
             )
+        return self
+
+    @model_validator(mode="after")
+    def _candidates_cover_the_deepest_k(self) -> Config:
         # Each side of a hybrid retrieval gives at least as many candidates as a list holds.
         deepest_k = max(self.retrieval.k, *self.eval.k_values)
         for name in ("bm25_candidates", "dense_candidates"):
@@ -72,16 +77,16 @@ class Config(Section):
                 raise ValueError(
                     f"retrieval.{name} ({formatting.own_form(candidates)}) is below the "
                     f"deepest k asked for ({formatting.own_form(deepest_k)}, from retrieval.k "
-                    "and eval.k_values); a hybrid list would come back shorter"
+                    "and eval.k_values)"
                 )
         return self
 
     def depth_bounds(self, method: RetrievalMethod) -> dict[str, int]:
         """The config keys that bound how many results `method` returns, with their values.
 
-        A fused method returns at most as many results as each candidate side gives,
-        the bound `_rerank_depth` applies to the configured depths, and a reranking
-        method at most `reranker.top_n`. BM25 and dense alone have no bound.
+        A fused method ranks only the candidates each side gives, the bound
+        `_candidates_cover_the_deepest_k` applies to the configured depths, and a reranking
+        method returns at most `reranker.top_n`. BM25 and dense alone have no bound.
         """
         sides = ("bm25_candidates", "dense_candidates") if method in FUSED_METHODS else ()
         bounds: dict[str, int] = {f"retrieval.{s}": getattr(self.retrieval, s) for s in sides}

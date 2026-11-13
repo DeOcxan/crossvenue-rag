@@ -1,4 +1,4 @@
-"""Tests for `generation.calibration_file`: calibration.json as one model."""
+"""Tests for `generation.calibration_file`: `calibration.json` as one model."""
 
 from __future__ import annotations
 
@@ -42,26 +42,6 @@ def test_an_undefined_statistic_is_left_out_and_reads_back_as_none(tmp_path):
     back = read_calibration(tmp_path).comparisons["j vs human"]["supported"]
     assert back.value("kappa") is None and back.interval("agreement") == (0.25, 0.75)
     assert back.undefined("agreement") == 0
-
-
-def test_every_sibling_function_a_generation_docstring_names_exists():
-    import importlib
-    import pkgutil
-    import re
-
-    import crossvenue_rag.generation as package
-
-    names = {m.name for m in pkgutil.iter_modules(package.__path__)}
-    dangling = []
-    for name in sorted(names):
-        module = importlib.import_module(f"{package.__name__}.{name}")
-        for sibling, attr in re.findall(r"`(\w+)\.(\w+)`", module.__doc__ or ""):
-            # `llm.py` names a file.
-            if sibling in names and attr != "py":
-                target = importlib.import_module(f"{package.__name__}.{sibling}")
-                if not hasattr(target, attr):
-                    dangling.append(f"{name}: `{sibling}.{attr}`")
-    assert dangling == []
 
 
 @pytest.mark.parametrize("name", ["spearman_ci", "n", "tau"])

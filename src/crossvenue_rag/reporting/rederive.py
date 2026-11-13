@@ -94,7 +94,7 @@ class _Expected:
 
     A re-derived row holds every column its table's writer gives:
     `evaluation.results.summary_cells` for a summary or breakdown, and
-    `PairedComparison.cells` for paired.csv. `_compare` skips a column the saved table
+    `PairedRow.cells` for paired.csv. `_compare` skips a column the saved table
     lacks, such as the off-venue metrics of a run saved before methodology section 9b.
     """
 
@@ -108,7 +108,7 @@ class _Expected:
 def _expected_tables(
     run_dir: Path, cfg: Config, runs: Sequence[QueryRun], questions: Sequence[Question]
 ) -> list[_Expected]:
-    """Each saved table the run has, with its rows re-derived."""
+    """Each of summary.csv, the breakdowns and paired.csv the run has, with its rows re-derived."""
     k_values = cfg.eval.k_values
     summary = read_summary(run_dir)
     tables = [

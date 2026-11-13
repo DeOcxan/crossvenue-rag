@@ -1,9 +1,10 @@
 """Every run or dataset the documents report, by name.
 
 Each constant names a saved artifact under the repository root: a run directory
-under `results/`, a dataset under `evals/datasets/`, or a file under `evals/migrations/`
-or `evals/selection/`. The claims and the compute functions read these names; a claim
-template and scripts/figures.py's labels write a dataset's version (`v0.2.1-gold`) as text.
+under `results/`, a dataset under `evals/datasets/`, the working question set
+`evals/questions.jsonl`, or a file under `evals/migrations/` or `evals/selection/`. The
+claims and the compute functions read these names; a claim template and scripts/figures.py's
+labels write a dataset's version (`v0.2.1-gold`) as text.
 """
 
 # Retrieval runs.
@@ -40,6 +41,13 @@ ROUND2_EXPOSED = "evals/selection/round2_exposed.txt"
 # config; both made with embedding.device=cpu.
 SENSITIVITY_RUN = "20261010T214504Z"
 SENSITIVITY_BASE_RUN = "20261010T222553Z"
+# The gold set of annotation round 3, the retrieval run on it, the two answer runs judged
+# again on it and their comparison. The retrieval run used embedding.device=cpu.
+GOLD_ROUND3 = "evals/datasets/v0.3-gold.jsonl"
+ROUND3_RUN = "20261031T202503Z"
+ROUND3_JUDGED_V1 = "20261031T213610Z_judged"
+ROUND3_JUDGED_V2 = "20261031T220102Z_judged"
+ROUND3_PROMPTS_RUN = "20261031T220111Z_prompts"
 # The working question set, whose journal holds round 2 beside round 1.
 WORKING_QUESTIONS = "evals/questions.jsonl"
 # The questions of deviation D23, with the answer chunks their round-1 pools missed.
@@ -48,6 +56,8 @@ D23_ANSWER_CHUNKS = "evals/selection/d23_answer_chunks.jsonl"
 CALIBRATION_SAMPLE = "evals/selection/judge_calibration_sample.txt"
 # The run on `v0.2-gold` that measured the coverage failure.
 COVERAGE_FAILURE_RUN = "20260925T002151Z"
-# The last candidate set before selection, and the one holding the comparison supplement.
+# The first candidate set, the last before selection, and the one holding the comparison
+# supplement.
+CANDIDATES_FIRST = "evals/datasets/v0.1-candidates.jsonl"
 CANDIDATES_FINAL = "evals/datasets/v0.1.6-candidates.jsonl"
 COMPARISON_SUPPLEMENT = "evals/datasets/v0.1.2-candidates.jsonl"

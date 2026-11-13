@@ -15,7 +15,7 @@ DEFAULT = Path("configs/default.yaml")
 
 
 def test_pool_must_be_deeper_than_the_evaluation_depth(cfg):
-    """A pool only as deep as max(k) adds no judgment below the ranks recall@k scores,
+    """A pool only as deep as max(k) adds no judgment below the ranks `recall@k` scores,
     so the judgments end exactly at the deepest rank it scores."""
     with pytest.raises(ValidationError, match="must exceed"):
         EvalConfig(k_values=[1, 5, 10], pool_depth_per_method=10, pool_display=25)

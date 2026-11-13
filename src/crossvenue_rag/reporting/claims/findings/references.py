@@ -1,4 +1,4 @@
-"""docs/results/findings.md, its references: every run, `index_version` and hash it names.
+"""docs/results/findings.md, its references: the runs of `CITED_RUNS`, `index_version` and hashes.
 
 Each is the one the claims read.
 """
@@ -18,6 +18,7 @@ from ...run_ids import (
     JUDGED_V2,
     NDCG_PRIME_RUN,
     ONE_CALL_RUN,
+    POOL_RUN,
     POWER_RUN,
     PROMPTS_RUN,
     PVALUE_RUN,
@@ -32,7 +33,7 @@ from ..comparisons import (
     top_k_text,
 )
 
-# Every run findings.md cites, in the order it is checked.
+# The runs of findings.md whose index the claims check, in the order they are checked.
 CITED_RUNS = (
     RETRIEVAL_RUN,
     NDCG_PRIME_RUN,
@@ -40,6 +41,7 @@ CITED_RUNS = (
     ONE_CALL_RUN,
     BENCH_RUN,
     POWER_RUN,
+    POOL_RUN,
     ANSWERS_V1,
     ANSWERS_V2,
     JUDGED_V1,
@@ -49,7 +51,7 @@ CITED_RUNS = (
 
 
 def runs(doc: Doc, src: Sources) -> None:
-    """Every run findings.md names, and where it names it."""
+    """Each run of `CITED_RUNS`, where findings.md names it."""
     version = corpus.index_version(src)
     for run, current in registry.runs_on_index(src, CITED_RUNS):
         doc.claim(
@@ -72,8 +74,14 @@ def runs(doc: Doc, src: Sources) -> None:
     doc.ref("nDCG'@10 is from `results/{}`", NDCG_PRIME_RUN)
     doc.ref("are from `results/{}`;", PVALUE_RUN)
     doc.ref("without adjustment (`results/{}`)", POWER_RUN)
+    doc.ref("(`results/{}`). Against dense", POWER_RUN)
+    doc.ref("(`results/{}`). Against `v0.2-gold`", POWER_RUN)
     doc.ref("every metric but latency in `results/{}`, are identical", ONE_CALL_RUN)
     doc.ref("Run `results/{}` (`crossvenue bench-rerank`)", BENCH_RUN)
+    doc.ref("rerank step (`results/{}`, descriptive)", BENCH_RUN)
+    doc.ref("in `results/{}`; [ADR 0005]", POOL_RUN)
+    doc.ref("Under prompt v2 (exploratory), in `results/{}`, the same", JUDGED_V2)
+    doc.ref("Under v2, an exploratory prompt, in `results/{}`, wrong refusals", PROMPTS_RUN)
     doc.ref("Prompt v1 answers are `results/{}`", ANSWERS_V1)
     doc.ref("which Opus judged in `results/{}`. Only", JUDGED_V1)
     doc.ref("run `results/{}`, `calibration.json`", ANSWERS_V1)
@@ -84,10 +92,6 @@ def runs(doc: Doc, src: Sources) -> None:
 
 def captions(doc: Doc, src: Sources) -> None:
     """Table captions (style rule 9) not written next to their table's check."""
-    doc.definition(
-        "Prompt v2 replaces rule 5 with three outcomes",
-        reason="full answer, partial answer and refusal, the outcomes prompt v2 allows",
-    )
     doc.check(
         "The detector applied to the text of the {} questions of `v0.2.1-gold`",
         question_count_text(src),

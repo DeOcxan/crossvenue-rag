@@ -1,10 +1,9 @@
 """`crossvenue label --adjudicate`: the third pass over the pairs the labeling rounds disagree on.
 
-Methodology section 5 resolves the disagreements of the test-retest pass by a third
-pass. It walks every (question, chunk) pair both rounds judged on which round 1 (as
-corrected) and round 2 disagree, grouped by question, shows both earlier verdicts, and records each
-decision under the journal key `adjudicated`. The round-1 and round-2 entries are
-never touched, so kappa, which reads only those two, is unchanged by it.
+It walks every (question, chunk) pair both rounds judged on which round 1 (as corrected) and
+round 2 disagree, grouped by question, shows both earlier verdicts, and records each decision
+under the journal key `adjudicated`. It never touches the round-1 and round-2 entries, so it
+leaves `kappa`, which reads only those two, unchanged.
 """
 
 from __future__ import annotations
@@ -19,7 +18,17 @@ from rich.text import Text
 
 from .. import formatting, listing
 from ..clock import utc_now
-from ..dataset.journal import Adjudication, Decision, Journal, load_rounds, rounds_path, save_rounds
+from ..dataset.agreement import differing_pairs, judgements_from_rounds
+from ..dataset.journal import (
+    FIRST_ROUND,
+    RETEST_ROUND,
+    Adjudication,
+    Decision,
+    Journal,
+    load_rounds,
+    rounds_path,
+    save_rounds,
+)
 from ..dataset.questions import load_questions
 from ..errors import UserError
 from ..models import Chunk, Question, Result
@@ -33,7 +42,7 @@ CRITERION_SUMMARY = (
     f"Criterion (methodology section 5a, amended {CRITERION_DATE}): a chunk is relevant if it "
     "contains a fact without which a correct answer cannot be assembled.\n"
     "(a) A rule stated on many pages: for a question about a venue's rule or policy, the chunk "
-    "that states the rule is relevant; a page of one endpoint showing only that endpoint's "
+    "that states the rule is relevant. A page of one endpoint showing only that endpoint's "
     "value is relevant only when the question is about that endpoint, or when no candidate "
     "states the rule.\n"
     "(b) A comparison's premise venue: the chunk confirming the premise the question states "
@@ -58,23 +67,21 @@ def disagreeing_pairs(journal: Journal) -> list[Pair]:
     """Every pair the two rounds disagree on, by question id, in round-2 screen order.
 
     A pair is a chunk both rounds judged: one round 1 judged after round 2 (a later
-    augmentation) has no round-2 verdict, so it is no disagreement, as kappa counts it.
+    augmentation) has no round-2 verdict, so it is no disagreement, as `kappa` counts it
+    (`agreement.differing_pairs`).
     """
-    pairs = []
-    for question_id in sorted(journal.questions):
-        entries = journal.questions[question_id]
-        first, second = entries.judgment(1), entries.judgment(2)
-        if first is None or second is None:
-            continue
-        judged_first = set(first.judged_ids())
-        relevant_first, relevant_second = set(first.relevant), set(second.relevant)
-        for number, chunk_id in enumerate(second.pool, start=1):
-            if chunk_id not in judged_first:
-                continue
-            a, b = chunk_id in relevant_first, chunk_id in relevant_second
-            if a != b:
-                pairs.append(Pair(question_id, chunk_id, number, a, b))
-    return pairs
+    first = judgements_from_rounds(journal, FIRST_ROUND)
+    second = judgements_from_rounds(journal, RETEST_ROUND)
+    screens = {
+        q: e.pool
+        for q, entries in journal.questions.items()
+        if (e := entries.judgment(RETEST_ROUND)) is not None
+    }
+    pairs = [
+        Pair(q, c, screens[q].index(c) + 1, first.labels[(q, c)], second.labels[(q, c)])
+        for q, c in differing_pairs(first, second)
+    ]
+    return sorted(pairs, key=lambda pair: (pair.question_id, pair.number))
 
 
 def decided(journal: Journal, pair: Pair) -> bool | None:
@@ -220,6 +227,9 @@ def adjudicate_session(
 
     Each decision is written to the journal when it is made, so an interrupt loses
     nothing; `b` goes back one pair and decides it again.
+
+    Raises:
+        UserError: Nothing is at `target.questions_path`, or a directory is.
     """
     console = console or Console()
     session = _Pass(target, console, prompt)

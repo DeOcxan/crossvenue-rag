@@ -88,7 +88,8 @@ def bench_saving(doc: Doc, src: Sources) -> None:
         ),
         count,
         holds=bench.modes_agree(src),
-        what="both modes score the same pairs and retrieve the same ids on every question",
+        what="both modes score as many pairs per question on average and retrieve the same ids "
+        "on every question",
     )
 
 

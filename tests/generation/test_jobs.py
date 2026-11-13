@@ -30,6 +30,7 @@ from crossvenue_rag.generation.llm import LLM, LLMFactory
 from crossvenue_rag.generation.records import write_answers
 from crossvenue_rag.index_version import require_current_index, write_index_meta
 from crossvenue_rag.retrieval.retriever import Retriever
+from crossvenue_rag.run_files import write_run_config
 from tests.conftest import build_corpus, write_journal
 from tests.generation.factories import (
     prompt_record,
@@ -68,8 +69,8 @@ class ContextRetriever(TwoChunkRetriever):
         self.warmed = True
 
 
-# The jobs as their commands build them without options: every question, the configured
-# judge, the config's budget, no note, the first grading.
+# The jobs as their commands build them without options: every question, no `--judge`,
+# the config's budget, no note, the first grading.
 answer_job = partial(AnswerEvalJob, question_ids=(), judge=None, budget=None, note="")
 run_job = partial(JudgeRunJob, judge=None, budget=None, note="")
 sample_job = partial(JudgeSampleJob, replicate=0, budget=None)
@@ -117,7 +118,7 @@ def offline(monkeypatch):
 
 
 def source_run(tmp_path: Path) -> Path:
-    """A generated (unjudged) answer run under tmp_path/results."""
+    """A generated (unjudged) answer run under `tmp_path/results`."""
     job = answer_job(questions_path=questions_file(tmp_path))
     return answer_eval(
         calibration_config(tmp_path),
@@ -158,7 +159,7 @@ def test_answer_eval_generates_judges_and_writes_the_run(tmp_path, offline):
         "gemini@hybrid_rerank:cv-0001",
         "gemini@hybrid_rerank:cv-0002",
     ]
-    records = jsonl.read(run_dir / "answers.jsonl")
+    records = [r for _, r in jsonl.iter_rows(run_dir / "answers.jsonl")]
     assert all(r["judge"]["judge"] == "sonnet" and r["error"] is None for r in records)
     assert json.loads((run_dir / "index.json").read_text())["index_version"] == VERSION
     report = (run_dir / "report.md").read_text(encoding="utf-8")
@@ -179,7 +180,7 @@ def test_answer_eval_answers_only_the_chosen_questions_unjudged(tmp_path, offlin
         make_llm=llm_on(transport),
         open_retriever=open_context,
     )
-    records = jsonl.read(run_dir / "answers.jsonl")
+    records = [r for _, r in jsonl.iter_rows(run_dir / "answers.jsonl")]
     assert {r["question_id"] for r in records} == {"cv-0002"}
     assert all(r["judge"] is None for r in records)
 
@@ -194,7 +195,7 @@ def test_answer_eval_records_a_budget_stop_in_the_report(tmp_path, offline):
         make_llm=llm_on(transport),
         open_retriever=open_context,
     )
-    assert len(jsonl.read(run_dir / "answers.jsonl")) == 1
+    assert len(list(jsonl.iter_rows(run_dir / "answers.jsonl"))) == 1
     assert "Stopped early:" in (run_dir / "report.md").read_text(encoding="utf-8")
 
 
@@ -290,9 +291,10 @@ def test_judge_run_judges_a_saved_run_and_records_its_source(tmp_path, offline):
     assert recorded["source_run"] == str(source) and recorded["judge"] == "opus"
     assert recorded["stops"] == [] and recorded["spent_usd"] == pytest.approx(outcome.spent_usd)
     report = (outcome.run_dir / "report.md").read_text(encoding="utf-8")
-    assert f"Judged by opus from `{source}`; answers copied unchanged. rejudged" in report
-    judged = jsonl.read(outcome.run_dir / "answers.jsonl")
-    source_records = jsonl.read(source / "answers.jsonl")
+    header = f"The judge opus judged the answers of `{source}`; this run keeps their generations."
+    assert f"{header} rejudged" in report
+    judged = [r for _, r in jsonl.iter_rows(outcome.run_dir / "answers.jsonl")]
+    source_records = [r for _, r in jsonl.iter_rows(source / "answers.jsonl")]
     assert [r["generation"] for r in judged] == [r["generation"] for r in source_records]
 
 
@@ -386,7 +388,7 @@ def test_judge_sample_writes_the_judgements_and_returns_counts(tmp_path, offline
     assert outcome.path == source / "judgements_sonnet.jsonl"
     assert (outcome.judged, outcome.errors, outcome.sampled) == (2, 0, 2)
     assert outcome.spent_usd == pytest.approx(2 * 0.0012) and len(transport.calls) == 2
-    assert [r["answer_id"] for r in jsonl.read(outcome.path)] == [
+    assert [r["answer_id"] for _, r in jsonl.iter_rows(outcome.path)] == [
         "gemini@venue_split:cv-0001",
         "gemini@venue_split:cv-0002",
     ]
@@ -454,6 +456,7 @@ def prompt_runs(cfg, tmp_path, versions):
         ]
         write_answers(run / "answers.jsonl", records)
         (run / "index.json").write_text(json.dumps({"index_version": version}))
+        write_run_config(run, cfg)
         runs.append(run)
     return runs
 
@@ -464,7 +467,7 @@ def test_prompt_runs_are_compared_and_written(cfg, tmp_path):
     version = require_current_index(cfg)
     run_dir = _under_test.compare_prompt_runs(cfg, *prompt_runs(cfg, tmp_path, [version] * 2))
     assert run_dir.name.endswith("_prompts")
-    assert (run_dir / "report.md").exists()
+    assert f"- `eval.questions`: `{cfg.eval.questions}`\n" in (run_dir / "report.md").read_text()
 
 
 def test_a_prompt_run_made_against_another_index_is_refused(cfg, tmp_path):

@@ -86,12 +86,12 @@ def select_judge(
     """The judge methodology section 9 selects, with every candidate's passes and fails.
 
     The judge has the most dimensions at or above their threshold; ties are
-    broken by agreement on venue_correct, then on coverage, then by lower cost.
+    broken by agreement on `venue_correct`, then on coverage, then by lower cost.
 
     Raises:
         ValueError: `versus_human` names no candidate; `calibration_report` refuses an
             empty `generation.judges` before this is reached. Or a candidate has no
-            statistics on a dimension of `thresholds`, venue_correct or coverage, or no
+            statistics on a dimension of `thresholds`, `venue_correct` or coverage, or no
             cost in `cost_per_answer`; the message names it.
     """
     if not versus_human:
@@ -132,18 +132,18 @@ def select_judge(
     else:
         reason = (
             f"{', '.join(tied)} meet the threshold on {formatting.plural(most, 'dimension')} each; "
-            f"{best} is chosen by the tie-break (venue_correct kappa, coverage Spearman, cost)"
+            f"{best} is chosen by the tie-break (`venue_correct` kappa, coverage Spearman, cost)"
         )
     return Selection(candidates, best, reason)
 
 
-def _require_inputs(cfg: Config, run_dir: Path, ratings_path: str | Path, *, rated: bool) -> None:
+def _require_inputs(cfg: Config, run_dir: Path, *, rated: bool) -> None:
     """Refuses a calibration with nothing to calibrate.
 
     Raises:
-        UserError: `generation.judges` names no candidate,
-            `generation.calibration_exclude_behaviour` names an answer the run does not
-            have, or the ratings file holds no human rating (`rated` is False).
+        UserError: `run_dir` is not an answer or judged run, `generation.judges` names no
+            candidate, `generation.calibration_exclude_behaviour` names an answer the run does
+            not have, or the ratings file holds no human rating (`rated` is False).
     """
     require_answer_run(run_dir)
     if not cfg.generation.judges:
@@ -162,13 +162,13 @@ def _require_inputs(cfg: Config, run_dir: Path, ratings_path: str | Path, *, rat
         )
     if not rated:
         raise UserError(
-            f"no human rating in {ratings_path}",
+            f"no human rating in {RATINGS_PATH}",
             hint="rate the calibration sample with `crossvenue rate` first",
         )
 
 
 def calibration_report(cfg: Config, run_dir: str | Path) -> Calibration:
-    """Every agreement the selection rests on, and the selection itself.
+    """Every agreement the selection depends on, and the selection itself.
 
     The human ratings are those in `judge_sample.RATINGS_PATH`. The judges,
     thresholds and behavior exclusions come from `generation`
@@ -177,15 +177,16 @@ def calibration_report(cfg: Config, run_dir: str | Path) -> Calibration:
     the bootstrap from `eval`.
 
     Raises:
-        UserError: `generation.judges` names no candidate, or a candidate with no judgments in
-            the run or that graded none of the rated answers, or
-            `generation.calibration_exclude_behaviour` names an answer the run does not have.
+        UserError: `run_dir` is not an answer or judged run. `generation.judges` names no
+            candidate, or a candidate with no judgments in the run or that graded none of the
+            rated answers, or `generation.calibration_exclude_behaviour` names an answer the
+            run does not have.
     """
     gen = cfg.generation
     judges = list(gen.judges)
     ratings_path = RATINGS_PATH
     ratings = read_ratings(ratings_path)
-    _require_inputs(cfg, Path(run_dir), ratings_path, rated=bool(ratings))
+    _require_inputs(cfg, Path(run_dir), rated=bool(ratings))
     thresholds = gen.calibration_thresholds
     resamples, seed = cfg.eval.bootstrap_resamples, cfg.eval.bootstrap_seed
     exclude_behaviour = gen.calibration_exclude_behaviour
@@ -221,7 +222,7 @@ def calibration_report(cfg: Config, run_dir: str | Path) -> Calibration:
     for j in judges:
         repeat = load_judgements(judgements_path(run_dir, j, 1))
         if repeat:
-            comparisons[replicate_comparison(j, 1)] = agreement_record(
+            comparisons[replicate_comparison(j)] = agreement_record(
                 graded[j], repeat, resamples, seed
             )
     costs = {j: mean([r.judge.call.paid_usd() for r in rows[j] if r.judge]) for j in judges}

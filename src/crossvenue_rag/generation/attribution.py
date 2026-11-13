@@ -44,12 +44,11 @@ def attribution_kind(
     exchange its page documents (`documented_exchange`), None for a page about no
     one exchange.
 
-    - `cross_exchange`: the claim names an exchange and cites a chunk of another
-      exchange, or a CCXT page about another exchange.
+    - `cross_exchange`: the claim names an exchange, cites no chunk of it, and cites a
+      chunk of another exchange or a CCXT page about another exchange.
     - `wrapper`: the claim cites only CCXT pages (a client library that documents
       how it calls each exchange) about the exchange it names.
-    - `other`: a claim that fits neither: it cites a chunk of the venue it names,
-      names CCXT or no known venue, or cites only CCXT pages about no one exchange.
+    - `other`: a claim that fits neither.
     """
     named = claim_venue.strip().lower()
     cited = {v.lower() for v in cited_venues}
@@ -67,7 +66,7 @@ def attribution_kind(
 
 @dataclass
 class AttributionSummary:
-    """One configuration's claims, misattributed claims and venue_attribution_error by kind.
+    """One configuration's claims, misattributed claims and `venue_attribution_error` by kind.
 
     The error of a kind is the mean over answers with claims of the answer's
     share of claims of that kind, as the metric itself is averaged.
@@ -80,7 +79,7 @@ class AttributionSummary:
 
     @property
     def total_error(self) -> float | None:
-        """venue_attribution_error summed over the kinds; None where no answer has a claim."""
+        """`venue_attribution_error` summed over the kinds; None where no answer has a claim."""
         values = [v for v in self.error.values() if v is not None]
         return sum(values) if values else None
 

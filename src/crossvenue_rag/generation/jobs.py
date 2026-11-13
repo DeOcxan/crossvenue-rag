@@ -21,7 +21,7 @@ from ..errors import UserError
 from ..index_version import require_current_index
 from ..models import Question
 from ..retrieval.retriever import Retriever, checked_retriever
-from ..run_files import RunSource, write_run_source
+from ..run_files import RunSource, read_run_config, write_run_source
 from .answer_run import write_answer_run as write_answer_results
 from .answering import AnswerInputs, run_answers
 from .calibration_sample import read_sample
@@ -29,7 +29,7 @@ from .estimate import EstimateRow, estimate_answers
 from .judge_sample import judge_answers, judgements_path
 from .judging import judge_records
 from .llm import LLM, LLMFactory
-from .prompt_compare import compare_prompts, side_effects
+from .prompt_compare import compare_prompts, compared_runs, side_effects
 from .prompt_run import write_prompt_comparison
 from .records import ANSWERS_FILE, read_answers, write_judgements
 from .runs import require_run_index
@@ -138,8 +138,9 @@ def answer_eval(
 ) -> Path:
     """Generates every configuration on the questions; returns the run directory.
 
-    report.md opens with its title and the `index_version` line, followed by the
-    note, what the run spent of its budget, and why it stopped early if it did.
+    report.md opens with its title, the `index_version` line and the `eval.questions`
+    line, followed by the note, what the run spent of its budget, and why it stopped
+    early if it did.
     `make_llm` builds the model client (`LLM` unless given) and `open_retriever`
     the retriever (`checked_retriever`).
 
@@ -203,7 +204,7 @@ def judge_run(
 ) -> JudgeRunOutcome:
     """Judges a saved answer run without generating again; writes `results/<ts>_judged/`.
 
-    `source.json` beside the run records the source run, the judge, any budget
+    `source.json` in the run records the source run, the judge, any budget
     stop and the spend, including the invalid attempts of failed judgments.
     `make_llm` builds the model client; `LLM` unless given.
 
@@ -226,8 +227,9 @@ def judge_run(
     batch = judge_records(cfg, source, inputs, progress=progress)
     records = batch.records
     judged = sum(1 for r in records if r.judge is not None)
-    header = f"Judged by {name} from `{job.run}`; answers copied unchanged." + (
-        f" {job.note}" if job.note else ""
+    header = (
+        f"The judge {name} judged the answers of `{job.run}`; this run keeps their generations."
+        + (f" {job.note}" if job.note else "")
     )
     if batch.stopped:
         header += (
@@ -291,7 +293,8 @@ def judge_sample(
 
     Raises:
         UserError: `job.judge` is not a judge of `generation.judges` (the config takes only
-            plain names as judges, as the judgments file name needs).
+            plain names as judges, as the judgments file name needs). Nothing is at
+            `job.sample_file` or `job.questions_path`, or a directory is.
     """
     cfg.generation.judge_model(job.judge)
     run_dir, ids = read_sample(job.sample_file)
@@ -317,14 +320,16 @@ def judge_sample(
 def compare_prompt_runs(cfg: Config, v1: Path, v2: Path) -> Path:
     """Compares the judged runs of prompt v1 and v2 per configuration; the run directory.
 
-    Both runs must have been made against the current index, be two different runs,
-    and hold answers of schema 1 (v1) and 2 (v2). Runs the side-effect checks on v2's
+    Both runs must have been made against the current index, be two different runs
+    judged against one question file (`eval.questions` of their config.yaml), and hold
+    answers of schema 1 (v1) and 2 (v2). Runs the side-effect checks on v2's
     partial answers, and writes results/<ts>_prompts/.
 
     Raises:
-        UserError: `v1` and `v2` name the same run, or a run holds answers of another schema
-            than its prompt's. Or a run is not an answer or judged run, or records no index
-            version or another one than the current index.
+        UserError: `v1` and `v2` name the same run, or their config.yaml files name two
+            question files, or a run holds answers of another schema than its prompt's. Or a
+            run is not an answer or judged run, or records no index version or another one
+            than the current index.
     """
     if v1.resolve() == v2.resolve():
         raise UserError(
@@ -333,6 +338,8 @@ def compare_prompt_runs(cfg: Config, v1: Path, v2: Path) -> Path:
         )
     version = require_run_index(v1, require_current_index(cfg))
     require_run_index(v2, version)
+    first, second = read_run_config(v1).eval.questions, read_run_config(v2).eval.questions
+    runs = compared_runs(v1, first, v2, second)
     configs = [m.name for m in cfg.generation.matrix]
     r1, r2 = read_answers(v1 / ANSWERS_FILE), read_answers(v2 / ANSWERS_FILE)
     pairs = (("--v1", v1, r1, FIRST_SCHEMA), ("--v2", v2, r2, PARTIAL_SCHEMA))
@@ -351,4 +358,4 @@ def compare_prompt_runs(cfg: Config, v1: Path, v2: Path) -> Path:
             )
     rows = compare_prompts(r1, r2, configs, cfg.eval.bootstrap_resamples, cfg.eval.bootstrap_seed)
     effects = side_effects(r2, load_chunk_venues(cfg))
-    return write_prompt_comparison(cfg.paths.results, v1, v2, rows, effects, version)
+    return write_prompt_comparison(cfg.paths.results, runs, rows, effects, version)

@@ -1,7 +1,8 @@
 """The gates a saved answer run passes before use: its index, pinned prompts, calibrated metrics.
 
-The index and prompt gates refuse a run; the calibration gate marks the metrics whose judge
-dimension failed calibration, and the reports state that those support no conclusion.
+The index and prompt gates refuse a run. The calibration gate marks the metrics whose judge
+dimension failed calibration, or every metric when no calibration names the judge; the reports
+state that those support no conclusion.
 """
 
 from __future__ import annotations
@@ -31,8 +32,11 @@ _VERSION_LINE = re.compile(r"generator prompt v(\d+)\b")
 def answer_run_index_version(run_dir: Path, registry: Path) -> str | None:
     """The run's own `index.json`, else its entry in the registry of saved runs.
 
-    The registry (`results/runs.json`) lists the runs without an `index.json`,
-    with the version derived from the retrieval runs.
+    The registry (`results/runs.json`) lists the answer and judged runs without an
+    `index.json`, with the version derived from a retrieval run.
+
+    Raises:
+        UserError: A directory is at `registry`.
     """
     own = read_index(Path(run_dir))
     if own is not None:
@@ -92,6 +96,10 @@ def load_prompt(path: str | Path, expected_sha256: str | None) -> tuple[str, str
     config would otherwise name a prompt that is not the one that ran. A pinned
     prompt is read once per process (prompt files are never edited, docs/style.md
     rule 44), so a run does not reread it for every answer it generates or judges.
+
+    Raises:
+        UserError: Nothing is at `path`, or a directory is, or the file's sha256 differs
+            from `expected_sha256`.
     """
     if expected_sha256 is not None:
         return _pinned_prompt(str(Path(path).resolve()), expected_sha256)
@@ -123,8 +131,8 @@ def generator_prompt(cfg: GenerationConfig) -> tuple[str, str]:
     """The generator prompt, checked against its pinned hash and the schema version.
 
     Raises:
-        UserError: The prompt's first line names no version, or the version is not
-            `answer_schema_version`.
+        UserError: Nothing is at `generation.generator_prompt`, or a directory is; or the
+            prompt's first line names no version, or the version is not `answer_schema_version`.
     """
     text, digest = load_prompt(cfg.generator_prompt, cfg.generator_prompt_sha256)
     match = _VERSION_LINE.search(text.split("\n", 1)[0])
@@ -146,7 +154,11 @@ def generator_prompt(cfg: GenerationConfig) -> tuple[str, str]:
 
 
 def judge_prompt(cfg: GenerationConfig) -> tuple[str, str]:
-    """The judge prompt and its sha256, checked against its pinned hash."""
+    """The judge prompt and its sha256, checked against its pinned hash.
+
+    Raises:
+        UserError: Nothing is at `generation.judge_prompt`, or a directory is.
+    """
     return load_prompt(cfg.judge_prompt, cfg.judge_prompt_sha256)
 
 
@@ -155,7 +167,8 @@ def uncalibrated_metrics(cfg: GenerationConfig, judge: str | None) -> list[str]:
 
     A dimension fails when it misses its pre-registered threshold (methodology
     section 9). Read from `generation.calibration_run`/calibration.json. Every
-    metric counts as uncalibrated when no calibration names the judge.
+    metric counts as uncalibrated when no calibration names the judge. None (no judge)
+    gives no metric.
 
     Raises:
         UserError: `generation.calibration_run` is set and holds no calibration.json.

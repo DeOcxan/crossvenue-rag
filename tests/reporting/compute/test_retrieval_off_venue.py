@@ -136,9 +136,9 @@ def test_comparison_rows_list_each_scope_and_method_with_p_values_unless_descrip
 
 
 # Fifty comparison questions, so the paired off-venue comparisons get p-values.
-# BM25 puts an unnamed exchange first on ten of them, the other three methods a
-# CCXT page on five. On the two adversarial questions every method puts an
-# unnamed exchange first.
+# BM25 puts an unnamed exchange first on ten of them, dense and hybrid a CCXT page
+# on five, hybrid_rerank on three. On the two adversarial questions every method
+# puts an unnamed exchange first.
 ROUND1_POOL = ("bm25", "dense", "hybrid", "hybrid_rerank")
 SPREAD_COMPARISON = [f"cv-c{i:02d}" for i in range(50)]
 SPREAD_ADVERSARIAL = ["cv-a1", "cv-a2"]
@@ -151,7 +151,7 @@ def spread_first_venue(method: str, qid: str) -> str:
     i = SPREAD_COMPARISON.index(qid)
     if method == "bm25":
         return "okx" if i < 10 else "binance"
-    return "ccxt" if i < 5 else "bybit"
+    return "ccxt" if i < (3 if method == "hybrid_rerank" else 5) else "bybit"
 
 
 @pytest.fixture
@@ -204,10 +204,8 @@ def test_first_rank_counts_are_per_method_in_turn(off_venue_src):
         0,
         10,
     )
-    assert off_venue.first_rank_at_most(off_venue_src, "off_venue@1", "comparison", ("dense",), 0)
-    assert not off_venue.first_rank_at_most(
-        off_venue_src, "off_venue@1", "comparison", ROUND1_POOL, 1
-    )
+    assert off_venue.first_rank_at_most(off_venue_src, "off_venue@1", "comparison", ("dense",))
+    assert not off_venue.first_rank_at_most(off_venue_src, "off_venue@1", "comparison", ROUND1_POOL)
     assert off_venue.first_rank_adjacent(off_venue_src, "off_venue@1", "adversarial", ROUND1_POOL)
     assert not off_venue.first_rank_adjacent(
         off_venue_src, "off_venue@1", "comparison", ROUND1_POOL
@@ -226,14 +224,17 @@ def test_the_paired_rows_give_the_interval_and_p_holm(off_venue_src):
     assert interval.value == pytest.approx(-0.2)
     assert interval.low <= interval.value <= interval.high
     assert off_venue.off_venue_questions(off_venue_src, "bm25", "off_venue@10", "comparison") == 50
-    assert 0 < off_venue.off_venue_holm_p(off_venue_src, "bm25", "off_venue@1", "comparison") <= 1
+    # Holm over the three methods' comparisons, two of them at p 1: three times the
+    # randomization p of bm25's, 2/201 at 200 resamples.
+    holm_p = off_venue.off_venue_holm_p(off_venue_src, "bm25", "off_venue@1", "comparison")
+    assert holm_p == pytest.approx(3 * 2 / 201)
     # 200 resamples cannot give p below 0.001.
     assert not off_venue.off_venue_share_below_bound(off_venue_src, "bm25", "comparison")
 
 
 def test_a_first_chunk_the_baseline_recovers_is_a_named_venue_or_a_ccxt_page(off_venue_src):
-    # bm25 is off-venue first on ten questions; hybrid_rerank puts CCXT first on five of them.
-    assert off_venue.first_rank_recovered(off_venue_src, "bm25", "comparison") == (5, 5)
+    # bm25 is off-venue first on ten questions; hybrid_rerank puts CCXT first on three of them.
+    assert off_venue.first_rank_recovered(off_venue_src, "bm25", "comparison") == (7, 3)
 
 
 def test_a_comparison_row_or_question_the_run_lacks_raises_a_value_error(src, tmp_path):

@@ -1,12 +1,11 @@
 """Answer commands: generating, rating and judging answers, and comparing prompts.
 
-ask, answer-eval, rate-sample, rate, judge-sample, judge-agreement, select-judge, judge-run
-and compare-prompts.
+`ask`, `answer-eval`, `rate-sample`, `rate`, `judge-sample`, `judge-agreement`, `select-judge`,
+`judge-run` and `compare-prompts`.
 """
 
 from __future__ import annotations
 
-import getpass
 from functools import partial
 from pathlib import Path
 from typing import Annotated
@@ -16,12 +15,12 @@ from rich.text import Text
 
 from .. import formatting
 from ..config_loading import DEFAULT_CONFIG
-from ..confined_paths import file_on_path
+from ..confined_paths import require_out_file
 from ..errors import UserError
 from ..generation.ask import DEFAULT_GENERATOR, DEFAULT_RETRIEVER, ask
 from ..generation.calibration_file import CALIBRATION_FILE
 from ..generation.calibration_report import CALIBRATION_MARKDOWN, select_judge_files
-from ..generation.calibration_sample import draw_calibration_sample
+from ..generation.calibration_sample import answer_total, draw_calibration_sample
 from ..generation.jobs import (
     AnswerEvalJob,
     JudgeRunJob,
@@ -34,6 +33,7 @@ from ..generation.jobs import (
 )
 from ..generation.judge_sample import RATINGS_PATH, judge_agreements
 from ..labeling.rate import rate_calibration_sample
+from ..labeling.session import default_annotator
 from ..reporting import run_ids
 from ..run_files import REPORT_FILE
 from . import render_answers
@@ -110,18 +110,9 @@ def rate_sample_command(
     out: Annotated[Path, typer.Option("--out", "-o", help="Sample file.")] = CALIBRATION_SAMPLE,
 ) -> None:
     """Draws and pins the judge-calibration sample, stratified by configuration and category."""
-    if out.is_dir():
-        raise UserError(
-            f"--out {out} is a directory", hint="pass --out the path of the sample file"
-        )
-    blocker = file_on_path(out.parent)
-    if blocker is not None:
-        raise UserError(
-            f"--out {out} cannot be written: {blocker} is a file",
-            hint="pass --out a path whose directories are directories",
-        )
+    require_out_file(out, folder_must_exist=False)
     strata = draw_calibration_sample(load(config, set_), run, out)
-    say(console, f"{formatting.plural(sum(strata.values()), 'answer')} -> {out}")
+    say(console, f"{formatting.plural(answer_total(strata), 'answer')} -> {out}")
     for name, count in sorted(strata.items()):
         say(console, f"  {name:<{STRATUM_WIDTH}} {formatting.count(count)}")
 
@@ -131,16 +122,20 @@ def rate_command(
     set_: SetOpt = None,
     questions: QuestionsOpt = None,
     sample_file: Annotated[
-        Path, typer.Option("--sample-file", help="Written by rate-sample.")
+        Path, typer.Option("--sample-file", help="Written by `rate-sample`.")
     ] = CALIBRATION_SAMPLE,
     rater: Annotated[
         str,
-        typer.Option("--rater", help="Recorded on every rating (default: the login name)."),
+        typer.Option(
+            "--rater",
+            help="Recorded on every rating "
+            "(default: CROSSVENUE_ANNOTATOR, else USER, else 'unknown').",
+        ),
     ] = "",
 ) -> None:
     """Grades the calibration sample by hand; no judge's grade is ever shown."""
     cfg = load(config, set_)
-    rater = rater.strip() or getpass.getuser()
+    rater = rater.strip() or default_annotator()
     rated = rate_calibration_sample(
         cfg, sample_file, questions or cfg.eval.questions, rater, partial(say, console)
     )
@@ -153,7 +148,7 @@ def judge_sample_command(
     set_: SetOpt = None,
     questions: QuestionsOpt = None,
     sample_file: Annotated[
-        Path, typer.Option("--sample-file", help="Written by rate-sample.")
+        Path, typer.Option("--sample-file", help="Written by `rate-sample`.")
     ] = CALIBRATION_SAMPLE,
     replicate: Annotated[
         int, typer.Option("--replicate", help="0 = first grading; 1 = self-consistency repeat.")
@@ -207,7 +202,7 @@ def judge_agreement_command(
         title = f"{judge} vs human"
         say(console, render_answers.agreement_table(title, agreements.with_humans))
     else:
-        console.print("[yellow]no human ratings[/yellow] (run `crossvenue rate` first)")
+        console.print("[yellow]no human ratings[/yellow] (`crossvenue rate` records them)")
     if agreements.with_repeat is not None:
         title = f"{judge} vs {judge} (replicate 1)"
         say(console, render_answers.agreement_table(title, agreements.with_repeat))

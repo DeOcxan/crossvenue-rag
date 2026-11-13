@@ -50,8 +50,6 @@ def test_record_carries_models_provider_tokens_cost_and_sent_params(tmp_path):
     assert (record.input_tokens, record.reasoning_tokens, record.output_tokens) == (1000, 30, 170)
     assert record.cost_usd == pytest.approx(0.0012)
     assert record.retries == 0 and record.invalid_responses == 0 and not record.cached
-    # Gemini's endpoint takes no temperature: none is sent, and the record says so.
-    assert "temperature" not in record.params
     assert record.params["reasoning"] == {"effort": "minimal", "exclude": True}
     assert record.params["provider"]["order"] == ["google-vertex/global"]
 

@@ -79,19 +79,32 @@ def test_order_is_shuffled_and_reproducible_from_the_seed():
     assert first != order("cv-0001", RETEST_SHUFFLE_SEED + 1)
 
 
+def test_without_a_seed_the_order_is_the_recorded_pool_then_the_added_chunks_once():
+    chunks = {c: chunk(c, "bybit") for c in ("p1", "p2", "x1")}
+    entry = Judgment(pool=["p1", "p2"])
+    shown = retest_candidates(chunks, "q1", entry, None, ["x1", "p1", "x1"])
+    assert [r.chunk_id for r in shown] == ["p1", "p2", "x1"]
+
+
 def test_a_round_1_chunk_missing_from_the_index_is_refused():
     entry = round1_entry()
     entry.pool.append("gone")
-    with pytest.raises(UserError, match="1 round-1 chunk not in the current index"):
+    with pytest.raises(UserError, match="1 chunk not in the current index"):
         retest_candidates(MANY, "cv-0001", entry, RETEST_SHUFFLE_SEED)
 
 
+def test_an_added_chunk_missing_from_the_index_is_refused_and_named_in_the_hint():
+    with pytest.raises(UserError, match="1 chunk not in the current index") as caught:
+        retest_candidates(MANY, "cv-0001", round1_entry(), RETEST_SHUFFLE_SEED, added=["gone"])
+    assert "added-chunks file" in str(caught.value.hint)
+
+
 def test_a_pool_depth_override_is_held_to_the_config_bound(cfg: Config):
-    assert pool_depth_of(cfg, None) == cfg.eval.pool_depth_per_method
-    assert pool_depth_of(cfg, 30) == 30
+    assert pool_depth_of(cfg, None, "--k") == cfg.eval.pool_depth_per_method
+    assert pool_depth_of(cfg, 30, "--k") == 30
     deepest = max(cfg.eval.k_values)
     with pytest.raises(UserError, match="does not exceed max") as refused:
-        pool_depth_of(cfg, deepest)
+        pool_depth_of(cfg, deepest, "--k")
     assert f"give a depth above {deepest}" in refused.value.hint
 
 
@@ -102,6 +115,6 @@ def test_retest_order_is_the_order_retest_candidates_shows():
     entry = Judgment.model_validate(
         {"pool": ["a", "b", "c"], "augmentations": [augmentation(["d", "e"])]}
     )
-    order = retest_order("q1", entry, RETEST_SHUFFLE_SEED)
+    order = retest_order("q1", entry, RETEST_SHUFFLE_SEED, ())
     shown = [r.chunk_id for r in retest_candidates(chunks, "q1", entry, RETEST_SHUFFLE_SEED)]
     assert order == shown and sorted(order) == ["a", "b", "c", "d", "e"]

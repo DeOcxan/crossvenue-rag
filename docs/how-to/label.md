@@ -1,33 +1,33 @@
 # Label a question set
 
-How to select, label, correct, augment, validate and freeze a question set. What the current set contains is in the [datasheet](../../evals/datasheet.md), and why each step works the way it does is in the [methodology](../../evals/methodology.md). Where each file is, in [`evals/README.md`](../../evals/README.md); what each command shows and checks, in the [CLI reference](../reference/cli.md#question-set).
+How to select, label, correct, augment, validate and freeze a question set. What `v0.2.1-gold`, `v0.2.2-gold` and `v0.3-gold` contain is in the [datasheet](../../evals/datasheet.md), and why each step works the way it does is in the [methodology](../../evals/methodology.md). Where each file is, in [`evals/README.md`](../../evals/README.md); what each command shows and checks, in the [CLI reference](../reference/cli.md#question-set).
 
 ## Select a set from candidates
 
 1. Validate every dataset, the newest candidate file among them: `make validate-evals`.
-2. Walk the candidates with `make select` (or `crossvenue select`; `--category comparison` for one category, `--include-skipped` to revisit skipped candidates). Categories come in order of risk of running out.
+2. Walk the candidates with `make select` (or `crossvenue select`; `--category comparison` for one category, `--include-skipped` to revisit skipped candidates).
 3. Reject with a reason: `not grounded`, `paraphrased heading`, `duplicate information need`, `unrealistic phrasing`, `wrong category`, `other`.
 4. Write the working set: `make select-finalize`. It refuses a set that misses a category target ([methodology decision 2](../../evals/methodology.md#decisions-at-a-glance)) or has fewer than 50 answerable comparison questions.
 5. Keep or drop a question here, never by rewriting a candidate file; every decision is recorded in `evals/selection/selection.jsonl`.
 
 ## Label (round 1)
 
-1. Start the session with `make label` (or `crossvenue label --limit 25`; `--all` revisits labeled questions, `-q evals/other.jsonl` labels another file). Each unlabeled question shows 25 distinct candidates, pooled from every pool method's top 20 with RRF.
+1. Start the session with `make label` (or `crossvenue label --limit 25`; `--all` revisits judged questions, `-q evals/other.jsonl` labels another file). Each unjudged question shows 25 distinct candidates, pooled from every pool method's top 20 with RRF.
 2. For each question, enter the relevant numbers (`1 4 7`, `2-5`), `n` if nothing in the pool answers it, or Enter to skip. Progress is saved after every question; Ctrl-C is safe.
 3. Judge against the written criterion in [methodology §5a](../../evals/methodology.md#5a-annotation-instructions), and add a decision the criterion does not cover there, dated.
-4. Answer the checks the tool runs before it saves. For a comparison, say which venue the marks miss (`b` back, `a` absent from that venue's docs, `m` no suitable candidate in the pool). For a `version_sensitive` or `adversarial` question, confirm the `environment` and `api_version` of the marks (Enter saves, `b` goes back).
+4. Answer the checks the tool runs before it saves. For a comparison, answer for each venue the marks miss (`b` back, `a` absent from that venue's docs, `m` no suitable candidate in the pool). For a `version_sensitive` or `adversarial` question, confirm the `environment` and `api_version` of the marks (Enter accepts, `b` goes back).
 
 ## Correct round 1
 
-1. Re-open labeled questions on the pool round 1 recorded: `crossvenue label --review cv-0043 cv-0046`, or `crossvenue label --review-file evals/selection/review_round1.txt`. A change is appended to `corrections` in the journal with the previous set.
+1. Re-open judged questions on the pool round 1 recorded and the chunks its augmentations showed: `crossvenue label --review cv-0043 cv-0046`, or `crossvenue label --review-file evals/selection/review_round1.txt`. A change is appended to `corrections` in the journal with the previous set.
 2. Fill the `venue_coverage` values that follow from recorded data, leaving the questions under review to the annotator: `crossvenue derive-coverage --exclude-file evals/selection/review_round1.txt`.
 
 ## Judge a method that is not in the pool
 
-Before comparing the recall of a method that is not in the pool the questions are labeled from:
+Before comparing the recall of a method that is not in the pool the questions are judged from:
 
 1. Retrieve its top 20 without metrics: `crossvenue pool-run -m venue_split -m venue_split_oracle --k 20 --category comparison`, which writes `results/<ts>_pool/`.
-2. List the chunks round 1 never judged:
+2. List the chunks round 1 has not judged:
 
    ```bash
    crossvenue augment-candidates --run results/<ts>_pool -m venue_split -m venue_split_oracle \
@@ -39,7 +39,7 @@ Before comparing the recall of a method that is not in the pool the questions ar
 ## Measure agreement (round 2)
 
 1. Draw the stratified list once: `make round2-sample` writes `evals/selection/round2_sample.txt`. Leave the file unchanged, so the questions judged are fixed in advance.
-2. No earlier than the date in [methodology decision 7](../../evals/methodology.md#decisions-at-a-glance), and without looking at round 1, run `make relabel`. Its screen shows no earlier verdict, and it writes only to the journal.
+2. After the gap that [methodology decision 7](../../evals/methodology.md#decisions-at-a-glance) sets, and without looking at round 1, run `make relabel`. Its screen shows no earlier verdict, and it writes only to the journal.
 3. Compute Cohen's kappa over the candidates judged in both rounds: `make kappa`.
 4. Write the result to `evals/agreement.md`.
 
@@ -50,7 +50,7 @@ Round 3 judges all 114 questions again, blind, as [methodology §5b](../../evals
 1. Start or resume with `make round3`. A question shows the criterion, the keys and the candidates, shuffled, with no marks.
 2. Enter the relevant numbers (`1 4 7`, `2-5`), `n` if nothing answers the question, or Enter to skip. A skipped question comes back on the next run.
 3. On an `unanswerable` question, numbers are refused: enter `n`, or `x` if a chunk does answer it, which flags the question.
-4. To fix a typing error, press `u` at the next question. It re-opens the previous question without its marks, within this session only. A later correction is a recorded deviation.
+4. To fix a typing error, press `u` at the next question. It re-opens the previous question without its marks, within this session only.
 5. Stop with Ctrl-C at any prompt. Every answered question is already saved, and `make round3` resumes at the first question without an entry, on any later day.
 6. When the round is complete, read `make kappa`, which still prints the registered reading, and `make round3-agreement`, which is descriptive. It refuses an unfinished round, so that no earlier verdict appears during the round.
 7. Build the gold set with `make round3-gold`, then freeze it as below. It writes `evals/datasets/v0.3-gold.jsonl` directly, so step 2 of [Freeze a version](#freeze-a-version) copies nothing, and `evals/questions.jsonl` stays as it is.

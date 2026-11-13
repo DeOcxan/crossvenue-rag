@@ -22,7 +22,7 @@ NEUTRAL_PAIRED = {
 
 
 def fake_run(tmp_path: Path, *, family: bool = True) -> tuple[Path, list[Question]]:
-    """A retrieval run with a two-comparison recall@10 family on six comparison
+    """A retrieval run with a two-comparison `recall@10` family on six comparison
     questions, one fact question and one method outside the family."""
     questions = [
         Question(f"cv-{i}", "binance vs bybit", "gold", ["binance", "bybit"], "comparison",

@@ -1,7 +1,8 @@
 """Judging saved answers again, without generating them: one record per saved answer.
 
-The judgment of each record is replaced; its generation is kept as saved. A failed
-judgment is recorded in the record's `judge_error` and the run continues.
+The judgment of each record is replaced, and its `category` and `expected_behavior` are
+taken from the question file; its generation is kept as saved. A failed judgment is
+recorded in the record's `judge_error` and the run continues.
 """
 
 from __future__ import annotations
@@ -79,8 +80,9 @@ def judge_records(
 ) -> AnswerBatch:
     """Judges saved answers without generating them again.
 
-    Each record is copied with `judge` filled in. An answer shared by two
-    configurations is one cached judge call. A budget stop ends the run with the
+    Each record is copied with its `category` and `expected_behavior` from
+    `inputs.questions`, and each with a generation with `judge` filled in. An answer shared
+    by two configurations is one cached judge call. A budget stop ends the run with the
     records judged before it; a judgment that stays invalid after the retries, or
     whose call fails after its retries, is recorded in the record's `judge_error`.
     Each claim cites numbers of its record's `chunk_ids`, as `read_answers` ensures.

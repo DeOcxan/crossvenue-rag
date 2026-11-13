@@ -11,45 +11,15 @@ import ast
 from ..sources import Sources
 from .lookup import entry
 from .memo import per_sources
-from .repository import PACKAGE
+from .repository import PACKAGE, module_literal, module_tree
 
 # The package the commands are defined in, relative to the repository.
 CLI_PACKAGE = f"{PACKAGE}/cli"
 
 
-def _parse(src: Sources, module: str, package: str = CLI_PACKAGE) -> ast.Module:
-    """The syntax tree of `module` (dotted, relative to `package`)."""
-    path = src.path(package) / f"{module.replace('.', '/')}.py"
-    return ast.parse(path.read_text(encoding="utf-8"))
-
-
-def _bound(node: ast.stmt, name: str) -> ast.expr | None:
-    """The value `node` binds to `name` when it is a module-level `name = ...`; else None."""
-    if isinstance(node, ast.Assign) and any(
-        isinstance(t, ast.Name) and t.id == name for t in node.targets
-    ):
-        return node.value
-    return None
-
-
-def _constant(src: Sources, module: str, name: str) -> object:
-    """The literal a module-level `name = ...` of the cli `module` binds, or one it imports.
-
-    A name imported with `from ..package.module import name` is looked up in that module.
-    """
-    tree = _parse(src, module)
-    for node in tree.body:
-        value = _bound(node, name)
-        if value is not None:
-            return ast.literal_eval(value)
-        if isinstance(node, ast.ImportFrom) and any(a.name == name for a in node.names):
-            # `from ..dataset.sampling import X` in cli/ names src/crossvenue_rag/dataset/.
-            imported = _parse(src, node.module or "", PACKAGE if node.level > 1 else CLI_PACKAGE)
-            for item in imported.body:
-                value = _bound(item, name)
-                if value is not None:
-                    return ast.literal_eval(value)
-    raise ValueError(f"no literal {name} in {module} or the module it imports it from")
+def _path(module: str) -> str:
+    """The file of the cli `module`, relative to the repository."""
+    return f"{CLI_PACKAGE}/{module}.py"
 
 
 @per_sources
@@ -62,7 +32,7 @@ def commands(src: Sources) -> dict[str, tuple[str, ast.FunctionDef]]:
     Raises:
         ValueError: a registration names a function its module does not define.
     """
-    registry = _parse(src, "__init__")
+    registry = module_tree(src, _path("__init__"))
     modules = {
         alias.asname: alias.name
         for node in registry.body
@@ -89,7 +59,7 @@ def commands(src: Sources) -> dict[str, tuple[str, ast.FunctionDef]]:
         function = next(
             (
                 f
-                for f in _parse(src, module).body
+                for f in module_tree(src, _path(module)).body
                 if isinstance(f, ast.FunctionDef) and f.name == target.attr
             ),
             None,
@@ -101,7 +71,7 @@ def commands(src: Sources) -> dict[str, tuple[str, ast.FunctionDef]]:
 
 
 def _declares(annotation: ast.expr | None, option: str) -> bool:
-    """Whether a parameter's annotation holds `typer.Option(option, ...)` or `typer.Argument`."""
+    """Whether an annotation holds `typer.Option(option, ...)` or `typer.Argument(option, ...)`."""
     return annotation is not None and any(
         isinstance(n, ast.Call)
         and isinstance(n.func, ast.Attribute)
@@ -116,7 +86,7 @@ def _declares(annotation: ast.expr | None, option: str) -> bool:
 def option_default(src: Sources, command: str, option: str) -> object:
     """The default of `option` (`--rounds`) of `command`: a literal of its signature.
 
-    A default that is a name is the literal the name binds (`_constant`).
+    A default that is a name is the literal the name binds (`module_literal`).
 
     Raises:
         ValueError: no command `command` is registered, or it declares no `option` with a default.
@@ -129,7 +99,7 @@ def option_default(src: Sources, command: str, option: str) -> object:
         if _declares(arg.annotation, option) and arg.arg in defaults:
             default = defaults[arg.arg]
             if isinstance(default, ast.Name):
-                return _constant(src, module, default.id)
+                return module_literal(src, _path(module), default.id)
             return ast.literal_eval(default)
     raise ValueError(f"{command} declares no {option} with a literal default")
 

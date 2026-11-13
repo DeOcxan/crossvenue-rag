@@ -1,8 +1,9 @@
-"""Tests for `reporting.compute.datasets`, on a gold set written under tmp_path."""
+"""Tests for `reporting.compute.datasets`, on a gold set written under `tmp_path`."""
 
 from __future__ import annotations
 
 import json
+from typing import Any
 
 from crossvenue_rag.dataset.journal import rounds_path
 from crossvenue_rag.dataset.selection import TARGETS
@@ -70,6 +71,30 @@ def test_split_questions_name_two_venues_the_detector_finds(tmp_path):
     assert datasets.split_ids(src) == ["cv-0002", "cv-0003"]
 
 
+def test_adversarial_notes_without_venue_are_those_the_detector_finds_no_venue_in(tmp_path):
+    write_gold(
+        tmp_path,
+        [
+            {"id": "cv-0001", "category": "adversarial", "notes": "T1 intra-venue."},
+            {"id": "cv-0002", "category": "adversarial", "notes": "T4: Binance or BingX."},
+            {"id": "cv-0003", "category": "fact", "notes": "Theme 1."},
+        ],
+    )
+    write_sources(tmp_path, ["binance", "bingx"])
+    src = Sources(tmp_path)
+    assert datasets.adversarial_notes_without_venue(src, src.questions.values()) == ["cv-0001"]
+
+
+def test_unjudged_questions_have_neither_gold_nor_a_recorded_verdict(tmp_path):
+    questions: list[dict[str, Any]] = [
+        {"id": "cv-0001", "gold_chunk_ids": ["c1"]},
+        {"id": "cv-0002", "annotated_at": "2026-09-24T20:20:11Z"},
+        {"id": "cv-0003"},
+    ]
+    write_gold(tmp_path, questions)
+    assert datasets.unjudged_questions(Sources(tmp_path).questions.values()) == ["cv-0003"]
+
+
 def test_augmentation_counts_shown_and_relevant_chunks_by_pool_rank(tmp_path):
     ranked = " ".join(f"c{i}" for i in range(1, 13))  # c11 and c12 below rank 10
     write_retrieval_run(
@@ -112,6 +137,22 @@ def test_a_migrated_pool_counts_candidates_and_distinct_texts(tmp_path):
     write_file(tmp_path, DEDUP_IDMAP, json.dumps(idmap))
     # o1 and o2 hold one text; o9 is not in the map and keeps its own id.
     assert datasets.migrated_pool(Sources(tmp_path), "cv-0001") == (4, 3)
+
+
+def test_a_pool_migrated_twice_is_counted_as_it_was_shown(tmp_path):
+    shown = {"pool": ["o1", "o2", "o3"], "relevant": [], "index_version": None}
+    middle = {"pool": ["m1"], "relevant": [], "index_version": None, "migrated_from": shown}
+    journal = {"cv-0001": {"1": {"migrated_from": middle}}}
+    write_file(tmp_path, str(rounds_path(GOLD_BEFORE_AUGMENTATION)), json.dumps(journal))
+    idmap = {
+        "old_ids": 2,
+        "map": {"o1": "n1", "o2": "n1"},
+        "old_chunks_sha256": "",
+        "to_index_version": "",
+    }
+    write_file(tmp_path, DEDUP_IDMAP, json.dumps(idmap))
+    # o1 and o2 hold one text; the middle pool m1 is not the one shown.
+    assert datasets.migrated_pool(Sources(tmp_path), "cv-0001") == (3, 2)
 
 
 def test_the_round2_sample_skips_blank_and_comment_lines(tmp_path):
@@ -214,7 +255,7 @@ def test_a_question_equal_to_its_draft_is_unchanged_and_question_lengths_have_a_
         tmp_path,
         [
             {"id": "cv-0001", "question": "one two three"},
-            {"id": "cv-0002", "question": "one two three four five"},
+            {"id": "cv-0002", "question": "one two three four five six seven eight"},
             {"id": "cv-0003", "question": "one"},
         ],
     )

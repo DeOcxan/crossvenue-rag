@@ -1,4 +1,4 @@
-"""Tests for `cli.index`: index --skip-dense, id-map and the remap-ids version check."""
+"""Tests for `cli.index`: `index --skip-dense`, `id-map` and the `remap-ids` version check."""
 
 from __future__ import annotations
 
@@ -43,6 +43,15 @@ def test_the_same_chunks_map_onto_themselves(config_file, tmp_path):
     mapping = IdMap.load(out)
     assert mapping.mapping and all(k == v for k, v in mapping.mapping.items())
     assert mapping.to_index_version == current_version(config_file)
+
+
+def test_id_map_refuses_an_out_path_under_a_file(config_file, tmp_path):
+    old = load_config(config_file).paths.processed / "chunks.jsonl"
+    (tmp_path / "file.txt").write_text("", encoding="utf-8")
+    out = tmp_path / "file.txt" / "map.json"
+    result = CliRunner().invoke(app, ["id-map", str(old), "-o", str(out), "-c", str(config_file)])
+    assert isinstance(result.exception, UserError), result.exception
+    assert "file.txt is a file" in str(result.exception)
 
 
 def test_a_map_to_another_index_is_refused(config_file, tmp_path):

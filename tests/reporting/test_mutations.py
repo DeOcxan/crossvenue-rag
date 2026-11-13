@@ -5,7 +5,7 @@ document's claims and audit must then report a problem the unchanged text does
 not have. `make test` runs a fixed sample stratified by the kind of check that
 covers the token; the `slow` test, which `make check` and `make reproduce` run,
 changes 500 sampled tokens, every run reference and every number of
-methodology.md's reference list.
+`methodology.md`'s reference list.
 """
 
 from __future__ import annotations
@@ -45,7 +45,7 @@ Mutation = tuple[str, int, int, str, str]  # document, start, end, text before, 
 
 
 def stand_in_count(*, every: bool) -> int:
-    """The README's test counter here: counting the tests would run pytest inside pytest."""
+    """The README's test counter here: counting the tests would run `pytest` inside `pytest`."""
     return 0
 
 
@@ -65,7 +65,7 @@ def is_numbering(text: str, start: int) -> bool:
 
 
 def covering_kinds(path: str, text: str, src: Sources) -> list[tuple[str, int, int]]:
-    """(kind, start, end) of every span a check of the document covers, in call order."""
+    """(kind, start, end) of every span a check of `KINDS` covers, in call order."""
     spans: list[tuple[str, int, int]] = []
     originals = {kind: getattr(Doc, kind) for kind in KINDS}
 
@@ -102,7 +102,7 @@ def tokens_by_kind(path: str, text: str, src: Sources) -> Iterator[tuple[str, in
 
 
 def reference_list_tokens(text: str) -> list[tuple[int, int, str]]:
-    """Every number of methodology.md's reference list."""
+    """Every number of `methodology.md`'s reference list."""
     first = text.index("\n## References")
     end = text.index("### Not verified", first)
     return [(m.start(), m.end(), m.group()) for m in TOKEN.finditer(text, first, end)]

@@ -68,7 +68,7 @@ def comparison_rows(src: Sources) -> list[ComparisonCategoryRow]:
 
 @dataclass(frozen=True)
 class RerankerRow:
-    """hybrid_rerank - `b` on recall and on venue_coverage, at the run's top k."""
+    """hybrid_rerank - `b` on recall and on `venue_coverage`, at the run's top k."""
 
     b: str
     recall: Estimate
@@ -123,7 +123,7 @@ def oracle_gains(src: Sources) -> OracleGains:
 
 
 def recall_gap(src: Sources, *, augmented: bool) -> float:
-    """venue_split - hybrid_rerank on comparison recall@10, rescored against a gold set.
+    """venue_split - hybrid_rerank on comparison `recall@10`, rescored against a gold set.
 
     The augmented gold set (`src.questions`) or the one before augmentation.
     """
@@ -144,7 +144,7 @@ def rescored_gap_agrees(src: Sources) -> bool:
 
 @dataclass(frozen=True)
 class CondensedNdcg:
-    """One method's nDCG'@10 against its nDCG@10 on the labeled questions."""
+    """One method's `nDCG'@10` against its `nDCG@10` on the labeled questions."""
 
     method: str
     difference: float  # nDCG'@10 - nDCG@10, of the values at `METRIC_DECIMALS`
@@ -153,7 +153,7 @@ class CondensedNdcg:
 
 
 def condensed_ndcg(src: Sources) -> list[CondensedNdcg]:
-    """Per method on the labeled questions: nDCG'@10 against nDCG@10."""
+    """Per method on the labeled questions: `nDCG'@10` against `nDCG@10`."""
     rows: list[CondensedNdcg] = []
     for m in METHODS:
         row = entry(src.ndcg_prime.summary, m, SUMMARY_FILE)
@@ -165,7 +165,7 @@ def condensed_ndcg(src: Sources) -> list[CondensedNdcg]:
 
 
 def condensed_gains_below_bound(src: Sources) -> bool:
-    """Whether every method's nDCG'@10 - nDCG@10 is below `NDCG_PRIME_GAIN_BOUND`."""
+    """Whether every method's `nDCG'@10 - nDCG@10` is below `NDCG_PRIME_GAIN_BOUND`."""
     return all(r.condensed - r.plain < NDCG_PRIME_GAIN_BOUND for r in condensed_ndcg(src))
 
 

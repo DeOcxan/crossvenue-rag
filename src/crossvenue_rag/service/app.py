@@ -1,7 +1,7 @@
 """FastAPI app: POST /answer returns what `crossvenue ask` prints, as JSON.
 
-Two JSON endpoints over `generation.ask.answer_question`, POST /answer and
-GET /health, with no UI.
+JSON endpoints over `generation.ask.answer_question`, POST /answer and
+GET /health.
 """
 
 from __future__ import annotations
@@ -32,14 +32,14 @@ SPENT_DECIMALS = 4
 class AnswerRequest(BaseModel):
     """The body of POST /answer: the question, the retrieval method and the generator.
 
-    Any other field is refused (422), so a misspelled `generator` is not answered by the
-    default one.
+    Any other field is refused (422), so the default generator does not answer a
+    misspelled `generator`.
     """
 
     model_config = ConfigDict(extra="forbid")
 
     question: str = Field(min_length=1)
-    # One of `retrieval.methods.AD_HOC_METHODS`; checked by `answer_question`.
+    # One of `retrieval.methods.AD_HOC_METHODS`; `answer_question` checks it.
     retriever: str = DEFAULT_RETRIEVER
     # One of generation.generators; checked against the config per request.
     generator: str = DEFAULT_GENERATOR
@@ -106,7 +106,7 @@ class _Service:
         return owned
 
     def health(self) -> HealthResponse:
-        """Whether answering is available, the generators, `top_k` and the budget spent."""
+        """Whether answering is available, the `generators`, `top_k` and the budget spent."""
         cfg, llm = self.cfg, self.llm
         return HealthResponse(
             answering=self.unavailable or "available",
@@ -157,17 +157,19 @@ def create_app(
 ) -> FastAPI:
     """The app, answering from the config, retriever and model client given.
 
-    Any of them not given is built once, at startup, from the config in
-    `CROSSVENUE_CONFIG` (default configs/default.yaml); tests pass fakes and
+    Any of them not given is built once, at startup, from `cfg`; a `cfg` not
+    given is read from the config in `CROSSVENUE_CONFIG` (default
+    configs/default.yaml); tests pass fakes and
     need no network. Without the OpenRouter key the service starts, `GET
     /health` says answering is unavailable, and every `POST /answer` is a 503.
     The model client is one run, and its budget (`generation.budget_usd`)
-    covers every paid call the process makes. Once it is spent, every request
-    that needs a paid call is a 503 until a restart, and an answer in the cache
-    is still served. `POST /answer` returns 422 for a request the service
+    covers every paid call the process makes. Once what has been spent plus a model's
+    most expensive recorded call would pass it, every request that needs a paid call of
+    that model is a 503 until a restart. An answer in the cache is still served.
+    `POST /answer` returns 422 for a request the service
     cannot answer as asked (an unknown generator or retriever, an empty
-    question), 502 for a model call that failed, 503 for a missing key or a
-    spent budget.
+    question) and 502 for a model call that failed. It returns 503 for a missing key or
+    a budget stop.
     """
     service = _Service(cfg, retriever, llm)
     app = FastAPI(title="crossvenue-rag", lifespan=service.lifespan)

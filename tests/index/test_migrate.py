@@ -76,6 +76,25 @@ def test_remap_changes_only_the_id_fields_byte_for_byte(tmp_path: Path):
                 )
 
 
+def test_old_chunks_map_onto_new_ids_without_a_file():
+    from crossvenue_rag.corpus.artifacts import ChunkKey
+    from crossvenue_rag.index.migrate import map_old_chunks
+
+    [canonical], _ = deduplicate([occurrence("binance", "a.md", "limit 1200")])
+    olds = [ChunkKey("old", "binance", "limit 1200"), ChunkKey("gone", "binance", "dropped")]
+    assert map_old_chunks(olds, [canonical]) == ({"old": canonical.chunk_id}, ["gone"])
+
+
+def test_a_text_remaps_without_a_file_and_keeps_its_trailing_newline():
+    from crossvenue_rag.index.migrate import IdMap, remap_text
+
+    original = json.dumps({"id": "q1", "gold_chunk_ids": ["a", "zz"]}) + "\n"
+    id_map = IdMap({"a": "N"}, old_chunks_sha256="", to_index_version="")
+    text, report = remap_text(original, "in.jsonl", id_map, ["gold_chunk_ids"], only=None)
+    assert text == json.dumps({"id": "q1", "gold_chunk_ids": ["N", "zz"]}) + "\n"
+    assert report.unmapped == {"zz"} and report.records_changed == 1
+
+
 def test_remap_refuses_a_file_that_would_be_reserialized(tmp_path: Path):
     from crossvenue_rag.index.migrate import IdMap
 

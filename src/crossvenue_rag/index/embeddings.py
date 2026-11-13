@@ -1,9 +1,9 @@
 """Dense encoder wrapper holding three facts that must not drift apart.
 
 The facts are the model name, the asymmetric query and document prefixes bge-*
-was trained with, and whether vectors are L2-normalized (they must be, because
-the store uses cosine distance). The model is loaded on first use, and torch and
-sentence_transformers with it, so importing this module loads neither.
+was trained with, and whether vectors are L2-normalized. The model is loaded on
+first use, and torch and sentence_transformers with it, so importing this module
+loads neither.
 """
 
 from __future__ import annotations
@@ -16,48 +16,12 @@ import numpy as np
 from ..config_pipeline import EmbeddingConfig
 from ..errors import UserError
 from ..formatting import revision_text
+from .model_loading import load_hint, resolve_device
 
 if TYPE_CHECKING:  # pragma: no cover - imported for the type checker only, never at runtime
     from sentence_transformers import SentenceTransformer
 
 log = logging.getLogger(__name__)
-
-
-# What a model that cannot be loaded is told to do.
-MODEL_HINT = (
-    "check the model name and revision in the config; the model is read from the Hugging "
-    "Face cache, so download it once with network access"
-)
-
-
-def resolve_device(requested: str | None) -> str:
-    """The torch device to use: explicit request, else mps > cuda > cpu.
-
-    Raises:
-        UserError: The requested device's backend is not available on this machine.
-    """
-    import torch
-
-    if requested:
-        kind = requested.split(":")[0]
-        available = {
-            "cpu": True,
-            "cuda": torch.cuda.is_available(),
-            "mps": torch.backends.mps.is_available(),
-            "xpu": hasattr(torch, "xpu") and torch.xpu.is_available(),
-        }
-        if not available.get(kind, False):
-            raise UserError(
-                f"device {requested} is not available on this machine",
-                hint="set embedding.device to cpu, or to null to pick the fastest available",
-            )
-        return requested
-
-    if torch.backends.mps.is_available():
-        return "mps"
-    if torch.cuda.is_available():
-        return "cuda"
-    return "cpu"
 
 
 class Embedder:
@@ -89,7 +53,7 @@ class Embedder:
                 raise UserError(
                     f"cannot load embedding.model_name {self.cfg.model_name}"
                     f"{revision_text(self.cfg.revision)}: {exc}",
-                    hint=MODEL_HINT,
+                    hint=load_hint(exc),
                 ) from exc
         return self._model
 
@@ -116,7 +80,7 @@ class Embedder:
     def model_fingerprint(self) -> str:
         """The model name and dimension, `<model_name>@dim<dimension>`, stored with every vector.
 
-        The other settings that change a stored vector, `document_prefix` and `normalize`,
+        Two other settings that change a stored vector, `document_prefix` and `normalize`,
         are not in it; they are components of the `index_version` (ADR 0004).
         """
         return f"{self.cfg.model_name}@dim{self.cfg.dimension}"

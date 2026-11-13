@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections import Counter
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from typing import get_args
 
@@ -11,7 +11,7 @@ from ...config_eval import COMPARISON_SCOPE, MULTI_VENUE_SCOPE
 from ...dataset.questions import load_questions
 from ...dataset.sampling import read_sample_file
 from ...dataset.selection import TARGETS, target_size
-from ...models import COMPARISON, VenueCoverage
+from ...models import ADVERSARIAL, COMPARISON, Question, VenueCoverage
 from ...retrieval.retriever import venue_split_splits
 from ...retrieval.venue_detect import DETECTION_OUTCOMES, DetectionOutcome, detection_outcome
 from ...stats import P50, percentile
@@ -30,7 +30,7 @@ from .memo import per_sources
 # The ranks a shown chunk counts as in the top of (the top 10).
 TOP_RANKS = 10
 
-# The venue_coverage values that record a venue the question cannot be answered for.
+# The venue_coverage values that record a venue the gold has no chunk of.
 ONE_SIDED = frozenset(get_args(VenueCoverage)) - {"covered"}
 # The categories selection took the same excess of.
 EVEN_EXCESS = ("ambiguous", "noisy", "version_sensitive")
@@ -71,8 +71,8 @@ def missing_from_pool_before_augmentation(src: Sources) -> int:
 def migrated_pool(src: Sources, question: str) -> tuple[int, int]:
     """(candidates, distinct texts) of `question`'s round-1 pool before deduplication.
 
-    The pool as the `v0.2-gold` journal migrated it; two candidates hold one text
-    when the deduplication id map maps them to the same chunk.
+    The pool as shown (`Judgment.as_shown`) in the `v0.2-gold` journal; two candidates hold
+    one text when the deduplication id map maps them to the same chunk.
 
     Raises:
         ValueError: The question's round 1 in `v0.2-gold` was not migrated.
@@ -80,7 +80,7 @@ def migrated_pool(src: Sources, question: str) -> tuple[int, int]:
     first = src.rounds_before_augmentation.first(question)
     if first is None or first.migrated_from is None:
         raise ValueError(f"{question}'s round 1 in v0.2-gold was not migrated")
-    pool = first.migrated_from.pool
+    pool = first.as_shown().pool
     idmap = dedup_idmap(src)
     return len(pool), len({idmap.get(c, c) for c in pool})
 
@@ -283,6 +283,23 @@ def detection_outcomes(src: Sources) -> dict[str, DetectionOutcome]:
         q: detection_outcome(src.detector.detect(r.question), r.venues)
         for q, r in src.questions.items()
     }
+
+
+def adversarial_notes_without_venue(src: Sources, questions: Iterable[Question]) -> list[str]:
+    """The ids of the adversarial questions of `questions` whose `notes` name no venue.
+
+    A venue is named when `Sources.detector` finds it.
+    """
+    return [
+        q.id
+        for q in questions
+        if q.effective_category == ADVERSARIAL and not src.detector.detect(q.notes)
+    ]
+
+
+def unjudged_questions(questions: Iterable[Question]) -> list[str]:
+    """The ids of the questions of `questions` that are not judged (`Question.is_judged`)."""
+    return [q.id for q in questions if not q.is_judged]
 
 
 def detection_group(src: Sources, group: str) -> list[str]:

@@ -1,4 +1,4 @@
-"""Tests for `evaluation.machine`: the busy check, the machine state and machine.json."""
+"""Tests for `evaluation.machine`: the busy check, the machine state and `machine.json`."""
 
 from __future__ import annotations
 

@@ -33,7 +33,11 @@ class VenueDetector:
 
     @classmethod
     def from_file(cls, sources_path: str | Path) -> VenueDetector:
-        """A detector for every venue in `sources_path`."""
+        """A detector for every venue in `sources_path`.
+
+        Raises:
+            UserError: Nothing is at `sources_path`, or a directory is.
+        """
         return cls(load_sources(sources_path))
 
     def detect(self, text: str) -> list[str]:

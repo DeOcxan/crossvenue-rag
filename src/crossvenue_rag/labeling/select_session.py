@@ -23,14 +23,13 @@ from ..dataset.selection import (
     CATEGORY_ORDER,
     REJECTION_REASONS,
     TARGETS,
-    Decision,
     Progress,
+    SelectionDecision,
     append_decision,
     load_decisions,
     progress,
     queue,
 )
-from ..errors import UserError
 from ..models import Chunk
 from ..rich_text import add_text_row
 from .screen import Ask, Show
@@ -97,8 +96,6 @@ def selection_progress_table(state: Progress, current_category: str | None = Non
         ),
         "",
     )
-    # An unanswerable comparison item does not count toward the subgroup the
-    # headline claim is measured on.
     shortfall = TARGETS["comparison"] - state.answerable_comparison
     style = "green" if shortfall <= 0 else "yellow"
     add_text_row(
@@ -152,11 +149,10 @@ def grounding_table(record: QuestionRecord, chunks: dict[str, Chunk]) -> Table:
                 Text("missing", "red"), Text(chunk_id), Text("not in the current corpus", "red")
             )
             continue
-        preview = " ".join(chunk.text.split())[:CHUNK_PREVIEW_CHARS]
         table.add_row(
             Text(chunk.venue),
             Text(chunk.heading_display),
-            Text(preview + (" ..." if len(preview) == CHUNK_PREVIEW_CHARS else "")),
+            Text(formatting.preview(chunk.text, CHUNK_PREVIEW_CHARS)),
         )
     return table
 
@@ -178,7 +174,7 @@ def _ask_reason(console: Console, prompt: Ask) -> str:
             return REJECTION_REASONS[raw]
         if raw in REJECTION_REASONS.values():
             return raw
-        console.print("[red]Pick one of the letters above.[/red]")
+        console.print("[red]Expected one of the letters above.[/red]")
 
 
 @dataclass(frozen=True)
@@ -191,22 +187,8 @@ class SelectionPlan:
 
     questions_path: str
     selection_file: str
-    categories: Sequence[str] | None = None
-    include_skipped: bool = False
-
-
-def check_categories(categories: Sequence[str] | None) -> None:
-    """Refuses a category the targets do not name.
-
-    Raises:
-        UserError: A category is not one of the targets'.
-    """
-    unknown = set(categories or []) - set(TARGETS)
-    if unknown:
-        raise UserError(
-            f"unknown categor{'y' if len(unknown) == 1 else 'ies'}: {', '.join(sorted(unknown))}",
-            hint=f"expected any of {', '.join(sorted(TARGETS))}",
-        )
+    categories: Sequence[str] | None
+    include_skipped: bool
 
 
 def run(
@@ -217,9 +199,12 @@ def run(
     console: Console | None = None,
     prompt: Ask = Prompt.ask,
 ) -> None:
-    """Walks the candidate pool and records a decision for each question.
+    """Walks the questions `queue` yields from the candidate pool and records a decision for each.
 
     `prompt` reads each answer; a test passes a scripted one.
+
+    Raises:
+        UserError: A directory is at `plan.selection_file`.
     """
     console = console or Console()
     show: Show = console.print
@@ -231,16 +216,13 @@ def run(
     if chunks_path(cfg).exists():
         chunks = {c.chunk_id: c for c in load_chunks(cfg)}
     else:
-        console.print(
-            "[yellow]No chunks.jsonl, so source previews are unavailable. "
-            "Run `crossvenue ingest` to see the grounding.[/yellow]\n"
-        )
+        console.print("[yellow]No chunks.jsonl, so source previews are unavailable.[/yellow]\n")
 
     pending = list(queue(candidates, decisions, categories, include_skipped=include_skipped))
     if not pending:
         console.print(
-            "[green]Nothing left to decide.[/green] Use --include-skipped to revisit "
-            "skipped questions, or `crossvenue select --finalize` to write the set."
+            "[green]Nothing left to decide.[/green] --include-skipped revisits skipped "
+            "questions, and `crossvenue select --finalize` writes the set."
         )
         show(selection_progress_table(progress(candidates, decisions)))
         return
@@ -294,16 +276,16 @@ def run(
 
         answer = prompt(Text("[y]keep / [n]reject / [s]skip / [q]uit"), default="s").strip().lower()
         if answer.startswith("q"):
-            console.print("[yellow]saved; run again to continue[/yellow]")
+            console.print("[yellow]saved; the next run continues[/yellow]")
             break
         if answer.startswith("y"):
-            decision = Decision.now(record.id, "accept")
+            decision = SelectionDecision.now(record.id, "accept")
             console.print("[green]kept[/green]\n")
         elif answer.startswith("n"):
-            decision = Decision.now(record.id, "reject", _ask_reason(console, prompt))
+            decision = SelectionDecision.now(record.id, "reject", _ask_reason(console, prompt))
             console.print(Text.assemble(("rejected", "red"), f": {decision.reason}\n"))
         else:
-            decision = Decision.now(record.id, "skip")
+            decision = SelectionDecision.now(record.id, "skip")
             console.print("[dim]skipped[/dim]\n")
 
         append_decision(selection_file, decision)

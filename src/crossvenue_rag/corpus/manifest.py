@@ -2,8 +2,8 @@
 
 The manifest and `data/sources.yaml` are the committed part of `data/`, and the
 manifest makes the corpus reproducible from a clone (URLs, commit SHAs and content
-hashes, with no vendor text redistributed). It is separate from `fetch`, so ingestion, dataset
-validation and the CLI read it without importing `httpx` and `subprocess`.
+hashes, with no vendor text redistributed). It is separate from `fetch`, so ingestion and dataset
+validation read it without importing `httpx` and `subprocess`.
 """
 
 from __future__ import annotations
@@ -126,7 +126,8 @@ def preserve_timestamps(
 class CorpusSnapshot(BaseModel):
     """The corpus an artifact was built against, as a dataset's `corpus_snapshot` records it.
 
-    `index_version` and `chunks` are recorded from dataset v0.1.5 on and absent before.
+    `index_version` and `chunks` are recorded in v0.1.5-candidates to v0.3-gold and absent in
+    v0.1-candidates to v0.1.4-candidates.
     """
 
     model_config = ConfigDict(frozen=True, extra="forbid")

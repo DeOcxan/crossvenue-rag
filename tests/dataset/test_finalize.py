@@ -12,7 +12,7 @@ from crossvenue_rag.dataset import finalize
 from crossvenue_rag.dataset.finalize import Finalized, finalize_selection
 from crossvenue_rag.dataset.questions import load_questions
 from crossvenue_rag.dataset.records import QuestionRecord
-from crossvenue_rag.dataset.selection import TARGETS, Decision, append_decision
+from crossvenue_rag.dataset.selection import TARGETS, SelectionDecision, append_decision
 from crossvenue_rag.dataset.validate import ValidationReport
 from crossvenue_rag.errors import UserError
 from tests.dataset.factories import record
@@ -43,8 +43,8 @@ def decide(path: Path, candidates: list[QuestionRecord], *, accept_all: bool = T
     if not accept_all:
         kept = kept[:-1]
     for r in kept:
-        append_decision(path, Decision.now(r.id, "accept"))
-    append_decision(path, Decision.now("extra", "reject", "not grounded"))
+        append_decision(path, SelectionDecision.now(r.id, "accept"))
+    append_decision(path, SelectionDecision.now("extra", "reject", "not grounded"))
 
 
 @pytest.fixture

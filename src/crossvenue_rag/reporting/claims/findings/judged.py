@@ -71,14 +71,16 @@ def primary(doc: Doc, src: Sources) -> None:
         holds=answers_judged.means_zero(src, pair, "venue_attribution_error", "comparison"),
         what="neither configuration has a misattributed claim on the paired questions",
     )
-    doc.claim(
+    doc.check(
         "Under prompt v1, retrieving once per named venue raises coverage, the share of each "
         "venue's gold facts the answer states averaged over the venues with gold facts, by {} "
         "[{}, {}], p_Holm = {} ([D24](../../evals/methodology.md#deviations-from-protocol)). "
-        "Under prompt v2 (exploratory) the same comparison is {} [{}, {}], p_Holm = {}, "
-        "inconclusive at this size",
+        "Under prompt v2 (exploratory), in `results/",
         *signed_parts(answers.judged_interval(src, PROMPT_V1, pair, "coverage", "comparison")),
         formatting.p_value(answers.primary_holm(src, PROMPT_V1, pair, "coverage", "comparison")),
+    )
+    doc.claim(
+        "_judged`, the same comparison is {} [{}, {}], p_Holm = {}, inconclusive at this size",
         *signed_parts(answers.judged_interval(src, PROMPT_V2, pair, "coverage", "comparison")),
         formatting.p_value(answers.primary_holm(src, PROMPT_V2, pair, "coverage", "comparison")),
         holds=answers.judged_includes_zero(src, PROMPT_V2, pair, "coverage", "comparison"),
@@ -181,14 +183,17 @@ def generator_comparison_claims(doc: Doc, src: Sources) -> None:
         "so every pair is inconclusive at this size. On all questions the intervals of {} pairs "
         "include {}, inconclusive at this size; qwen@venue_split - mercury@venue_split is {} "
         "[{}, {}] with p_Holm = {}, inconclusive at this size.",
-        formatting.count(answers_judged.attribution_pairs_touching_zero(src, "all")),
+        formatting.count(answers_judged.attribution_pairs_touching_zero(src)),
         formatting.count(0),
         *signed_parts(apart.all.difference),
         formatting.p_value(apart.all.holm_p),
-        holds=answers_judged.attribution_pairs_touching_zero(src, "comparison") == len(attribution)
+        holds=all(
+            answers_judged.means_zero(src, (r.a, r.b), "venue_attribution_error", "comparison")
+            for r in attribution
+        )
         and not answers_judged.any_pair_significant(src, "venue_attribution_error"),
-        what="every comparison-scope interval is at 0 and no venue_attribution_error comparison "
-        f"reaches p_Holm < {significance()}",
+        what="both means of every pair are 0 on the comparison questions and no "
+        f"venue_attribution_error comparison reaches p_Holm < {significance()}",
     )
     doc.claim(
         "Qwen has the highest coverage.",

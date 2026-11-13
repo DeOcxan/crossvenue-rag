@@ -23,13 +23,12 @@ from ..run_files import (
     write_table,
 )
 from ..stats import INTERVAL_LEVEL_PERCENT
-from .prompt_compare import COMPARISON_FILE, PromptComparison, SideEffect
+from .prompt_compare import COMPARISON_FILE, ComparedRuns, PromptComparison, SideEffect
 
 
 def write_prompt_comparison(
     results_dir: Path,
-    v1: Path,
-    v2: Path,
+    runs: ComparedRuns,
     rows: Sequence[PromptComparison],
     effects: Sequence[SideEffect],
     index_version: str,
@@ -42,21 +41,25 @@ def write_prompt_comparison(
     run_dir = create_run_dir(run_path(results_dir, "_prompts"))
     write_table(run_dir / COMPARISON_FILE, CsvTable.of(rows))
     jsonl.write(run_dir / "side_effects.jsonl", [asdict(e) for e in effects], ascii_only=True)
-    write_run_source(run_dir, RunSource(v1=str(v1), v2=str(v2)))
+    write_run_source(run_dir, RunSource(v1=str(runs.v1), v2=str(runs.v2)))
     write_index(run_dir, RunIndex(index_version=index_version), final_newline=True)
-    report = prompt_report(v1, v2, rows, index_version)
+    report = prompt_report(runs, rows, index_version)
     (run_dir / REPORT_FILE).write_text(report, encoding="utf-8")
     return run_dir
 
 
-def prompt_report(v1: Path, v2: Path, rows: Sequence[PromptComparison], index_version: str) -> str:
+def prompt_report(runs: ComparedRuns, rows: Sequence[PromptComparison], index_version: str) -> str:
     """report.md of a prompt comparison: v2 against v1 per configuration and metric."""
     lines = [
-        f"# Prompt v1 against v2: `{v1}` and `{v2}`",
+        f"# Prompt v1 against v2: `{runs.v1}` and `{runs.v2}`",
         "",
         f"- `index_version`: `{index_version}`",
+        f"- `eval.questions`: `{runs.questions}`",
         "",
-        "v2 \u2212 v1 per configuration, paired on questions; Holm across configurations "
+        f"v2 \u2212 v1 per configuration on `{runs.questions}`, paired on the n questions of "
+        "each row, with its "
+        f"{formatting.count(INTERVAL_LEVEL_PERCENT)}% paired bootstrap interval; "
+        "Holm across configurations "
         "within each metric. Faithfulness is not compared (its judge dimension failed "
         "calibration).",
         "",
@@ -92,7 +95,7 @@ def prompt_report(v1: Path, v2: Path, rows: Sequence[PromptComparison], index_ve
                 ]
                 for r in rows
             ],
-            right=(2, 3, 4, 5, 7, 8, 10, 11),
+            right=(2, 3, 4, 5, 6, 7, 8, 10, 11),
         ),
         *_not_computable(rows),
     ]
@@ -100,7 +103,7 @@ def prompt_report(v1: Path, v2: Path, rows: Sequence[PromptComparison], index_ve
 
 
 def _not_computable(rows: Sequence[PromptComparison]) -> list[str]:
-    """A report line naming the configurations with no venue_attribution_error row.
+    """A report line naming the configurations with no `venue_attribution_error` row.
 
     Such a configuration has no question where both versions' answers carry
     claims; no such configuration gives no line.

@@ -1,13 +1,9 @@
 """The `label` command's modes, chosen from its options.
 
-`crossvenue label` labels a round (`label_session`), re-opens round-1
-questions for correction (`--review`, `review_session`) or judges the chunks a
-candidate list names (`--augment`, `augment_session`). It also decides the pairs rounds 1
-and 2 disagree on (`--adjudicate`, `adjudicate_session`), judges named questions
-again under the amended criterion (`--relabel`, `relabel_session`) or relabels the
-whole set (`--round 3`, `round3_session`). `run_label` refuses option combinations
-that mix modes before any index is opened, then runs the one mode the options
-select. The last three read chunks from the corpus file and need no database.
+`crossvenue label` labels a round (`label_session`), or runs one of the modes `--review`,
+`--augment`, `--adjudicate`, `--relabel` and `--round 3`, each with its own session. `run_label`
+refuses option combinations that mix modes before any index is opened, then runs the one mode
+the options select.
 """
 
 from __future__ import annotations
@@ -20,10 +16,10 @@ from .. import formatting
 from ..config import Config
 from ..corpus.artifacts import load_chunks
 from ..dataset.added_chunks import read_added_chunks
-from ..dataset.journal import FULL_RELABEL_ROUND
-from ..dataset.questions import load_questions, require_label_versions
+from ..dataset.journal import FIRST_ROUND, FULL_RELABEL_ROUND
+from ..dataset.questions import METADATA_FROM_HINT, load_questions, require_label_versions
 from ..dataset.sampling import read_sample_file
-from ..errors import UserError
+from ..errors import UserError, require_file
 from ..index_version import require_current_index
 from ..retrieval.retriever import Retriever
 from .adjudicate import AdjudicationTarget, adjudicate_session
@@ -32,7 +28,14 @@ from .pool import pool_depth_of
 from .relabel import RelabelTarget, relabel_session
 from .review import review_session
 from .round3 import Round3Target, round3_session
-from .session import LabelPlan, LabelTarget, QueueSpec, default_annotator, label_session
+from .session import (
+    LabelPlan,
+    LabelTarget,
+    QueueSpec,
+    default_annotator,
+    label_session,
+    select_queue,
+)
 
 
 @dataclass(frozen=True)
@@ -40,23 +43,23 @@ class LabelRequest:
     """The `label` command's options, one field per option."""
 
     questions_path: str
-    ids: Sequence[str] = ()
-    review: bool = False
-    review_file: Path | None = None
-    augment: bool = False
-    question_file: Path | None = None
-    revisit: bool = False
-    limit: int | None = None
-    pool_depth: int | None = None
-    annotation_round: int = 1
-    annotator: str = ""
-    sample: int | None = None
-    seed: int = 0
-    sample_file: Path | None = None
-    adjudicate: bool = False
-    relabel: bool = False
-    add_chunks: Path | None = None
-    metadata_from: Path | None = None
+    ids: Sequence[str]
+    review: bool
+    review_file: Path | None
+    augment: bool
+    question_file: Path | None
+    revisit: bool
+    limit: int | None
+    pool_depth: int | None
+    annotation_round: int
+    annotator: str
+    sample: int | None
+    seed: int
+    sample_file: Path | None
+    adjudicate: bool
+    relabel: bool
+    add_chunks: Path | None
+    metadata_from: Path | None
 
     @property
     def augments(self) -> bool:
@@ -69,10 +72,13 @@ class LabelRequest:
         given = {
             "--review": self.review or self.review_file is not None,
             "--augment": self.augments,
-            "--round": self.annotation_round != 1,
+            "--round": self.annotation_round != FIRST_ROUND,
             "--sample": self.sample is not None,
             "--sample-file": self.sample_file is not None,
             "--all": self.revisit,
+            "--seed": self.seed != 0,
+            "--limit": self.limit is not None,
+            "--pool-depth": self.pool_depth is not None,
         }
         return [option for option, on in given.items() if on]
 
@@ -97,11 +103,13 @@ def check_relabel(request: LabelRequest) -> list[str]:
     """The ids `--relabel` judges; refuses it without ids or with another mode's options.
 
     Raises:
-        UserError: `--add-chunks` comes without `--relabel`, no id is given, or another
-            mode's options are set.
+        UserError: `--add-chunks` comes with neither `--relabel` nor `--round 3`, no id is
+            given, or another mode's options are set.
     """
     if request.add_chunks is not None and not request.relabel:
-        raise UserError("--add-chunks goes with --relabel")
+        raise UserError(
+            f"--add-chunks goes with --relabel or --round {formatting.own_form(FULL_RELABEL_ROUND)}"
+        )
     if not request.ids:
         raise UserError(
             "--relabel needs question ids", hint="crossvenue label --relabel ID [ID ...]"
@@ -115,15 +123,10 @@ def check_round3(request: LabelRequest) -> tuple[Path, Path]:
     """The added-chunks file and metadata file of `--round 3`; refuses anything else.
 
     Raises:
-        UserError: The round is later than round 3, `--metadata-from` comes without
-            `--round 3`, a required option is missing, or another mode's option is set.
+        UserError: `--metadata-from` comes without `--round 3`, a required option is
+            missing, or another mode's option is set.
     """
     own = formatting.own_form(FULL_RELABEL_ROUND)
-    if request.annotation_round > FULL_RELABEL_ROUND:
-        raise UserError(
-            f"there is no round {formatting.own_form(request.annotation_round)}",
-            hint=f"methodology section 5b ends the labeling at round {own}",
-        )
     if request.annotation_round != FULL_RELABEL_ROUND:
         raise UserError(f"--metadata-from goes with --round {own}")
     if request.add_chunks is None or request.metadata_from is None:
@@ -131,18 +134,9 @@ def check_round3(request: LabelRequest) -> tuple[Path, Path]:
             f"--round {own} needs --add-chunks and --metadata-from",
             hint="make round3",
         )
-    given = {
-        "--review": request.review or request.review_file is not None,
-        "--augment": request.augments,
-        "--adjudicate": request.adjudicate,
-        "--relabel": request.relabel,
-        "--all": request.revisit,
-        "--sample": request.sample is not None,
-        "--sample-file": request.sample_file is not None,
-        "--limit": request.limit is not None,
-        "--pool-depth": request.pool_depth is not None,
-    }
-    others = [option for option, on in given.items() if on]
+    given = {"--adjudicate": request.adjudicate, "--relabel": request.relabel}
+    others = [option for option in request.other_modes if option != "--round"]
+    others += [option for option, on in given.items() if on]
     if request.ids or others:
         raise UserError(
             f"--round {own} walks every question and takes no ids or other mode: "
@@ -166,8 +160,12 @@ def check_augment(request: LabelRequest) -> Path:
                 "crossvenue label --augment --question-file evals/selection/augment_round1.jsonl"
             ),
         )
-    if request.ids or request.review or request.review_file or request.annotation_round != 1:
-        raise UserError("--augment extends round 1 and cannot be combined with other modes")
+    others = [option for option in request.other_modes if option != "--augment"]
+    if request.ids or others:
+        raise UserError(
+            "--augment extends round 1 and takes no ids or other mode: "
+            + " ".join(list(request.ids) + others)
+        )
     return request.question_file
 
 
@@ -176,7 +174,9 @@ def review_ids(request: LabelRequest) -> list[str]:
 
     Raises:
         UserError: Ids come without `--review`, `--review` comes without ids, `--sample-file`
-            comes outside a later round or with `--sample`, or ids come with `--round`.
+            comes outside a later round or with `--sample`, ids come with another mode's
+            options, or a later round comes with `--limit` or `--pool-depth`. Nothing is at
+            `request.review_file`, or a directory is.
     """
     ids = list(request.ids)
     if request.review_file is not None:
@@ -188,17 +188,23 @@ def review_ids(request: LabelRequest) -> list[str]:
             hint="use `crossvenue label --review ID [ID ...]`",
         )
     if reviewing and not ids:
-        raise UserError("--review needs question ids", hint="or pass --review-file PATH")
+        named = "" if request.review_file is None else f"; {request.review_file} names none"
+        raise UserError(
+            f"--review needs question ids{named}",
+            hint="pass ids after --review, or one per line in --review-file",
+        )
     _check_sample_file(request)
-    if ids and request.annotation_round != 1:
-        raise UserError("--review corrects round 1; it cannot be combined with --round")
+    others = [option for option in request.other_modes if option != "--review"]
+    if ids and others:
+        raise UserError(f"--review corrects round 1; it cannot be combined with {' '.join(others)}")
+    _check_later_round(request)
     return ids
 
 
 def _check_sample_file(request: LabelRequest) -> None:
     """Refuses `--sample-file` outside a later round or together with `--sample`."""
     if request.sample_file is not None and (
-        request.annotation_round == 1 or request.sample is not None
+        request.annotation_round == FIRST_ROUND or request.sample is not None
     ):
         raise UserError(
             "--sample-file selects a re-annotation subsample",
@@ -206,28 +212,72 @@ def _check_sample_file(request: LabelRequest) -> None:
         )
 
 
+def _check_later_round(request: LabelRequest) -> None:
+    """Refuses `--limit` and `--pool-depth` in a later round, whose candidates are fixed."""
+    given = {"--limit": request.limit, "--pool-depth": request.pool_depth}
+    others = [option for option, value in given.items() if value is not None]
+    if request.annotation_round != FIRST_ROUND and others:
+        raise UserError(
+            f"--round {formatting.own_form(request.annotation_round)} shows the candidates round 1 "
+            f"judged and cannot be combined with {' '.join(others)}"
+        )
+
+
+def _queue_spec(request: LabelRequest, sample_ids: Sequence[str] | None) -> QueueSpec:
+    return QueueSpec(
+        annotation_round=request.annotation_round,
+        only_unjudged=not request.revisit,
+        sample=request.sample,
+        seed=request.seed,
+        sample_ids=sample_ids,
+    )
+
+
+def check_sample(request: LabelRequest) -> None:
+    """Refuses a `--sample` from which the round's queue cannot be drawn, naming the option.
+
+    A later round stratifies `--sample` by the judged questions' categories, so it needs one
+    question per category at least.
+
+    Raises:
+        UserError: The queue of `request.sample` questions cannot be drawn. Nothing is at
+            `request.questions_path`, or a directory is.
+    """
+    if request.sample is None:
+        return
+    questions = load_questions(request.questions_path)
+    try:
+        select_queue(questions, _queue_spec(request, None))
+    except UserError as refused:
+        raise UserError(
+            f"--sample {formatting.own_form(request.sample)}: {refused}", hint=refused.hint
+        ) from refused
+
+
 def label_plan(request: LabelRequest, index_version: str, per_method: int) -> LabelPlan:
     """The labeling session the options describe, against `index_version`.
 
     `per_method` is the pool depth `pool.pool_depth_of` returned for `--pool-depth`.
+
+    Raises:
+        UserError: Nothing is at `request.sample_file`, or a directory is.
     """
     sample_ids = read_sample_file(request.sample_file) if request.sample_file else None
     return LabelPlan(
         target=LabelTarget(request.questions_path, index_version, request.annotator),
-        queue=QueueSpec(
-            annotation_round=request.annotation_round,
-            only_unlabelled=not request.revisit,
-            sample=request.sample,
-            seed=request.seed,
-            sample_ids=sample_ids,
-        ),
+        queue=_queue_spec(request, sample_ids),
         per_method=per_method,
         limit=request.limit,
     )
 
 
 def run_offline(cfg: Config, request: LabelRequest) -> None:
-    """Runs `--adjudicate` or `--relabel` on the chunks file, checked against the built index."""
+    """Runs `--adjudicate` or `--relabel` on the chunks file, checked against the built index.
+
+    Raises:
+        UserError: `check_adjudicate` or `check_relabel` refuses the options of `request`, or
+            nothing is at `request.questions_path` or `request.add_chunks`, or a directory is.
+    """
     if request.adjudicate:
         check_adjudicate(request)
         ids: list[str] = []
@@ -245,8 +295,15 @@ def run_offline(cfg: Config, request: LabelRequest) -> None:
 
 
 def run_round3(cfg: Config, request: LabelRequest) -> None:
-    """Runs `--round 3` on the chunks file, checked against the built index."""
+    """Runs `--round 3` on the chunks file, checked against the built index.
+
+    Raises:
+        UserError: `check_round3` refuses the options of `request`, or nothing is at
+            `request.questions_path`, `request.add_chunks` or `request.metadata_from`, or a
+            directory is.
+    """
     added_file, metadata = check_round3(request)
+    require_file(metadata, hint=METADATA_FROM_HINT)
     added = read_added_chunks(added_file)
     version = require_current_index(cfg)
     require_label_versions(request.questions_path, version, all_rounds=True)
@@ -263,8 +320,19 @@ def run_round3(cfg: Config, request: LabelRequest) -> None:
 
 
 def run_label(cfg: Config, request: LabelRequest) -> None:
-    """Checks the options, opens the index and runs the mode they select."""
-    if request.annotation_round >= FULL_RELABEL_ROUND or request.metadata_from is not None:
+    """Checks the options, opens the index and runs the mode they select.
+
+    `--adjudicate`, `--relabel` and `--round 3` read chunks from the corpus file and need no
+    database.
+
+    Raises:
+        UserError: `check_augment`, `review_ids`, `check_sample`, `label_plan`, `check_round3`,
+            `check_adjudicate` or `check_relabel` refuses the options of `request`, or
+            `request.pool_depth` is not deeper than the deepest rank the metrics score. Or
+            nothing is at `request.questions_path`, `request.question_file`,
+            `request.add_chunks` or `request.metadata_from`, or a directory is.
+    """
+    if request.annotation_round == FULL_RELABEL_ROUND or request.metadata_from is not None:
         run_round3(cfg, request)
         return
     if request.adjudicate or request.relabel or request.add_chunks is not None:
@@ -279,6 +347,7 @@ def run_label(cfg: Config, request: LabelRequest) -> None:
             augment_session(retriever, target, candidates)
         return
     ids = review_ids(request)
+    check_sample(request)
     per_method = pool_depth_of(cfg, request.pool_depth, "--pool-depth")
     with Retriever(cfg) as retriever:
         version = retriever.require_current_index()

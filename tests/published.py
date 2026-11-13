@@ -1,6 +1,7 @@
 """Markdown checks of published files: which files, and style rules 30 to 32 and 34.
 
-`tests/test_repo_hygiene.py` runs the checks over every published Markdown file.
+`tests/test_repo_hygiene.py` runs the checks over every published Markdown file outside
+`prompts/` and `tests/fixtures/`.
 """
 
 from __future__ import annotations
@@ -13,10 +14,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 
-# What the repository publishes: these top-level files and directories, the
-# two committed files of data/, and the committed runs that results/runs.json
-# records. Everything else in a working copy (the virtualenv, caches, fetched
-# data, uncommitted runs, local notes) is outside it.
+# The files the checks read as published: these top-level files, these directories
+# as the working copy holds them, the two committed files of data/, and the committed
+# runs that results/runs.json records. Everything else in a working copy (the
+# virtualenv, caches, fetched data, uncommitted runs, local notes) is outside the published set.
 PUBLISHED_FILES = (
     "README.md", "LICENSE", "Makefile", "pyproject.toml", "uv.lock",
     "docker-compose.yml", ".gitignore", ".vale.ini", ".env.example",
@@ -59,8 +60,8 @@ INVISIBLE = {
     "\u202f": "NARROW NO-BREAK SPACE",
     "\u00ad": "SOFT HYPHEN",
 }
-# Invisible characters are checked in every published text file this project
-# writes, prompts and fixtures included; the committed runs under the top-level
+# Invisible characters are checked in the published Markdown, YAML, Python and TOML
+# files, prompts and fixtures included; the committed runs under the top-level
 # results/, which hold model output, are skipped.
 INVISIBLE_SUFFIXES = {".md", ".yaml", ".yml", ".py", ".toml"}
 INVISIBLE_SKIP = {"results"}

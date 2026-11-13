@@ -114,7 +114,7 @@ def test_chunk_ids_are_stable_across_runs():
 
 def test_chunk_ids_are_content_hashes_that_never_cross_a_venue():
     """Identical text on two venues must get distinct ids: which venue says it
-    is the whole measurement. Identical text within one venue gets the *same* id
+    is the whole measurement. Identical text within one venue gets the same id
     wherever it is: that is what deduplication collapses on."""
     text = "# Rate Limits\n\nThe limit is 1200 requests per minute.\n"
     a = Chunker(small_cfg(), count_words).chunk(make_doc(text, venue="binance"))

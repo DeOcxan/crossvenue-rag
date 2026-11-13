@@ -1,7 +1,4 @@
-"""What docs/reference/corpus.md claims.
-
-Each function checks one section of the document or a part of one, in document order.
-"""
+"""What docs/reference/corpus.md claims."""
 
 from __future__ import annotations
 
@@ -137,10 +134,10 @@ def _composition(doc: Doc, src: Sources) -> None:
         formatting.count(corpus_sheet.testnet_mirror_groups(src)),
     )
     doc.claim(
-        "No text occurs on {} venues ([findings]",
+        "No chunk text occurs on {} venues ([findings]",
         formatting.count(corpus.CROSS_VENUE_VENUES),
         holds=corpus.no_cross_venue_texts(src),
-        what=f"no text on {formatting.count(corpus.CROSS_VENUE_VENUES)} venues",
+        what=f"no chunk text on {formatting.count(corpus.CROSS_VENUE_VENUES)} venues",
     )
 
 
@@ -152,9 +149,9 @@ def _included(doc: Doc, src: Sources) -> None:
     )
     only = corpus_sheet.testnet_only(src)
     doc.check(
-        "{} Binance chunks occur only on testnet pages: {} from the mirrored reference pages, "
-        "{} from the testnet terms page and {} from `testnet/CHANGELOG.md`",
-        *[formatting.count(n) for n in (only.chunks, only.mirrored, only.terms, only.changelog)],
+        "{} Binance chunks occur only on testnet pages, {} of them from the mirrored reference "
+        "pages",
+        *[formatting.count(n) for n in (only.chunks, only.mirrored)],
     )
     pages = corpus_sheet.page_chunks(src, "binance")
     demo = [f"{BINANCE_DEMO_MODE}{page}" for page in ("CHANGELOG.md", "general-info.md")]
@@ -171,7 +168,7 @@ def _included(doc: Doc, src: Sources) -> None:
         optional_count(terms_count),
     )
     doc.check(
-        "superseded by v5 and {} documents wide",
+        "{} documents wide, which v5 supersedes",
         formatting.count(corpus_sheet.manifest_documents_under(src, "bybit", "docs/v3/")),
     )
 
@@ -291,7 +288,7 @@ def _preprocessing(doc: Doc, src: Sources) -> None:
         formatting.count(chunking.max_code_block_tokens),
     )
     doc.check(
-        "and holds the rendered chunk to {} tokens",
+        "and budgets the rendered chunk at {} tokens",
         formatting.count(corpus.chunk_token_budget(src)),
     )
     doc.check(

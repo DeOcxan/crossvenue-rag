@@ -1,7 +1,4 @@
-"""Invariants of the Python code that no single module's tests cover.
-
-The checks read the syntax tree (`tests.python_code`) of every file the code rules govern.
-"""
+"""Invariants of the Python code that no single module's tests cover."""
 
 from __future__ import annotations
 
@@ -59,8 +56,7 @@ def test_a_bare_or_exception_wide_handler_is_reported(source: str, lines: list[i
     assert broad_handlers(source) == lines
 
 
-# The modules whose strings reach a person as command output, help text, error
-# messages or service error details (docs/code-style.md rule 25).
+# The command and service modules (docs/code-style.md rule 25).
 PERSON_FACING = ("src/crossvenue_rag/cli", "src/crossvenue_rag/service")
 
 
@@ -298,6 +294,25 @@ def test_a_definition_only_its_own_test_uses_is_reported():
     ]
 
 
+def test_every_sibling_function_a_generation_docstring_names_exists():
+    import importlib
+    import pkgutil
+
+    import crossvenue_rag.generation as package
+
+    names = {m.name for m in pkgutil.iter_modules(package.__path__)}
+    dangling = []
+    for name in sorted(names):
+        module = importlib.import_module(f"{package.__name__}.{name}")
+        for sibling, attr in re.findall(r"`(\w+)\.(\w+)`", module.__doc__ or ""):
+            # `llm.py` names a file.
+            if sibling in names and attr != "py":
+                target = importlib.import_module(f"{package.__name__}.{sibling}")
+                if not hasattr(target, attr):
+                    dangling.append(f"{name}: `{sibling}.{attr}`")
+    assert dangling == []
+
+
 def test_a_bare_name_in_another_module_is_a_local_and_no_use():
     files = {
         "src/crossvenue_rag/m.py": "def dead():\n    return 1\n",
@@ -306,3 +321,25 @@ def test_a_bare_name_in_another_module_is_a_local_and_no_use():
         ),
     }
     assert "src/crossvenue_rag/m.py:1 dead" in unreferenced(files)
+
+
+def test_importing_the_cli_the_service_or_the_labeling_modes_loads_no_heavy_library():
+    import subprocess
+    import sys
+
+    from tests.conftest import HEAVY_MODULES
+
+    modules = (
+        "crossvenue_rag.cli.app",
+        "crossvenue_rag.service.app",
+        "crossvenue_rag.evaluation.labels",
+        "crossvenue_rag.labeling.modes",
+    )
+    code = (
+        f"import sys\nfor m in {modules!r}: __import__(m)\n"
+        f"print(','.join(h for h in {HEAVY_MODULES!r} if h in sys.modules))"
+    )
+    out = subprocess.run(
+        [sys.executable, "-B", "-c", code], capture_output=True, text=True, check=True
+    )
+    assert out.stdout.strip() == ""

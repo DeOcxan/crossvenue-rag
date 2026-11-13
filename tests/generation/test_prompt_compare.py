@@ -2,18 +2,22 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 from crossvenue_rag.errors import UserError
 from crossvenue_rag.generation.prompt_compare import (
+    ComparedRuns,
     compare_prompts,
+    compared_runs,
     side_effects,
 )
 from tests.conftest import assert_round_trip, committed_of_kind
 from tests.generation.factories import prompt_record
 
 
-def test_wrong_refusals_counted_only_where_no_refusal_is_expected_and_holm_across_configs():
+def test_wrong_refusals_counted_only_where_no_refusal_is_expected():
     v1 = [
         prompt_record("a", "q1", "answer", refused=True),
         prompt_record("a", "q2", "answer", refused=True),
@@ -99,3 +103,12 @@ def test_a_partial_answer_citing_a_chunk_of_no_known_venue_is_a_value_error():
     records = [prompt_record("a", "q1", "answer", partial=True, claims=[own], missing=["bybit"])]
     with pytest.raises(ValueError, match="a:q1 cites c-bin, which venue_of lacks"):
         side_effects(records, {"c-byb": "bybit"})
+
+
+def test_prompt_runs_judged_against_two_question_files_are_refused():
+    with pytest.raises(
+        UserError, match=r"r/v1 was judged against a\.jsonl and r/v2 against b\.jsonl"
+    ):
+        compared_runs(Path("r/v1"), Path("a.jsonl"), Path("r/v2"), Path("b.jsonl"))
+    runs = compared_runs(Path("r/v1"), Path("a.jsonl"), Path("r/v2"), Path("a.jsonl"))
+    assert runs == ComparedRuns(Path("r/v1"), Path("r/v2"), Path("a.jsonl"))

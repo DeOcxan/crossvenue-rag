@@ -1,0 +1,284 @@
+[
+  {
+    "method": "bm25",
+    "questions": 114,
+    "labelled_questions": 89,
+    "metrics": {
+      "mrr": 0.3503,
+      "recall@1": 0.1471,
+      "precision@1": 0.2584,
+      "ndcg@1": 0.2584,
+      "recall@5": 0.2804,
+      "precision@5": 0.1124,
+      "ndcg@5": 0.2559,
+      "recall@10": 0.4605,
+      "precision@10": 0.0978,
+      "ndcg@10": 0.328
+    },
+    "latency_p50_ms": 0.1,
+    "latency_p95_ms": 0.1,
+    "step_latency_p50_ms": {
+      "encode_ms": 0.0,
+      "search_ms": 0.1,
+      "fuse_ms": 0.0,
+      "rerank_ms": 0.0
+    },
+    "multi_venue_questions": 59,
+    "venue_metrics": {
+      "venue_coverage@1": 0.0,
+      "venue_coverage@5": 0.4068,
+      "venue_coverage@10": 0.661
+    },
+    "judged_metrics": {
+      "unjudged@1": 0.0,
+      "unjudged@5": 0.0045,
+      "unjudged@10": 0.0742,
+      "ndcg_prime@1": 0.2584,
+      "ndcg_prime@5": 0.2585,
+      "ndcg_prime@10": 0.3287
+    },
+    "off_venue_metrics": {
+      "off_venue@1": 0.2807,
+      "via_ccxt@1": 0.0439,
+      "off_venue@5": 0.2842,
+      "via_ccxt@5": 0.0982,
+      "off_venue@10": 0.3123,
+      "via_ccxt@10": 0.1096
+    }
+  },
+  {
+    "method": "dense",
+    "questions": 114,
+    "labelled_questions": 89,
+    "metrics": {
+      "mrr": 0.364,
+      "recall@1": 0.1567,
+      "precision@1": 0.2584,
+      "ndcg@1": 0.2584,
+      "recall@5": 0.3255,
+      "precision@5": 0.1281,
+      "ndcg@5": 0.2883,
+      "recall@10": 0.4463,
+      "precision@10": 0.0888,
+      "ndcg@10": 0.336
+    },
+    "latency_p50_ms": 28.0,
+    "latency_p95_ms": 55.6,
+    "step_latency_p50_ms": {
+      "encode_ms": 21.9,
+      "search_ms": 6.2,
+      "fuse_ms": 0.0,
+      "rerank_ms": 0.0
+    },
+    "multi_venue_questions": 59,
+    "venue_metrics": {
+      "venue_coverage@1": 0.0,
+      "venue_coverage@5": 0.4068,
+      "venue_coverage@10": 0.5085
+    },
+    "judged_metrics": {
+      "unjudged@1": 0.0112,
+      "unjudged@5": 0.009,
+      "unjudged@10": 0.0753,
+      "ndcg_prime@1": 0.2697,
+      "ndcg_prime@5": 0.2961,
+      "ndcg_prime@10": 0.3418
+    },
+    "off_venue_metrics": {
+      "off_venue@1": 0.0614,
+      "via_ccxt@1": 0.1667,
+      "off_venue@5": 0.0895,
+      "via_ccxt@5": 0.1368,
+      "off_venue@10": 0.1202,
+      "via_ccxt@10": 0.1272
+    }
+  },
+  {
+    "method": "hybrid",
+    "questions": 114,
+    "labelled_questions": 89,
+    "metrics": {
+      "mrr": 0.3512,
+      "recall@1": 0.1221,
+      "precision@1": 0.2022,
+      "ndcg@1": 0.2022,
+      "recall@5": 0.3921,
+      "precision@5": 0.1528,
+      "ndcg@5": 0.302,
+      "recall@10": 0.5773,
+      "precision@10": 0.1112,
+      "ndcg@10": 0.3714
+    },
+    "latency_p50_ms": 28.7,
+    "latency_p95_ms": 34.9,
+    "step_latency_p50_ms": {
+      "encode_ms": 21.2,
+      "search_ms": 7.2,
+      "fuse_ms": 0.1,
+      "rerank_ms": 0.0
+    },
+    "multi_venue_questions": 59,
+    "venue_metrics": {
+      "venue_coverage@1": 0.0,
+      "venue_coverage@5": 0.4407,
+      "venue_coverage@10": 0.5763
+    },
+    "judged_metrics": {
+      "unjudged@1": 0.0,
+      "unjudged@5": 0.009,
+      "unjudged@10": 0.036,
+      "ndcg_prime@1": 0.2022,
+      "ndcg_prime@5": 0.304,
+      "ndcg_prime@10": 0.3719
+    },
+    "off_venue_metrics": {
+      "off_venue@1": 0.114,
+      "via_ccxt@1": 0.1491,
+      "off_venue@5": 0.1491,
+      "via_ccxt@5": 0.1456,
+      "off_venue@10": 0.1632,
+      "via_ccxt@10": 0.1386
+    }
+  },
+  {
+    "method": "hybrid_rerank",
+    "questions": 114,
+    "labelled_questions": 89,
+    "metrics": {
+      "mrr": 0.507,
+      "recall@1": 0.2379,
+      "precision@1": 0.382,
+      "ndcg@1": 0.382,
+      "recall@5": 0.4877,
+      "precision@5": 0.191,
+      "ndcg@5": 0.4258,
+      "recall@10": 0.6627,
+      "precision@10": 0.1371,
+      "ndcg@10": 0.4977
+    },
+    "latency_p50_ms": 3623.8,
+    "latency_p95_ms": 5846.9,
+    "step_latency_p50_ms": {
+      "encode_ms": 28.6,
+      "search_ms": 8.8,
+      "fuse_ms": 0.1,
+      "rerank_ms": 3587.4
+    },
+    "multi_venue_questions": 59,
+    "venue_metrics": {
+      "venue_coverage@1": 0.0,
+      "venue_coverage@5": 0.4407,
+      "venue_coverage@10": 0.661
+    },
+    "judged_metrics": {
+      "unjudged@1": 0.0112,
+      "unjudged@5": 0.0157,
+      "unjudged@10": 0.0472,
+      "ndcg_prime@1": 0.382,
+      "ndcg_prime@5": 0.426,
+      "ndcg_prime@10": 0.4987
+    },
+    "off_venue_metrics": {
+      "off_venue@1": 0.114,
+      "via_ccxt@1": 0.114,
+      "off_venue@5": 0.1439,
+      "via_ccxt@5": 0.1211,
+      "off_venue@10": 0.15,
+      "via_ccxt@10": 0.1298
+    }
+  },
+  {
+    "method": "venue_split",
+    "questions": 114,
+    "labelled_questions": 89,
+    "metrics": {
+      "mrr": 0.4609,
+      "recall@1": 0.1855,
+      "precision@1": 0.3146,
+      "ndcg@1": 0.3146,
+      "recall@5": 0.4877,
+      "precision@5": 0.1955,
+      "ndcg@5": 0.3981,
+      "recall@10": 0.658,
+      "precision@10": 0.136,
+      "ndcg@10": 0.4646
+    },
+    "latency_p50_ms": 8334.8,
+    "latency_p95_ms": 21576.5,
+    "step_latency_p50_ms": {
+      "encode_ms": 65.3,
+      "search_ms": 24.3,
+      "fuse_ms": 0.3,
+      "rerank_ms": 8243.0
+    },
+    "multi_venue_questions": 59,
+    "venue_metrics": {
+      "venue_coverage@1": 0.0,
+      "venue_coverage@5": 0.8305,
+      "venue_coverage@10": 0.8983
+    },
+    "judged_metrics": {
+      "unjudged@1": 0.0,
+      "unjudged@5": 0.0112,
+      "unjudged@10": 0.0292,
+      "ndcg_prime@1": 0.3146,
+      "ndcg_prime@5": 0.3983,
+      "ndcg_prime@10": 0.4653
+    },
+    "off_venue_metrics": {
+      "off_venue@1": 0.1053,
+      "via_ccxt@1": 0.0614,
+      "off_venue@5": 0.1281,
+      "via_ccxt@5": 0.0719,
+      "off_venue@10": 0.1342,
+      "via_ccxt@10": 0.0746
+    }
+  },
+  {
+    "method": "venue_split_oracle",
+    "questions": 114,
+    "labelled_questions": 89,
+    "metrics": {
+      "mrr": 0.4379,
+      "recall@1": 0.1751,
+      "precision@1": 0.2697,
+      "ndcg@1": 0.2697,
+      "recall@5": 0.4761,
+      "precision@5": 0.1865,
+      "ndcg@5": 0.3835,
+      "recall@10": 0.6451,
+      "precision@10": 0.1292,
+      "ndcg@10": 0.4503
+    },
+    "latency_p50_ms": 8228.2,
+    "latency_p95_ms": 19242.2,
+    "step_latency_p50_ms": {
+      "encode_ms": 76.2,
+      "search_ms": 24.4,
+      "fuse_ms": 0.3,
+      "rerank_ms": 8126.1
+    },
+    "multi_venue_questions": 59,
+    "venue_metrics": {
+      "venue_coverage@1": 0.0,
+      "venue_coverage@5": 1.0,
+      "venue_coverage@10": 1.0
+    },
+    "judged_metrics": {
+      "unjudged@1": 0.0337,
+      "unjudged@5": 0.036,
+      "unjudged@10": 0.0551,
+      "ndcg_prime@1": 0.2921,
+      "ndcg_prime@5": 0.3946,
+      "ndcg_prime@10": 0.4575
+    },
+    "off_venue_metrics": {
+      "off_venue@1": 0.1053,
+      "via_ccxt@1": 0.0614,
+      "off_venue@5": 0.1211,
+      "via_ccxt@5": 0.0719,
+      "off_venue@10": 0.1289,
+      "via_ccxt@10": 0.0711
+    }
+  }
+]

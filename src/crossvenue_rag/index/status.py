@@ -31,8 +31,9 @@ class BuildStatus:
     """The state `check` reports.
 
     `store` is the Postgres state, or why it cannot be read. `index_version` is set when
-    the config, manifest, index_meta.json and any Postgres rows agree; `inconsistency`
-    says why they do not otherwise.
+    the config, manifest and index_meta.json agree and, if the Postgres table can be read, it
+    holds rows and every row carries that version; `inconsistency` says why they do not
+    otherwise.
     """
 
     venues: int

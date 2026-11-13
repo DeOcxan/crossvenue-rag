@@ -16,11 +16,14 @@ from pydantic import ValidationError
 
 from . import listing
 from .config import Config
-from .errors import UserError, invalid_file, require_file
+from .errors import UserError, invalid_file, require_file, validation_problems
 from .yaml_files import read_mapping, yaml_problem
 
 # The config every command and the service read unless told otherwise.
 DEFAULT_CONFIG = Path("configs/default.yaml")
+
+# The environment variable that overrides `store.dsn`.
+_ENV_DSN = "CROSSVENUE_PG_DSN"
 
 # How an override is written, for the hint of every override error.
 _OVERRIDE_HINT = "write --set section.field=value, for example --set retrieval.k=20"
@@ -48,7 +51,10 @@ def _set_nested(data: dict[str, object], override: str) -> None:
     except yaml.YAMLError as exc:
         raise UserError(
             f"override {override!r}: the value is not valid YAML: {yaml_problem(exc)}",
-            hint="quote a value that holds [, {, @ or :, for example --set 'eval.methods=[bm25]'",
+            hint=(
+                "quote the argument for the shell and a value that holds [, { or @ for YAML, "
+                "for example --set \"fetch.user_agent='@x'\""
+            ),
         ) from exc
     cursor: dict[str, object] = data
     for depth, key in enumerate(keys[:-1]):
@@ -80,8 +86,9 @@ def load_config(path: str | Path, overrides: list[str] | None = None) -> Config:
     Raises:
         UserError: Nothing is at `path`, or a directory is. An override of `overrides` has no `=`,
             an empty key, a key under a value that is not a section, or a value that is not valid
-            YAML. Or the schema rejects a value: the error names the file, or every override that
-            supplied a rejected value (`_overrides_at_fault`).
+            YAML. Or the schema rejects a value: the error names `CROSSVENUE_PG_DSN` when the
+            `store.dsn` it supplied is the only rejected value, otherwise every override that
+            supplied a rejected value (`_overrides_at_fault`), or the file when none did.
     """
     require_file(path, hint="pass --config with an existing config file")
     raw = read_mapping(
@@ -96,6 +103,11 @@ def load_config(path: str | Path, overrides: list[str] | None = None) -> Config:
     try:
         return Config.model_validate(raw)
     except ValidationError as exc:
+        if _env_dsn_rejected(exc):
+            raise UserError(
+                f"invalid {_ENV_DSN}: {validation_problems(exc)}",
+                hint=f"set {_ENV_DSN} to a libpq URI or key=value pairs, or unset it",
+            ) from exc
         culprits = _overrides_at_fault(overrides or [], exc, from_file)
         if culprits:
             keys = listing.prose([f"--set {_override_key(c)}" for c in culprits])
@@ -113,9 +125,16 @@ def load_config(path: str | Path, overrides: list[str] | None = None) -> Config:
         ) from exc
 
 
+def _env_dsn_rejected(exc: ValidationError) -> bool:
+    """Whether `CROSSVENUE_PG_DSN` is set and its `store.dsn` is all the schema rejects."""
+    return bool(os.environ.get(_ENV_DSN)) and all(
+        tuple(error["loc"][:2]) == ("store", "dsn") for error in exc.errors()
+    )
+
+
 def _apply_env_dsn(raw: dict[str, object]) -> None:
     """Puts `CROSSVENUE_PG_DSN`, when set, into `store.dsn` of `raw`."""
-    env_dsn = os.environ.get("CROSSVENUE_PG_DSN")
+    env_dsn = os.environ.get(_ENV_DSN)
     if env_dsn:
         store = raw.get("store")
         if store is None:
@@ -132,7 +151,7 @@ def _override_key(override: str) -> str:
 def _overrides_at_fault(
     overrides: list[str], exc: ValidationError, from_file: dict[str, object]
 ) -> list[str]:
-    """Every override that set a value the schema rejects; empty when the file is at fault.
+    """Every override that set a value the schema rejects; empty when the file alone is at fault.
 
     An override is at fault when a rejected location lies at or under its key, or when a
     check of a whole section names its key, as `generation.judge 'x' is not one of

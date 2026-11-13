@@ -23,7 +23,11 @@ from .results import run_tables, write_eval_run
 
 @dataclass(frozen=True)
 class EvalJob:
-    """The `eval` inputs: the question file, its questions and round-1 judged sets, the checks."""
+    """The `eval` inputs: the question file, its questions, their judged sets, the checks.
+
+    A question's judged set is the chunks round 1 judged plus what a relabel showed
+    (`dataset.journal.load_judged_sets`).
+    """
 
     questions_path: Path
     questions: Sequence[Question]

@@ -27,7 +27,7 @@ def test_citation_falls_back_to_the_primary_occurrence():
     result = Result.from_chunk(mainnet_testnet_chunk(), 1.0)
     neutral = resolve_citation("how long is a binance ip ban", 1, result)
     assert neutral.doc_path == "rest-api.md" and neutral.is_primary and neutral.matched == []
-    # A question about an environment no occurrence has also gets the primary.
+    # A question about a product no occurrence has also gets the primary.
     perp = resolve_citation("binance futures ban", 1, result)
     assert perp.is_primary
 

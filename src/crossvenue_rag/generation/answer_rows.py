@@ -104,9 +104,10 @@ class AnswerSummaryRow(CsvRow):
 
     The metric means are the columns `mean_column` names, `<metric>:<scope>`, read as
     the fields `<metric>_<scope>`.
-    `read_answer_summary` reads two formats: the committed runs', which every
-    answer and judged run from 20260925T175128Z_answers on wrote, and the same
-    columns with `judge_errors`, failed judgments counted apart from `errors`.
+    `read_answer_summary` reads two formats: the one the answer and judged runs of
+    2026-09-25 and 2026-09-26 from `20260925T175128Z_answers` on wrote, and the same
+    columns with `judge_errors`, failed
+    judgments counted apart from `errors`, which later runs write.
     """
 
     model_config = ConfigDict(
@@ -147,7 +148,7 @@ class AnswerSummaryRow(CsvRow):
 
 
 def read_answer_summary(run_dir: Path) -> CsvTable[AnswerSummaryRow]:
-    """summary.csv of an answer or judged run, in the format `AnswerSummaryRow` lists."""
+    """summary.csv of an answer or judged run, in either format `AnswerSummaryRow` lists."""
     return read_table(run_dir / SUMMARY_FILE, AnswerSummaryRow)
 
 
@@ -290,7 +291,7 @@ def summary_rows(records: Sequence[AnswerRecord], configs: Sequence[str]) -> lis
 def _outcome_counts(
     mine: Sequence[AnswerRecord], answers: Sequence[GeneratedAnswer]
 ) -> dict[str, int]:
-    """Answers, failed generations, failed judgments, and the answers of each non-answer outcome."""
+    """Answers, failed generations, failed judgments, and the answers of each outcome but full."""
     outcomes = [outcome(a) for a in answers]
     return {
         "answers": len(mine),

@@ -27,6 +27,29 @@ from .schemas import is_absence_claim, outcome
 COMPARISON_FILE = "comparison.csv"
 
 
+@dataclass(frozen=True)
+class ComparedRuns:
+    """The judged runs of prompt v1 and v2, and the question file both were judged against."""
+
+    v1: Path
+    v2: Path
+    questions: Path
+
+
+def compared_runs(v1: Path, v1_questions: Path, v2: Path, v2_questions: Path) -> ComparedRuns:
+    """The judged runs of prompt v1 and v2 and the one question file both were judged against.
+
+    Raises:
+        UserError: The two question files differ.
+    """
+    if v2_questions != v1_questions:
+        raise UserError(
+            f"{v1} was judged against {v1_questions} and {v2} against {v2_questions}",
+            hint="compare two judged runs of the same question file",
+        )
+    return ComparedRuns(v1, v2, v1_questions)
+
+
 class PromptComparison(CsvRow):
     """One row of comparison.csv: prompt v1 against v2 on one metric in one configuration.
 
@@ -34,7 +57,7 @@ class PromptComparison(CsvRow):
     runs across configurations within the metric. `read_comparison` reads every
     format of the file:
 
-    - the prompts run 20260926T004851Z_prompts: without `higher_is_better`,
+    - the prompts run `20260926T004851Z_prompts`: without `higher_is_better`,
       which reads as True;
     - every other run: every column.
     """
@@ -94,7 +117,7 @@ def compare_prompts(
 
     - wrong refusals: `refused` (under the outcome rule) on a question whose
       `expected_behavior` is answer or ask_clarification; exact McNemar.
-    - venue_attribution_error: the judge's metric, on questions where both
+    - `venue_attribution_error`: the judge's metric, on questions where both
       versions' answers have claims; 95% paired bootstrap and a two-sided
       paired randomization test.
 
@@ -150,13 +173,13 @@ def _wrong_refusals(pairs: Pairs) -> tuple[list[float], list[float]]:
     for r1, r2 in pairs:
         if r1.expected_behavior == "refuse":
             continue
-        xs.append(1.0 if outcome(r1.generated().answer) == "refused" else 0.0)
-        ys.append(1.0 if outcome(r2.generated().answer) == "refused" else 0.0)
+        xs.append(1.0 if r1.is_wrong_refusal() else 0.0)
+        ys.append(1.0 if r2.is_wrong_refusal() else 0.0)
     return xs, ys
 
 
 def _attribution_errors(pairs: Pairs) -> tuple[list[float], list[float]]:
-    """venue_attribution_error under v1 and v2 where both versions' answers carry claims."""
+    """`venue_attribution_error` under v1 and v2 where both versions' answers carry claims."""
     xs, ys = [], []
     for r1, r2 in pairs:
         if r1.judge is None or r2.judge is None:
@@ -205,7 +228,7 @@ def _comparison(
 
 
 def side_effects(records: Sequence[AnswerRecord], venue_of: Mapping[str, str]) -> list[SideEffect]:
-    """Per answer flagged partial, the claims that contradict it, from the records alone.
+    """Per partial answer (`outcome`), the claims that contradict it, from the records alone.
 
     A claim about a venue the answer lists in `missing` states facts the answer
     says the chunks lack; a claim whose cited chunks all belong to other venues

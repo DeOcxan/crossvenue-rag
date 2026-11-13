@@ -1,4 +1,8 @@
-"""evals/methodology.md: deviations D1 to D26; D16's table of effects is in `small_effects`."""
+"""evals/methodology.md: deviations.
+
+D27, D28 are checked in `claims.round3`, D33, D35, D36 in `record_deviations`, D16's table in
+`small_effects`.
+"""
 
 from __future__ import annotations
 
@@ -15,6 +19,7 @@ from ...compute import (
     datasets_rounds,
     retrieval,
     retrieval_earlier,
+    round3,
 )
 from ...compute.answers import PROMPT_V1
 from ...outcomes import Param
@@ -25,8 +30,12 @@ from ...run_ids import (
     FIRST_GOLD_RUN,
     JUDGED_V1,
     JUDGED_V2,
+    NDCG_PRIME_RUN,
     PRE_DEDUP_RUN,
     RETRIEVAL_RUN,
+    ROUND3_JUDGED_V1,
+    ROUND3_JUDGED_V2,
+    ROUND3_RUN,
 )
 from ...sources import Sources
 from .. import comparisons
@@ -79,8 +88,8 @@ def selection(doc: Doc, src: Sources) -> None:
     doc.check("| {}. Targets are floors in `select", questions)
     doc.check("records no reason for the extra {}.", formatting.count(datasets.excess_total(src)))
     doc.check(
-        "The {} extra unanswerable items enter no recall average; the other {} add one labeled "
-        "question each",
+        "The {} extra unanswerable items enter no recall average; the other {} add one question "
+        "each, labeled or not,",
         formatting.count(excess["unanswerable"]),
         formatting.count(datasets.excess_total(src, excluding=("unanswerable",))),
     )
@@ -121,6 +130,10 @@ def augmentation_deviation_claims(doc: Doc, src: Sources) -> None:
     """Deviations on pooling: the chunks judged in augmentation and those left unjudged."""
     others = formatting.count(datasets.non_comparison_count(src))
     doc.check(
+        "Round 1 pooled {} methods (bm25, dense, hybrid, hybrid_rerank)",
+        formatting.count(len(retrieval.ROUND1_POOL)),
+    )
+    doc.check(
         "on the {} comparison questions the never-judged top {} of `venue_split` and "
         "`venue_split_oracle` was judged by augmentation (rule 3). The {} other questions are "
         "not augmented.",
@@ -145,18 +158,22 @@ def augmentation_deviation_claims(doc: Doc, src: Sources) -> None:
         formatting.metric(retrieval.oracle_unjudged(src, "ambiguous")),
     )
     doc.ref("That share is from `results/{}`", RETRIEVAL_RUN)
-    doc.definition(
-        "The trial run: Qwen at effort low took 57 s per answer on average and once over 300 s",
-        reason=TRIAL,
-    )
 
 
 def later_deviations(doc: Doc, src: Sources) -> None:
-    """The deviations of prompt v2, the exposed questions and the first registration."""
+    """The deviation rows other than pooling."""
     judge = src.judged_v1.config.generation.chosen_judge()
     claimless = formatting.count(len(answers.claimless_partial_configs(src)))
     doc.check("{} Mercury v2 answers flag `partial` and state no fact.", claimless)
     doc.ref("before either matrix was judged: in `results/{}`", ANSWERS_V2)
+    doc.ref(
+        "every claim that `results/{}`, `results/{}`, `results/{}` and `results/{}` mark "
+        "misattributed",
+        JUDGED_V1,
+        JUDGED_V2,
+        ROUND3_JUDGED_V1,
+        ROUND3_JUDGED_V2,
+    )
     doc.check("under v2, {} Mercury answers count as refusals.", claimless)
     doc.check(
         "both answers carry claims: {} for the primary pair.",
@@ -217,6 +234,11 @@ def later_deviations(doc: Doc, src: Sources) -> None:
         COVERAGE_FAILURE_RUN,
         RETRIEVAL_RUN,
     )
+    doc.ref(
+        "The retrieval reports from `results/{}` to `results/{}` have both.",
+        NDCG_PRIME_RUN,
+        ROUND3_RUN,
+    )
     rated = formatting.count(calibration.answers_rated(src))
     doc.check("a judge dimension is measured on the {} calibration answers", rated)
     doc.check(
@@ -228,14 +250,12 @@ def later_deviations(doc: Doc, src: Sources) -> None:
     )
     doc.check(
         "had been computed (\u03ba {} for Sonnet, {} for Opus)",
-        formatting.metric(calibration.behaviour_kappa(src, calibration.other_candidate(src))),
-        formatting.metric(calibration.behaviour_kappa(src, judge)),
+        formatting.optional(
+            calibration.behaviour_kappa(src, calibration.other_candidate(src)), formatting.metric
+        ),
+        formatting.optional(calibration.behaviour_kappa(src, judge), formatting.metric),
     )
     doc.ref("on the calibration sample of `results/{}`, drawn", ANSWERS_V1)
-    doc.check(
-        "Round 1 pooled {} methods (bm25, dense, hybrid, hybrid_rerank)",
-        formatting.count(len(retrieval.ROUND1_POOL)),
-    )
     doc.check(
         "without temperature; {} judge candidates, both through OpenRouter",
         formatting.count(calibration.judge_candidate_count(src)),
@@ -248,11 +268,74 @@ def later_deviations(doc: Doc, src: Sources) -> None:
         "every generator at reasoning effort low and temperature 0",
         reason=REGISTERED + " (\u00a79 as first registered)",
     )
+    doc.definition(
+        "The trial run: Qwen at effort low took 57 s per answer on average and once over 300 s",
+        reason=TRIAL,
+    )
     doc.check(
         '`crossvenue count-term` counts "tick size" in {} Hyperliquid chunks and `szDecimals` '
         "in {}.",
         formatting.count(corpus.term_chunks(src, "tick size", "hyperliquid")),
         formatting.count(corpus.term_chunks(src, "szDecimals", "hyperliquid")),
+    )
+    _cross_venue_deviation(doc, src)
+    without_venue = datasets.adversarial_notes_without_venue(src, src.questions.values())
+    doc.claim(
+        "`v0.3-gold`, the notes of {} adversarial questions name no venue",
+        formatting.count(len(without_venue)),
+        holds=without_venue
+        == datasets.adversarial_notes_without_venue(src, round3.gold(src).values()),
+        what="the same adversarial notes name no venue in `v0.2.1-gold` and `v0.3-gold`",
+    )
+    doc.given(
+        "is built from {} lists of one venue",
+        "2",
+        reason='the note of cv-0086 "pancakeswap fee tiers on solana, same": Solana\'s fee tiers '
+        "against BSC/Monad's",
+    )
+    versions = (
+        src.questions_before_augmentation,
+        src.questions,
+        agreement.adjudicated_gold(src),
+        round3.gold(src),
+    )
+    doc.claim(
+        "None: no question of a published gold version is unjudged",
+        holds=not any(datasets.unjudged_questions(v.values()) for v in versions),
+        what="every question of `v0.2-gold` to `v0.3-gold` is judged",
+    )
+    _remapped_pools_deviation(doc, src)
+
+
+def _remapped_pools_deviation(doc: Doc, src: Sources) -> None:
+    """D32: round 1's marks of the other pool chunks, counted on the pools as shown."""
+    marks = datasets_rounds.source_chunk_marks(src)
+    doc.check(
+        "| Round 1 showed {} other pool chunks, and {} of them were marked relevant;",
+        formatting.count(marks.other_shown),
+        formatting.count(marks.other_relevant),
+    )
+    doc.check(
+        "None: the source chunks stay at {} of {},",
+        formatting.count(marks.source_relevant),
+        formatting.count(marks.source_shown),
+    )
+
+
+def _cross_venue_deviation(doc: Doc, src: Sources) -> None:
+    """D29: no chunk text across venues, and the chunks containing a shared term."""
+    doc.claim(
+        "No chunk text occurs on {} venues, and",
+        formatting.count(corpus.CROSS_VENUE_VENUES),
+        holds=corpus.no_cross_venue_texts(src),
+        what=f"no chunk text on {formatting.count(corpus.CROSS_VENUE_VENUES)} venues",
+    )
+    doc.check(
+        "`crossvenue count-term`: binance {}, bingx {}, bybit {}, ccxt {})",
+        *(
+            formatting.count(corpus.term_chunks(src, "recvWindow", venue))
+            for venue in ("binance", "bingx", "bybit", "ccxt")
+        ),
     )
 
 

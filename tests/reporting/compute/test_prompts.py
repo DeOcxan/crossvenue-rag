@@ -8,7 +8,7 @@ import yaml
 from crossvenue_rag.reporting.compute import prompts
 from crossvenue_rag.reporting.run_ids import ANSWERS_V1, PROMPTS_RUN
 from crossvenue_rag.reporting.sources import Sources
-from tests.reporting.conftest import ANSWER_CONFIG, CONFIGS, write_csv, write_file
+from tests.reporting.conftest import ANSWER_CONFIG, CONFIGS, write_csv_rows, write_file
 
 
 def comparison_row(config, metric, *, better=0, worse=0, p=1.0, n=40):
@@ -30,14 +30,18 @@ def comparison_row(config, metric, *, better=0, worse=0, p=1.0, n=40):
 
 
 def write_prompts(root, rows):
-    """comparison.csv of the prompts run, and the v1 answer run's config naming `CONFIGS`."""
+    """`comparison.csv` of the prompts run, and the v1 answer run's config naming `CONFIGS`."""
     write_file(root, f"results/{ANSWERS_V1}/config.yaml", yaml.safe_dump(ANSWER_CONFIG))
-    write_csv(root / "results" / PROMPTS_RUN / "comparison.csv", rows)
+    write_csv_rows(root / "results" / PROMPTS_RUN / "comparison.csv", rows)
     return Sources(root)
 
 
 def test_change_rows_follow_the_configuration_order_with_both_metrics(tmp_path):
-    rows = [comparison_row(c, m) for c in reversed(CONFIGS) for m in ("support", "refusal")]
+    rows = [
+        {**comparison_row(c, m), "v2": 0.6 if m == "support" else 0.3}
+        for c in reversed(CONFIGS)
+        for m in ("support", "refusal")
+    ]
     src = write_prompts(tmp_path, rows)
     table = prompts.change_rows(src, ("support", "refusal"))
     assert [row.config for row in table] == list(CONFIGS)
@@ -45,6 +49,7 @@ def test_change_rows_follow_the_configuration_order_with_both_metrics(tmp_path):
     assert (first.v1, first.v2, first.holm_p) == pytest.approx((0.5, 0.6, 1.0))
     difference = (first.difference.value, first.difference.low, first.difference.high)
     assert difference == pytest.approx((0.1, 0.0, 0.2))
+    assert table[0].second.v2 == pytest.approx(0.3)
 
 
 def test_questions_default_to_the_first_configuration(tmp_path):

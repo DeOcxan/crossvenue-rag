@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 
 from crossvenue_rag.config import Config
+from crossvenue_rag.dataset.questions import METADATA_FROM_HINT, save_questions
 from crossvenue_rag.errors import UserError
 from crossvenue_rag.labeling import modes
 from crossvenue_rag.labeling.modes import (
@@ -17,10 +18,33 @@ from crossvenue_rag.labeling.modes import (
     review_ids,
 )
 from tests.conftest import write_journal
+from tests.dataset.factories import gold_like
+
+# The options of a bare `crossvenue label`, on the question file q.jsonl.
+NO_OPTIONS = {
+    "questions_path": "q.jsonl",
+    "ids": (),
+    "review": False,
+    "review_file": None,
+    "augment": False,
+    "question_file": None,
+    "revisit": False,
+    "limit": None,
+    "pool_depth": None,
+    "annotation_round": 1,
+    "annotator": "",
+    "sample": None,
+    "seed": 0,
+    "sample_file": None,
+    "adjudicate": False,
+    "relabel": False,
+    "add_chunks": None,
+    "metadata_from": None,
+}
 
 
 def request(**fields) -> LabelRequest:
-    return LabelRequest(questions_path="q.jsonl", **fields)
+    return LabelRequest(**{**NO_OPTIONS, **fields})
 
 
 def test_augment_needs_its_candidate_list_and_no_other_mode():
@@ -29,8 +53,17 @@ def test_augment_needs_its_candidate_list_and_no_other_mode():
         check_augment(request(augment=True))
     with pytest.raises(UserError, match="go together"):
         check_augment(request(question_file=Path("c.jsonl")))
-    for other in ({"ids": ("cv-0001",)}, {"review": True}, {"annotation_round": 2}):
-        with pytest.raises(UserError, match="cannot be combined"):
+    for other in (
+        {"ids": ("cv-0001",)},
+        {"review": True},
+        {"annotation_round": 2},
+        {"sample": 3},
+        {"revisit": True},
+        {"seed": 7},
+        {"limit": 5},
+        {"pool_depth": 40},
+    ):
+        with pytest.raises(UserError, match="takes no ids or other mode"):
             check_augment(request(augment=True, question_file=Path("c.jsonl"), **other))
 
 
@@ -52,12 +85,43 @@ def test_review_ids_come_from_arguments_and_the_review_file(tmp_path: Path):
             {"sample_file": Path("s.txt"), "annotation_round": 2, "sample": 5},
             "re-annotation subsample",
         ),
-        ({"ids": ("cv-0001",), "review": True, "annotation_round": 2}, "corrects round 1"),
+        ({"ids": ("cv-0001",), "review": True, "annotation_round": 2}, "combined with --round"),
+        ({"ids": ("cv-0001",), "review": True, "sample": 3}, "combined with --sample"),
+        ({"ids": ("cv-0001",), "review": True, "revisit": True}, "combined with --all"),
+        ({"ids": ("cv-0001",), "review": True, "seed": 7}, "combined with --seed"),
+        ({"ids": ("cv-0001",), "review": True, "limit": 5}, "combined with --limit"),
+        ({"ids": ("cv-0001",), "review": True, "pool_depth": 40}, "combined with --pool-depth"),
     ],
 )
 def test_mixed_review_options_are_refused(fields: dict, message: str):
     with pytest.raises(UserError, match=message):
         review_ids(request(**fields))
+
+
+def test_a_review_without_ids_names_the_review_file_only_when_one_was_given(tmp_path: Path):
+    listing = tmp_path / "review.txt"
+    listing.write_text("# no ids yet\n", encoding="utf-8")
+    with pytest.raises(UserError) as refused:
+        review_ids(request(review_file=listing))
+    assert str(refused.value) == f"--review needs question ids; {listing} names none"
+    assert refused.value.hint == "pass ids after --review, or one per line in --review-file"
+    with pytest.raises(UserError) as refused:
+        review_ids(request(review=True))
+    assert str(refused.value) == "--review needs question ids"
+
+
+@pytest.mark.parametrize("fields", [{"limit": 5}, {"pool_depth": 40}])
+def test_a_later_round_refuses_the_options_of_a_new_pool(fields: dict):
+    with pytest.raises(UserError, match="--round 2 shows the candidates round 1 judged"):
+        review_ids(request(annotation_round=2, **fields))
+
+
+def test_a_later_round_takes_its_own_options():
+    assert review_ids(request(annotation_round=2, sample=5, seed=7)) == []
+
+
+def test_the_first_round_takes_limit_and_pool_depth():
+    assert review_ids(request(limit=5, pool_depth=40)) == []
 
 
 def test_the_label_plan_carries_every_option(tmp_path: Path):
@@ -80,7 +144,7 @@ def test_the_label_plan_carries_every_option(tmp_path: Path):
         "v1",
         "me",
     )
-    assert plan.queue.annotation_round == 2 and not plan.queue.only_unlabelled
+    assert plan.queue.annotation_round == 2 and not plan.queue.only_unjudged
     assert plan.queue.sample_ids == ["cv-0003"] and plan.queue.seed == 3
     assert plan.per_method == 30 and plan.limit == 7
 
@@ -154,14 +218,30 @@ def test_review_ids_open_the_review_session(sessions: dict, cfg: Config):
     assert "label" not in sessions
 
 
-def test_no_mode_option_runs_the_label_session_on_the_current_index(sessions: dict, cfg: Config):
+def test_no_mode_option_runs_the_label_session_on_the_current_index(
+    sessions: dict, cfg: Config, tmp_path: Path
+):
     from crossvenue_rag.labeling.modes import run_label
 
-    run_label(cfg, request(annotation_round=2, sample=5, seed=7))
+    path = tmp_path / "questions.jsonl"
+    save_questions(path, gold_like())
+    run_label(cfg, request(questions_path=str(path), annotation_round=2, sample=10, seed=7))
     got_cfg, retriever, plan = sessions["label"]
     assert got_cfg is cfg and retriever is sessions["opened"][0] and retriever.warmed
     assert plan.target.index_version == "v9" and plan.per_method == cfg.eval.pool_depth_per_method
-    assert (plan.queue.annotation_round, plan.queue.sample, plan.queue.seed) == (2, 5, 7)
+    assert (plan.queue.annotation_round, plan.queue.sample, plan.queue.seed) == (2, 10, 7)
+
+
+def test_a_later_round_sample_below_its_categories_is_refused_before_the_index_is_opened(
+    sessions: dict, cfg: Config, tmp_path: Path
+):
+    from crossvenue_rag.labeling.modes import run_label
+
+    path = tmp_path / "questions.jsonl"
+    save_questions(path, gold_like())
+    with pytest.raises(UserError, match=r"^--sample 2: a sample of 2 cannot hold one of each"):
+        run_label(cfg, request(questions_path=str(path), annotation_round=2, sample=2))
+    assert sessions["opened"] == []
 
 
 @pytest.mark.parametrize(
@@ -170,7 +250,7 @@ def test_no_mode_option_runs_the_label_session_on_the_current_index(sessions: di
         ({"question_file": Path("c.jsonl"), "review": True}, "go together"),
         (
             {"augment": True, "question_file": Path("c.jsonl"), "annotation_round": 2},
-            "cannot be combined",
+            "takes no ids or other mode",
         ),
         ({"ids": ("cv-0001",)}, "without --review"),
         ({"review": True}, "needs question ids"),
@@ -198,6 +278,9 @@ def test_adjudicate_takes_no_ids_and_no_other_mode():
         ({"relabel": True}, "--relabel"),
         ({"add_chunks": Path("a.jsonl")}, "--add-chunks"),
         ({"augment": True}, "--augment"),
+        ({"limit": 5}, "--limit"),
+        ({"pool_depth": 40}, "--pool-depth"),
+        ({"seed": 7}, "--seed"),
     ):
         with pytest.raises(UserError, match=named):
             check_adjudicate(request(adjudicate=True, **other))
@@ -209,10 +292,13 @@ def test_relabel_needs_ids_and_add_chunks_needs_relabel():
     assert check_relabel(request(relabel=True, ids=("cv-0106",))) == ["cv-0106"]
     with pytest.raises(UserError, match="needs question ids"):
         check_relabel(request(relabel=True))
-    with pytest.raises(UserError, match="goes with --relabel"):
+    with pytest.raises(UserError, match="goes with --relabel or --round 3"):
         check_relabel(request(add_chunks=Path("a.jsonl"), ids=("cv-0106",)))
     with pytest.raises(UserError, match="cannot be combined with --sample-file"):
         check_relabel(request(relabel=True, ids=("cv-0106",), sample_file=Path("s.txt")))
+    for other, named in (({"limit": 5}, "--limit"), ({"pool_depth": 40}, "--pool-depth")):
+        with pytest.raises(UserError, match=f"cannot be combined with {named}"):
+            check_relabel(request(relabel=True, ids=("cv-0106",), **other))
 
 
 def test_the_offline_modes_run_before_any_retriever_is_opened(monkeypatch):
@@ -226,7 +312,6 @@ def test_the_offline_modes_run_before_any_retriever_is_opened(monkeypatch):
 
 
 def test_run_offline_checks_the_index_and_hands_the_chunks_to_the_session(tmp_path, monkeypatch):
-    from crossvenue_rag.dataset.questions import save_questions
     from crossvenue_rag.labeling import modes
     from crossvenue_rag.models import Question
     from tests.labeling.conftest import VERSION, chunk
@@ -241,11 +326,13 @@ def test_run_offline_checks_the_index_and_hands_the_chunks_to_the_session(tmp_pa
     monkeypatch.setattr(modes, "relabel_session", lambda target: seen.append(target))
     added = tmp_path / "added.jsonl"
     added.write_text('{"id": "q1", "chunk_ids": ["c1"]}\n', encoding="utf-8")
-    adjudicating = LabelRequest(str(path), annotator="me", adjudicate=True)
+    adjudicating = request(questions_path=str(path), annotator="me", adjudicate=True)
     modes.run_offline(Config(), adjudicating)
     modes.run_offline(
         Config(),
-        LabelRequest(str(path), annotator="me", relabel=True, ids=("q1",), add_chunks=added),
+        request(
+            questions_path=str(path), annotator="me", relabel=True, ids=("q1",), add_chunks=added
+        ),
     )
     adjudication, relabeling = seen
     assert adjudication.index_version == VERSION and set(adjudication.chunks) == {"c1"}
@@ -269,7 +356,6 @@ def test_round_3_takes_its_two_files():
 @pytest.mark.parametrize(
     ("fields", "message"),
     [
-        ({"annotation_round": 4}, "there is no round 4"),
         ({"annotation_round": 1, "metadata_from": Path("m.jsonl")}, "goes with --round 3"),
         ({"annotation_round": 3}, "needs --add-chunks and --metadata-from"),
         ({"annotation_round": 3, "add_chunks": Path("a.jsonl")}, "needs --add-chunks"),
@@ -288,6 +374,7 @@ def test_round_3_refuses_what_is_not_the_registered_round(fields: dict, message:
 
 def test_round_3_opens_no_index_and_reaches_the_session(tmp_path: Path, monkeypatch):
     calls = []
+    monkeypatch.setattr(modes, "require_file", lambda path, hint: path)
     monkeypatch.setattr(modes, "require_current_index", lambda cfg: "v")
     monkeypatch.setattr(modes, "require_label_versions", lambda *a, **k: calls.append(a[0]))
     monkeypatch.setattr(modes, "load_chunks", lambda cfg: [])
@@ -298,3 +385,10 @@ def test_round_3_opens_no_index_and_reaches_the_session(tmp_path: Path, monkeypa
     modes.run_label(Config(), request(**ROUND3))
     assert calls[:2] == ["q.jsonl", Path("m.jsonl")]
     assert calls[2].questions_path == "q.jsonl"
+
+
+def test_round_3_names_the_option_of_a_missing_metadata_file(tmp_path: Path):
+    fields = {**ROUND3, "metadata_from": tmp_path / "absent.jsonl"}
+    with pytest.raises(UserError) as caught:
+        modes.run_label(Config(), request(**fields))
+    assert caught.value.hint == METADATA_FROM_HINT

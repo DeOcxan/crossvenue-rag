@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from crossvenue_rag.dataset.agreement import KappaRequest, kappa_study
+from crossvenue_rag.dataset.agreement import Bootstrap, KappaRequest, kappa_study
 from crossvenue_rag.dataset.journal import ADJUDICATED, Journal, Judgment, load_rounds
 from crossvenue_rag.dataset.questions import save_questions
 from crossvenue_rag.errors import UserError
@@ -36,8 +36,8 @@ def _entry(relevant: list[str], stamp: str, **extra) -> dict:
     }
 
 
-def _journal(tmp_path: Path) -> str:
-    """q1: a in round 1, a b c in round 2; q2: d, then nothing; q3: round 1 only."""
+def _journal(tmp_path: Path, q1_screen: tuple[str, ...] = ("a", "b", "c", "d")) -> str:
+    """q1: a in round 1, a b c in round 2 on `q1_screen`; q2: d, then nothing; q3: round 1 only."""
     path = tmp_path / "questions.jsonl"
     save_questions(
         path,
@@ -51,7 +51,10 @@ def _journal(tmp_path: Path) -> str:
     write_journal(
         path,
         {
-            "q1": {"1": _entry(["a"], first), "2": _entry(["a", "b", "c"], second, **retest)},
+            "q1": {
+                "1": _entry(["a"], first),
+                "2": _entry(["a", "b", "c"], second, pool=list(q1_screen), **retest),
+            },
             "q2": {"1": _entry(["d"], first), "2": _entry([], second, **retest)},
             "q3": {"1": _entry(["a"], first)},
         },
@@ -70,12 +73,12 @@ def _target(path: str) -> AdjudicationTarget:
 
 
 def test_the_pairs_are_the_disagreements_by_question_in_round_2_screen_order(tmp_path):
-    path = _journal(tmp_path)
+    path = _journal(tmp_path, q1_screen=("a", "c", "b", "d"))  # c before b, against id order
     rounds = load_rounds(path)
     pairs = disagreeing_pairs(rounds)
     assert [(p.question_id, p.chunk_id, p.first, p.second) for p in pairs] == [
-        ("q1", "b", False, True),
         ("q1", "c", False, True),
+        ("q1", "b", False, True),
         ("q2", "d", True, False),
     ]
     for p in pairs:
@@ -104,14 +107,15 @@ def test_a_chunk_round_1_judged_after_round_2_is_no_pair(tmp_path):
         },
     )
     assert disagreeing_pairs(load_rounds(path)) == []
-    assert kappa_study(KappaRequest(str(path), short_gap=True)).report.disagreements == 0
+    study = kappa_study(KappaRequest(str(path), Bootstrap(10, 0), short_gap=True))
+    assert study.report.disagreements == 0
 
 
 def test_a_late_augmentation_leaves_the_round_2_screen_numbers(tmp_path):
     path = tmp_path / "questions.jsonl"
     save_questions(path, [Question("q1", "q1?", "gold", ["binance"], "fact", category="fact")])
     pool = ["a", "b", "c", "d", "f", "g", "h"]
-    shown = retest_order("q1", Judgment(pool=pool, relevant=[]), RETEST_SHUFFLE_SEED)
+    shown = retest_order("q1", Judgment(pool=pool, relevant=[]), RETEST_SHUFFLE_SEED, ())
     retest = {"pool": shown, "shuffle_seed": RETEST_SHUFFLE_SEED}
     write_journal(
         path,
@@ -131,12 +135,12 @@ def test_a_late_augmentation_leaves_the_round_2_screen_numbers(tmp_path):
 def test_each_decision_is_journaled_apart_from_rounds_1_and_2(tmp_path):
     path = _journal(tmp_path)
     before = journal_dict(path)
-    kappa_before = kappa_study(KappaRequest(path)).report
+    kappa_before = kappa_study(KappaRequest(path, Bootstrap(10, 0))).report
     adjudicate_session(_target(path), console=quiet(), prompt=Script("y", "n", "n"))
     after = journal_dict(path)
     for q in before:
         assert {k: v for k, v in after[q].items() if k != ADJUDICATED} == before[q]
-    assert kappa_study(KappaRequest(path)).report == kappa_before
+    assert kappa_study(KappaRequest(path, Bootstrap(10, 0))).report == kappa_before
     entry = after["q1"][ADJUDICATED]
     assert entry["criterion"] == CRITERION_DATE and entry["index_version"] == VERSION
     assert entry["annotator"] == "me" and "annotated_at" in entry

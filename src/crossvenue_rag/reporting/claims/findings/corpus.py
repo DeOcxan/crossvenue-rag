@@ -4,13 +4,13 @@ from __future__ import annotations
 
 from .... import formatting
 from ...check import Doc
-from ...compute import corpus, corpus_pancakeswap
+from ...compute import corpus, corpus_pancakeswap, corpus_sheet
 from ...sources import Sources
 from ..comparisons import duplicate_share_text, fee_tier_texts
 
 # The best-match cosines the PancakeSwap table counts chunks at.
 THRESHOLDS = (0.9, 0.7, 0.6, 0.5, 0.4)
-# How the duplicate table names each venue.
+# How the duplicate table names a venue other than by its key.
 VENUE_LABELS = {"binance": "binance (all mainnet/testnet)"}
 
 
@@ -54,13 +54,13 @@ def duplicate_claims(doc: Doc, src: Sources) -> None:
         formatting.count(dup.in_groups),
         duplicate_share_text(src),
         formatting.count(dup.groups),
-        formatting.count(dup.by_venue["binance"]),
+        formatting.count(corpus_sheet.testnet_mirror_groups(src)),
     )
     doc.claim(
-        "and no text occurs on {} venues",
+        "and no chunk text occurs on {} venues",
         formatting.count(corpus.CROSS_VENUE_VENUES),
         holds=corpus.no_cross_venue_texts(src),
-        what=f"no text on {formatting.count(corpus.CROSS_VENUE_VENUES)} venues",
+        what=f"no chunk text on {formatting.count(corpus.CROSS_VENUE_VENUES)} venues",
     )
     doc.table(
         "| venue | groups |",

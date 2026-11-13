@@ -24,7 +24,7 @@ from ...generation.grader_agreement import dimension_verdicts, paired_verdicts
 from ...generation.records import AnswerRecord
 from ...generation.schemas import GeneratedAnswer, is_absence_claim
 from ...models import QuestionCategory
-from ...stats import cohens_kappa
+from ...stats import cohens_kappa_or_none
 from ..run_ids import CALIBRATION_SAMPLE
 from ..sources import Sources
 from .distinct import shared_value
@@ -259,15 +259,16 @@ def kappa_undefined(src: Sources, comparison: str, dimension: str) -> int:
     return _dimension_row(src, comparison, dimension).undefined("kappa")
 
 
-def behaviour_kappa(src: Sources, judge: str) -> float:
+def behaviour_kappa(src: Sources, judge: str) -> float | None:
     """Cohen's kappa of `judge` with the human on `behaviour_correct`, over every graded answer.
+
+    None where the kappa is undefined (`stats.cohens_kappa_or_none`).
 
     Raises:
         UserError: `judge` is not a plain name.
     """
     pairs = paired_verdicts(src.judge_grades(judge), src.human)
-    verdicts = dimension_verdicts(pairs, "behaviour_correct")
-    return cohens_kappa([a for a, _ in verdicts], [b for _, b in verdicts]).kappa
+    return cohens_kappa_or_none(dimension_verdicts(pairs, "behaviour_correct"))
 
 
 def sample_ids(src: Sources) -> list[str]:
@@ -349,7 +350,7 @@ def judge_with_human(src: Sources) -> str:
 
 def judge_with_repeat(src: Sources) -> str:
     """The prompt v1 judged run's judge against its own first repeat (`replicate_comparison`)."""
-    return replicate_comparison(src.judged_v1.config.generation.chosen_judge(), 1)
+    return replicate_comparison(src.judged_v1.config.generation.chosen_judge())
 
 
 def candidates(src: Sources) -> list[str]:
@@ -358,7 +359,11 @@ def candidates(src: Sources) -> list[str]:
 
 
 def selected_passes_most(src: Sources, judge: str) -> bool:
-    """Whether `judge` is selected and passes more thresholds than every other candidate."""
+    """Whether `judge` is selected and passes more thresholds than every other candidate.
+
+    Raises:
+        ValueError: calibration.json selects `judge` and lists no such candidate.
+    """
     others = [passes(src, j) for j in candidates(src) if j != judge]
     return src.calibration.selected == judge and all(passes(src, judge) > k for k in others)
 

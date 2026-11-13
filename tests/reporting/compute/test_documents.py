@@ -17,7 +17,7 @@ Intro line.
 
 ## Next section
 
-- an item after the end marker
+- an item of the next section
 """
 
 TABLE = """Some text.
@@ -34,19 +34,19 @@ TABLE = """Some text.
 """
 
 
-def test_list_items_are_the_dash_lines_between_start_and_end():
-    items = documents.list_items(LIMITS, "# Limits", "## Next section")
+def test_list_items_are_the_dash_lines_between_start_and_the_next_heading():
+    items = documents.list_items(LIMITS, "# Limits")
     assert items == ["- first limit", "- second limit", "- third limit"]
 
 
-def test_list_items_end_at_the_first_end_marker_after_the_start():
+def test_list_items_end_at_the_first_heading_after_the_start():
     text = "## End\n- before\n# Start\n- inside\n## End\n- after\n"
-    assert documents.list_items(text, "# Start", "## End") == ["- inside"]
+    assert documents.list_items(text, "# Start") == ["- inside"]
 
 
 def test_a_missing_start_marker_raises():
     with pytest.raises(ValueError, match="substring not found"):
-        documents.list_items(LIMITS, "# Absent", "## Next section")
+        documents.list_items(LIMITS, "# Absent")
 
 
 def test_table_column_reads_the_named_column_until_the_table_ends():

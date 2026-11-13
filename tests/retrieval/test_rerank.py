@@ -1,4 +1,4 @@
-"""Tests for `crossvenue_rag.retrieval.rerank`: one cross-encoder call for many lists."""
+"""Tests for `crossvenue_rag.retrieval.rerank`."""
 
 from __future__ import annotations
 
@@ -49,7 +49,7 @@ def test_rerank_many_matches_rerank_list_by_list():
     assert [[x.chunk_id for x in g] for g in merged] == [[x.chunk_id for x in g] for g in separate]
 
 
-def test_rerank_many_handles_empty_groups():
+def test_rerank_many_returns_empty_groups_without_calling_the_model():
     r, model = reranker()
     assert r.rerank_many("q", [[], []], k=2) == [[], []]
     assert model.calls == []
@@ -66,3 +66,17 @@ def test_a_missing_sentence_transformers_is_a_user_error_naming_the_revision(mon
     cfg = RerankerConfig(revision="abc123")
     with pytest.raises(UserError, match=r"cannot load reranker\.model_name .* at revision abc123:"):
         _ = Reranker(cfg, "cpu").model
+
+
+def test_a_missing_sentence_transformers_hints_installing_the_dependencies(monkeypatch):
+    import sys
+
+    import pytest
+
+    from crossvenue_rag.errors import UserError
+
+    monkeypatch.setitem(sys.modules, "sentence_transformers", None)
+    with pytest.raises(UserError) as refused:
+        _ = Reranker(RerankerConfig(), "cpu").model
+    assert "`make install`" in (refused.value.hint or "")
+    assert "revision" not in (refused.value.hint or "")

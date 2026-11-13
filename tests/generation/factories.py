@@ -15,7 +15,7 @@ from crossvenue_rag.generation.schemas import Judgement
 
 
 def call_json(**fields: Any) -> dict[str, Any]:
-    """A call record as answers.jsonl saves it; `fields` replace the defaults."""
+    """A call record as `answers.jsonl` saves it; `fields` replace the defaults."""
     base: dict[str, Any] = {
         "requested_model": "google/gemini-3.8-flash",
         "actual_model": "google/gemini-3.8-flash-20260901",
@@ -98,7 +98,7 @@ def judge_json(
     metrics: dict[str, Any] | None = None,
     call: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """A judge record as answers.jsonl saves it."""
+    """A judge record as `answers.jsonl` saves it."""
     return {
         "judge": judge,
         "judgement": judgement or judgement_json(),
@@ -160,7 +160,7 @@ def record_json(
     error: str | None = None,
     **fields: Any,
 ) -> dict[str, Any]:
-    """An answer record as answers.jsonl saves it; a generated one unless `error` is given.
+    """An answer record as `answers.jsonl` saves it; a generated one unless `error` is given.
 
     `fields` replace the record's other fields (`category`, `expected_behavior`).
     """
@@ -290,7 +290,7 @@ ANSWER_IDS = [f"gemini@venue_split:cv-{i:04d}" for i in range(12)]
 def write_judgements(run: Path, judge: str, *, flip: bool = False, cost: float = 0.01) -> None:
     """`judge`'s judgments of `ANSWER_IDS` in `run`, and one failed judgment.
 
-    Writes the run's answers.jsonl of `ANSWER_IDS` too when it has none, so the
+    Writes the run's `answers.jsonl` of `ANSWER_IDS` too when it has none, so the
     directory is an answer run.
     """
     if not (run / "answers.jsonl").exists():

@@ -58,7 +58,11 @@ def generator_message(question: Question, results: Sequence[Result]) -> str:
 def generator_request(
     cfg: GenerationConfig, model: ModelConfig, question: Question, results: Sequence[Result]
 ) -> ModelRequest:
-    """The generator's request for `question` over the chunks `results`, under `cfg`'s prompt."""
+    """The generator's request for `question` over the chunks `results`, under `cfg`'s prompt.
+
+    Raises:
+        UserError: Nothing is at `generation.generator_prompt`, or a directory is.
+    """
     system, _ = generator_prompt(cfg)
     return ModelRequest(
         model,
@@ -82,6 +86,9 @@ def generate(
     The record holds the fields of the configured answer schema and no other: an
     answer of schema v1 has no `partial` or `missing` and the record no
     `answer_schema_version`, as every committed v1 run has them.
+
+    Raises:
+        UserError: Nothing is at `generation.generator_prompt`, or a directory is.
     """
     _, prompt_hash = generator_prompt(cfg)
     version = cfg.answer_schema_version
@@ -176,8 +183,8 @@ def gold_by_venue(gold_ids: Sequence[str], chunks: Mapping[str, Chunk]) -> dict[
 class Submission:
     """One generated answer as the judge sees it.
 
-    Holds the question, the generation record, and the chunks by id (the cited
-    ones and the gold ones).
+    Holds the question, the generation record, and every chunk the answer was
+    generated from and the question's gold chunks, by id.
     """
 
     question: Question
@@ -189,6 +196,7 @@ def judge_request(cfg: GenerationConfig, submission: Submission) -> tuple[str, s
     """The judge's (system, user) messages for one generated answer.
 
     Raises:
+        UserError: Nothing is at `generation.judge_prompt`, or a directory is.
         ValueError: `submission.chunks` lacks a chunk the answer was generated from; the
             message names it.
     """
@@ -217,7 +225,8 @@ def judge_answer(
     chunks.
 
     Raises:
-        UserError: `judge_name` is not a judge of `generation.judges`.
+        UserError: `judge_name` is not a judge of `generation.judges`, or nothing is at
+            `generation.judge_prompt`, or a directory is.
         ValueError: `submission.chunks` lacks a chunk the answer was generated from.
     """
     model = cfg.judge_model(judge_name)

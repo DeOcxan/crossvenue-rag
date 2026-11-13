@@ -1,4 +1,4 @@
-"""Tests for `reporting.compute.answers_outcomes`, on runs written under tmp_path."""
+"""Tests for `reporting.compute.answers_outcomes`, on runs written under `tmp_path`."""
 
 from __future__ import annotations
 
@@ -16,7 +16,6 @@ from tests.generation.factories import (
 )
 from tests.reporting.conftest import (
     CONFIGS,
-    answer_record,
     write_fixture,
     write_gold,
     write_judged_run,
@@ -94,9 +93,9 @@ def asking_src(tmp_path):
             {"id": "cv-0002", "category": "ambiguous", "expected_behavior": "ask_clarification"},
         ],
     )
-    v1 = {(c, q): answer_record() for c in CONFIGS for q in ("cv-0001", "cv-0002")}
-    v1[(QWEN, "cv-0002")] = answer_record(asked=True)
-    v2 = {**v1, (GEMINI, "cv-0001"): answer_record(asked=True)}
+    v1 = {(c, q): answer_json() for c in CONFIGS for q in ("cv-0001", "cv-0002")}
+    v1[(QWEN, "cv-0002")] = answer_json(asked=True)
+    v2 = {**v1, (GEMINI, "cv-0001"): answer_json(asked=True)}
     write_run(tmp_path, ANSWERS_V1, v1)
     write_run(tmp_path, ANSWERS_V2, v2)
     return Sources(tmp_path)
@@ -119,7 +118,7 @@ def test_never_clarify_holds_only_for_configurations_that_ask_nothing(asking_src
     assert not outcomes.never_clarify(asking_src, (MERCURY, GEMINI))
 
 
-def test_wrong_refusals_are_refusals_of_questions_that_expect_an_answer(src):
+def test_wrong_refusals_are_refusals_of_questions_that_do_not_expect_one(src):
     # Gemini's v1 refusal and Mercury's claim-less v2 partial answer.
     assert outcomes.wrong_refusal_changes(src) == [(1, 0), (0, 0), (0, 1), (0, 0)]
     assert not outcomes.wrong_refusals_fall(src)
@@ -127,8 +126,8 @@ def test_wrong_refusals_are_refusals_of_questions_that_expect_an_answer(src):
 
 def test_wrong_refusals_fall_when_every_configuration_refuses_less(tmp_path):
     write_gold(tmp_path, [{"id": "cv-0001", "expected_behavior": "answer"}])
-    write_run(tmp_path, ANSWERS_V1, {(c, "cv-0001"): answer_record(refused=True) for c in CONFIGS})
-    write_run(tmp_path, ANSWERS_V2, {(c, "cv-0001"): answer_record() for c in CONFIGS})
+    write_run(tmp_path, ANSWERS_V1, {(c, "cv-0001"): answer_json(refused=True) for c in CONFIGS})
+    write_run(tmp_path, ANSWERS_V2, {(c, "cv-0001"): answer_json() for c in CONFIGS})
     assert outcomes.wrong_refusals_fall(Sources(tmp_path))
 
 
@@ -144,7 +143,7 @@ def test_the_refusals_of_the_refusing_configuration_are_broken_down(src):
 
 def test_refusals_that_cite_a_chunk_or_carry_claims_are_counted(tmp_path):
     write_gold(tmp_path, [{"id": "cv-0001"}])
-    refusal = answer_record(refused=True, claims=2)
+    refusal = answer_json(refused=True, claims=2)
     refusal["answer"] = "Bybit is not covered [1]."
     write_run(tmp_path, ANSWERS_V1, {(GEMINI, "cv-0001"): refusal})
     write_judged_run(tmp_path)
@@ -165,6 +164,10 @@ def behaviour_record(question_id, value, *, config=GEMINI, category="comparison"
 
 
 def test_judged_behaviour_sums_over_the_questions_both_runs_judged(tmp_path):
+    write_gold(
+        tmp_path,
+        [{"id": "cv-1"}, {"id": "cv-2"}, {"id": "cv-3"}, {"id": "cv-4", "category": "fact"}],
+    )
     write_judged_run(
         tmp_path,
         JUDGED_V1,
@@ -193,7 +196,20 @@ def test_judged_behaviour_sums_over_the_questions_both_runs_judged(tmp_path):
     assert all(isinstance(n, int) for n in outcomes.judged_behaviour(src, GEMINI, "comparison"))
 
 
+def test_judged_behaviour_takes_a_questions_category_from_the_gold_set(tmp_path):
+    # cv-2 was generated as a comparison question and the gold set recategorizes it.
+    write_gold(tmp_path, [{"id": "cv-1"}, {"id": "cv-2", "category": "fact"}])
+    for run in (JUDGED_V1, JUDGED_V2):
+        write_judged_run(
+            tmp_path, run, records=[behaviour_record("cv-1", 1.0), behaviour_record("cv-2", 1.0)]
+        )
+    src = Sources(tmp_path)
+    assert outcomes.judged_behaviour(src, GEMINI, "comparison") == (1, 1)
+    assert outcomes.judged_behaviour(src, GEMINI, "fact") == (1, 1)
+
+
 def test_a_behaviour_grade_other_than_0_or_1_is_refused(tmp_path):
+    write_gold(tmp_path, [{"id": "cv-1"}])
     write_judged_run(tmp_path, JUDGED_V1, records=[behaviour_record("cv-1", 0.5)])
     write_judged_run(tmp_path, JUDGED_V2, records=[behaviour_record("cv-1", 1.0)])
     with pytest.raises(ValueError, match="neither 0 nor 1"):
@@ -233,8 +249,8 @@ def test_an_outcome_or_question_the_runs_lack_is_a_value_error(src, tmp_path):
         outcomes.answered_refusals(src, "absent@config")
     other = tmp_path / "other"
     write_gold(other, [{"id": "cv-0001"}])
-    write_run(other, ANSWERS_V1, {(GEMINI, "cv-0001"): answer_record(refused=True, claims=0)})
-    write_run(other, ANSWERS_V2, {(QWEN, "cv-0001"): answer_record()})
+    write_run(other, ANSWERS_V1, {(GEMINI, "cv-0001"): answer_json(refused=True, claims=0)})
+    write_run(other, ANSWERS_V2, {(QWEN, "cv-0001"): answer_json()})
     write_judged_run(other)
     with pytest.raises(ValueError, match="v2 outcomes has no"):
         outcomes.group_outcomes(Sources(other), "c")

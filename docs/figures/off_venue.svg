@@ -598,7 +598,7 @@ L 501.48 180.517891
   </g>
   <g id="text_25">
    <text style="font-size: 7px; font-family: 'DejaVu Sans'; fill: #6b6b6b" transform="translate(5.184 223.165848)">Exploratory (methodology §9b). Mean share of each question's top 10 from a venue the question does not name (off-venue), with ccxt chunks on</text>
-   <text style="font-size: 7px; font-family: 'DejaVu Sans'; fill: #6b6b6b" transform="translate(5.184 231.567762)">questions that do not name ccxt stacked apart (via ccxt); n = 50 comparison and 13 adversarial questions. venue_split and venue_split_oracle</text>
+   <text style="font-size: 7px; font-family: 'DejaVu Sans'; fill: #6b6b6b" transform="translate(5.184 231.567762)">questions that do not name ccxt stacked apart (via ccxt). n = 50 comparison and 13 adversarial questions. venue_split and venue_split_oracle</text>
    <text style="font-size: 7px; font-family: 'DejaVu Sans'; fill: #6b6b6b" transform="translate(5.184 239.969676)">(gray) filter by venue by construction. Run results/20260925T012314Z, retrieved_venues of per_query.csv.</text>
   </g>
   <g id="legend_1">

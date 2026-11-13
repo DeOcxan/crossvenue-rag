@@ -1,4 +1,4 @@
-"""What every run kind shares: its directory, index.json, config.yaml, CSV tables, the registry.
+"""What more than one run kind shares: directory, index.json, config.yaml, CSV tables, registry.
 
 One writer or reader each, so every run directory, index record, saved config and
 CSV is made or read the same way. Every CSV has the dialect of the committed runs: the
@@ -68,7 +68,7 @@ def write_run_source(run_dir: Path, source: RunSource) -> None:
 
 
 def read_json_model[M: BaseModel](path: Path, model: type[M], hint: str = RUN_FILE_HINT) -> M:
-    """A JSON file crossvenue wrote, validated as `model`.
+    """A JSON file `crossvenue` wrote, validated as `model`.
 
     Raises:
         UserError: Nothing is at `path`, or a directory is. The file is not UTF-8, not JSON, or not
@@ -148,19 +148,18 @@ class RunIndex(BaseModel):
 
     Formats of the committed files, each a subset of these fields in this order:
 
-    - retrieval runs from 20260924T234623Z on: `index_version`, `questions`,
+    - retrieval runs from `20260924T234623Z` on: `index_version`, `questions`,
       `questions_sha256`, no final newline;
     - the pool run (`results/20260925T003721Z_pool`): `index_version`, `purpose`,
       `questions`, `questions_sha256`, `methods`, `k`, `category`, `questions_run`,
       no final newline;
     - the bench run (`results/20260925T225850Z_bench`): `index_version`, `questions`,
       no final newline;
-    - answer, judged, prompts and power runs as `write_index` writes them, a format no
-      committed run of those kinds has: `index_version`, and the question file for
-      answer, judged and power runs, with a final newline.
+    - judged and prompts runs as `write_index` writes them: `index_version`, and the
+      question file for judged runs, with a final newline.
 
     Runs saved before their kind recorded an index have none: the retrieval run
-    20260924T200525Z, the answer, judged and prompts runs of 2026-09-25 and 2026-09-26,
+    `20260924T200525Z`, the answer, judged and prompts runs of 2026-09-25 and 2026-09-26,
     and every power run before 2026-09-27; `generation.runs` then falls back to
     `results/runs.json`.
     """
@@ -187,7 +186,7 @@ def write_index(run_dir: Path, index: RunIndex | Mapping[str, Any], *, final_new
     """Writes `index.json` (`RunIndex`); a mapping is validated as one, its fields in order.
 
     Retrieval, pool and bench runs were committed without a final newline and
-    answer and prompts runs end with one; `final_newline` keeps each as it is.
+    answer, judged, prompts and power runs end with one; `final_newline` keeps each as it is.
     """
     record = index if isinstance(index, RunIndex) else RunIndex.model_validate(dict(index))
     (run_dir / INDEX_FILE).write_text(index_json(record, final_newline=final_newline), "utf-8")
@@ -204,7 +203,7 @@ def read_index(run_dir: Path) -> RunIndex | None:
 class RegistryEntry(BaseModel):
     """One committed run in results/runs.json.
 
-    Its `index_version`, where it comes from, its notes and the sha256 of each of its files.
+    Its `index_version`, where it comes from, its `notes` and the sha256 of each of its files.
     """
 
     model_config = ConfigDict(frozen=True, extra="forbid")
@@ -228,7 +227,11 @@ class Registry(BaseModel):
 
 
 def read_registry(path: Path) -> Registry:
-    """The registry of committed runs at `path`."""
+    """The registry of committed runs at `path`.
+
+    Raises:
+        UserError: Nothing is at `path`, or a directory is.
+    """
     return read_json_model(path, Registry)
 
 
@@ -246,30 +249,31 @@ def read_run_config(run_dir: Path) -> Config:
     """The config a run was made with: its `config.yaml`, validated as `Config`.
 
     Only the file is read; `CROSSVENUE_PG_DSN` does not apply. Every committed
-    run's file validates. The runs up to 2026-09-26 record no model revisions
-    (`embedding.revision`, `reranker.revision`) and come in five formats, which differ
-    in the other keys they lack. `Config` fills a missing key with its current default,
-    so a check reads only keys its run saved:
+    run's file validates. The runs up to 2026-09-26 with a config.yaml record neither the
+    model revisions (`embedding.revision`, `reranker.revision`) nor `fetch.backoff_seconds`,
+    and come in five formats, which differ in the other keys they lack. `Config` fills a
+    missing key with its current default, so a check reads only keys its run saved:
 
-    - the retrieval runs 20260924T200525Z and 20260924T234623Z: no `generation`
+    - the retrieval runs `20260924T200525Z` and `20260924T234623Z`: no `generation`
       and no `eval` bootstrap or paired-comparison keys;
-    - the retrieval runs of 2026-09-25 up to 20260925T024237Z and the pool run
-      20260925T003721Z_pool: the bootstrap and paired-comparison keys added;
-    - 20260925T132613Z and 20260925T144223Z: `eval.primary_comparison` added;
-    - the answer runs 20260925T175128Z_answers and 20260925T202827Z_answers and
-      the bench run 20260925T225850Z_bench: `generation` added, without the
+    - the retrieval runs of 2026-09-25 up to `20260925T024237Z` and the pool run
+      `20260925T003721Z_pool`: the bootstrap and paired-comparison keys added;
+    - `20260925T132613Z` and `20260925T144223Z`: `eval.primary_comparison` added;
+    - the answer runs `20260925T175128Z_answers` and `20260925T202827Z_answers` and
+      the bench run `20260925T225850Z_bench`: `generation` added, without the
       calibration thresholds, `calibration_run`, `calibration_exclude_behaviour`
       and the prompt hashes;
     - the judged runs of 2026-09-26: without `calibration_run` and the prompt
       hashes;
-    - the retrieval runs of 2026-10-10, 20261010T214504Z and 20261010T222553Z: the
+    - the runs of 2026-10-10 and 2026-10-31, `20261010T214504Z`, `20261010T222553Z`,
+      `20261031T202503Z`, `20261031T213610Z_judged` and `20261031T220102Z_judged`: the
       whole config, the model revisions included.
 
-    `Config.to_yaml` writes every key but `store.dsn`, so a run saved later holds the
-    whole config of its day without the connection string, and the schema default fills
-    it. A retired key, which the schema does not have, is dropped
+    `Config.to_yaml` writes every key but `store.dsn`, so a run whose config.yaml it
+    writes holds the whole config of its day without the connection string, and the
+    schema default fills it. A retired key, which the schema does not have, is dropped
     before validation (`RETIRED_CONFIG_KEYS`: `eval.score_duplicates_as_equivalent`, in
-    20260924T200525Z); any other unknown key is refused, as in a user config.
+    `20260924T200525Z`); any other unknown key is refused, as in a user config.
 
     Raises:
         UserError: The schema rejects a key or a value of config.yaml.

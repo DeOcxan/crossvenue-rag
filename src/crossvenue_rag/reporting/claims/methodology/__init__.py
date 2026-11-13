@@ -4,7 +4,17 @@ from __future__ import annotations
 
 from ...check import Doc
 from ...sources import Sources
-from . import answers, decisions, deviations, labeling, naming, significance, small_effects
+from .. import round3 as round3_claims
+from . import (
+    answers,
+    decisions,
+    deviations,
+    labeling,
+    naming,
+    record_deviations,
+    significance,
+    small_effects,
+)
 
 
 def methodology(doc: Doc, src: Sources) -> None:
@@ -38,6 +48,8 @@ def methodology(doc: Doc, src: Sources) -> None:
     deviations.later_deviations(doc, src)
     deviations.amendment_deviation(doc, src)
     deviations.size_deviation(doc)
+    record_deviations.record_deviations(doc, src)
+    round3_claims.deviation(doc, src)
     small_effects.small_effects(doc, src)
     naming.wording(doc)
     naming.metric_names(doc)

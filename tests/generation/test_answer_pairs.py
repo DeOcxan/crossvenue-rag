@@ -4,8 +4,11 @@ from __future__ import annotations
 
 import csv
 
+import pytest
+
 from crossvenue_rag.generation.records import AnswerRecord
 from crossvenue_rag.run_files import PAIRED_FILE
+from tests.conftest import assert_round_trip, committed_of_kind
 from tests.generation.factories import (
     judge_json,
     metrics_json,
@@ -48,10 +51,10 @@ def test_answer_pairs_count_better_in_each_metrics_direction(cfg):
 
 
 def test_primary_family_keeps_p_values_when_few_answers_carry_claims(cfg):
-    """evals/methodology.md section 9: the primary family is over the 50 comparison
+    """`evals/methodology.md` section 9: the primary family is over the 50 comparison
     questions. That both configurations' answers carry claims on only 17 of them (34
-    answers) does not make venue_attribution_error descriptive, and coverage's p_Holm is
-    adjusted over the two tests of the family.
+    answers) does not make `venue_attribution_error` descriptive, and coverage's `p_Holm`
+    is adjusted over the two tests of the family.
     """
     from crossvenue_rag.evaluation.paired import holm
     from crossvenue_rag.generation.answer_pairs import paired_rows
@@ -98,7 +101,7 @@ V2_JUDGED = ROOT / "results" / "20260926T004836Z_judged"
 
 
 def _recomputed_and_committed(overrides: list[str]) -> tuple[list[list[str]], list[list[str]]]:
-    """The run's paired.csv rows recomputed from its answers with its config, and as committed,
+    """The run's `paired.csv` rows recomputed from its answers with its config, and as committed,
     each as the cells under the committed columns."""
     from crossvenue_rag.config_loading import load_config
     from crossvenue_rag.generation.answer_pairs import paired_rows
@@ -120,7 +123,7 @@ def test_the_v2_judged_run_recomputes_to_its_committed_paired_table():
 
 
 def test_the_pair_keeps_its_own_family_as_secondary_under_another_prompt():
-    """With the v1 pin of configs/default.yaml, the v2 run's pair is methodology 9a's
+    """With the v1 pin of `configs/default.yaml`, the v2 run's pair is methodology 9a's
     secondary comparison. Every cell is as committed (coverage's p_Holm 0.771, Holm within
     the two metrics), except the role of the pair's two rows, which is secondary."""
     from crossvenue_rag.config_loading import load_config
@@ -134,3 +137,12 @@ def test_the_pair_keeps_its_own_family_as_secondary_under_another_prompt():
     ]
     assert sum(row[role] == "primary" for row in committed) == 2
     assert recomputed == expected
+
+
+@pytest.mark.parametrize(
+    "run", committed_of_kind("paired.csv", "_answers", "_judged"), ids=lambda p: p.name
+)
+def test_every_committed_answer_paired_table_writes_back_byte_for_byte(run, tmp_path):
+    from crossvenue_rag.generation.answer_pairs import read_config_comparisons
+
+    assert_round_trip(run, "paired.csv", read_config_comparisons(run), tmp_path)

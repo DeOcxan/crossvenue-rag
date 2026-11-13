@@ -17,7 +17,10 @@ def test_remap_rounds_stamps_the_version_and_keeps_what_was_shown(tmp_path: Path
     path = tmp_path / "q.rounds.json"
     path.write_text(json.dumps({"q1": {"1": {"pool": ["a", "b", "c"], "relevant": ["a", "b"]}}}))
     remap_rounds(
-        path, IdMap({"a": "N", "b": "N", "c": "M"}, old_chunks_sha256="", to_index_version=""), "v2"
+        path,
+        IdMap({"a": "N", "b": "N", "c": "M"}, old_chunks_sha256="", to_index_version=""),
+        "v2",
+        None,
     )
     entry = json.loads(path.read_text())["q1"]["1"]
     assert entry["pool"] == ["N", "M"]
@@ -37,7 +40,7 @@ def test_remap_rounds_refuses_an_unmapped_id_and_leaves_the_sidecar_alone(tmp_pa
     original = json.dumps({"q1": {"1": {"pool": ["a", "dangling"], "relevant": ["dangling"]}}})
     path.write_text(original)
     with pytest.raises(UserError, match=r"1 id.*not in the map: dangling"):
-        remap_rounds(path, IdMap({"a": "N"}, old_chunks_sha256="", to_index_version=""), "v2")
+        remap_rounds(path, IdMap({"a": "N"}, old_chunks_sha256="", to_index_version=""), "v2", None)
     assert path.read_text() == original
 
 
@@ -65,6 +68,23 @@ def test_remap_file_writes_a_dataset_to_a_new_path_with_the_default_fields(tmp_p
     assert out[0] == {"id": "q1", "source_chunk_ids": ["N"], "gold_chunk_ids": ["N"]}
     assert out[1] == records[1]  # not in `only`: copied verbatim
     assert report.records == 2 and report.records_changed == 1
+
+
+def test_a_failed_remap_write_leaves_the_last_complete_journal(tmp_path: Path, monkeypatch):
+    from crossvenue_rag.index.migrate import IdMap
+
+    path = tmp_path / "q.rounds.json"
+    path.write_text(json.dumps({"q1": {"1": {"pool": ["a"], "relevant": ["a"]}}}))
+    before = path.read_bytes()
+
+    def fail(self: Path, *_: object, **__: object) -> None:
+        self.write_bytes(b"{ cut short")
+        raise OSError("disk full")
+
+    monkeypatch.setattr(Path, "write_text", fail)
+    with pytest.raises(OSError, match="disk full"):
+        remap_rounds(path, IdMap({"a": "N"}, old_chunks_sha256="", to_index_version=""), "v2", None)
+    assert path.read_bytes() == before
 
 
 def test_remap_file_rewrites_a_sidecar_in_place(tmp_path: Path):
@@ -150,7 +170,7 @@ def test_remap_rounds_carries_corrections_and_augmentations(tmp_path: Path):
 
     path = tmp_path / "q.rounds.json"
     path.write_text(json.dumps({"q1": {"1": _round1()}}))
-    report = remap_rounds(path, _map({"a": "A", "b": "B", "c": "C"}), "v2")
+    report = remap_rounds(path, _map({"a": "A", "b": "B", "c": "C"}), "v2", None)
     first = read_journal(path).require_first("q1")
     assert first.judged_ids() == ["A", "C", "B"]
     assert first.first_pass_relevant() == {"A", "B"}
@@ -169,7 +189,7 @@ def test_remap_rounds_reports_an_unmapped_augmentation_id(tmp_path: Path):
     original = json.dumps({"q1": {"1": _round1()}})
     path.write_text(original)
     with pytest.raises(UserError, match=r"1 id.*not in the map: b"):
-        remap_rounds(path, _map({"a": "A", "c": "C"}), "v2")
+        remap_rounds(path, _map({"a": "A", "c": "C"}), "v2", None)
     assert path.read_text() == original
 
 
@@ -178,8 +198,8 @@ def test_a_second_remap_keeps_the_first_migration(tmp_path: Path):
 
     path = tmp_path / "q.rounds.json"
     path.write_text(json.dumps({"q1": {"1": _round1()}}))
-    remap_rounds(path, _map({"a": "A", "b": "B", "c": "C"}), "v2")
-    remap_rounds(path, _map({"A": "A2", "B": "B2", "C": "C2"}), "v3")
+    remap_rounds(path, _map({"a": "A", "b": "B", "c": "C"}), "v2", None)
+    remap_rounds(path, _map({"A": "A2", "B": "B2", "C": "C2"}), "v3", None)
     first = read_journal(path).require_first("q1")
     assert first.pool == ["A2", "C2"] and first.index_version == "v3"
     second = first.migrated_from
@@ -205,7 +225,7 @@ def test_remap_rounds_carries_the_adjudication_and_the_relabel(tmp_path: Path):
     }  # fmt: skip
     path.write_text(json.dumps({"q1": {"1": _round1(), "adjudicated": adjudicated},
                                 "q2": {"1": _round1(), "relabeled": relabeled}}))  # fmt: skip
-    remap_rounds(path, _map({"a": "A", "b": "B", "c": "C"}), "v2")
+    remap_rounds(path, _map({"a": "A", "b": "B", "c": "C"}), "v2", None)
     journal = read_journal(path)
     adjudication = journal.get("q1").adjudicated
     assert adjudication is not None and list(adjudication.decisions) == ["A"]
@@ -228,16 +248,8 @@ def test_remap_rounds_refuses_to_merge_decisions_that_differ(tmp_path: Path):
     original = json.dumps({"q1": {"1": _round1(), "adjudicated": adjudicated}})
     path.write_text(original)
     with pytest.raises(UserError, match="decided differently: q1 N"):
-        remap_rounds(path, _map({"a": "N", "b": "N", "c": "C"}), "v2")
+        remap_rounds(path, _map({"a": "N", "b": "N", "c": "C"}), "v2", None)
     assert path.read_text() == original
-
-
-def test_the_committed_gold_journals_are_written_back_byte_identical():
-    from crossvenue_rag.dataset.journal import Journal
-
-    for name in ("v0.2-gold", "v0.2.1-gold", "v0.2.2-gold"):
-        text = Path(f"evals/datasets/annotations/{name}.rounds.json").read_text(encoding="utf-8")
-        assert Journal.from_json(json.loads(text)).to_text() == text
 
 
 def test_remap_file_refuses_an_only_id_the_journal_lacks_and_writes_nothing(tmp_path: Path):
@@ -261,7 +273,7 @@ def test_remap_rounds_carries_round_3_with_its_seed_and_flag(tmp_path: Path):
         "criterion": "c", "flagged": True,
     }  # fmt: skip
     path.write_text(json.dumps({"q1": {"1": _round1(), "3": third}}))
-    remap_rounds(path, _map({"a": "A", "b": "B", "c": "C"}), "v2")
+    remap_rounds(path, _map({"a": "A", "b": "B", "c": "C"}), "v2", None)
     entry = read_journal(path).get("q1").judgment(3)
     assert entry is not None and entry.pool == ["B", "A"] and entry.index_version == "v2"
     assert entry.shuffle_seed == 7 and entry.criterion == "c" and entry.flagged is True

@@ -68,9 +68,9 @@ def _trial(doc: Doc, src: Sources) -> None:
 
 def _prices(doc: Doc, src: Sources) -> None:
     """Decision: the providers and prices OpenRouter listed."""
+    doc.check("the cheapest of the {} ($", _generators(src))
     doc.given(
-        "the cheapest of the {} (${} / ${} per million input / output tokens",
-        _generators(src),
+        "(${} / ${} per million input / output tokens",
         "0.04",
         "0.15",
         reason=OPENROUTER,

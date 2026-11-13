@@ -44,7 +44,7 @@ def test_a_number_no_check_covers_is_a_problem():
     doc.check("Recall is {} and", "0.465")
     doc.audit()
     [problem] = doc.problems
-    assert "'0.2' is not recomputed" in problem.message
+    assert "no check recomputes number '0.2'" in problem.message
 
 
 def test_identifiers_code_links_dates_and_references_are_not_numbers():
@@ -67,10 +67,10 @@ def test_number_words_headings_hyphen_minus_and_units_are_audited():
     doc.check("## {} of {} pass", "3", "4")
     doc.audit()
     messages = [p.message for p in doc.problems]
-    assert "number 'eight' is not recomputed by any check" in messages
+    assert "no check recomputes number 'eight'" in messages
     assert any("'-0' : a minus sign" in m or "'-0': a minus sign" in m for m in messages)
-    assert "number '10x' is not recomputed by any check" in messages
-    assert "number '12ms' is not recomputed by any check" in messages
+    assert "no check recomputes number '10x'" in messages
+    assert "no check recomputes number '12ms'" in messages
     assert not any("Three" in m or "'4'" in m for m in messages)
 
 

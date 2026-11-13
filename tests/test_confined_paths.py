@@ -67,3 +67,20 @@ def test_a_directory_path_under_a_file_is_found(tmp_path: Path):
     (tmp_path / "f.txt").write_text("x")
     assert file_on_path(tmp_path / "f.txt" / "runs") == tmp_path / "f.txt"
     assert file_on_path(tmp_path / "runs") is None
+
+
+def test_an_out_file_path_is_refused_at_a_directory_under_a_file_or_in_a_missing_directory(
+    tmp_path: Path,
+):
+    from crossvenue_rag.confined_paths import require_out_file
+
+    (tmp_path / "f.txt").write_text("x")
+    with pytest.raises(UserError, match="is a directory"):
+        require_out_file(tmp_path, folder_must_exist=False)
+    with pytest.raises(UserError, match=r"f\.txt is a file"):
+        require_out_file(tmp_path / "f.txt" / "out.jsonl", folder_must_exist=False)
+    with pytest.raises(UserError, match="the directory of --out, is not a directory"):
+        require_out_file(tmp_path / "absent" / "out.jsonl", folder_must_exist=True)
+    require_out_file(tmp_path / "absent" / "out.jsonl", folder_must_exist=False)
+    require_out_file(tmp_path / "out.jsonl", folder_must_exist=True)
+    assert not (tmp_path / "absent").exists()

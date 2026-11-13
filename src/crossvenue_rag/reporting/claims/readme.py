@@ -1,7 +1,4 @@
-"""What README.md claims.
-
-Its functions, each for a section or a results row, run in check order.
-"""
+"""What README.md claims."""
 
 from __future__ import annotations
 
@@ -35,12 +32,14 @@ from ..run_ids import (
     ANSWERS_V1,
     JUDGED_V1,
     JUDGED_V2,
+    POOL_RUN,
     POWER_RUN,
     RETRIEVAL_RUN,
     SENSITIVITY_BASE_RUN,
     SENSITIVITY_RUN,
 )
 from ..sources import Sources
+from . import readme_scope, round3
 from .comparisons import (
     RERANKER,
     SPLIT,
@@ -63,17 +62,16 @@ TEST_WALL_TIME = (
     "the median wall time of `make test`, rounded up: three runs of 59.34 to 73.31 s, median "
     "65.69 s, on 2026-10-10; no saved run holds it"
 )
-# The wall time of `make check`: lint, every test with the slow one, and reproduce.
+# The wall time of `make check`: lint, every test with the slow one, and `reproduce`.
 CHECK_WALL_TIME_S = "270"
 CHECK_WALL_TIME = (
     "the wall time of `make check`, rounded up: one run of 261.77 s on 2026-10-10; "
     "no saved run holds it"
 )
-JUDGE_MODEL = "anthropic/claude-opus-5.5"
 # The count of values `make reproduce` compares across every checked document, table cells
 # included, which README.md states. No document's claims can recompute it, so `reproduce`
 # compares it with its own total once every document has been checked.
-CHECKED_NUMBERS = "2,582"
+CHECKED_NUMBERS = "3,128"
 CHECKED_NUMBERS_TEMPLATE = (
     "compares {} values of the checked documents with their sources, table cells included"
 )
@@ -81,7 +79,7 @@ CHECKED_NUMBERS_REASON = "the values `make reproduce` compares, checked against 
 
 
 class TestCounter(Protocol):
-    """Counts the tests pytest collects: those `make test` runs, or with `every` all of them."""
+    """Counts the tests `pytest` collects: those `make test` runs, or with `every` all of them."""
 
     def __call__(self, *, every: bool) -> int:
         """The count of the tests `make test` runs, or with `every` of all tests."""
@@ -92,8 +90,8 @@ def readme(doc: Doc, src: Sources, test_count: TestCounter) -> None:
     """States the claims of README.md, with `test_count` counting the tests it states.
 
     `test_count(every=False)` counts the tests `make test` runs, `every=True` all of them.
-    The count of values `make reproduce` compares is checked by `reproduce` itself, once
-    every document has been checked (`CHECKED_NUMBERS`).
+    `reproduce` itself checks the count of values `make reproduce` compares, once it has
+    checked every document (`CHECKED_NUMBERS`).
     """
     _pitch(doc, src)
     _gold_set(doc, src)
@@ -102,6 +100,8 @@ def readme(doc: Doc, src: Sources, test_count: TestCounter) -> None:
     _pooling_row(doc, src)
     _latency_row(doc, src)
     _round_two(doc, src)
+    round3.status_line(doc, src)
+    round3.results_line(doc, src)
     _deduplication_row(doc, src)
     _pancakeswap_row(doc, src)
     _answers_rows(doc, src)
@@ -109,9 +109,8 @@ def readme(doc: Doc, src: Sources, test_count: TestCounter) -> None:
     _tests(doc, src, test_count)
     _off_venue_row(doc, src)
     _references(doc, src)
-    _scope(doc, src)
-    _checked_numbers(doc)
-    _quick_start(doc, src)
+    readme_scope.scope(doc, src)
+    doc.given(CHECKED_NUMBERS_TEMPLATE, CHECKED_NUMBERS, reason=CHECKED_NUMBERS_REASON)
     _documentation(doc, src)
 
 
@@ -241,12 +240,12 @@ def _pooling_row(doc: Doc, src: Sources) -> None:
     doc.check(
         "| {} to {}: the change in every method's comparison recall@10 from `v0.2-gold` to "
         "`v0.2.1-gold`, where judging venue_split's and the oracle's unjudged top {} adds {} "
-        "gold chunks, {} from ranks {}--{}.",
+        "gold chunks, {} from ranks {}--{}",
         *[formatting.signed(v) for v in retrieval.recall_change_range(src)],
         depth,
         formatting.count(augmented.relevant),
         formatting.count(augmented.relevant_lower),
-        formatting.count(retrieval.first_rank_below_top_k(src)),
+        formatting.count(datasets.TOP_RANKS + 1),
         depth,
     )
 
@@ -350,9 +349,7 @@ def _answers_rows(doc: Doc, src: Sources) -> None:
         formatting.metric(mean_a),
         formatting.metric(mean_b),
         *signed_parts(answers.judged_interval(src, PROMPT_V1, pair, "coverage", "comparison")),
-        formatting.p_value(
-            answers.judged_p(src, PROMPT_V1, pair, "coverage", "comparison", "holm_p")
-        ),
+        formatting.p_value(answers.primary_holm(src, PROMPT_V1, pair, "coverage", "comparison")),
     )
     doc.claim(
         "_judged`: {} [{}, {}], p_Holm = {}, inconclusive at this size",
@@ -363,7 +360,7 @@ def _answers_rows(doc: Doc, src: Sources) -> None:
     )
     doc.ref("Under prompt v2 (exploratory), in `results/{}`:", JUDGED_V2)
     doc.check(
-        "| {} of the {} claims the human rejects are rejected by Opus as judge too, \u03ba {}, on "
+        "| Opus as judge also rejects {} of the {} claims the human rejects, \u03ba {}, on "
         "the {} claims of the calibration answers in",
         formatting.count(calibration.verdict_pairs(src, judge, "supported")[(False, False)]),
         formatting.count(calibration.human_negatives(src).unsupported),
@@ -377,6 +374,9 @@ def _answers_rows(doc: Doc, src: Sources) -> None:
 
 def _requirements(doc: Doc, src: Sources) -> None:
     doc.check("Python {} or later", repository.python_requirement(src))
+    doc.check(
+        "moved. The {} GitBook sources", formatting.count(corpus.sources_of_kind(src, "gitbook"))
+    )
 
 
 def _tests(doc: Doc, src: Sources, test_count: TestCounter) -> None:
@@ -416,49 +416,11 @@ def _off_venue_row(doc: Doc, src: Sources) -> None:
 def _references(doc: Doc, src: Sources) -> None:
     doc.ref("Retrieval: `results/{}` on", RETRIEVAL_RUN)
     doc.ref("answers: `results/{}`;", JUDGED_V1)
+    doc.ref("(`results/{}`). Recall@10 is measured", POOL_RUN)
     doc.claim(
         "answers: `results/",
         holds=registry.runs_on_current_index(src, (RETRIEVAL_RUN, JUDGED_V1)),
         what="both cited runs were made against the current index",
-    )
-
-
-def _scope(doc: Doc, src: Sources) -> None:
-    """The opening sentence, Status and Limitations."""
-    judge = src.judged_v1.config.generation.chosen_judge()
-    doc.check(
-        "API documentation of {} crypto trading venues (",
-        formatting.count(corpus.venue_count(src)),
-    )
-    doc.check("indexes, {} retrieval methods", formatting.count(retrieval.method_count(src)))
-    doc.check("judges the answers of {} generators", formatting.count(len(answers.generators(src))))
-    doc.check(
-        "The set holds {} questions, {} of them comparison questions",
-        question_count_text(src),
-        comparison_questions(src),
-    )
-    doc.claim(
-        "ratings on {} of {} dimensions on the point estimate and on the interval for coverage "
-        "only",
-        formatting.count(calibration.passes(src, judge)),
-        formatting.count(calibration.dimension_count(src)),
-        holds=calibration.passes_on_interval(src, judge) == ("coverage",),
-        what="coverage is the only dimension Opus passes on an informative interval",
-    )
-    doc.claim(
-        f"Opus (`{JUDGE_MODEL}` on OpenRouter)",
-        holds=answers.judge_is(src, "opus", JUDGE_MODEL),
-        what="the judged run's judge is Opus with this model id",
-    )
-
-
-def _checked_numbers(doc: Doc) -> None:
-    doc.given(CHECKED_NUMBERS_TEMPLATE, CHECKED_NUMBERS, reason=CHECKED_NUMBERS_REASON)
-
-
-def _quick_start(doc: Doc, src: Sources) -> None:
-    doc.check(
-        "moved. The {} GitBook sources", formatting.count(corpus.sources_of_kind(src, "gitbook"))
     )
 
 

@@ -82,7 +82,7 @@ def test_validation_catches_what_silently_corrupts_an_eval(cfg, tmp_path: Path):
     assert "duplicate id 'q1'" in joined
     assert "not in the corpus: kraken" in joined
     assert "gold_chunk_id not in the current corpus" in joined
-    # A stale *source* pointer is provenance drift, so it is a warning.
+    # A stale source pointer is provenance drift, so it is a warning.
     assert any("source_chunk_id" in w for w in report.warnings)
     assert report.stats.total == 5
 
@@ -90,7 +90,7 @@ def test_validation_catches_what_silently_corrupts_an_eval(cfg, tmp_path: Path):
 def test_notes_may_not_point_at_a_question_that_is_not_there(cfg, tmp_path: Path):
     """Annotators follow these pointers while judging. A dangling one points
     nowhere; a pointer kept through a renumbering silently describes a different
-    question. Both happened in v0.1-candidates and neither was caught."""
+    question."""
     _corpus(cfg, ["c1"])
     path = tmp_path / "v0.1-candidates.jsonl"
     save_records(
@@ -108,8 +108,7 @@ def test_notes_may_not_point_at_a_question_that_is_not_there(cfg, tmp_path: Path
                 question="How does Binance report the used request weight?",
                 notes="See cv-0004 for the inverse case.",
             ),
-            # The case that slipped through: the target exists, but the set was
-            # renumbered and the pointer then names a question of an unrelated venue.
+            # The target exists but is a question of an unrelated venue.
             record(
                 id="cv-0005",
                 question="What rounds Hyperliquid order prices, tick size or decimals?",
@@ -125,10 +124,7 @@ def test_notes_may_not_point_at_a_question_that_is_not_there(cfg, tmp_path: Path
     # A live pointer is fine; a self-reference is merely useless.
     assert not any("cv-0001" in e for e in report.errors)
     assert any("cv-0004: notes reference the question itself" in w for w in report.warnings)
-    assert any(
-        w.startswith("cv-0005") and "shares no venue with it; check that the pointer" in w
-        for w in report.warnings
-    )
+    assert any(w.startswith("cv-0005") and "shares no venue with it" in w for w in report.warnings)
 
 
 def test_validation_passes_a_clean_dataset(cfg, tmp_path: Path):
@@ -179,7 +175,7 @@ def test_validator_rejects_covered_without_a_gold_chunk_and_the_reverse():
     assert "says bybit is absent_in_docs, but a gold chunk is from bybit" in message
 
 
-def test_validator_skips_unlabelled_and_unanswerable_comparisons():
+def test_validator_skips_unjudged_and_unanswerable_comparisons():
     assert not errors(coverage_record(annotated_at=""))
     assert not errors(
         coverage_record(
@@ -319,8 +315,8 @@ def test_a_damaged_or_misshapen_journal_is_a_validation_error_not_a_crash(cfg, t
     for content, message in cases:
         journal.write_bytes(content)
         report = validate_dataset(path, cfg, check_near_duplicates=False)
-        if not any(message in e for e in report.errors):
-            pytest.fail(f"{content!r}: no error containing {message!r} in {report.errors}")
+        if not any(message in e and "(restore the journal from" in e for e in report.errors):
+            pytest.fail(f"{content!r}: no error with {message!r} and its hint in {report.errors}")
     journal.unlink()
     journal.mkdir()
     _meta(path, "v9-gold", journal_sha256="0" * 64)

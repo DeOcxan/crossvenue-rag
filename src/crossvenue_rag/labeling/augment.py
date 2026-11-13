@@ -1,4 +1,4 @@
-"""Augmenting round 1 with the unjudged chunks that `labeling.candidates` lists for a run.
+"""Augmenting round 1 with the chunks round 1 has not judged that `labeling.candidates` lists.
 
 A relevant chunk that only a method outside the labeling pool finds is unjudged and counts as
 a miss. That method's recall is biased downward (evals/methodology.md, pooling bias) until the
@@ -83,7 +83,7 @@ def _confirm_coverage_changes(
         )
         console.print(
             Text(
-                f"{venue} is recorded as {current}, and you marked a {venue} chunk{warning}.",
+                f"{venue} is recorded as {current}, and a {venue} chunk is marked{warning}.",
                 "yellow",
             )
         )
@@ -127,10 +127,14 @@ def augment_session(
     console: Console | None = None,
     prompt: Ask = Prompt.ask,
 ) -> int:
-    """Judges the unjudged chunks listed in `candidates_path`; returns questions recorded.
+    """Judges the listed chunks round 1 has not judged; returns questions recorded.
 
-    Each question is shown with its current gold chunks in full as context and
-    only the listed chunks round 1 has not judged.
+    Each question with a listed chunk round 1 has not judged is shown with its current gold
+    chunks in full as context and only those chunks.
+
+    Raises:
+        UserError: Nothing is at `candidates_path` or `target.questions_path`, or a directory
+            is.
     """
     console = console or Console()
     questions_path, index_version = target.questions_path, target.index_version
@@ -147,7 +151,7 @@ def augment_session(
             (formatting.plural(len(entries), "question"), "bold"),
             " to augment, annotator ",
             (annotator, "bold"),
-            ". Only chunks never judged are shown; current gold is context. "
+            ". Only chunks round 1 has not judged are shown; current gold is context. "
             "Enter skips (nothing recorded), n records that none of the shown chunks is "
             "relevant.\n",
         )
@@ -215,7 +219,11 @@ def _check_candidates(
         )
     unknown = [e.id for e in entries if e.id not in by_id or rounds.first(e.id) is None]
     if unknown:
-        raise UserError(f"no round-1 judgment for: {', '.join(unknown)}")
+        raise UserError(
+            f"no round-1 judgment for: {', '.join(unknown)}",
+            hint="label them first with `crossvenue label`, or rebuild the list with "
+            "`crossvenue augment-candidates` from a run on this question file",
+        )
 
 
 def _new_candidates(item: CandidateList, entry: Judgment, retriever: ChunkLookup) -> list[Result]:
@@ -249,7 +257,7 @@ def _choose(
     compact = True
 
     def show() -> None:
-        # Question, then the current gold as context, then only the unjudged chunks.
+        # Question, then the current gold as context, then only the chunks round 1 has not judged.
         view = ScreenView(compact=compact, between=gold_context, source_note=False)
         render(console, question, candidates, set(), view)
 
@@ -260,7 +268,7 @@ def _choose(
 
     show()
     while True:
-        picks = ask_picks(console, question, candidates, prompt, "relevant unjudged", toggle_view)
+        picks = ask_picks(console, question, candidates, prompt, toggle_view)
         if picks is None:
             return None
         if isinstance(picks, str):  # NONE_RELEVANT: the annotator entered `n`
@@ -273,12 +281,13 @@ def _choose(
 
 
 def record_augmentation(question: Question, entry: Judgment, augmentation: Augmentation) -> None:
-    """Extends round 1 with an augmentation; no existing label is removed or changed.
+    """Extends round 1 with an augmentation; no relevant chunk is removed.
 
     The augmentation is journaled under the entry's `augmentations` with every
     chunk shown, so the unmarked ones are judged-irrelevant rather than
     unjudged. Relevant chunks the entry does not hold are appended to its
-    `relevant` and to the question's gold.
+    `relevant` and to the question's gold. Coverage changes overwrite their venues
+    in the question's and the entry's `venue_coverage`.
     """
     entry.augmentations = [*(entry.augmentations or []), augmentation]
     added = [c for c in augmentation.relevant if c not in entry.relevant]

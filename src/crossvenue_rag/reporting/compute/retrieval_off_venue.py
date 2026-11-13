@@ -1,7 +1,7 @@
 """Off-venue retrieval (methodology section 9b), from the retrieval run's saved venues.
 
 The retrieval run's saved top k per question and method, re-scored for
-off_venue@k and via_ccxt@k (`scored_runs`; no retrieval), and the paired
+`off_venue@k` and `via_ccxt@k` (`scored_runs`; no retrieval), and the paired
 comparisons of hybrid_rerank with each first-stage method on those metrics
 (`off_venue_paired_rows`).
 """
@@ -44,7 +44,7 @@ TOP_ONE_VIA_CCXT = f"via_ccxt@{TOP_ONE_K}"
 def scored_runs(src: Sources) -> list[QueryRun]:
     """The retrieval run's saved top k per question and method, scored again.
 
-    For off_venue@k and via_ccxt@k (methodology section 9b); no retrieval.
+    For `off_venue@k` and `via_ccxt@k` (methodology section 9b); no retrieval.
     """
     k_values = src.retrieval.config.eval.k_values
     venue_of = chunk_venues(src)
@@ -138,16 +138,14 @@ def first_rank_spread(
     return min(counts), max(counts)
 
 
-def first_rank_at_most(
-    src: Sources, metric: str, category: str, methods: Sequence[str], most: int
-) -> bool:
-    """Whether every one of `methods` has a `first_rank_count` of at most `most`.
+def first_rank_at_most(src: Sources, metric: str, category: str, methods: Sequence[str]) -> bool:
+    """Whether every one of `methods` has a `first_rank_count` of at most one.
 
     Raises:
         ValueError: `methods` is empty, `metric` is no off-venue metric, or a method of `methods`
             has no row on `category`.
     """
-    return first_rank_spread(src, metric, category, methods)[1] <= most
+    return first_rank_spread(src, metric, category, methods)[1] <= 1
 
 
 def first_rank_adjacent(src: Sources, metric: str, category: str, methods: Sequence[str]) -> bool:
@@ -162,7 +160,7 @@ def first_rank_adjacent(src: Sources, metric: str, category: str, methods: Seque
 
 
 def top_k_shares(src: Sources, category: str, methods: Sequence[str]) -> list[float]:
-    """Per method in turn, via_ccxt@k then off_venue@k on `category`, flattened.
+    """Per method in turn, `via_ccxt@k` then `off_venue@k` on `category`, flattened.
 
     Raises:
         ValueError: a method of `methods` has no row on a question of `category`.
@@ -222,13 +220,13 @@ def off_venue_holm_p(src: Sources, b: str, metric: str, scope: str) -> float:
 
 
 def off_venue_share_below_bound(src: Sources, b: str, scope: str) -> bool:
-    """Whether hybrid_rerank - `b` on off_venue@k has p_Holm below `formatting.SMALLEST_SHOWN_P`.
+    """Whether hybrid_rerank - `b` on `off_venue@k` has p_Holm below `formatting.SMALLEST_SHOWN_P`.
 
     Its questions must be those of the top-1 comparison.
 
     Raises:
-        ValueError: there is no off_venue@k or top-1 comparison of `b` over `scope`, or the
-            off_venue@k comparison is descriptive.
+        ValueError: there is no `off_venue@k` or top-1 comparison of `b` over `scope`, or the
+            `off_venue@k` comparison is descriptive.
     """
     share = at_top_k(src, "off_venue")
     return off_venue_holm_p(src, b, share, scope) < SMALLEST_SHOWN_P and off_venue_questions(

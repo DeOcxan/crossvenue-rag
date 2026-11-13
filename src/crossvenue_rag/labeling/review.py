@@ -36,14 +36,15 @@ def review_session(
     console: Console | None = None,
     prompt: Ask = Prompt.ask,
 ) -> int:
-    """Re-opens labeled questions and records corrections to round 1.
+    """Re-opens judged questions and records corrections to round 1.
 
-    Each question is shown on the pool round 1 recorded, with the current marks.
+    Each question is shown on what round 1 judged (`pool.review_pool`), with the current marks.
     Returns how many questions changed. Unchanged questions write nothing.
 
     Raises:
         ValueError: `target` carries no `index_version`.
-        UserError: An id is not in the question file, or round 1 never judged it.
+        UserError: An id is not in the question file, or round 1 never judged it. Nothing is
+            at `target.questions_path`, or a directory is.
     """
     console = console or Console()
     questions_path, index_version = target.questions_path, target.index_version
@@ -117,11 +118,11 @@ def _check_reviewable(
     """Refuses ids the question file lacks or round 1 never judged."""
     unknown = [i for i in ids if i not in by_id]
     if unknown:
-        raise UserError(f"not in {path}: {', '.join(unknown)}")
-    unlabelled = [i for i in ids if rounds.first(i) is None]
-    if unlabelled:
+        raise UserError(f"not in {path}: {', '.join(unknown)}", hint=f"pass ids that {path} holds")
+    unjudged = [i for i in ids if rounds.first(i) is None]
+    if unjudged:
         raise UserError(
-            f"no round-1 judgment to review for: {', '.join(unlabelled)}",
+            f"no round-1 judgment to review for: {', '.join(unjudged)}",
             hint="label them first with `crossvenue label`",
         )
 
@@ -133,7 +134,10 @@ def record_correction(
     annotator: str,
     index_version: str,
 ) -> bool:
-    """Applies a review verdict to round 1, keeping the previous one; False if unchanged."""
+    """Applies a review verdict to round 1, keeping the previous one; False if unchanged.
+
+    The verdict also applies to the question's gold and `venue_coverage`.
+    """
     previous_relevant = list(entry.relevant)
     previous_coverage = dict(
         entry.venue_coverage if entry.venue_coverage is not None else question.venue_coverage

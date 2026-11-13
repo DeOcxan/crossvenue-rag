@@ -19,8 +19,8 @@ HIGHER_IS_BETTER: dict[str, bool] = {
     "off_venue": False,
     "via_ccxt": False,
     # Answer metrics. faithfulness is the share of claims supported;
-    # wrong_refusal is the prompt comparison's refused-when-an-answer-was-expected
-    # indicator.
+    # wrong_refusal is the prompt comparison's indicator of a refusal on a question that
+    # expects no refusal.
     "faithfulness": True,
     "venue_attribution_error": False,
     "coverage": True,

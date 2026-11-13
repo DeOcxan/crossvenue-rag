@@ -59,9 +59,9 @@ QUOTES = (
     "V2 base fee 0.30% vs 0.25%",
     "PancakeSwap on Solana has 18 tiers",
     "set slippage \u226512% for tax tokens and hold 30% more tokens",
-    '"recvWindow \u2026 request validity window \u2026 default 5000"',
-    'Binance: max 60000. Bybit FIX: default 5000, max 60000. BingX: "Default is 5000; '
-    'maximum is 5000"',
+    "a request validity window with a default of 5000 ms",
+    'Binance: max 60000. Bybit FIX: default 5000, max 60000. BingX: "Default is `5000`; '
+    'maximum is `5000`"',
     "Binance: 429, then 418 auto-ban scaling from 2 minutes to 3 days, per-IP",
     'Bybit: 403 "access too frequent", a wait of at least 10 minutes, 600 req / 5 s per IP '
     "plus 10 rps "
@@ -74,7 +74,7 @@ QUOTES = (
     "Hyperliquid: server closes if it hasn't sent anything in 60 s",
     "dYdX: protocol-level control frames every 30 s, pong within 10 s",
     "Binance klines: default 500, max 1000",
-    "limit [1,1000]",
+    "`limit` [1,1000]",
     "hard 20 levels per side",
     '"8 hour funding rate"',
     'Funding interval "8 hours"',
@@ -101,10 +101,10 @@ LISTS = (
 )
 # Theme and trap numbers the text refers to.
 THEME_NUMBERS = (
-    "Same reason as 17",
-    "themes 1\u201316 and none of 17\u201318",
-    "fact: themes 1, 2, 3, 5, 8, 9, 10, 14, 15, 16,",
-    "(themes 7 and 14 on Binance",
+    "name themes 1, 2, 5, 10, 14 and 18, and none names theme 17.",
+    "fact: themes 1, 5 and 14 and trap T11,",
+    "T10\u2013T13 and themes 2 and 10.",
+    "multihop: theme 18,",
 )
 
 

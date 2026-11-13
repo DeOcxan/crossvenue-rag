@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from crossvenue_rag.errors import UserError
+from crossvenue_rag.errors import INSTALL_HINT, UserError, install_hint_or
 
 
 def test_a_user_error_carries_its_message_and_hint():
@@ -61,3 +61,8 @@ def test_a_value_with_text_is_returned_as_given():
 
     assert not is_blank(" a ")
     assert not_blank("the query", " a ") == " a "
+
+
+def test_a_failed_import_hints_the_install_and_any_other_load_error_the_given_hint():
+    assert install_hint_or(ImportError("no transformers"), "other") == INSTALL_HINT
+    assert install_hint_or(OSError("not in the cache"), "other") == "other"

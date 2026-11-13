@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from collections.abc import Sequence
+from pathlib import Path
 
 from pydantic import JsonValue, TypeAdapter
 
@@ -30,28 +31,33 @@ def report(
 ) -> str:
     """report.md of an answer run: header, metrics, cost and latency, parameters, pairs.
 
+    The question file it names is `eval.questions` of `cfg`, the config the run writes as
+    config.yaml.
+
     Raises:
         UserError: The records carry more than one judge, so no one calibration decides which
-            metrics the report marks uncalibrated.
+            metrics the report marks uncalibrated, or `generation.calibration_run` is set and
+            holds no calibration.json.
     """
     gen = cfg.generation
     judges = named_judges(records)
     if len(judges) > 1:
         raise UserError(
-            f"the answers were judged by more than one judge: {', '.join(judges)}",
+            f"more than one judge judged the answers: {', '.join(judges)}",
             hint="judge the run again with one judge (`crossvenue judge-run --judge NAME`)",
         )
     uncalibrated = uncalibrated_metrics(gen, judges[0] if judges else None)
+    questions = cfg.eval.questions
     lines = [
-        *_report_header(gen, records, judges, note, index_version),
+        *_report_header(gen, records, judges, note, index_version, questions),
         *(_uncalibrated_note(uncalibrated) if uncalibrated and judges else []),
-        *_metrics_table(summary, uncalibrated),
-        *_cost_table(summary),
+        *_metrics_table(summary, uncalibrated, questions),
+        *_cost_table(summary, questions),
         "",
         "## Parameters sent",
         "",
         *(f"- {row.config}: {_params_text(row.params)}" for row in summary),
-        *_pairs_table(pairs),
+        *_pairs_table(pairs, questions),
     ]
     return "\n".join(lines) + "\n"
 
@@ -94,6 +100,7 @@ def _report_header(
     judges: Sequence[str],
     note: str,
     index_version: str,
+    question_file: Path,
 ) -> list[str]:
     questions = {r.question_id for r in records}
     # A judge the config does not list is named with the model its records requested.
@@ -110,6 +117,7 @@ def _report_header(
         "# Answer evaluation",
         "",
         f"- `index_version`: `{index_version}`",
+        f"- `eval.questions`: `{question_file}`",
         "",
         *([note, ""] if note else []),
         f"{formatting.plural(len(questions), 'question')} \u00d7 "
@@ -121,15 +129,16 @@ def _report_header(
 def _uncalibrated_note(uncalibrated: Sequence[str]) -> list[str]:
     return [
         "",
-        "Uncalibrated: " + ", ".join(f"`{m}`" for m in uncalibrated) + ". The judge's "
-        "dimension behind "
-        "each failed its pre-registered agreement threshold with the human ratings "
+        "Uncalibrated: " + ", ".join(f"`{m}`" for m in uncalibrated) + ". No calibration "
+        "passed the judge's dimension behind each "
         "(methodology section 9); these numbers are the judge's grades only and "
         "support no conclusion.",
     ]
 
 
-def _metrics_table(summary: Sequence[AnswerSummaryRow], uncalibrated: Sequence[str]) -> list[str]:
+def _metrics_table(
+    summary: Sequence[AnswerSummaryRow], uncalibrated: Sequence[str], questions: Path
+) -> list[str]:
     def head(metric: str, label: str) -> str:
         return f"{label} (uncalibrated)" if metric in uncalibrated else label
 
@@ -166,6 +175,8 @@ def _metrics_table(summary: Sequence[AnswerSummaryRow], uncalibrated: Sequence[s
         "",
         "## Metrics per configuration",
         "",
+        f"Each configuration's answers to the questions of `{questions}`.",
+        "",
         markdown_table(header, rows, right=range(1, len(header))),
     ]
 
@@ -175,7 +186,7 @@ def latency_seconds(latency_ms: float) -> str:
     return formatting.call_seconds(latency_ms / MS_PER_SECOND)
 
 
-def _cost_table(summary: Sequence[AnswerSummaryRow]) -> list[str]:
+def _cost_table(summary: Sequence[AnswerSummaryRow], questions: Path) -> list[str]:
     header = [
         "config",
         "tokens in",
@@ -207,7 +218,8 @@ def _cost_table(summary: Sequence[AnswerSummaryRow]) -> list[str]:
         "",
         "## Cost and call duration per configuration",
         "",
-        "Generator tokens: input, reasoning and answer counted separately. USD is the cost "
+        f"Generator tokens of the answers to `{questions}`: input, reasoning and answer counted "
+        "separately. USD is the cost "
         "OpenRouter reported for each answer; a cached answer carries the cost paid when "
         "it was made. p50 and p95 are the duration of the generator's calls, in seconds.",
         "",
@@ -215,7 +227,7 @@ def _cost_table(summary: Sequence[AnswerSummaryRow]) -> list[str]:
     ]
 
 
-def _pairs_table(pairs: Sequence[ConfigComparison]) -> list[str]:
+def _pairs_table(pairs: Sequence[ConfigComparison], questions: Path) -> list[str]:
     header = [
         "a vs b",
         "metric",
@@ -245,10 +257,11 @@ def _pairs_table(pairs: Sequence[ConfigComparison]) -> list[str]:
         "",
         "## Paired comparisons",
         "",
-        "a \u2212 b over questions both answered and judged; "
+        f"a \u2212 b over the questions of `{questions}` in the scope where both answers have "
+        "a value; "
         f"{formatting.count(INTERVAL_LEVEL_PERCENT)}% paired bootstrap interval, "
         "two-sided randomization test, Holm within the pre-registered comparison and within "
         "each other metric and scope.",
         "",
-        markdown_table(header, rows, right=(3, 4, 6, 8)),
+        markdown_table(header, rows, right=(3, 4, 5, 6, 8)),
     ]

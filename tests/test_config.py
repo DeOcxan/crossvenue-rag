@@ -15,34 +15,21 @@ from crossvenue_rag.errors import UserError
 DEFAULT = Path("configs/default.yaml")
 
 
-def test_default_config_loads_and_round_trips_through_yaml():
-    """Every results directory stores this; it has to reload into the same config."""
+def test_default_config_loads_and_round_trips_through_yaml(monkeypatch):
+    """Every run that saves its config stores this; it has to reload into the same config."""
+    monkeypatch.delenv("CROSSVENUE_PG_DSN", raising=False)
     cfg = load_config(DEFAULT)
     assert cfg.embedding.model_name == "BAAI/bge-base-en-v1.5"
     assert cfg.retrieval.rrf_k == 60
 
     reloaded = yaml.safe_load(cfg.to_yaml())
-    assert reloaded["chunking"]["max_tokens"] == cfg.chunking.max_tokens
-    assert reloaded["eval"]["methods"] == list(cfg.eval.methods)
+    assert Config.model_validate(reloaded) == cfg
 
 
 def test_rerank_depth_must_cover_k():
-    """top_n < k would silently return fewer results than the caller asked for."""
-    with pytest.raises(UserError, match="top_n"):
-        load_config(DEFAULT, ["reranker.top_n=3", "retrieval.k=10"])
-
-
-def test_rerank_depth_must_cover_the_deepest_evaluated_k():
-    """`eval` retrieves at max(k_values); retrieval.k is the depth of a call that names none."""
-    overrides = [
-        "reranker.top_n=50",
-        "eval.k_values=[1, 5, 60]",
-        "eval.pool_depth_per_method=80",
-        "eval.pool_display=80",
-        "eval.primary_comparison=[]",
-    ]
-    with pytest.raises(UserError, match=r"deepest list asked for \(80"):
-        load_config(DEFAULT, overrides)
+    """`top_n < k` would silently return fewer results than the caller asked for."""
+    with pytest.raises(UserError, match=r"top_n \(25\) is below the deepest list asked for \(30"):
+        load_config(DEFAULT, ["reranker.top_n=25", "retrieval.k=30"])
 
 
 def test_reranking_covers_the_pool_and_the_generators_chunks():

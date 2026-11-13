@@ -13,7 +13,7 @@ from dataclasses import dataclass
 import numpy as np
 
 from ..config_generation import CalibrationDimension
-from ..stats import Interval, cohens_kappa_or_none, mean
+from ..stats import Interval, cohens_kappa_or_none, observed_agreement
 from .metrics import answer_metrics
 from .schemas import Judgement
 
@@ -73,7 +73,7 @@ def binary_agreement(dimension: str, a: Sequence[bool], b: Sequence[bool]) -> Di
     """
     if not a:
         return DimensionAgreement(dimension, 0, None, None, None, None)
-    agreed = mean([x == y for x, y in zip(a, b, strict=True)])
+    agreed = observed_agreement(sum(x == y for x, y in zip(a, b, strict=True)), len(a))
     # Undefined, rather than 1.0, when both graders use one category throughout.
     kappa = cohens_kappa_or_none(list(zip(a, b, strict=True)))
     return DimensionAgreement(dimension, len(a), agreed, kappa, None, None)

@@ -1,7 +1,4 @@
-"""What evals/agreement.md claims.
-
-One function per section, in document order.
-"""
+"""What evals/agreement.md claims."""
 
 from __future__ import annotations
 
@@ -13,6 +10,7 @@ from ..compute import agreement, sensitivity
 from ..outcomes import Param
 from ..run_ids import SENSITIVITY_BASE_RUN, SENSITIVITY_RUN
 from ..sources import Sources
+from . import round3
 from .comparisons import kappa_bounds, kappa_cell, level, sensitivity_sizes
 from .reasons import INTERVAL_LEVEL, REGISTERED
 
@@ -25,9 +23,7 @@ READINGS = {
 }
 
 
-def _undefined(interval: Interval | None) -> str:
-    if interval is None:
-        return formatting.MISSING
+def _undefined(interval: Interval) -> str:
     return f"{formatting.count(interval.undefined)} of {formatting.count(interval.resamples)}"
 
 
@@ -40,6 +36,7 @@ def agreement_doc(doc: Doc, src: Sources) -> None:
     _direction(doc, src)
     _sources(doc, src)
     _gap(doc, src)
+    round3.rounds_section(doc, src)
 
 
 def _header(doc: Doc, src: Sources) -> None:
@@ -64,7 +61,7 @@ def _header(doc: Doc, src: Sources) -> None:
         Param(level(), INTERVAL_LEVEL),
         Param(formatting.count(boot.resamples), REGISTERED),
     )
-    doc.check("draws {} questions with replacement", questions)
+    doc.check("draws as many questions as the reading compares, with replacement")
 
 
 def _registered(doc: Doc, src: Sources) -> None:
@@ -110,9 +107,7 @@ def _registered(doc: Doc, src: Sources) -> None:
         "registered there is \u03ba >= {}",
         kappa,
         target,
-        holds=v.interval is not None
-        and v.interval.high is not None
-        and v.interval.high >= KAPPA_TARGET > r.kappa,
+        holds=v.interval.high is not None and v.interval.high >= KAPPA_TARGET > r.kappa,
         what="the kappa is below the target and its interval includes the target",
     )
     doc.check("by their own annotator at \u03ba {} [{}, {}].", kappa, low, high)
@@ -182,11 +177,7 @@ def _readings(doc: Doc, src: Sources) -> None:
 
 def _category_kappa(table: VerdictTable, kappa: float) -> str:
     """The category's kappa, or `formatting.MISSING` when no pair is relevant in either round."""
-    return (
-        formatting.MISSING
-        if table.both_relevant + table.disagreements == 0
-        else formatting.metric(kappa)
-    )
+    return formatting.MISSING if table.none_relevant else formatting.metric(kappa)
 
 
 def _by_category(doc: Doc, src: Sources) -> None:
@@ -226,7 +217,7 @@ def _by_category(doc: Doc, src: Sources) -> None:
         "undefined there (`crossvenue kappa` prints {} for this case).",
         formatting.count(by["unanswerable"].pairs),
         formatting.metric(by["unanswerable"].kappa),
-        holds=none.both_relevant + none.disagreements == 0,
+        holds=none.none_relevant,
         what="no unanswerable pair is relevant in either round",
     )
 
@@ -236,11 +227,11 @@ def _direction(doc: Doc, src: Sources) -> None:
     d = study.direction
     first, second = agreement.relevant_counts(src)
     doc.claim(
-        "## Round 2 marks more pairs relevant: {} of the {} disagreements",
+        "## Round 2 marked more pairs relevant: {} of the {} disagreements",
         formatting.count(d.second_only),
         formatting.count(d.disagreements),
         holds=second > first,
-        what="round 2 marks more pairs relevant than round 1",
+        what="round 2 marked more pairs relevant than round 1",
     )
     doc.check(
         "Round 1 marked {} of the {} pairs relevant and round 2 marked {}.",
@@ -273,7 +264,7 @@ def _direction(doc: Doc, src: Sources) -> None:
 def _sources(doc: Doc, src: Sources) -> None:
     study = agreement.study(src)
     s = study.sources.verdicts
-    judged = s.both_relevant + s.disagreements + s.both_irrelevant
+    judged = s.pairs
     doc.check(
         "## Source chunks, marked only on round 1's screen, are {} of the {} round-1-only pairs",
         formatting.count(s.first_only),
@@ -301,8 +292,8 @@ def _sources(doc: Doc, src: Sources) -> None:
     doc.claim(
         "Round 1 marked all {} source chunks relevant and round 2 marked {} of them.",
         formatting.count(judged),
-        formatting.count(s.both_relevant + s.second_only),
-        holds=s.both_relevant + s.first_only == judged,
+        formatting.count(s.second_relevant),
+        holds=s.first_relevant == judged,
         what="round 1 marked every judged source chunk relevant",
     )
     doc.check(

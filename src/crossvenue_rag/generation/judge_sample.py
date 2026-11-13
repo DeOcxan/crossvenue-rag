@@ -44,7 +44,7 @@ def judge_answers(
     number enters the cache key, so a repeat is a fresh call. A judgment that
     stays invalid after the retries, or whose call fails after its retries, is
     recorded as `{"answer_id", "error"}` and the run goes on, so one unparseable
-    answer leaves the others graded; the same failures `judge_records` records.
+    answer leaves the others graded. `judge_records` records the same failures.
     Exceeding the budget stops the run; the answers graded before the stop are
     returned with the stop's message. Each claim cites numbers of its record's
     `chunk_ids`, as `read_answers` ensures.
@@ -99,6 +99,9 @@ def load_judgements(path: Path) -> dict[str, Judgement]:
     """Judgments by answer id, from a judgments file (`judgements_path`).
 
     Rows whose judgment failed are left out; a missing file gives an empty dict.
+
+    Raises:
+        UserError: A directory is at `path`.
     """
     if not path.exists():
         return {}
@@ -106,7 +109,11 @@ def load_judgements(path: Path) -> dict[str, Judgement]:
 
 
 def human_ratings(path: str | Path = RATINGS_PATH) -> dict[str, Judgement]:
-    """The last human rating in the file per answer id, in the judge's schema."""
+    """The last human rating in the file per answer id, in the judge's schema.
+
+    Raises:
+        UserError: A directory is at `path`.
+    """
     return {row.answer_id: row.rating for row in read_ratings(path)}
 
 
@@ -125,7 +132,7 @@ def judge_agreements(cfg: Config, run: Path, judge: str) -> JudgeAgreements:
     """How `judge`'s judgments of the sample in `run` agree with the humans and with its repeat.
 
     Against the humans, the answers `generation.calibration_exclude_behaviour` names are left
-    out of behaviour_correct, as select-judge and calibration.json count it.
+    out of `behaviour_correct`, as `select-judge` and calibration.json count it.
 
     Raises:
         UserError: `run` is not an answer or judged run, holds no judgment by `judge`, or

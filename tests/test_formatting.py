@@ -51,10 +51,27 @@ def test_latency_is_an_integer_from_ten_ms(value, text):
 
 
 @pytest.mark.parametrize(
-    ("value", "text"), [(83.4, "+83"), (-25.3, "\u221225"), (-2.54, "\u22122.5"), (-0.04, "+0.0")]
+    ("value", "text"),
+    [
+        (83.4, "+83"),
+        (-25.3, "\u221225"),
+        (-2.54, "\u22122.5"),
+        (-0.04, "+0.0"),
+        (2531.3, "+2,531"),
+        (-1250.0, "\u22121,250"),
+    ],
 )
-def test_a_latency_difference_is_signed_at_the_precision_of_a_latency(value, text):
+def test_a_latency_difference_is_signed_at_the_precision_and_separator_of_a_latency(value, text):
     assert fmt.signed_ms(value) == text
+
+
+def test_a_latency_that_rounds_to_ten_ms_is_written_as_an_integer():
+    assert fmt.ms(9.96) == "10"
+    assert fmt.ms(-9.96) == "\u221210"
+    assert fmt.signed_ms(9.96) == "+10"
+    assert fmt.signed_ms(-9.96) == "\u221210"
+    assert fmt.ms(9.94) == "9.9"
+    assert fmt.signed_ms(9.94) == "+9.9"
 
 
 def test_a_seed_a_config_value_or_an_identifier_keeps_its_own_form():
@@ -135,16 +152,16 @@ def test_design_values_have_two_decimals_and_the_minus_sign():
 @pytest.mark.parametrize(
     ("seconds", "text"),
     [
-        (45, "45s"),
-        (89.4, "89s"),
-        (89.6, "1m"),
-        (720, "12m"),
-        (5399, "1h30m"),
-        (7182, "2h00m"),
-        (7500, "2h05m"),
+        (45, "45 s"),
+        (89.4, "89 s"),
+        (89.6, "1 min"),
+        (720, "12 min"),
+        (5399, "1 h 30 min"),
+        (7182, "2 h 00 min"),
+        (7500, "2 h 05 min"),
     ],
 )
-def test_durations_switch_unit_at_ninety(seconds, text):
+def test_durations_switch_unit_at_ninety_and_put_a_space_before_each_unit(seconds, text):
     assert fmt.duration(seconds) == text
 
 
@@ -182,6 +199,10 @@ def test_a_value_that_rounds_to_zero_carries_no_minus_sign_in_any_formatter():
     assert fmt.metric(-0.25) == "\u22120.250"
 
 
+def test_a_negative_infinity_keeps_its_minus_sign():
+    assert fmt.cost(float("-inf")) == "$\u2212inf"
+
+
 def test_a_ratio_or_mean_of_counts_takes_the_decimals_of_its_kind():
     assert fmt.ratio(2.4712, fmt.TOKENS_PER_WORD_DECIMALS) == "2.47"
     assert fmt.ratio(137.6, fmt.COST_RATIO_DECIMALS) == "138"
@@ -199,3 +220,8 @@ def test_a_shortened_hash_is_eight_hex_digits_and_an_ellipsis():
 def test_a_model_revision_is_named_after_the_model_or_left_out():
     assert fmt.revision_text("abc123") == " at revision abc123"
     assert fmt.revision_text(None) == ""
+
+
+def test_preview_collapses_whitespace_and_marks_only_a_longer_text_as_cut():
+    assert fmt.preview("ab\n  cd", 5) == "ab cd"
+    assert fmt.preview("ab cde", 5) == "ab cd ..."

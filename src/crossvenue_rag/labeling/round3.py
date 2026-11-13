@@ -1,9 +1,8 @@
 """`crossvenue label --round 3`: every question judged again, blind, under the amended criterion.
 
-Methodology section 5b registers the round. Each question shows the chunks round 1 judged plus
-the chunks a file adds, shuffled with a recorded seed, on the round-2 screen with the criterion
-above the table. The verdict goes to the journal under round 3; the question file and every
-earlier entry stay as they are. A run resumes at the first question with no round-3 entry.
+Each question shows the chunks round 1 judged plus the chunks a file adds, shuffled with a
+recorded seed. The verdict goes to the journal under round 3; the question file and every
+earlier entry stay as they are.
 """
 
 from __future__ import annotations
@@ -22,6 +21,7 @@ from ..dataset.journal import (
     FULL_RELABEL_ROUND,
     Journal,
     Judgment,
+    candidate_ids,
     load_rounds,
     rounds_path,
     save_rounds,
@@ -30,7 +30,7 @@ from ..errors import UserError
 from ..models import Chunk, Question, Result
 from .adjudicate import CRITERION_DATE, CRITERION_SUMMARY
 from .judge import RelevanceJudgement, judge
-from .pool import ROUND3_SHUFFLE_SEED, candidate_ids, retest_candidates
+from .pool import ROUND3_SHUFFLE_SEED, retest_candidates
 from .screen import Ask, ScreenView, Show
 from .session import progress_table
 
@@ -56,7 +56,7 @@ class _Keys:
         self.flagged = False
 
     def __call__(self, message: object, **options: object) -> str:
-        """An answer for the label prompt; `u` raises `ReopenPrevious`, `x` answers `n`.
+        """An answer for the label prompt; `u` raises `ReopenPrevious`.
 
         Raises:
             ReopenPrevious: The annotator pressed `u` where a previous question can be re-opened.
@@ -114,7 +114,9 @@ def round3_candidates(target: Round3Target, rounds: Journal) -> dict[str, list[R
     if missing:
         raise UserError(
             f"no round-1 judgment to start from: {' '.join(missing)}",
-            hint=f"the journal is {rounds_path(target.questions_path)}",
+            hint=(
+                f"label them in round 1 first; the journal is {rounds_path(target.questions_path)}"
+            ),
         )
     return {
         q.id: retest_candidates(
@@ -171,7 +173,7 @@ def _notes(console: Console, question: Question) -> Callable[[], None]:
 
 
 def _recorded(target: Round3Target, rounds: Journal) -> int:
-    return sum(1 for q in target.questions if rounds.get(q.id).judgment(FULL_RELABEL_ROUND))
+    return rounds.judged_in(FULL_RELABEL_ROUND, (q.id for q in target.questions))
 
 
 def round3_session(
@@ -205,19 +207,21 @@ def round3_session(
     started = time.monotonic()
     recorded: set[str] = set()
     position = 0
+    moved_past = 0
     reopened = False
     try:
         while position < len(queue):
             question = queue[position]
+            moved_past = max(moved_past, position)
             console.rule(Text(f"{formatting.count(position + 1)}/{formatting.count(len(queue))}"))
             show(
                 progress_table(
                     target.questions,
                     queue,
-                    position,
+                    moved_past,
                     len(recorded),
                     time.monotonic() - started,
-                    labelled=_recorded(target, rounds),
+                    judged_overall=_recorded(target, rounds),
                 )
             )
             keys = _Keys(prompt, console, question, can_reopen=position > 0 and not reopened)

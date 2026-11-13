@@ -7,6 +7,8 @@ from __future__ import annotations
 
 from ... import formatting
 from ...dataset.agreement import MIN_RETEST_DAYS
+from ...dataset.journal import FIRST_ROUND, FULL_RELABEL_ROUND, RETEST_ROUND
+from ...dataset.questions import MIN_QUESTIONS_PER_CATEGORY
 from ...dataset.selection import TARGETS
 from ...dataset.validate import LEAKAGE_NGRAM
 from ...evaluation import machine
@@ -83,17 +85,20 @@ def _question_set(doc: Doc, src: Sources) -> None:
     )
     doc.check("-round` | int | {} |", _default(src, "label", "--round"))
     doc.definition(
-        "1 writes gold labels, 2 re-annotates a subsample, 3 relabels the whole set, blind; 2 "
+        "1 writes gold labels, 2 re-annotates judged questions, 3 relabels the whole set, "
+        "blind; 2 "
         "and 3 leave round 1 untouched",
         reason="the round numbers `label` reads",
     )
     doc.check(
         "shuffled per question with seed {}, recorded as `shuffle_seed`",
-        formatting.own_form(datasets_rounds.round3_shuffle_seed(src)),
+        formatting.own_form(datasets_rounds.shuffle_seed(src, FULL_RELABEL_ROUND)),
     )
+    doc.check("-limit` | int >= {} |", _least(src, "label", "--limit"))
+    doc.check("-sample` | int >= {}, in round 2", _least(src, "label", "--sample"))
     doc.check("-seed` | int | {} | Seed for", _default(src, "label", "--seed"))
     doc.definition("Two checks run before", reason="the two checks the paragraph describes")
-    doc.check("-n` | int | {} |", _default(src, "round-sample", "--n"))
+    doc.check("number of judged questions | {} |", _default(src, "round-sample", "--n"))
     doc.check("-seed` | int | {} | Sampling seed", _default(src, "round-sample", "--seed"))
     doc.definitions(
         (
@@ -107,9 +112,13 @@ def _question_set(doc: Doc, src: Sources) -> None:
     days = formatting.count(MIN_RETEST_DAYS)
     doc.check("A gap under {} days (methodology \u00a75)", days)
     doc.check("re-judged within {} days of round 1", days)
-    doc.check("-first` | int | {} |", _default(src, "kappa", "--first"))
-    doc.check("-second` | int | {} |", _default(src, "kappa", "--second"))
+    rounds = (formatting.own_form(FIRST_ROUND), formatting.own_form(RETEST_ROUND))
+    for option in ("--first", "--second"):
+        doc.check(f"{option[1:]}` | {{}} or {{}} | {{}} |", *rounds, _default(src, "kappa", option))
     doc.check("sharing {} or more consecutive words", formatting.count(LEAKAGE_NGRAM))
+    doc.check(
+        "a category with fewer than {} questions", formatting.count(MIN_QUESTIONS_PER_CATEGORY)
+    )
 
 
 def _generation(doc: Doc, src: Sources) -> None:

@@ -1,7 +1,4 @@
-"""What evals/datasheet.md claims.
-
-One function per section, in document order.
-"""
+"""What evals/datasheet.md claims."""
 
 from __future__ import annotations
 
@@ -10,6 +7,7 @@ from typing import get_args
 from ... import formatting
 from ...config import SCHEMA_DEFAULTS
 from ...dataset.agreement import KAPPA_TARGET
+from ...dataset.journal import FIRST_ROUND
 from ...dataset.validate import LEAKAGE_NGRAM
 from ...evaluation.paired import MIN_TESTED_QUESTIONS
 from ...evaluation.power import TARGET_POWER_PERCENT
@@ -23,12 +21,14 @@ from ..compute import (
     datasets_rounds,
     gold_sheet,
     repository,
-    retrieval,
+    round3,
 )
+from ..compute.estimates import DELTA
 from ..outcomes import Param
-from ..run_ids import GOLD, POOL_RUN, RETRIEVAL_RUN
+from ..run_ids import CANDIDATES_FINAL, CANDIDATES_FIRST, GOLD, POOL_RUN, RETRIEVAL_RUN
 from ..sources import Sources
 from . import datasheet_limits, datasheet_versions
+from . import round3 as round3_claims
 from .comparisons import (
     comparison_questions,
     file_short_hash,
@@ -41,7 +41,6 @@ from .comparisons import (
     top_k_text,
 )
 from .methodology import protocol
-from .methodology.significance import DELTA
 from .methodology.texts import SAMPLED, SINGLE_SAMPLED
 from .reasons import CITED, INTERVAL_LEVEL, POWER_MODEL
 
@@ -64,6 +63,7 @@ def datasheet(doc: Doc, src: Sources) -> None:
     _collection(doc, src)
     _labeling(doc, src)
     datasheet_versions.adjudicated_version(doc, src)
+    round3_claims.version_section(doc, src)
     datasheet_limits.limitations(doc, src)
     _uses(doc, src)
 
@@ -84,9 +84,10 @@ def _header(doc: Doc, src: Sources) -> None:
     doc.ref("documents), `index_version` `{}`,", corpus.index_version(src))
     doc.check("`, {} chunks |", formatting.count(corpus.chunk_count(src)))
     doc.check(
-        "the same {} questions without the augmentation's {} gold chunks",
+        "the same {} questions without the augmentation's {} gold chunks and {} venue values",
         question_count_text(src),
-        formatting.count(gold_sheet.added_gold_count(src)),
+        formatting.count(datasets.augmentation(src).relevant),
+        formatting.count(gold_sheet.coverage_changes_to(src, "covered")),
     )
 
 
@@ -196,8 +197,24 @@ def _collection(doc: Doc, src: Sources) -> None:
         formatting.count(tiers["bronze"]),
     )
     doc.check("a comparison names at least {} venues", formatting.count(MULTI_VENUE))
-    candidates = gold_sheet.candidate_count(src)
-    doc.check("Candidates. {} candidate questions across", formatting.count(candidates))
+    candidates = gold_sheet.candidate_count(src, CANDIDATES_FINAL)
+    doc.check(
+        "Candidates. {} distinct candidate questions across `v0.1-candidates` ({} questions) "
+        "\u2026 `v0.1.6-candidates` ({} questions)",
+        formatting.count(gold_sheet.candidate_id_count(src)),
+        formatting.count(gold_sheet.candidate_count(src, CANDIDATES_FIRST)),
+        formatting.count(candidates),
+    )
+    first, final = (gold_sheet.source_split(src, p) for p in (CANDIDATES_FIRST, CANDIDATES_FINAL))
+    doc.claim(
+        "The answerable drafts are grounded in corpus chunks recorded as `source_chunk_ids`, "
+        "{} of the {} in `v0.1-candidates` and {} of the {} in `v0.1.6-candidates`; the "
+        "unanswerable ones have none",
+        *(formatting.count(n) for n in (first.sourced, first.sourced + first.unsourced)),
+        *(formatting.count(n) for n in (final.sourced, candidates)),
+        holds=first.exactly_answerable and final.exactly_answerable,
+        what="the drafts with `source_chunk_ids` are exactly the answerable ones",
+    )
     doc.definition("Claude Opus 5", reason="a model name")
     decisions = gold_sheet.decisions(src)
     shown = gold_sheet.shown_count(src)
@@ -222,19 +239,24 @@ def _collection(doc: Doc, src: Sources) -> None:
 
 def _labeling(doc: Doc, src: Sources) -> None:
     doc.check(
+        "the full documentation of each of the {} venues",
+        formatting.count(corpus.venue_count(src)),
+    )
+    doc.check(
         "pooled the top {} of bm25, dense, hybrid and hybrid_rerank with RRF and showed the top {}",
         protocol.pool_depth_text(src),
         protocol.pool_display_text(src),
     )
     times = datasets_rounds.save_times(src)
-    display = src.default_config.eval.pool_display
+    median = round3.pace(src, FIRST_ROUND).per_question
+    display = datasets.pool_display(src)
     doc.check(
-        "median {} s per question, {} s per candidate at {} candidates. The longer session "
-        "saved {} questions over {} s, a mean of {} s between consecutive saves and {} s per "
-        "candidate.",
-        formatting.count(round(times.median_gap)),
-        formatting.number(times.median_gap / display, 1),
+        "median {} s per question; that median divided by {} candidates is {} s per candidate. "
+        "The longer session saved {} questions over {} s, a mean of {} s between consecutive "
+        "saves and {} s per candidate.",
+        formatting.count(round(median)),
         protocol.pool_display_text(src),
+        formatting.number(median / display, 1),
         formatting.count(times.longer_saves),
         formatting.count(round(times.longer_span)),
         formatting.number(times.longer_mean_gap, 1),
@@ -302,10 +324,10 @@ def _augmentation(doc: Doc, src: Sources) -> None:
     doc.ref("run `results/{}`)", POOL_RUN)
     added = gold_sheet.added_gold(src)
     doc.check(
-        "{} were relevant, {} of them at ranks {}--{};",
-        formatting.count(gold_sheet.added_gold_count(src)),
-        formatting.count(gold_sheet.added_below(src, retrieval.top_k(src))),
-        formatting.count(retrieval.first_rank_below_top_k(src)),
+        "{} were relevant, {} of them at ranks {}--{},",
+        formatting.count(datasets.augmentation(src).relevant),
+        formatting.count(datasets.augmentation(src).relevant_lower),
+        formatting.count(datasets.TOP_RANKS + 1),
         depth,
     )
     doc.claim(

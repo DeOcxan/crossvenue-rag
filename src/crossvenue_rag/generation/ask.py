@@ -129,7 +129,8 @@ def answer_question(
 
     Raises:
         UserError: `question` is blank, `retriever_name` is an oracle or no retrieval method,
-            or `generator_name` is not a generator of `generation.generators`.
+            or `generator_name` is not a generator of `generation.generators`. Or nothing is
+            at `generation.generator_prompt`, or a directory is.
     """
     question, method = checked_options(cfg, question, retriever_name, generator_name)
     gen = cfg.generation
@@ -187,7 +188,8 @@ def ask(
 
     Raises:
         UserError: `question` is blank, `retriever_name` is an oracle or no retrieval method,
-            or `generator_name` is not a generator of `generation.generators`.
+            or `generator_name` is not a generator of `generation.generators`. Or nothing is
+            at `generation.generator_prompt`, or a directory is.
     """
     checked_options(cfg, question, retriever_name, generator_name)
     with (open_retriever or Retriever)(cfg) as retriever:

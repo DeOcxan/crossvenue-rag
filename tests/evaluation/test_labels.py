@@ -12,9 +12,9 @@ def test_a_missing_value_is_a_single_dash_not_zero():
 
 
 def test_a_markdown_table_has_a_header_a_rule_per_column_and_one_line_per_row():
-    table = markdown_table(["a", "b"], [["1", "2"], ["3", "-"]])
+    table = markdown_table(["a", "b"], [["1", "2"], ["3", "-"]], right=())
     assert table == "| a | b |\n|---|---|\n| 1 | 2 |\n| 3 | - |"
-    assert markdown_table(["a"], []) == "| a |\n|---|"
+    assert markdown_table(["a"], [], right=()) == "| a |\n|---|"
 
 
 def test_the_pool_note_shows_a_missing_judged_metric_as_a_dash():

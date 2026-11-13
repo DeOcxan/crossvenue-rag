@@ -15,10 +15,8 @@ from collections.abc import Sequence
 from itertools import combinations
 
 from ...corpus.artifacts import CHUNKS_FILENAME
-from ...errors import UserError
-from ...evaluation.paired import holm
 from ...evaluation.power import SIGNIFICANCE_LEVEL
-from ...generation.answer_rows import SCOPES, in_scope
+from ...generation.answer_rows import SCOPES
 from ...generation.answering import split_answer_id
 from ...generation.attribution import AttributionSummary, attribution_summary
 from ...generation.metrics import METRICS
@@ -120,15 +118,11 @@ def primary_pair(src: Sources) -> tuple[str, str]:
     As the prompt v1 judged run's config sets it.
 
     Raises:
-        UserError: config.yaml of the prompt v1 judged run sets no `generation.primary_pair`.
+        ValueError: config.yaml of the prompt v1 judged run sets no `generation.primary_pair`.
     """
     pair = src.judged_v1.config.generation.primary_pair
     if not pair:
-        raise UserError(
-            f"{src.judged_v1.dir / CONFIG_FILE} sets no generation.primary_pair",
-            hint="point run_ids.JUDGED_V1 at a judged run whose config sets "
-            "generation.primary_pair",
-        )
+        raise ValueError(f"{src.judged_v1.dir / CONFIG_FILE} sets no generation.primary_pair")
     a, b = pair
     return a, b
 
@@ -208,23 +202,10 @@ def judged_questions(
     return entry(judged_run(src, prompt).paired, (*pair, metric, scope), PAIRED_FILE).n
 
 
-def judged_holm(
-    src: Sources, prompt: int, pair: tuple[str, str], metrics: Sequence[str], scope: str
-) -> list[float]:
-    """p_Holm of each of `metrics` in a judged run.
-
-    Holm-adjusted across `metrics` from their randomization p-values.
-
-    Raises:
-        ValueError: `prompt` is not 1 or 2.
-    """
-    return holm([judged_p(src, prompt, pair, m, scope, "randomisation_p") for m in metrics])
-
-
 def primary_holm(
     src: Sources, prompt: int, pair: tuple[str, str], metric: str, scope: str
 ) -> float:
-    """p_Holm of `metric`, a `generation.primary_metrics` of the judged run, within them.
+    """The `holm_p` of `metric`, a `generation.primary_metrics` of the judged run, in paired.csv.
 
     Raises:
         ValueError: `prompt` is not 1 or 2, or `metric` is not a primary metric of the run.
@@ -232,7 +213,7 @@ def primary_holm(
     family = [str(m) for m in judged_run(src, prompt).config.generation.primary_metrics]
     if metric not in family:
         raise ValueError(f"{metric} is not a primary metric of the prompt v{prompt} judged run")
-    return judged_holm(src, prompt, pair, family, scope)[family.index(metric)]
+    return judged_p(src, prompt, pair, metric, scope, "holm_p")
 
 
 @per_sources
@@ -344,17 +325,15 @@ def comparison_refusals(src: Sources, config: str) -> int:
 
 
 def wrong_refusals(src: Sources, config: str, prompt: int = PROMPT_V1) -> int:
-    """Refusals of `config` of questions that do not expect one, in the run of `prompt`.
+    """Wrong refusals of `config` (`AnswerRecord.is_wrong_refusal`) in the run of `prompt`.
 
     Raises:
         ValueError: `prompt` is not 1 or 2.
     """
     return sum(
-        1
-        for (c, q), o in outcomes(src, prompt).items()
-        if c == config
-        and o == "refused"
-        and not entry(src.questions, q, "the gold set").expects_refusal
+        r.is_wrong_refusal()
+        for r in answer_run(src, prompt).records
+        if r.config == config and r.generation is not None
     )
 
 
@@ -394,7 +373,9 @@ def refusal_groups(src: Sources) -> dict[str, list[str]]:
     """
     groups: dict[str, list[str]] = {"a": [], "b": [], "c": []}
     for r in src.v1.records:
-        if r.config != refusing_config(src) or not in_scope(r, COMPARISON):
+        if r.config != refusing_config(src):
+            continue
+        if entry(src.questions, r.question_id, "the gold set").effective_category != COMPARISON:
             continue
         if outcome(r.generated().answer) != "refused":
             continue
@@ -466,7 +447,7 @@ def gold_less_venue(src: Sources, question_id: str) -> bool:
         ValueError: the gold set has no question `question_id`.
     """
     q = entry(src.questions, question_id, "the gold set")
-    return any(not any(src.venue_of.get(c) == v for c in q.gold_chunk_ids) for v in q.venues)
+    return bool(q.uncovered_venues(src.venue_of.get(c) for c in q.gold_chunk_ids))
 
 
 def gold_less_refusals(src: Sources, group: str) -> int:

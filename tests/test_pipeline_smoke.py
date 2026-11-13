@@ -17,7 +17,8 @@ from crossvenue_rag.evaluation.evaluator import Evaluator, summarise
 from crossvenue_rag.evaluation.results import run_tables, write_eval_run
 from crossvenue_rag.index.bm25_index import INDEX_DIRNAME, BM25Index
 from crossvenue_rag.models import Question, Timings
-from tests.conftest import AD_HOC_METHODS, InMemoryRetriever, build_corpus
+from crossvenue_rag.retrieval.methods import AD_HOC_METHODS
+from tests.conftest import InMemoryRetriever, build_corpus
 
 
 def test_pipeline_runs_end_to_end(cfg: Config):

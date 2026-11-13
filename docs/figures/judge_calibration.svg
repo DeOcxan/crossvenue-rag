@@ -481,7 +481,7 @@ z
   </g>
   <g id="text_17">
    <text style="font-size: 7px; font-family: 'DejaVu Sans'; fill: #6b6b6b" transform="translate(4.608 223.165848)">Cohen's κ (binary dimensions) or Spearman (coverage) against 40 human-rated answers (1 left out of behaviour_correct). 95%</text>
-   <text style="font-size: 7px; font-family: 'DejaVu Sans'; fill: #6b6b6b" transform="translate(4.608 231.567762)">percentile bootstrap interval resampling answers, 10,000 resamples, seed 20260924; * κ undefined in part of the resamples. Run</text>
+   <text style="font-size: 7px; font-family: 'DejaVu Sans'; fill: #6b6b6b" transform="translate(4.608 231.567762)">percentile bootstrap interval resampling answers, 10,000 resamples, seed 20260924; * κ undefined in at least one resample. Run</text>
    <text style="font-size: 7px; font-family: 'DejaVu Sans'; fill: #6b6b6b" transform="translate(4.608 239.969676)">results/20260925T175128Z_answers, calibration.json.</text>
   </g>
  </g>

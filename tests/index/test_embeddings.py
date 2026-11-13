@@ -1,4 +1,4 @@
-"""Tests for `index.embeddings`: device choice and the pinned model revision."""
+"""Tests for `index.embeddings`."""
 
 from __future__ import annotations
 
@@ -9,21 +9,7 @@ from typing import ClassVar
 import numpy as np
 
 from crossvenue_rag.config_pipeline import EmbeddingConfig
-from crossvenue_rag.index.embeddings import Embedder, resolve_device
-
-
-def test_an_explicit_device_is_used_as_given_else_mps_then_cuda_then_cpu(monkeypatch):
-    assert resolve_device("cpu") == "cpu"
-
-    def torch_with(*, mps: bool, cuda: bool):
-        return types.SimpleNamespace(
-            backends=types.SimpleNamespace(mps=types.SimpleNamespace(is_available=lambda: mps)),
-            cuda=types.SimpleNamespace(is_available=lambda: cuda),
-        )
-
-    for mps, cuda, device in ((True, True, "mps"), (False, True, "cuda"), (False, False, "cpu")):
-        monkeypatch.setitem(sys.modules, "torch", torch_with(mps=mps, cuda=cuda))
-        assert resolve_device(None) == device
+from crossvenue_rag.index.embeddings import Embedder
 
 
 class FakeSentenceTransformer:
@@ -59,3 +45,15 @@ def test_a_missing_sentence_transformers_is_a_user_error_naming_no_revision(monk
     with pytest.raises(UserError, match=r"cannot load embedding\.model_name") as refused:
         _ = Embedder(EmbeddingConfig(device="cpu")).model
     assert "latest" not in str(refused.value) and " at revision" not in str(refused.value)
+
+
+def test_a_missing_sentence_transformers_hints_installing_the_dependencies(monkeypatch):
+    import pytest
+
+    from crossvenue_rag.errors import UserError
+
+    monkeypatch.setitem(sys.modules, "sentence_transformers", None)
+    with pytest.raises(UserError) as refused:
+        _ = Embedder(EmbeddingConfig(device="cpu")).model
+    assert "`make install`" in (refused.value.hint or "")
+    assert "revision" not in (refused.value.hint or "")

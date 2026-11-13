@@ -1,13 +1,15 @@
-"""Tests for `reporting.compute.sensitivity`, on the two committed runs it compares."""
+"""Tests for `reporting.compute.sensitivity`, on the committed runs it compares or on a run
+under `tmp_path`."""
 
 from __future__ import annotations
 
 import pytest
 
 from crossvenue_rag.reporting.compute import sensitivity
-from crossvenue_rag.reporting.run_ids import SENSITIVITY_BASE_RUN, SENSITIVITY_RUN
+from crossvenue_rag.reporting.run_ids import ROUND3_RUN, SENSITIVITY_BASE_RUN, SENSITIVITY_RUN
 from crossvenue_rag.reporting.sources import Sources
 from tests.published import ROOT
+from tests.reporting.conftest import write_retrieval_run
 
 PRIMARY = sensitivity.Comparison("venue_split", "hybrid_rerank", "venue_coverage@10", "comparison")
 
@@ -17,11 +19,22 @@ def src() -> Sources:
     return Sources(ROOT)
 
 
-def test_the_tested_comparisons_are_the_primary_and_secondary_rows(src):
+def test_the_tested_comparisons_are_the_primary_and_secondary_rows(src, tmp_path):
     tested = sensitivity.tested_comparisons(src)
     assert len(tested) == 24 and PRIMARY in tested
     roles = {sensitivity.paired_row(src, SENSITIVITY_BASE_RUN, c).role for c in tested}
     assert roles == {"primary", "secondary"}
+    # The baseline run's paired.csv holds no descriptive row, so a fixture run adds one.
+    metrics = {"venue_coverage@10": "primary", "recall@10": "descriptive", "ndcg@10": "secondary"}
+    rows = [
+        {"a": "venue_split", "b": "hybrid_rerank", "metric": m, "scope": "comparison", "role": r}
+        for m, r in metrics.items()
+    ]
+    write_retrieval_run(tmp_path, SENSITIVITY_BASE_RUN, paired=rows)
+    assert sensitivity.tested_comparisons(Sources(tmp_path)) == [
+        sensitivity.Comparison("venue_split", "hybrid_rerank", m, "comparison")
+        for m in ("venue_coverage@10", "ndcg@10")
+    ]
 
 
 def test_the_primary_uses_its_unadjusted_p_and_a_secondary_its_holm_p(src):
@@ -38,6 +51,11 @@ def test_no_conclusion_changes_and_venue_coverage_needs_no_gold(src):
     assert all(sensitivity.identical(src, c) for c in coverage)
     recall = sensitivity.Comparison("venue_split", "hybrid_rerank", "recall@10", "labelled")
     assert not sensitivity.identical(src, recall)
+
+
+def test_retrieval_changes_counts_two_of_the_tested_comparisons_on_v03_gold(src):
+    changed, tested = sensitivity.retrieval_changes(src)
+    assert (len(changed), tested) == (2, 24) and PRIMARY not in changed
 
 
 def test_inconclusive_comparisons_exclude_0_with_a_p_at_or_above_the_level(src):
@@ -66,3 +84,16 @@ def test_a_metric_or_a_comparison_a_run_lacks_is_an_error(src):
         sensitivity.run_metric(src, SENSITIVITY_RUN, "comparison", "nope", "recall@10")
     with pytest.raises(ValueError, match="has no"):
         sensitivity.paired_row(src, SENSITIVITY_RUN, sensitivity.Comparison("a", "b", "m", "s"))
+
+
+def test_the_retrieval_primary_is_venue_split_on_comparison_coverage(src):
+    primary = sensitivity.primary_comparison(src)
+    assert (primary.a, primary.b) == ("venue_split", "hybrid_rerank")
+    assert (primary.metric, primary.scope) == ("venue_coverage@10", "comparison")
+
+
+def test_two_retrieval_comparisons_change_against_either_earlier_version(src):
+    base = sensitivity.changed_conclusions(src, SENSITIVITY_BASE_RUN, ROUND3_RUN)
+    assert base == sensitivity.changed_conclusions(src, SENSITIVITY_RUN, ROUND3_RUN)
+    assert len(base) == 2
+    assert all(c.metric == "recall@10" for c in base)

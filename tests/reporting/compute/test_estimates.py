@@ -21,7 +21,7 @@ def test_an_interval_includes_zero_when_zero_lies_in_it_an_end_included(low, hig
     ],
 )
 def test_a_small_effect_is_an_effect_whose_size_is_below_delta(difference, p, small):
-    assert is_small_effect(difference, p, 0.20) is small
+    assert is_small_effect(difference, p) is small
 
 
 def test_a_p_is_significant_only_below_the_significance_level():

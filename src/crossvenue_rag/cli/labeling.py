@@ -1,4 +1,7 @@
-"""Labeling commands: label (and `--review`, `--augment`), augment-candidates, derive-coverage."""
+"""Labeling commands.
+
+`label` (and `--review`, `--augment`), `augment-candidates`, `derive-coverage`.
+"""
 
 from __future__ import annotations
 
@@ -10,17 +13,47 @@ from rich.text import Text
 
 from .. import formatting
 from ..config_loading import DEFAULT_CONFIG
+from ..confined_paths import require_out_file
 from ..corpus.artifacts import load_chunk_venues
-from ..dataset.journal import load_rounds
+from ..dataset.journal import FULL_RELABEL_ROUND, load_rounds
 from ..dataset.questions import load_questions, require_label_versions
 from ..dataset.sampling import read_sample_file
 from ..errors import UserError
 from ..index_version import require_current_index
-from ..labeling.candidates import augment_candidates, read_run_rankings, save_candidates
+from ..labeling.candidates import (
+    augment_candidates,
+    candidate_chunk_count,
+    read_run_rankings,
+    save_candidates,
+)
 from ..labeling.coverage import RULE, derive_coverage
 from ..labeling.modes import LabelRequest, run_label
 from ..labeling.pool import pool_depth_of
-from .app import ConfigOpt, QuestionsOpt, SetOpt, console, load, say
+from ..retrieval.methods import method_named
+from .app import (
+    ConfigOpt,
+    QuestionsOpt,
+    SetOpt,
+    at_least,
+    console,
+    load,
+    question_category,
+    say,
+)
+
+
+def _annotation_round(value: int) -> None:
+    """Refuses a `--round` the protocol does not define.
+
+    Raises:
+        UserError: `value` is outside rounds 1 to `FULL_RELABEL_ROUND`.
+    """
+    if not 1 <= value <= FULL_RELABEL_ROUND:
+        last = formatting.own_form(FULL_RELABEL_ROUND)
+        raise UserError(
+            f"there is no round {formatting.own_form(value)}",
+            hint=f"pass --round 1 to {last}; methodology section 5b ends at round {last}",
+        )
 
 
 def label(
@@ -35,8 +68,9 @@ def label(
         bool,
         typer.Option(
             "--review",
-            help="The listed labeled questions, re-opened with their current marks; changes "
-            "are recorded as corrections to round 1.",
+            help="The listed judged questions, re-opened on their recorded round-1 pool and "
+            "augmentation chunks, with the current marks; changes are recorded as corrections "
+            "to round 1.",
         ),
     ] = False,
     review_file: Annotated[
@@ -47,8 +81,9 @@ def label(
         bool,
         typer.Option(
             "--augment",
-            help="Only the never-judged chunks listed in `--question-file`, judged "
-            "(written by `crossvenue augment-candidates`); extends round 1.",
+            help="Only the chunks listed in `--question-file` (written by "
+            "`crossvenue augment-candidates`) that round 1 has not judged, judged; extends "
+            "round 1.",
         ),
     ] = False,
     question_file: Annotated[
@@ -60,7 +95,7 @@ def label(
         typer.Option(
             "--adjudicate",
             help="A decision on each (question, chunk) pair round 1 and round 2 judged "
-            "differently; recorded under 'adjudicated', rounds 1 and 2 untouched.",
+            "differently; recorded under `adjudicated`, rounds 1 and 2 untouched.",
         ),
     ] = False,
     relabel: Annotated[
@@ -68,7 +103,7 @@ def label(
         typer.Option(
             "--relabel",
             help="The given questions, judged again on their recorded round-1 candidates; "
-            "recorded under 'relabeled', the question file untouched.",
+            "recorded under `relabeled`, the question file untouched.",
         ),
     ] = False,
     add_chunks: Annotated[
@@ -91,7 +126,7 @@ def label(
     set_: SetOpt = None,
     questions: QuestionsOpt = None,
     all_: Annotated[
-        bool, typer.Option("--all", help="Questions that already have labels, shown again.")
+        bool, typer.Option("--all", help="Round 1: questions already judged, shown again.")
     ] = False,
     limit: Annotated[
         int | None,
@@ -110,7 +145,7 @@ def label(
         int,
         typer.Option(
             "--round",
-            help="Annotation round. 1 writes gold labels; 2 re-annotates a subsample "
+            help="Annotation round. 1 writes gold labels; 2 re-annotates judged questions "
             "for intra-rater agreement; 3 relabels the whole set, blind. 2 and 3 leave "
             "round 1 untouched.",
         ),
@@ -120,7 +155,8 @@ def label(
         int | None,
         typer.Option(
             "--sample",
-            help="N questions to label: at random in round 1, stratified by category in round 2.",
+            help="At most N questions to label: at random in round 1, stratified by category in "
+            "round 2.",
         ),
     ] = None,
     seed: Annotated[int, typer.Option("--seed", help="Seed for `--sample`.")] = 0,
@@ -136,12 +172,16 @@ def label(
     """Marks gold chunks for eval questions, in the terminal.
 
     `crossvenue label --review cv-0043 cv-0046` or `--review-file FILE` re-opens
-    labeled questions for correction instead. `--adjudicate` decides the pairs the
+    judged questions for correction instead. `--adjudicate` decides the pairs the
     two labeling rounds disagree on, `--relabel ID ...` judges named questions
     again, and `--round 3` judges every question again, blind; all three only add
     entries to the journal.
     """
+    _annotation_round(round_)
+    at_least("--sample", sample, 1)
+    at_least("--limit", limit, 1)
     cfg = load(config, set_)
+    pool_depth_of(cfg, pool_depth, "--pool-depth")
     request = LabelRequest(
         questions_path=str(questions or cfg.eval.questions),
         ids=tuple(ids or ()),
@@ -189,21 +229,25 @@ def augment_candidates_command(
 ) -> None:
     """Lists the chunks a run's methods retrieved that no round-1 judgment showed."""
     cfg = load(config, set_)
+    for name in method:
+        method_named(name)
+    question_category(category)
+    depth = pool_depth_of(cfg, k, "--k")
     path = str(questions or cfg.eval.questions)
     if out.exists():
         raise UserError(f"{out} exists", hint="pick another file; the list records one run")
-    depth = pool_depth_of(cfg, k)
+    require_out_file(out, folder_must_exist=True)
     rankings = read_run_rankings(run)
     entries = augment_candidates(
         rankings, load_questions(path), load_rounds(path), method, category, depth
     )
     save_candidates(out, entries)
-    total = sum(len(e.chunks) for e in entries)
+    total = candidate_chunk_count(entries)
     say(
         console,
-        f"{formatting.plural(total, 'unjudged chunk')} across "
+        f"{formatting.plural(total, 'chunk')} round 1 has not judged, across "
         f"{formatting.plural(len(entries), 'question')} -> {out}\n"
-        f"judge them with: crossvenue label --augment --question-file {out}",
+        f"judged with: crossvenue label --augment --question-file {out}",
     )
 
 
@@ -216,7 +260,7 @@ def derive_coverage_command(
         typer.Option("--exclude-file", help="Ids to leave unchanged (first token per line)."),
     ] = None,
 ) -> None:
-    """Fills venue_coverage values that follow from recorded data, journaled as derived."""
+    """Fills `venue_coverage` values that follow from recorded data, journaled as derived."""
     cfg = load(config, set_)
     path = str(questions or cfg.eval.questions)
     # The venues come first: without chunks.jsonl the error names it and `ingest`.

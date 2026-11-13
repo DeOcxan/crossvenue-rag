@@ -66,7 +66,7 @@ class PathsConfig(Section):
 
 
 class ChunkingConfig(Section):
-    """Token budgets of the chunker, counted by the embedding model's tokenizer."""
+    """Token budgets of the chunker, counted in tokens of the embedding model's tokenizer."""
 
     max_tokens: int = Field(450, gt=0)
     overlap_tokens: int = Field(60, ge=0)

@@ -152,7 +152,8 @@ def _descriptive_note(rows: Sequence[PairedRow]) -> str:
     if not any(r.role == "descriptive" for r in rows):
         return ""
     return (
-        f" A row of a scope under {formatting.plural(MIN_TESTED_QUESTIONS, 'question')} is "
+        " A row of a category or slice scope under "
+        f"{formatting.plural(MIN_TESTED_QUESTIONS, 'question')} is "
         "descriptive instead: an interval and no p-value."
     )
 
@@ -173,7 +174,7 @@ def _off_venue(rows: Sequence[PairedRow]) -> list[str]:
 
 
 def _shown_venue_metrics(k_values: Sequence[int]) -> list[str]:
-    """venue_coverage@k for the markdown tables.
+    """`venue_coverage@k` for the markdown tables.
 
     k = 1 is 0 by construction (one chunk covers one venue), so it stays in the
     CSV files and out of the tables.
@@ -208,7 +209,7 @@ def _slice_table(summaries: Sequence[SliceSummary], k_values: Sequence[int]) -> 
 
     On a slice with no labeled question, the gold metrics, `ndcg_prime@k` and `unjudged@k`
     show `-`. The question counts, the multi-venue count and p50 ms need no labels, and
-    venue_coverage@k needs only a multi-venue question in the slice (`-` without one).
+    `venue_coverage@k` needs only a multi-venue question in the slice (`-` without one).
     """
     header = [summaries[0].dimension, "method", "questions", "labeled", *_metric_header(k_values)]
     rows = [
@@ -222,7 +223,7 @@ def _slice_table(summaries: Sequence[SliceSummary], k_values: Sequence[int]) -> 
         ]
         for s in summaries
     ]
-    return markdown_table([*header, "p50 ms"], rows)
+    return markdown_table([*header, "p50 ms"], rows, right=range(2, len(header) + 1))
 
 
 def _markdown_table(summaries: Sequence[MethodSummary], k_values: Sequence[int]) -> str:
@@ -236,7 +237,8 @@ def _markdown_table(summaries: Sequence[MethodSummary], k_values: Sequence[int])
         ]
         for s in summaries
     ]
-    return markdown_table(["method", *_metric_header(k_values), "p50 ms", "p95 ms"], rows)
+    header = ["method", *_metric_header(k_values), "p50 ms", "p95 ms"]
+    return markdown_table(header, rows, right=range(1, len(header)))
 
 
 def _balance_note(venue_chunks: Mapping[str, int]) -> str:
@@ -247,8 +249,7 @@ def _balance_note(venue_chunks: Mapping[str, int]) -> str:
     (large, most), (small, least) = counts.most_common()[0], counts.most_common()[-1]
     return (
         f"The corpus is unbalanced ({large} {formatting.count(most)} chunks vs {small} "
-        f"{formatting.count(least)}), so the aggregate above is weighted toward whichever "
-        "venues the question set names most."
+        f"{formatting.count(least)})."
     )
 
 
@@ -261,4 +262,5 @@ def _latency_table(summaries: Sequence[MethodSummary]) -> str:
         ]
         for summary in summaries
     ]
-    return markdown_table(["method", *RETRIEVAL_STEPS, "steps sum p50"], rows)
+    header = ["method", *RETRIEVAL_STEPS, "steps sum p50"]
+    return markdown_table(header, rows, right=range(1, len(header)))

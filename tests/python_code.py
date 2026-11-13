@@ -18,7 +18,7 @@ from tests.published import ROOT
 
 
 def modules_without_tests(root: Path) -> list[str]:
-    """Modules with no test file of their name: src/crossvenue_rag/a/b.py has tests/a/test_b.py.
+    """Modules with no test file of their name: `src/crossvenue_rag/a/b.py` has `tests/a/test_b.py`.
 
     Package `__init__.py` files are not modules of their own and are left out.
     """
@@ -97,7 +97,7 @@ _NOT_A_CONSOLE = {"math", "np", "numpy"}
 
 
 def _literal(node: ast.expr) -> bool:
-    """A str constant, or a `Text` built directly (anything but `Text.from_markup`)."""
+    """A constant, or a `Text` built directly (anything but `Text.from_markup`)."""
     if isinstance(node, ast.Constant):
         return True
     if not isinstance(node, ast.Call):
@@ -142,10 +142,11 @@ def rich_sinks(source: str) -> list[tuple[int, str | None]]:
     """(line, enclosing function) of every call that passes rich a value to read as markup.
 
     A call is a rich print, log, rule, status, input or `add_task`, a `Prompt.ask` (and
-    its kin), an `update` of a status, progress or live display, a Table or Panel title,
-    an `add_row` cell or a column footer. A value is anything but a str constant or a
-    `Text`: an f-string, a variable, a call or a concatenation. A bare builtin `print` is
-    ruff's T20 to refuse; rich's `print`, imported by name, is read by neither.
+    its kin) or an `update` of a status, progress or live display. So are a Table or
+    Panel title, caption or subtitle, a Panel's body, a `from_markup` argument, an
+    `add_row` cell and a column footer. A value is anything but a constant or a `Text`:
+    an f-string, a variable, a call or a concatenation. A bare builtin `print` is ruff's
+    T20 to refuse; neither reads rich's `print`, imported by name.
     """
     found: list[tuple[int, str | None]] = []
 
@@ -164,7 +165,8 @@ def rich_sinks(source: str) -> list[tuple[int, str | None]]:
 # Style rule 29, which code rule 24 applies to comments and docstrings.
 MAX_SENTENCE_WORDS = 35
 _CODE_SPAN = re.compile(r"`[^`\n]*`")
-# A sentence ends at . ! or ? before a space, but not after an abbreviation.
+# A sentence ends at . ! or ? before a space and a letter, a code span, a quote or a
+# bracket, but not after e.g., i.e. or vs.
 _SENTENCE_END = re.compile(r"(?<=[.!?])(?<!e\.g\.)(?<!i\.e\.)(?<!vs\.)\s+(?=[A-Za-z\x00\"'(\[])")
 _PRAGMA = re.compile(r"^(fmt|type|noqa|pragma)\b|^noqa")
 _DOCUMENTED = (ast.Module, ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef)
@@ -179,8 +181,8 @@ def _docstring_units(tree: ast.Module) -> Iterator[tuple[int, str]]:
     """(line, text) of each paragraph, list item and section entry of every docstring.
 
     Attribute docstrings count too: a string statement right after an assignment in a
-    module or class body. A paragraph whose every row is indented is a code block,
-    which is skipped.
+    module or class body. A paragraph of indented rows none of which opens a list item
+    or section entry is a code block, which is skipped.
     """
     for node in ast.walk(tree):
         if isinstance(node, _DOCUMENTED):
@@ -410,7 +412,8 @@ def _uses(tree: ast.Module) -> list[tuple[str, int, bool]]:
 
 
 def _definitions(tree: ast.Module) -> Iterator[tuple[str, ast.stmt]]:
-    """(name, node) of every top-level function, class and constant, and every method."""
+    """(name, node) of every top-level function, class and constant, and every method of a class
+    that is not a Protocol."""
     for node in tree.body:
         if isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef):
             yield node.name, node

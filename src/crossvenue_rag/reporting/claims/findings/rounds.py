@@ -18,7 +18,7 @@ from ...sources import Sources
 from ..agreement import READINGS
 from ..comparisons import (
     comparison_questions,
-    estimate,
+    estimate_and_p,
     kappa_bounds,
     kappa_cell,
     level,
@@ -28,8 +28,6 @@ from ..comparisons import (
 )
 from ..reasons import INTERVAL_LEVEL, REGISTERED
 
-# The six methods of the sensitivity table, in its order.
-METHODS = ("bm25", "dense", "hybrid", "hybrid_rerank", "venue_split", "venue_split_oracle")
 # The comparisons of the sensitivity table, by the method pair its first cell names.
 PAIRS = (
     ("venue_split", "hybrid_rerank"),
@@ -48,6 +46,22 @@ INCONCLUSIVE = {
 }
 # How the table names a paired.csv scope.
 SCOPES = {"labelled comparison": "comparison", "labelled": "labeled"}
+
+
+def comparison_cells(src: Sources, runs: tuple[str, str]) -> dict[str, list[str]]:
+    """The rows of a table of the primary and `recall@10` comparisons in two runs."""
+
+    def cells(comparison: sensitivity.Comparison) -> list[str]:
+        return [cell for run in runs for cell in estimate_and_p(src, run, comparison)]
+
+    primary = sensitivity.primary_comparison(src)
+    rows = {f"{primary.a} - {primary.b}, {primary.metric}, comparison (primary)": cells(primary)}
+    for a, b in PAIRS:
+        for scope, name in SCOPES.items():
+            rows[f"{a} - {b}, recall@10, {name}"] = cells(
+                sensitivity.Comparison(a, b, "recall@10", scope)
+            )
+    return rows
 
 
 def agreement_finding(doc: Doc, src: Sources) -> None:
@@ -127,8 +141,8 @@ def _direction(doc: Doc, src: Sources) -> None:
         formatting.count(d.disagreements),
         formatting.count(d.first_only),
         formatting.count(d.second_only),
-        holds=d.second_only > d.first_only,
-        what="round 2 marks more pairs relevant than round 1",
+        holds=d.second_relevant > d.first_relevant,
+        what="round 2 marked more pairs relevant than round 1",
     )
     doc.claim(
         "{} of the {} round-1-only pairs are source chunks, which round 1's screen marked",
@@ -148,11 +162,6 @@ def _direction(doc: Doc, src: Sources) -> None:
         "it changed the gold of {} questions, which `v0.2.2-gold` holds",
         formatting.count(len(agreement.changed_gold(src))),
     )
-
-
-def _p_text(src: Sources, run: str, comparison: sensitivity.Comparison) -> list[str]:
-    row = sensitivity.paired_row(src, run, comparison)
-    return [estimate(Estimate.of(row)), formatting.p_value(sensitivity.tested_p(row))]
 
 
 def sensitivity_finding(doc: Doc, src: Sources) -> None:
@@ -204,7 +213,7 @@ def sensitivity_finding(doc: Doc, src: Sources) -> None:
                 for c in columns
                 for run in runs
             ]
-            for m in METHODS
+            for m in retrieval.METHODS
         },
     )
     tested = sensitivity.tested_comparisons(src)
@@ -227,20 +236,7 @@ def sensitivity_finding(doc: Doc, src: Sources) -> None:
         *(formatting.count(sensitivity.tested_questions(src, run, LABELLED_SCOPE)) for run in runs),
         Param(level(), INTERVAL_LEVEL),
     )
-    rows = {}
-    primary = next(c for c in tested if sensitivity.paired_row(src, runs[0], c).role == "primary")
-    rows[f"{primary.a} - {primary.b}, {primary.metric}, comparison (primary)"] = [
-        *_p_text(src, runs[0], primary),
-        *_p_text(src, runs[1], primary),
-    ]
-    for a, b in PAIRS:
-        for scope in ("labelled comparison", "labelled"):
-            c = sensitivity.Comparison(a, b, "recall@10", scope)
-            rows[f"{a} - {b}, recall@10, {SCOPES[scope]}"] = [
-                *_p_text(src, runs[0], c),
-                *_p_text(src, runs[1], c),
-            ]
-    doc.table("| comparison | v0.2.1-gold |", rows)
+    doc.table("| comparison | v0.2.1-gold |", comparison_cells(src, runs))
     doc.claim(
         "None of the {} primary and secondary comparisons changes sign, significance at "
         "p_Holm < {} or whether its interval excludes {}.",
@@ -259,6 +255,19 @@ def sensitivity_finding(doc: Doc, src: Sources) -> None:
         holds={(c.a, c.b, c.metric, c.scope) for c in sensitivity.inconclusive(src)}
         == INCONCLUSIVE,
         what="the inconclusive comparisons are the four the sentence names",
+    )
+    recall_parts = []
+    for b, scope in (("hybrid", "labelled"), ("bm25", "labelled comparison")):
+        pair = sensitivity.Comparison("hybrid_rerank", b, "recall@10", scope)
+        rows = [sensitivity.paired_row(src, run, pair) for run in runs]
+        recall_parts += [part for row in rows for part in signed_parts(Estimate.of(row))]
+        recall_parts += [formatting.p_value(sensitivity.tested_p(row)) for row in rows]
+    doc.check(
+        "On recall@10 they are, on `v0.2.1-gold` and `v0.2.2-gold`, hybrid_rerank - hybrid "
+        "over the labeled questions, {} [{}, {}] and {} [{}, {}], p_Holm {} and {}, and "
+        "hybrid_rerank - bm25 over the comparison questions, {} [{}, {}] and {} [{}, {}], "
+        "p_Holm {} and {}.",
+        *recall_parts,
     )
     coverage_parts = []
     for a, b, metric, scope in sorted(INCONCLUSIVE):

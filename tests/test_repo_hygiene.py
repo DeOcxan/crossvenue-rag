@@ -1,6 +1,6 @@
 """Repository-level invariants that belong to no single module.
 
-Code and CLI output stay ASCII apart from a short allowlist.
+Source text stays ASCII apart from a short allowlist.
 """
 
 from __future__ import annotations
@@ -36,8 +36,7 @@ CODE_ROOTS = ("src", "tests", "configs", ".github", "scripts")
 CODE_SUFFIXES = {".py", ".yaml", ".yml", ".toml"}
 
 # Every non-ASCII character allowed in code, with the reason it is allowed.
-# A character not on this list is taken for a paste accident: a CJK
-# character once reached a CLI message this way, through a copied sentence.
+# A character not on this list is taken for a paste accident.
 ALLOWED: dict[str, str] = {
     "█": "FULL BLOCK: the bar of the chunk-length histogram; it is the graphic",
     "ç": "in a French heading inside the llms.txt fixture, which exists to test "
@@ -60,10 +59,9 @@ def code_files() -> list[Path]:
     return [f for f in files if f.exists()]
 
 
-def test_code_and_cli_strings_are_ascii():
+def test_code_files_are_ascii():
     """Typographic punctuation has exact ASCII equivalents, so using it in code
-    adds nothing and leaves a stray glyph that is hard to spot. Prose is exempt;
-    anything that can reach a terminal, a log or a config value is not."""
+    adds nothing and leaves a stray glyph that is hard to spot. Prose is exempt."""
     offenders: list[str] = []
     for path in code_files():
         for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
@@ -123,7 +121,7 @@ def test_markdown_headings_form_one_outline():
 
 def test_published_text_files_have_no_invisible_characters():
     """Zero-width, non-breaking and soft-hyphen characters look like ordinary
-    spaces or nothing, and break search, diff and the reproduce templates."""
+    spaces or nothing, and break search, diff and the `reproduce` templates."""
     offenders = []
     for path in published(INVISIBLE_SUFFIXES, INVISIBLE_SKIP, top_level=True):
         for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
@@ -247,7 +245,7 @@ def test_the_local_only_pattern_matches_the_local_paths_and_no_lookalike(line: s
 
 
 # Rule 27's exceptions (docs/code-style.md), the only ones: suite-level test
-# files, which exercise no single module, and modules with no test file of
+# files, which are named after no module, and modules with no test file of
 # their name, a directory entry covering every module under it.
 SUITE_LEVEL = {
     "tests/reporting/test_claims_adr.py",
@@ -260,7 +258,7 @@ SUITE_LEVEL = {
 
 
 UNTESTED_MODULES = (
-    # Checked against the documents by `make reproduce` and the mutation test.
+    # `make reproduce` and the mutation test check these against the documents.
     "src/crossvenue_rag/reporting/claims/",
     # No behavior: only constants or Protocol classes.
     "src/crossvenue_rag/reporting/run_ids.py",

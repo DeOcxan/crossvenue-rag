@@ -1,4 +1,7 @@
-"""The commands that retrieve or evaluate: retrieve, eval, pool-run, bench-rerank, power."""
+"""The commands that retrieve or evaluate.
+
+`retrieve`, `eval`, `pool-run`, `bench-rerank`, `power`.
+"""
 
 from __future__ import annotations
 
@@ -52,7 +55,9 @@ def retrieve(
     method: Annotated[
         str,
         typer.Option(
-            "--method", "-m", help="One method, or 'all' for every method except the oracle."
+            "--method",
+            "-m",
+            help="One method other than the oracle, or 'all' for every one of them.",
         ),
     ] = "hybrid",
     k: Annotated[
@@ -141,7 +146,7 @@ def eval_command(
     check = index_check(path, question_list)
     job = EvalJob(path, question_list, load_judged_sets(path), check, venue_filter=venue_filter)
     run_dir = run_evaluation(cfg, job)
-    # Printed as text: a report can hold brackets (a --note) that rich would read as markup.
+    # Printed as text: a report can hold brackets that rich would read as markup.
     say(console, (run_dir / REPORT_FILE).read_text(encoding="utf-8"))
     say(console, Text("results:", style="green"), str(run_dir))
 
@@ -167,8 +172,9 @@ def pool_run_command(
 ) -> None:
     """Runs retrieval only: its top k becomes chunks to judge, and it computes no metric.
 
-    Any method may run, the oracle included: augmentation judges the never-judged top
-    k of a method not in the labeling pool (methodology section 1, rule 3). Writes
+    Any method may run, the oracle included: augmentation judges the chunks round 1 has
+    not judged in the top k of a method not in the labeling pool (methodology section 1,
+    rule 3). Writes
     results/<timestamp>_pool/ for `crossvenue augment-candidates --run`.
     """
     cfg = load(config, set_)
@@ -177,7 +183,7 @@ def pool_run_command(
         hint="check the path given by --questions or eval.questions",
     )
     methods = [method_named(m) for m in method]
-    question_category("--category", category)
+    question_category(category)
     depth = pool_depth_of(cfg, k, "--k")
     run_dir = run_path(cfg.paths.results, "_pool")
     with checked_retriever(cfg, index_check(path)) as (retriever, version):
@@ -228,7 +234,9 @@ def power_command(
     category: Annotated[str, typer.Option("--category", help="Question category.")] = "comparison",
     k: Annotated[
         int | None,
-        typer.Option("--k", help="recall@k, 1 or more (default: the largest of `eval.k_values`)."),
+        typer.Option(
+            "--k", help="`recall@k`, 1 or more (default: the largest of `eval.k_values`)."
+        ),
     ] = None,
     studies: Annotated[
         int, typer.Option("--studies", help="Simulated studies per delta, 1 or more.")
@@ -239,12 +247,12 @@ def power_command(
     config: ConfigOpt = DEFAULT_CONFIG,
     set_: SetOpt = None,
 ) -> None:
-    """Simulates the power of the Holm-adjusted paired randomization test on recall@k.
+    """Simulates the power of the Holm-adjusted paired randomization test on `recall@k`.
 
     Uses the discordance and difference sizes the run's comparison family shows;
     writes results/<timestamp>_power/.
     """
-    question_category("--category", category)
+    question_category(category)
     at_least("--k", k, 1)
     at_least("--studies", studies, 1)
     at_least("--permutations", permutations, 1)

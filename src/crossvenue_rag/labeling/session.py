@@ -1,6 +1,6 @@
 """A labeling session: walking the question file round by round.
 
-Round 1 writes `gold_chunk_ids` into the question file; a later round re-judges a subsample for
+Round 1 writes `gold_chunk_ids` into the question file; a later round re-judges judged questions for
 intra-rater agreement and writes only to the sidecar, so it cannot overwrite the labels the
 metrics were computed from.
 """
@@ -22,7 +22,7 @@ from rich.text import Text
 from .. import formatting
 from ..clock import utc_now
 from ..config import Config
-from ..dataset.journal import Judgment, load_rounds, rounds_path, save_rounds
+from ..dataset.journal import FIRST_ROUND, Judgment, load_rounds, rounds_path, save_rounds
 from ..dataset.questions import load_questions, require_label_versions, save_questions
 from ..dataset.sampling import stratified_sample
 from ..errors import UserError
@@ -32,7 +32,7 @@ from .judge import RelevanceJudgement, judge
 from .pool import RETEST_SHUFFLE_SEED, gather_candidates, retest_candidates
 from .screen import Ask, ScreenView, Show
 
-# Below this many judged questions the time-left estimate is marked rough.
+# Below this many questions moved past (skips included), the time-left estimate is marked rough.
 PACE_SAMPLES = 5
 
 
@@ -42,28 +42,27 @@ def progress_table(
     handled: int,
     judged: int,
     elapsed_seconds: float,
-    labelled: int | None = None,
+    judged_overall: int | None,
 ) -> Table:
     """Where the session stands, and how much longer finishing would take.
 
-    Labeling a hundred questions takes several sittings, and the decision made
-    at the keyboard is whether to stop or push on. That needs the remaining
+    The decision made at the keyboard is whether to stop or push on. That needs the remaining
     count, the shape of what is left, and an estimate from this session's pace:
     a prior average misleads when this batch is all hard comparison questions.
 
     `handled` counts questions moved past (a skip still costs reading time, so it
-    belongs in the pace); `judged` counts the ones recorded. `labelled` is the count
-    behind "labeled overall", by default the questions with a verdict; a round over
-    judged questions passes the ones it has recorded.
+    belongs in the pace); `judged` counts the ones recorded. `judged_overall` is the
+    count behind "judged overall": None counts the questions with a verdict, and a later
+    round passes the ones it has judged.
     """
-    if labelled is None:
-        labelled = sum(1 for q in questions if q.gold_chunk_ids or q.annotated_at)
+    if judged_overall is None:
+        judged_overall = sum(1 for q in questions if q.is_judged)
     remaining = len(queue) - handled
 
     table = Table(show_header=False, box=None, padding=(0, 2))
     table.add_row(
-        "labeled overall",
-        Text(f"{formatting.count(labelled)}/{formatting.count(len(questions))}"),
+        "judged overall",
+        Text(f"{formatting.count(judged_overall)}/{formatting.count(len(questions))}"),
     )
     table.add_row(
         "this session",
@@ -111,11 +110,11 @@ def default_annotator() -> str:
 class QueueSpec:
     """Which questions a round covers: `select_queue` reads it."""
 
-    annotation_round: int = 1
-    only_unlabelled: bool = True
-    sample: int | None = None
-    seed: int = 0
-    sample_ids: Sequence[str] | None = None
+    annotation_round: int
+    only_unjudged: bool
+    sample: int | None
+    seed: int
+    sample_ids: Sequence[str] | None
 
 
 @dataclass(frozen=True)
@@ -128,7 +127,7 @@ class LabelTarget:
 
     questions_path: str
     index_version: str
-    annotator: str = ""
+    annotator: str
 
     def who(self) -> str:
         """The annotator recorded on every judgment."""
@@ -139,35 +138,39 @@ class LabelTarget:
 class LabelPlan:
     """One labeling session, built once by the command that starts it.
 
-    `per_method` and `limit` default to the config's pool geometry when `None`.
+    `limit` defaults to the config's pool geometry when `None`.
     """
 
     target: LabelTarget
-    queue: QueueSpec = QueueSpec()
-    per_method: int | None = None
-    limit: int | None = None
+    queue: QueueSpec
+    per_method: int
+    limit: int | None
 
 
 def select_queue(questions: Sequence[Question], spec: QueueSpec) -> list[Question]:
     """Which questions this round will cover.
 
-    Round 1 walks the unlabeled ones. A later round covers judged ones only,
-    since re-judging a question never judged measures nothing: the ids of a
-    fixed sample file when one is given, otherwise a subsample stratified by
-    category (`dataset.sampling`).
+    Round 1 walks the unjudged ones, or every question with `only_unjudged` off;
+    when `sample` is smaller than that set, a random `sample` of it. A later round
+    ignores `only_unjudged` and covers judged ones only, since re-judging a question
+    never judged measures nothing. It covers the ids of a fixed sample file
+    when one is given, a subsample stratified by category (`dataset.sampling`) when
+    `sample` is smaller than the judged set, and otherwise every judged question.
+
+    Raises:
+        UserError: `spec.sample_ids` names a question round 1 never judged, or a later
+            round's `spec.sample` is below the number of judged categories.
     """
     if spec.annotation_round > 1:
         return _retest_queue(questions, spec)
-    queue = (
-        [q for q in questions if not q.gold_chunk_ids] if spec.only_unlabelled else list(questions)
-    )
+    queue = [q for q in questions if not q.is_judged] if spec.only_unjudged else list(questions)
     if spec.sample and spec.sample < len(queue):
         queue = random.Random(spec.seed).sample(queue, spec.sample)
     return queue
 
 
 def _retest_queue(questions: Sequence[Question], spec: QueueSpec) -> list[Question]:
-    """The judged questions a later round re-judges: a sample file's, or a stratified sample."""
+    """The judged questions a later round re-judges: a sample file's, a stratified sample or all."""
     pool = [q for q in questions if q.is_judged]
     if spec.sample_ids is not None:
         return _sample_file_queue(pool, spec.sample_ids)
@@ -195,7 +198,7 @@ class _Journal:
     def __init__(self, target: LabelTarget, annotation_round: int) -> None:
         self.path = target.questions_path
         self.round = annotation_round
-        self.writes_gold = self.round == 1
+        self.writes_gold = self.round == FIRST_ROUND
         self.annotator = target.who()
         self.index_version = target.index_version
         self.questions = load_questions(self.path)
@@ -236,6 +239,12 @@ class _Journal:
             save_questions(self.path, self.questions)
         save_rounds(self.path, self.rounds)
 
+    def judged_overall(self) -> int | None:
+        """The questions a later round has judged; None in round 1, which counts its verdicts."""
+        if self.writes_gold:
+            return None
+        return self.rounds.judged_in(self.round, (q.id for q in self.questions))
+
     def candidates(
         self, retriever: LabelRetriever, question: Question, per_method: int, limit: int
     ) -> tuple[list[Result], set[str]]:
@@ -255,7 +264,7 @@ class _Journal:
         if first is None:
             raise UserError(
                 f"{question.id}: no round-1 journal entry to re-judge",
-                hint=f"the journal is {rounds_path(self.path)}",
+                hint=f"label it in round 1 first; the journal is {rounds_path(self.path)}",
             )
         return retest_candidates(retriever.by_id, question.id, first, RETEST_SHUFFLE_SEED), set()
 
@@ -296,6 +305,8 @@ def label_session(
 
     Raises:
         ValueError: `plan.target` carries no `index_version`.
+        UserError: Nothing is at `plan.target.questions_path`, or a directory is, or
+            `select_queue` refuses `plan.queue`.
     """
     console = console or Console()
     target = plan.target
@@ -306,17 +317,13 @@ def label_session(
     queue = select_queue(journal.questions, plan.queue)
     if not queue:
         console.print(
-            "[green]Nothing to label.[/green] Use --all to revisit labeled questions, "
-            "--review ID ... to correct specific ones, or --round 2 to start a "
-            "re-annotation pass."
+            "[green]Nothing to label.[/green] --all revisits judged questions, --review "
+            "ID ... corrects specific ones, and --round 2 starts a re-annotation pass."
         )
         return
     _announce(console, queue, journal)
-    # Pool geometry comes from the config, so the depth used and the depth
-    # evals/methodology.md states cannot drift apart unnoticed.
-    per_method = plan.per_method or cfg.eval.pool_depth_per_method
     limit = plan.limit or cfg.eval.pool_display
-    _walk(console, retriever, queue, journal, (per_method, limit), prompt)
+    _walk(console, retriever, queue, journal, (plan.per_method, limit), prompt)
 
 
 def _walk(
@@ -337,7 +344,12 @@ def _walk(
             console.rule(Text(f"{formatting.count(position)}/{formatting.count(len(queue))}"))
             show(
                 progress_table(
-                    journal.questions, queue, handled, judged, time.monotonic() - started
+                    journal.questions,
+                    queue,
+                    handled,
+                    judged,
+                    time.monotonic() - started,
+                    judged_overall=journal.judged_overall(),
                 )
             )
             candidates, marked = journal.candidates(retriever, question, *geometry)
@@ -356,8 +368,17 @@ def _walk(
         console.print("\n[yellow]interrupted: progress saved[/yellow]")
     journal.save()
 
-    show(progress_table(journal.questions, queue, handled, judged, time.monotonic() - started))
-    labelled = sum(1 for q in journal.questions if q.gold_chunk_ids)
+    show(
+        progress_table(
+            journal.questions,
+            queue,
+            handled,
+            judged,
+            time.monotonic() - started,
+            judged_overall=journal.judged_overall(),
+        )
+    )
+    labelled = sum(1 for q in journal.questions if q.is_labelled)
     console.print(
         Text.assemble(
             "\n",

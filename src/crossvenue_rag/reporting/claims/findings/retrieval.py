@@ -7,6 +7,7 @@ from ....config_eval import COMPARISON_SCOPE, LABELLED_COMPARISON_SCOPE, LABELLE
 from ....evaluation import power as power_module
 from ...check import Doc
 from ...compute import bench, corpus, datasets, power, retrieval, retrieval_tables
+from ...compute.estimates import DELTA
 from ...run_ids import (
     AFTER_RESTRUCTURE_RUN,
     BEFORE_RESTRUCTURE_RUN,
@@ -31,7 +32,6 @@ from ..comparisons import (
     top_k_text,
 )
 from ..methodology.protocol import bootstrap_resamples, bootstrap_seed_text
-from ..methodology.significance import DELTA
 from ..reasons import INTERVAL_LEVEL
 
 # How the comparison table names the oracle.
@@ -214,7 +214,7 @@ def split_cost(doc: Doc, src: Sources) -> None:
     )
     doc.check(
         "On those questions per-venue calls \u2212 one call is {} ms [{}, {}] per query in the "
-        "rerank step (bench, descriptive)",
+        "rerank step",
         *signed_ms_parts(bench.paired_difference(src, "rerank_ms")),
     )
 
@@ -243,8 +243,8 @@ def reranker(doc: Doc, src: Sources) -> None:
         level(),
     )
     doc.claim(
-        "and both gains are inconclusive at this size (recall@10 reaches {}% power from a gap "
-        "of {})",
+        "and both gains are inconclusive at this size. Recall@10 reaches {}% power from a gap "
+        "of {}",
         formatting.count(power_module.TARGET_POWER_PERCENT),
         formatting.design_parameter(power.detectable_gap(src, "holm_first_step")),
         holds=retrieval.paired_includes_zero(src, *recall)
@@ -270,7 +270,8 @@ def first_stage(doc: Doc, src: Sources) -> None:
     """The reranker against dense and BM25."""
     dense = ("hybrid_rerank", "dense", retrieval.at_top_k(src, "recall"), LABELLED_COMPARISON_SCOPE)
     doc.check(
-        "comparison gold, {} questions better and {} worse (p_Holm = {})",
+        "comparison gold, {} [{}, {}], {} questions better and {} worse (p_Holm = {})",
+        *signed_parts(retrieval.paired_interval(src, *dense)),
         *better_worse(retrieval.paired_counts(src, *dense)),
         formatting.p_value(retrieval.paired_p(src, *dense, "holm_p")),
     )

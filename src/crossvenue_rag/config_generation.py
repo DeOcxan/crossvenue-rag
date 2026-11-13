@@ -102,7 +102,7 @@ class GenerationConfig(Section):
     judge_prompt_sha256: str | None = Field(None, pattern=SHA256_PATTERN)
     generators: dict[str, ModelConfig] = Field({})
     generator_params: GeneratorParams = GeneratorParams()
-    # Judge candidates; `judge` names the one in use, chosen by calibration
+    # Judge candidates; `judge` names the one in use, the one calibration chose
     # against human ratings (docs/adr/0010-judge.md). None while no judge is chosen.
     # A judge's name is part of a file name in a run: `judgements_<judge>.jsonl`.
     judges: dict[PlainName, ModelConfig] = Field({})
@@ -162,8 +162,15 @@ class GenerationConfig(Section):
         unknown = [m.generator for m in self.matrix if m.generator not in self.generators]
         if unknown:
             raise ValueError(f"generation.matrix names unknown generators: {', '.join(unknown)}")
-        names = [m.name for m in self.matrix]
-        distinct(names, "generation.matrix names")
+        return self
+
+    @model_validator(mode="after")
+    def _matrix_names_distinct(self) -> GenerationConfig:
+        distinct([m.name for m in self.matrix], "generation.matrix names")
+        return self
+
+    @model_validator(mode="after")
+    def _primary_pair_names_two_configurations(self) -> GenerationConfig:
         if self.primary_pair and (
             len(self.primary_pair) != PRIMARY_PAIR_SIZE
             or self.primary_pair[0] == self.primary_pair[1]
@@ -172,12 +179,25 @@ class GenerationConfig(Section):
                 f"generation.primary_pair names {formatting.count(PRIMARY_PAIR_SIZE)} different "
                 "configurations"
             )
+        return self
+
+    @model_validator(mode="after")
+    def _primary_metrics_distinct(self) -> GenerationConfig:
         distinct(self.primary_metrics, "generation.primary_metrics")
+        return self
+
+    @model_validator(mode="after")
+    def _primary_pair_names_matrix_entries(self) -> GenerationConfig:
+        names = [m.name for m in self.matrix]
         missing = [p for p in self.primary_pair if p not in names]
         if missing:
             raise ValueError(
                 f"generation.primary_pair names unknown configurations: {', '.join(missing)}"
             )
+        return self
+
+    @model_validator(mode="after")
+    def _judge_is_a_candidate(self) -> GenerationConfig:
         if self.judge is not None and self.judge not in self.judges:
             raise ValueError(f"generation.judge {self.judge!r} is not one of generation.judges")
         return self

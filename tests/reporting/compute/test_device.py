@@ -29,6 +29,6 @@ def test_changed_cells_are_largest_first_and_membership_cells_a_subset(src):
     assert all(c.metric.split("@")[0] in device.MEMBERSHIP_METRICS for c in membership)
 
 
-def test_on_comparison_questions_only_the_ranking_moves(src):
+def test_on_comparison_questions_only_ranking_metrics_move_besides_dense_unjudged_at_10(src):
     assert device.ranking_only_changes(src, "comparison")
     assert not device.ranking_only_changes(src, "version_sensitive")

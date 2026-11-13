@@ -86,9 +86,10 @@ sources:
       # while answering none of them.
       - "docs/changelog/**"
       - "docs/**/ip-changelog.mdx"
-      # The interactive API explorer: OpenAPI JSON stuffed into frontmatter plus
-      # MDX component scaffolding. Nothing survives normalization but the title,
-      # and every page duplicates a real reference page under docs/v5.
+      # The interactive API explorer. Endpoint pages hold OpenAPI JSON in frontmatter;
+      # normalization keeps the title, a summary line, the parameter section labels
+      # and the response description, and all but one duplicate a reference page
+      # under docs/v5. For category pages it keeps a label and an MDX card-list block.
       - "docs/api-explorer/**"
     metadata:
       api_version:
@@ -226,7 +227,7 @@ sources:
     notes: >-
       The built-in adversarial control: v2 and v3 are forks of Uniswap v2 and v3,
       documented in PancakeSwap's own text (similarity to Uniswap:
-      docs/results/findings.md, PancakeSwap is not a lexical duplicate of
+      docs/results/findings.md, PancakeSwap's median best-match cosine to
       Uniswap). robots.txt allows all crawling (Content-Signal: ai-train=yes).
 
   - venue: hyperliquid
@@ -279,8 +280,8 @@ sources:
 
 # Global rules, tried after every venue's own. Headings only: a section headed
 # "Testnet Deployments" or "Mainnet Margin Tiers" says which environment its
-# chunk is about on any venue. Anchored at the start of a heading so "Local Node
-# with a Mainnet Fork" and "How DutchV3 differs from mainnet" do not fire.
+# chunk is about on any venue. The mainnet rule is anchored at the start of a heading
+# so "Local Node with a Mainnet Fork" and "How DutchV3 differs from mainnet" do not fire.
 metadata:
   environment:
     - {value: testnet, heading: '(?i)^\W*testnets?\b|testnet[- ]only|\(testnet'}

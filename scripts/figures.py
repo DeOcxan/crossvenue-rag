@@ -3,9 +3,9 @@
 It reads only `results/`, `evals/datasets/` and `data/processed/chunks.jsonl` through
 `crossvenue_rag.reporting.sources`, and the latency, calibration and wrong-refusals figures
 draw the run's own tables, the last two with the bootstrap intervals their runs report. A
-recomputed value must equal the number its run reports before it is drawn (`agree`), except
-the per-method means' bootstrap intervals, which no run reports, and the outcomes figure's
-per-category bars, whose sums are checked (`answer_figures`).
+recomputed value is drawn only if it equals its run's number (`agree`) or, for off-venue
+shares, findings' re-scoring, except the per-method means' unreported intervals, outcomes bars
+(sums checked) and pooling gap labels (ends checked).
 """
 
 from __future__ import annotations
@@ -106,7 +106,7 @@ def method_axis(ax: Axes) -> None:
 
 
 def draw_venue_coverage(src: Sources) -> None:
-    """Draws venue_coverage@k per method on the comparison questions, k the run's top k."""
+    """Draws `venue_coverage@k` per method on the comparison questions, k the run's top k."""
     k = top_k(src)
     coverage = at_top_k(src, "venue_coverage")
     rows = category_per_query(src, COMPARISON)
@@ -137,7 +137,7 @@ def draw_venue_coverage(src: Sources) -> None:
 
 
 def draw_recall_ndcg(src: Sources) -> None:
-    """Draws recall@k and nDCG@k per method on the labeled comparison questions."""
+    """Draws `recall@k` and `nDCG@k` per method on the labeled comparison questions."""
     k = top_k(src)
     recall = at_top_k(src, "recall")
     metrics = (
@@ -176,7 +176,7 @@ def draw_recall_ndcg(src: Sources) -> None:
 
 
 def draw_pooling(src: Sources) -> None:
-    """Draws each method's comparison recall@k against both gold versions."""
+    """Draws each method's comparison `recall@k` against both gold versions."""
     recall = at_top_k(src, "recall")
     fig, ax = plt.subplots(figsize=(6.4, 3.2))
     for i, m in enumerate(METHODS):
@@ -274,11 +274,11 @@ def draw_latency(src: Sources) -> None:
 
 
 def draw_off_venue(src: Sources) -> None:
-    """Draws off-venue and via-ccxt share@k per method, on comparison and adversarial questions.
+    """Draws off-venue and via-ccxt `share@k` per method, on comparison and adversarial questions.
 
     The two shares are stacked, and the two categories drawn side by side. Each
     mean is recomputed from the run's saved `retrieved_venues` and must equal
-    the value findings uses (methodology 9b).
+    findings' re-scoring of the same venues (methodology 9b).
     """
     k = top_k(src)
     off_metric, via_metric = at_top_k(src, "off_venue"), at_top_k(src, "via_ccxt")
@@ -312,7 +312,7 @@ def draw_off_venue(src: Sources) -> None:
         f"Exploratory (methodology \u00a79b). Mean share of each question's top "
         f"{formatting.count(k)} from a venue "
         "the question does not name (off-venue), with ccxt chunks on questions that do not "
-        "name ccxt stacked apart (via ccxt); "
+        "name ccxt stacked apart (via ccxt). "
         f"n = {formatting.count(sizes[COMPARISON])} comparison "
         f"and {formatting.count(sizes[ADVERSARIAL])} adversarial questions. "
         "venue_split and venue_split_oracle "

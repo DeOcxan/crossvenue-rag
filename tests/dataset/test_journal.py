@@ -66,6 +66,15 @@ def test_a_judgment_covers_its_pool_then_the_augmentations_and_knows_its_first_p
     assert Judgment(relevant=["d"]).first_pass_relevant() == {"d"}
 
 
+def test_a_judgment_as_shown_is_its_innermost_migration_or_itself():
+    first = {"pool": ["o1", "o2"], "relevant": ["o1"], "index_version": None}
+    second = {**first, "pool": ["m1"], "relevant": [], "migrated_from": first}
+    entry = Judgment.model_validate({"pool": ["n1"], "relevant": [], "migrated_from": second})
+    shown = entry.as_shown()
+    assert (shown.pool, shown.relevant) == (["o1", "o2"], ["o1"])
+    assert Judgment(pool=["a"]).as_shown().pool == ["a"]
+
+
 def test_gold_resolves_from_round_1_the_adjudication_and_a_relabel():
     first = {"pool": ["a", "b", "c"], "relevant": ["a", "b"]}
     journal = Journal.from_json(
@@ -88,6 +97,12 @@ def test_entries_list_every_key_with_its_index_version():
         {"q": {"1": {"index_version": "v1"}, "2": {}, "relabeled": relabel([], [])}}
     )
     assert journal.get("q").entries() == [("1", "v1"), ("2", None), ("relabeled", "v")]
+
+
+def test_judged_in_counts_the_listed_questions_a_round_judged():
+    journal = Journal.from_json({"a": {"1": {}, "2": {}}, "b": {"1": {}}, "c": {"2": {}}})
+    assert journal.judged_in(2, ["a", "b", "missing"]) == 1
+    assert journal.judged_in(1, ["a", "b", "c"]) == 2
 
 
 def test_the_judged_sets_include_what_a_relabel_showed(tmp_path: Path):
@@ -120,6 +135,16 @@ def test_a_missing_journal_reads_as_empty_and_a_damaged_one_is_a_user_error(tmp_
         sidecar.write_text(text, encoding="utf-8")
         with pytest.raises(UserError, match=problem):
             load_rounds(path)
+
+
+def test_a_damaged_journal_names_each_of_its_first_problems(tmp_path: Path):
+    path = tmp_path / "q.jsonl"
+    sidecar = rounds_path(path)
+    sidecar.parent.mkdir()
+    text = '{"q1": {"1": {"pool": "a"}}, "q2": {"1": {"surprise": 1}}}'
+    sidecar.write_text(text, encoding="utf-8")
+    with pytest.raises(UserError, match=r"q1\.rounds\.1\.pool: .*; q2\.rounds\.1\.surprise: "):
+        load_rounds(path)
 
 
 def test_a_journal_saved_and_read_back_is_the_same_journal(tmp_path: Path):

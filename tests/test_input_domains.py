@@ -24,7 +24,7 @@ FILE = "input.data"
 def _jsonl(path: Path) -> object:
     from crossvenue_rag import jsonl
 
-    return jsonl.read(path)
+    return list(jsonl.iter_rows(path))
 
 
 def _questions(path: Path) -> object:
@@ -183,7 +183,7 @@ def _key(monkeypatch, value: str) -> object:
 ENV_OUT_OF_DOMAIN = [
     (_service_config, "/nonexistent/config.yaml", "CROSSVENUE_CONFIG"),
     (_service_config, "", "CROSSVENUE_CONFIG"),
-    (_dsn, "notadsn", "store.dsn"),
+    (_dsn, "notadsn", "CROSSVENUE_PG_DSN"),
     (_key, "   ", "OPENROUTER_API_KEY is not set"),
 ]
 

@@ -11,14 +11,14 @@ from collections import Counter
 from ..patterns import TABLE_HEADER_LINES, table_cells, table_lines
 
 
-def list_items(text: str, start: str, end: str) -> list[str]:
-    """The lines starting "- " of `text` from the first `start` to the first `end` after it.
+def list_items(text: str, start: str) -> list[str]:
+    """The lines starting "- " of `text` from the first `start` to the next heading after it.
 
     Raises:
-        ValueError: `text` has no `start`, or no `end` after it.
+        ValueError: `text` has no `start`, or no heading after it.
     """
     first = text.index(start)
-    section = text[first : text.index(end, first)]
+    section = text[first : text.index("\n#", first)]
     return [line for line in section.splitlines() if line.startswith("- ")]
 
 

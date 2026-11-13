@@ -68,7 +68,7 @@ def test_a_failed_generation_is_recorded_and_a_programming_error_propagates(tmp_
         r.error and r.error.startswith("InvalidResponse: generator response") for r in records
     )
 
-    # Any other UserError, such as a prompt that is not the pinned one, stops the run.
+    # A UserError, such as a prompt that is not the pinned one, stops the run.
     def wrong_prompt(*_args, **_kwargs):
         raise UserError("prompts/generator.md is not the pinned prompt")
 

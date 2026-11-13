@@ -1,4 +1,4 @@
-"""Tests for `reporting.compute.figures`, on a retrieval run written under tmp_path."""
+"""Tests for `reporting.compute.figures`, on a retrieval run written under `tmp_path`."""
 
 from __future__ import annotations
 
@@ -24,7 +24,8 @@ def fixture(root):
     rows = [
         # Top 2: a is found, and one of the two venues is not named.
         ("bm25", "cv-0001", "a b c", "binance okx okx"),
-        ("bm25", "cv-0002", "d e", "okx bybit"),
+        # Top 2: both venues are named.
+        ("bm25", "cv-0002", "d e", "bybit binance"),
         ("dense", "cv-0003", "x", "binance"),
     ]
     per_query = [
@@ -42,7 +43,7 @@ def test_rows_are_grouped_by_method_for_one_category(tmp_path):
     assert rows["dense"] == []
 
 
-def test_a_metric_is_scored_at_the_top_k_on_questions_with_gold_only(tmp_path):
+def test_a_metric_is_scored_on_questions_with_gold_only(tmp_path):
     src = fixture(tmp_path)
     rows = figures.category_per_query(src, "comparison")["bm25"]
     assert figures.labelled_values(src, rows, recall_at_k) == [1.0]
@@ -52,7 +53,7 @@ def test_off_venue_shares_are_averaged_over_the_rows(tmp_path):
     src = fixture(tmp_path)
     rows = figures.category_per_query(src, "comparison")["bm25"]
     off, via = figures.off_venue_shares(src, rows)
-    assert off == pytest.approx(0.5)
+    assert off == pytest.approx(0.25)
     assert via == 0.0
 
 

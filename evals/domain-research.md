@@ -8,9 +8,7 @@ The themes come from GitHub search-API queries across `ccxt/ccxt`, `bybit-exchan
 
 `pancakeswap/pancake-frontend` is not reachable through the GitHub API (repo GET returns 404, search returns 422), so PancakeSwap developer Q&A could not be mined at volume.
 
-## Ranked themes
-
-Ranked by how often each problem recurred in those searches, with corpus applicability.
+## Themes
 
 ### 1. Timestamp, clock skew and `recvWindow`
 
@@ -18,12 +16,12 @@ Signed requests rejected because the local clock drifted from exchange time.
 
 | Venues | Why it discriminates retrieval |
 |---|---|
-| binance, bybit, bingx, ccxt; no `recvWindow` on dydx and hyperliquid | The exact numeric answer differs per venue and the shared phrasing is near-identical (trap T4). |
+| binance, bybit, bingx, ccxt; no `recvWindow` on dydx and hyperliquid | The exact numeric answer differs per venue under a shared parameter name (trap T4). |
 
 Issue titles:
 
 - "Binance error: Timestamp for this request was 1000ms ahead of the server's time" ([ccxt#850](https://github.com/ccxt/ccxt/issues/850))
-- "Binance: Timestamp for this request is outside of the recvWindow" ([ccxt#936](https://github.com/ccxt/ccxt/issues/936)); Bybit variant: "Local Time Out of Sync Causing Authentication Failure" ([pybit#300](https://github.com/bybit-exchange/pybit/issues/300))
+- "Binance: Timestamp for this request is outside of the `recvWindow`" ([ccxt#936](https://github.com/ccxt/ccxt/issues/936)); Bybit variant: "Local Time Out of Sync Causing Authentication Failure" ([pybit#300](https://github.com/bybit-exchange/pybit/issues/300))
 
 ### 2. Authentication and signature construction
 
@@ -40,7 +38,7 @@ Issue titles:
 
 ### 3. Precision, tick size, lot size and minimum notional
 
-Orders rejected by exchange filters because price or quantity was not rounded to the market's step.
+Orders that exchange filters reject because price or quantity was not rounded to the market's step.
 
 | Venues | Why it discriminates retrieval |
 |---|---|
@@ -77,7 +75,7 @@ Hitting 429 / `-1003` / Bybit `10006`, not knowing about `enableRateLimit`, per-
 Issue titles:
 
 - "Polling Binance fetchTickers every 5 seconds triggers a ban" ([ccxt#1027](https://github.com/ccxt/ccxt/issues/1027))
-- "Rate limit error. Response from bybit without X-Bapi-Limit-Reset-Timestamp" ([pybit#340](https://github.com/bybit-exchange/pybit/issues/340))
+- "Rate limit error. Response from bybit without `X-Bapi-Limit-Reset-Timestamp`" ([pybit#340](https://github.com/bybit-exchange/pybit/issues/340))
 
 ### 6. Order types, time-in-force and attached TP/SL
 
@@ -131,7 +129,7 @@ Issue titles:
 Issue titles:
 
 <!-- verbatim GitHub issue title --><!-- vale crossvenue.EmDash = NO -->
-- "Blofin — fetch_ohlcv is not working properly, especially 'since'" ([ccxt#24677](https://github.com/ccxt/ccxt/issues/24677))
+- "Blofin — fetch_ohlcv is not working properly, especially '`since`'" ([ccxt#24677](https://github.com/ccxt/ccxt/issues/24677))
 <!-- vale crossvenue.EmDash = YES -->
 - "Klines for '1d' interval returns only 3 values" ([binance-connector-python#224](https://github.com/binance/binance-connector-python/issues/224))
 
@@ -166,7 +164,7 @@ Issue titles:
 
 ### 12. DEX: token approvals, allowance, Permit2 and reverts
 
-`execution reverted: STF` (insufficient allowance) is the classic Uniswap revert; Permit2 nonce and witness confusion is the modern one.
+`execution reverted: STF` (insufficient allowance) is the revert of the v3 `SwapRouter` after a direct ERC-20 `approve`; Permit2 nonce and witness confusion is that of Permit2's signature approvals, which the `UniversalRouter` and UniswapX take.
 
 | Venues | Why it discriminates retrieval |
 |---|---|
@@ -190,7 +188,7 @@ Issue titles:
 <!-- verbatim GitHub issue title --><!-- vale crossvenue.Timeless = NO -->
 - "`deadline` parameter is no longer exists in SwapRouter02 contract" ([Uniswap/sdks#234](https://github.com/Uniswap/sdks/issues/234))
 <!-- vale crossvenue.Timeless = YES -->
-- "Wrong minimumAmountOut calculation" ([v3-sdk#147](https://github.com/Uniswap/v3-sdk/issues/147))
+- "Wrong `minimumAmountOut` calculation" ([v3-sdk#147](https://github.com/Uniswap/v3-sdk/issues/147))
 
 ### 14. Funding rate values, intervals and history
 
@@ -215,7 +213,7 @@ EIP-712 signing of L1 actions, agent wallet vs master account, `signatureChainId
 
 Issue titles:
 
-- "Is signatureChainId intentionally hardcoded to 0x66eee in sign_user_signed_action?" ([hyperliquid-python-sdk#254](https://github.com/hyperliquid-dex/hyperliquid-python-sdk/issues/254))
+- "Is `signatureChainId` intentionally hardcoded to 0x66eee in sign_user_signed_action?" ([hyperliquid-python-sdk#254](https://github.com/hyperliquid-dex/hyperliquid-python-sdk/issues/254))
 - "[hyperliquid] Concurrent signed actions reuse a nonce and get rejected as duplicates" ([ccxt#30348](https://github.com/ccxt/ccxt/issues/30348))
 
 ### 16. dYdX v4 specifics: `goodTilBlock`, account sequence, short-term vs long-term orders
@@ -228,7 +226,7 @@ Order expiry by block height, account sequence mismatches, and the two order lif
 
 Issue titles:
 
-- "Issues with GoodTilBlock" ([v4-clients#105](https://github.com/dydxprotocol/v4-clients/issues/105))
+- "Issues with `GoodTilBlock`" ([v4-clients#105](https://github.com/dydxprotocol/v4-clients/issues/105))
 - "BroadcastError: … account sequence mismatch, expected 11000, got 10999" ([v4-clients#282](https://github.com/dydxprotocol/v4-clients/issues/282))
 
 ### 17. Symbol and market-id mapping
@@ -249,31 +247,31 @@ Spot market buys that take a quote amount rather than a base amount.
 
 | Venues | Why it discriminates retrieval |
 |---|---|
-| ccxt, binance, bybit | Same reason as 17: it is a ccxt abstraction question, so every gold label would be a chunk of `wiki/Manual.md`. |
+| ccxt, binance, bybit | It is a ccxt abstraction question, so every gold label is a ccxt chunk. |
 
 Issue titles:
 
-- "Question: createMarketBuyOrderRequiresPrice usage?" ([ccxt#24915](https://github.com/ccxt/ccxt/issues/24915))
+- "Question: `createMarketBuyOrderRequiresPrice` usage?" ([ccxt#24915](https://github.com/ccxt/ccxt/issues/24915))
 
 ## The sharpest near-duplicate traps in this corpus
 
-The adversarial category is built on them. Each is verified against `data/processed/chunks.jsonl`; the values quoted are the corpus's own.
+The adversarial category is built on them. Each phrase in quotation marks occurs, ignoring case, in `data/processed/chunks.jsonl`, with an ellipsis for omitted words.
 
-| # | Trap | Venues | Shared wording | How the answers differ |
+| # | Trap | Venues | Wording | How the answers differ |
 |---|---|---|---|---|
-| T1 | Fee tiers | uniswap ↔ pancakeswap | "fee tiers available for V3 (concentrated liquidity) pools", "0.01% … 1%" | Uniswap v3: 0.01 / 0.05 / 0.30 / 1.00%. PancakeSwap v3 (BSC/Monad): 0.01 / 0.05 / 0.25 / 1%. PancakeSwap on Solana: 18 tiers. V2 base fee 0.30% vs 0.25%. The literal constant `3000` is a Uniswap tier and not a PancakeSwap one. |
-| T2 | Permit2 address | uniswap ↔ pancakeswap, same chain | "Permit2", "gasless/batched approvals" | Uniswap: `0x0000…78BA3`, canonical on every chain including BNB. PancakeSwap on BSC: `0x31c2…c768`. Answering one with the other approves the wrong spender. |
+| T1 | Fee tiers | uniswap ↔ pancakeswap | "fee tiers", "0.01% … 1%" | Uniswap v3: 0.01 / 0.05 / 0.30 / 1.00%. PancakeSwap v3 (BSC/Monad): 0.01 / 0.05 / 0.25 / 1%. PancakeSwap on Solana: 18 tiers. V2 base fee 0.30% vs 0.25%. The literal constant `3000` is a Uniswap tier and not a PancakeSwap one. |
+| T2 | Permit2 address | uniswap ↔ pancakeswap, same chain | "Permit2", "gasless" | Uniswap: `0x0000…78BA3`, canonical on every chain including BNB. PancakeSwap on BSC: `0x31c2…c768`. Answering one with the other approves the wrong spender. |
 | T3 | Router revert strings | uniswap v2 ↔ pancakeswap (and uniswap v2↔v3↔v4 internally) | `EXPIRED`, `K`, literally identical identifiers | Prefixes differ (`UniswapV2:` vs `PancakeRouter:`/`Pancake:`) and the documented remedies differ: PancakeSwap says set slippage ≥12% for tax tokens and hold 30% more tokens than the trade; Uniswap says use the `…SupportingFeeOnTransfer` router functions. Uniswap v3 uses mnemonics (`LOK`, `TLU`), v4 uses hex selectors (`0x5212cba1`). |
-| T4 | `recvWindow` maximum | binance ↔ bybit ↔ bingx | "recvWindow … request validity window … default 5000" | Binance: max 60000. Bybit FIX: default 5000, max 60000. BingX: "Default is 5000; maximum is 5000", so the standard "raise recvWindow to fix clock drift" advice is wrong for BingX. dYdX and Hyperliquid have no such parameter. |
-| T5 | Rate-limit breach code and ban length | binance ↔ bybit ↔ bingx | "too many requests", "rate limit exceeded", "back off" | Binance: 429, then 418 auto-ban scaling from 2 minutes to 3 days, per-IP. Bybit: 403 "access too frequent", a wait of at least 10 minutes, 600 req / 5 s per IP plus 10 rps read / 5 rps write per UID. BingX: 429, then 418, limits printed per endpoint as "N/s per UID; M/s per IP". Hyperliquid: 1200 weight/min per IP and an address-based limit of 1 request per 1 USDC traded. `403` means three different things across three venues. |
-| T6 | Post-only | bybit ↔ bingx ↔ binance ↔ hyperliquid ↔ dydx | "post only", "maker only", "rejected if it would take liquidity" | Bybit/BingX: a `timeInForce` value spelled `PostOnly`. Binance: order type `LIMIT_MAKER`, with no TIF; sending a TIF where not required raises `-1114`. Hyperliquid: `tif = "Alo"`, title case, and it cancels rather than rejects. dYdX: a flag on short-term orders. No venue in this corpus uses `GTX`. |
+| T4 | `recvWindow` maximum | binance ↔ bybit ↔ bingx | `recvWindow`, a request validity window with a default of 5000 ms | Binance: max 60000. Bybit FIX: default 5000, max 60000. BingX: "Default is `5000`; maximum is `5000`", so the standard advice to raise `recvWindow` to fix clock drift is wrong for BingX. dYdX and Hyperliquid have no such parameter. |
+| T5 | Rate-limit breach code and ban length | binance ↔ bybit ↔ bingx | "too many requests", "rate limit exceeded", "back off" | Binance: 429, then 418 auto-ban scaling from 2 minutes to 3 days, per-IP. Bybit: 403 "access too frequent", a wait of at least 10 minutes, 600 req / 5 s per IP plus 10 rps read / 5 rps write per UID. BingX: 429, then 418, limits printed per endpoint, per UID and per IP. Hyperliquid: 1200 weight/min per IP and an address-based limit of 1 request per 1 USDC traded. `403` means three different things across three venues. |
+| T6 | Post-only | bybit ↔ bingx ↔ binance ↔ hyperliquid ↔ dydx | "post only", "maker only" | Bybit/BingX: a `timeInForce` value spelled `PostOnly`. Binance: order type `LIMIT_MAKER`, with no TIF; sending a TIF where not required raises `-1114`. Hyperliquid: `tif = "Alo"`, title case, and it cancels rather than rejects. dYdX: a flag on short-term orders. No venue in this corpus uses `GTX`. |
 | T7 | WebSocket keepalive | all five API venues | "ping", "pong", "heartbeat" | Binance: client messages capped at 5/s (ping frames count), connection dies at 24 h, 1024 streams. Bybit: client sends `{"op":"ping"}`. BingX: server sends the literal text `Ping`, client must reply `Pong`, everything GZIP-compressed (and that page is in Chinese). Hyperliquid: server closes if it hasn't sent anything in 60 s. dYdX: protocol-level control frames every 30 s, pong within 10 s. |
-| T8 | Binance mainnet vs testnet vs demo (intra-venue) | binance ↔ binance | near-identical text: of the mainnet chunks of `rest-api.md` (167), `web-socket-api.md` (226) and `errors.md` (64), 105, 155 and 57 have a testnet occurrence identical once the word "testnet" is removed | Byte-identical pairs (433) are one chunk each, citing the mainnet page with the testnet page in `sources`. The pairs that differ only by the word "testnet" are two chunks, told apart only by `doc_path`/`heading_path`, which is the trap. A third environment, Demo Mode at `demo-api.binance.com`, is separate from the testnet: "Binance's test environment" has two mutually exclusive correct answers. |
+| T8 | Binance mainnet vs testnet vs demo (intra-venue) | binance ↔ binance | near-identical text: of the mainnet chunks of `rest-api.md` (167), `web-socket-api.md` (226) and `errors.md` (64), 105, 155 and 57 have a testnet occurrence identical once the word "testnet" is removed | Byte-identical pairs (433) are one chunk each, citing the mainnet page with the testnet page in `sources`. The pairs that differ only by the word "testnet" are two chunks, told apart only by `doc_path`/`heading_path`, which is the trap. A third environment, Demo Mode at `demo-api.binance.com`, is separate from the testnet: a question about Binance's test environment has two mutually exclusive correct answers. |
 | T9 | Order-book resync recipe | binance ↔ bybit | near-verbatim step lists (closest chunk pair between `bybit/docs/v5/websocket/public/full-ob.mdx` and `binance/testnet/web-socket-streams.md`: TF-IDF cosine 0.774, with the vectorizer parameters of [reproduce](../docs/how-to/reproduce.md#compare-pancakeswap-with-uniswap); what it was fitted on for this pair is not recorded) | Binance uses `U`/`u` first/final update IDs against a REST `lastUpdateId`; Bybit uses a per-topic `seq`/`u` with explicit `snapshot`/`delta` message types. |
-| T10 | `limit` and pagination | binance ↔ bybit ↔ bingx ↔ hyperliquid | "`limit`", "`startTime`/`endTime`", "Default … Maximum …" | Binance klines: default 500, max 1000, and `depth` weight scales with limit. Bybit: opaque `nextPageCursor`, limit [1,1000]. BingX: `pageIndex`/`pageSize`, and the same `startTime` field is milliseconds on `inviteAccountList` and days on `commissionDataList`, `third/commissionDataList` and `partnerData`. Hyperliquid `l2Book`: hard 20 levels per side regardless of any limit. |
+| T10 | `limit` and pagination | binance ↔ bybit ↔ bingx ↔ hyperliquid | "`limit`", "`startTime`/`endTime`", "Default … Maximum …" | Binance klines: default 500, max 1000, and `depth` weight scales with `limit`. Bybit: opaque `nextPageCursor`, `limit` [1,1000]. BingX: `pageIndex`/`pageSize`, and the same `startTime` field is milliseconds on `inviteAccountList` and days on `commissionDataList`, `third/commissionDataList` and `partnerData`. Hyperliquid `l2Book`: hard 20 levels per side regardless of any limit. |
 | T11 | Funding interval "8 hours" | hyperliquid ↔ bybit ↔ (binance gap) | "8 hour funding rate", "funding interval" | Hyperliquid: the formula is an 8-hour rate but funding is charged hourly at 1/8, capped 4%/hour, settled on the spot oracle price not the mark price, asset-independent. Bybit: "each symbol has a different funding interval", and the field is `fundingInterval` in minutes on `instruments-info` but `fundingIntervalHour` as a string on `tickers`. Binance: no funding content at all. |
-| T12 | "API wallet" | hyperliquid ↔ dydx | the phrase "API Wallet", "generate a key pair", "sign on behalf of the account" | Hyperliquid: an EIP-712 `approveAgent` action with `signatureChainId`; orders are signed with the agent, and queries take the master address; querying by agent address returns empty. dYdX: Cosmos permissioned keys with per-key scoping, no EIP-712, expiry via `goodTilBlock`. |
-| T13 | ccxt as a shadow venue | ccxt ↔ every venue | `createOrder`, `setSandboxMode`, `fetchFundingInterval` | 654 of the 1,436 ccxt chunks have a raw-venue chunk at TF-IDF cosine ≥ 0.3 (vectorizer parameters of [reproduce](../docs/how-to/reproduce.md#compare-pancakeswap-with-uniswap); what it was fitted on for this count is not recorded). "How do I place a post-only order on Bybit?" can legitimately retrieve `wiki/exchanges/bybit.md`, which is right for ccxt users and wrong for anyone calling REST directly. ccxt's own manual says "the unification of `timeInForce` is a work in progress". |
+| T12 | "API wallet" | hyperliquid ↔ dydx | the phrase "API Wallet" | Hyperliquid: an EIP-712 `approveAgent` action with `signatureChainId`; orders are signed with the agent, and queries take the master address; querying by agent address returns empty. dYdX: Cosmos permissioned keys with per-key scoping, no EIP-712, expiry via `goodTilBlock`. |
+| T13 | ccxt as a shadow venue | ccxt ↔ every venue | `createOrder`, `setSandboxMode`, `fetchFundingInterval` | 654 of the 1,436 ccxt chunks have a raw-venue chunk at TF-IDF cosine ≥ 0.3 (vectorizer parameters of [reproduce](../docs/how-to/reproduce.md#compare-pancakeswap-with-uniswap); what it was fitted on for this count is not recorded). A question on placing a post-only order on Bybit can legitimately retrieve `wiki/exchanges/bybit.md`, which is right for ccxt users and wrong for anyone calling REST directly. ccxt's own manual says "the unification of `timeInForce` is a work in progress". |
 
 PancakeSwap's documentation is its own text, although PancakeSwap forks Uniswap's protocol. Their TF-IDF similarity is a result in [findings](../docs/results/findings.md#pancakeswaps-median-best-match-cosine-to-uniswap-is-0143). PancakeSwap's corpus is consumer-facing product and FAQ prose; Uniswap's is developer protocol reference. The hazard is conceptual duplication with different numbers. The shared vocabulary (pool, tick, fee tier, router, hooks, flash accounting, ERC-6909) is expected to confuse a dense retriever. An off-venue measurement on questions naming one of the two would test it.
 
@@ -281,21 +279,18 @@ The corpus's worst lexical duplication is intra-venue (T8); the counts are a res
 
 ## Use in the question set
 
-The questions use themes 1–16 and none of 17–18 (ccxt-abstraction questions, whose answers are all in one document). The category targets are decision 2's; the themes count toward them as follows:
+The notes of the gold versions, `v0.2-gold` to `v0.3-gold`, name themes 1, 2, 5, 10, 14 and 18, and none names theme 17. The category targets are decision 2's; the themes count toward them as follows:
 
-- fact: themes 1, 2, 3, 5, 8, 9, 10, 14, 15, 16, spread across venues.
-- comparison: explicitly two-venue questions drawn from T1, T4, T5, T6, T7, T10, T11, T12. They cover three information needs: numeric divergence under a shared term, the same name for a different mechanism, and a capability present on one venue and absent on the other.
-- multihop: questions needing two chunks from the same venue (for example "what is the maximum `limit` on Bybit klines and how do I page past it").
-- adversarial: T1–T13, across the three sub-shapes of §4.
-- unanswerable: Binance futures funding and leverage (themes 7 and 14 on Binance, whose documentation in the corpus is spot only), dYdX v3, Bybit changelog history, plus wrong-venue premises drawn from T4, T6 and T12.
+- fact: themes 1, 5 and 14 and trap T11, spread across venues.
+- comparison: explicitly two-venue questions drawn from T1–T7, T10–T13 and themes 2 and 10. They cover three information needs: numeric divergence under a shared term, the same name for a different mechanism, and a capability present on one venue and absent on the other.
+- multihop: theme 18, in questions needing two chunks from the same venue (for example "what is the maximum `limit` on Bybit klines and how do I page past it").
+- adversarial: T1, T2, T4, T5, T6, T8, T12 and T13, across the three sub-shapes of §4.
+- version_sensitive: T8.
+- unanswerable: Binance futures funding and leverage (Binance's documentation in the corpus is spot only), dYdX v3, Bybit changelog history, plus wrong-venue premises.
 
-Every adversarial and comparison item records its confusable venue in `notes`. `per_query.csv` records the venue of every retrieved chunk; a tally of which wrong venue outranked the asked one is not reported ([methodology §4](methodology.md#4-adversarial-cases-for-retrieval)).
+`per_query.csv` records the venue of every retrieved chunk; a tally of which wrong venue outranked the asked one is not reported ([methodology §4](methodology.md#4-adversarial-cases-for-retrieval)).
 
 ## References
 
 - GitHub issue titles: the linked issues.
 - Measurements over the corpus: [findings](../docs/results/findings.md#pancakeswaps-median-best-match-cosine-to-uniswap-is-0143) and [duplicate text](../docs/results/findings.md#108-of-chunk-occurrences-are-byte-identical).
-
-### Not verified
-
-- `pancakeswap/pancake-frontend` is not reachable through the GitHub API, so PancakeSwap issue frequencies are a lower bound.

@@ -1,4 +1,4 @@
-"""Tests for `index.store`: the SQL a vector search sends, with no database."""
+"""Tests for `index.store`, with no database."""
 
 from __future__ import annotations
 
@@ -35,7 +35,7 @@ class FakeConnection:
         self.statements.append((text, params))
         source = {"venue": "bybit", "doc_path": "a.md", "heading_path": ["H"],
                   "source_url": "u", "position": 0}  # fmt: skip
-        row = ("c1", 0.9, "bybit", "cex", "a.md", ["H"], "u", "text", 3, json.dumps([source]))
+        row = ("c1", 0.9, "bybit", "cex", "a.md", ["H"], "u", "text", json.dumps([source]))
         return Result([row])
 
 
@@ -58,7 +58,7 @@ def search(k=5, venues=None, chunk_ids=None):
         ({"k": 101}, EXACT),
     ],
 )
-def test_only_a_filter_hnsw_can_serve_uses_the_index(kwargs, order):
+def test_a_search_is_exact_on_several_venues_a_chunk_id_filter_or_k_above_ef_search(kwargs, order):
     statements, _ = search(**kwargs)
     (setting, _), (query, params) = statements
     assert setting == "SET LOCAL hnsw.ef_search = 100"
@@ -78,10 +78,20 @@ def test_a_row_comes_back_as_a_hit_with_its_similarity_and_metadata():
     [hit] = hits
     assert (hit.chunk_id, hit.similarity) == ("c1", 0.9)
     meta = hit.metadata
-    assert meta["heading_path"] == ["H"] and meta["sources"][0].doc_path == "a.md"
+    assert meta.heading_path == ["H"] and meta.sources[0].doc_path == "a.md"
 
 
-class FakeEmbedder(Embedder):
+def test_a_hit_holds_only_columns_a_result_takes():
+    import dataclasses
+
+    from crossvenue_rag import models
+
+    _, [hit] = search()
+    columns = {f.name for f in dataclasses.fields(hit.metadata)}
+    assert columns <= {f.name for f in dataclasses.fields(models.Result)}
+
+
+class ZeroVectorEmbedder(Embedder):
     """Encodes every text as a zero vector of `width` dimensions."""
 
     width = 3
@@ -122,11 +132,26 @@ def test_a_dimension_the_model_does_not_produce_is_refused_with_the_value_to_set
     cfg = Config()
     cfg.embedding.dimension = 1024
     chunks = [make_chunk("c1", "bybit", "text")]
-    embedder = FakeEmbedder(cfg.embedding)
+    embedder = ZeroVectorEmbedder(cfg.embedding)
     with pytest.raises(UserError, match=r"sets embedding\.dimension to 1024, but") as refused:
         store.index_chunks(cfg, chunks, "v", embedder=embedder, store=FakeWriteStore(cfg))
     assert "produced 3 dimensions" in str(refused.value)
     assert "`embedding.dimension: 3`" in refused.value.hint
+
+
+def test_the_dimension_hint_names_the_rebuild_a_changed_dimension_needs():
+    from crossvenue_rag.errors import UserError
+    from crossvenue_rag.index import store
+    from tests.conftest import make_chunk
+
+    cfg = Config()
+    cfg.embedding.dimension = 1024
+    chunks = [make_chunk("c1", "bybit", "text")]
+    embedder = ZeroVectorEmbedder(cfg.embedding)
+    with pytest.raises(UserError) as refused:
+        store.index_chunks(cfg, chunks, "v", embedder=embedder, store=FakeWriteStore(cfg))
+    # The dimension is a component of `index_version`, so the chunks are ingested again.
+    assert "`make ingest index`" in (refused.value.hint or "")
 
 
 def test_the_refused_dimension_and_the_one_to_set_are_written_through_the_formatting_module(
@@ -139,7 +164,7 @@ def test_the_refused_dimension_and_the_one_to_set_are_written_through_the_format
     cfg = Config()
     cfg.embedding.dimension = 1024
     chunks = [make_chunk("c1", "bybit", "text")]
-    embedder = FakeEmbedder(cfg.embedding)
+    embedder = ZeroVectorEmbedder(cfg.embedding)
     monkeypatch.setattr("crossvenue_rag.formatting.own_form", lambda value: f"<{value}>")
     with pytest.raises(UserError, match=r"sets embedding\.dimension to <1024>, but") as refused:
         store.index_chunks(cfg, chunks, "v", embedder=embedder, store=FakeWriteStore(cfg))
@@ -153,9 +178,9 @@ def test_the_index_log_line_counts_chunks_in_words(caplog):
     from tests.conftest import make_chunk
 
     cfg = Config()
-    cfg.embedding.dimension = FakeEmbedder.width
+    cfg.embedding.dimension = ZeroVectorEmbedder.width
     chunks = [make_chunk("c1", "bybit", "text")]
-    embedder = FakeEmbedder(cfg.embedding)
+    embedder = ZeroVectorEmbedder(cfg.embedding)
     with caplog.at_level(logging.INFO, logger="crossvenue_rag.index.store"):
         assert (
             store.index_chunks(cfg, chunks, "v", embedder=embedder, store=FakeWriteStore(cfg)) == 1

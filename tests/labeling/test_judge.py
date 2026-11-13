@@ -25,6 +25,14 @@ def test_an_uncovered_venue_must_be_accounted_for_and_back_returns_to_selection(
     out = console.export_text()
     assert "nothing marked from bybit: 1 bybit candidate in the pool (#2)" in out
     assert "Expected b, a or m." in out
+    # `b` returns to the selection prompt, so the second "1" answers a selection prompt.
+    assert [str(m).startswith("relevant #s") for m in script.asked] == [
+        True,
+        False,
+        False,
+        True,
+        False,
+    ]
 
 
 def test_none_relevant_on_a_comparison_asks_for_every_venue():
@@ -71,14 +79,12 @@ def test_ask_picks_returns_the_selection_the_marker_for_none_or_skip():
     def no_toggle() -> None:
         raise AssertionError("not toggled")
 
-    assert ask_picks(quiet(), comparison(), results(), Script("2 1"), "relevant", no_toggle) == [
+    assert ask_picks(quiet(), comparison(), results(), Script("2 1"), no_toggle) == [
         1,
         2,
     ]
-    assert ask_picks(quiet(), comparison(), results(), Script("n"), "relevant", no_toggle) == (
-        NONE_RELEVANT
-    )
-    assert ask_picks(quiet(), comparison(), results(), Script(""), "relevant", no_toggle) is None
+    assert ask_picks(quiet(), comparison(), results(), Script("n"), no_toggle) == NONE_RELEVANT
+    assert ask_picks(quiet(), comparison(), results(), Script(""), no_toggle) is None
 
 
 def test_ask_picks_toggles_views_and_reprompts_on_bad_input():
@@ -91,7 +97,6 @@ def test_ask_picks_toggles_views_and_reprompts_on_bad_input():
         comparison(),
         results(),
         Script("f", "v9", "v1", "x", "2"),
-        "relevant",
         lambda: toggles.append(1),
     )
     assert picks == [2]
@@ -112,14 +117,10 @@ def test_a_reversed_range_or_no_number_is_rejected_and_asked_again():
         raise AssertionError("not toggled")
 
     console = quiet()
-    picks = ask_picks(
-        console, comparison(), results(), Script("5-2", ",", "1-3"), "relevant", no_toggle
-    )
+    picks = ask_picks(console, comparison(), results(), Script("5-2", ",", "1-3"), no_toggle)
     assert picks == [1, 2, 3]
     assert console.export_text().count("Expected numbers like `1 4 7` or `2-5`.") == 2
-    assert ask_picks(quiet(), comparison(), results(), Script("n"), "relevant", no_toggle) == (
-        NONE_RELEVANT
-    )
+    assert ask_picks(quiet(), comparison(), results(), Script("n"), no_toggle) == NONE_RELEVANT
 
 
 def test_between_draws_on_every_redraw_of_the_screen():

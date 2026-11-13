@@ -35,8 +35,8 @@ DATASETS_DIR = Path("evals/datasets")
 # The shortest question text a dataset accepts: shorter than this is no question.
 MIN_QUESTION_CHARS = 8
 
-# `manifest_fingerprint` is re-exported for the package (`dataset/__init__.py`): dataset
-# `.meta.json` files and several CHANGELOG entries name it as
+# `manifest_fingerprint` is re-exported for the package (`dataset/__init__.py`):
+# `v0.1.2-candidates.meta.json` and several CHANGELOG entries name it as
 # `crossvenue_rag.dataset.manifest_fingerprint`.
 __all__ = [
     "DATASETS_DIR",
@@ -102,9 +102,8 @@ class QuestionRecord(BaseModel):
     def _answerability_is_consistent(self) -> QuestionRecord:
         """The three answerability fields have to agree.
 
-        An unanswerable question with gold chunks, or a `refuse` expectation on
-        an answerable one, is the kind of contradiction that silently turns a
-        refusal benchmark into noise.
+        An unanswerable question with gold chunks is the kind of contradiction that
+        silently turns a refusal benchmark into noise.
         """
         if self.category == "unanswerable" and self.is_answerable:
             raise ValueError(f"{self.id}: category=unanswerable but is_answerable=true")
@@ -205,7 +204,11 @@ class DatasetMeta(BaseModel):
 
 
 def load_records(path: str | Path) -> list[QuestionRecord]:
-    """The validated rows of a dataset file (`jsonl.read_models`)."""
+    """The validated rows of a dataset file (`jsonl.read_models`).
+
+    Raises:
+        UserError: Nothing is at `path`, or a directory is.
+    """
     return jsonl.read_models(path, QuestionRecord)
 
 
@@ -215,13 +218,18 @@ def version_key(path: Path) -> tuple[int, ...]:
     return tuple(int(part) for part in re.findall(r"\d+", stem))
 
 
+def candidate_pools(datasets_dir: Path) -> list[Path]:
+    """The candidate files in `datasets_dir`, by version (`version_key`)."""
+    return sorted(datasets_dir.glob("*-candidates.jsonl"), key=version_key)
+
+
 def newest_candidate_pool(datasets_dir: Path) -> Path:
     """The highest-versioned candidate file, so selection follows the supplements.
 
     Raises:
         UserError: `datasets_dir` holds no candidate file.
     """
-    pools = sorted(datasets_dir.glob("*-candidates.jsonl"), key=version_key)
+    pools = candidate_pools(datasets_dir)
     if not pools:
         raise UserError(
             f"no candidate pool under {datasets_dir}",

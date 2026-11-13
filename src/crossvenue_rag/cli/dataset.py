@@ -1,8 +1,10 @@
-"""Dataset commands: validate-evals, kappa, round-agreement, select, round-sample, round3-gold."""
+"""Dataset commands.
+
+`validate-evals`, `kappa`, `round-agreement`, `select`, `round-sample`, `round3-gold`.
+"""
 
 from __future__ import annotations
 
-from collections import Counter
 from pathlib import Path
 from typing import Annotated
 
@@ -11,6 +13,7 @@ from rich.text import Text
 
 from .. import formatting
 from ..config_loading import DEFAULT_CONFIG
+from ..confined_paths import require_out_file
 from ..dataset.agreement import (
     KAPPA_TARGET,
     MIN_RETEST_DAYS,
@@ -20,28 +23,31 @@ from ..dataset.agreement import (
     round_agreement,
 )
 from ..dataset.finalize import finalize_selection
-from ..dataset.questions import load_questions
+from ..dataset.journal import FIRST_ROUND, RETEST_ROUND
+from ..dataset.questions import METADATA_FROM_HINT, load_questions
 from ..dataset.records import DATASETS_DIR, load_records, newest_candidate_pool
 from ..dataset.round3_gold import build_round3_gold
 from ..dataset.sampling import (
     ROUND2_SEED,
     ROUND2_SIZE,
-    cited_words,
+    category_counts,
+    sample_line,
     stratified_sample,
     write_sample_file,
 )
 from ..dataset.selection import selection_path
 from ..dataset.validate import validate_dataset
 from ..errors import require_file
-from ..labeling.select_session import SelectionPlan, check_categories, run
+from ..labeling.select_session import SelectionPlan, run
+from ..reporting import run_ids
 from . import render, render_round3
-from .app import ConfigOpt, QuestionsOpt, SetOpt, console, load, say
+from .app import ConfigOpt, QuestionsOpt, SetOpt, console, load, question_category, say
 
 # Round-2 questions whose gold the answer-rating screen showed during the quiet
 # period (methodology section 5); `kappa` reports agreement without them too.
-EXPOSED_FILE = Path("evals/selection/round2_exposed.txt")
+EXPOSED_FILE = Path(run_ids.ROUND2_EXPOSED)
 # The version round 3 shows its questions from and its gold set keeps every other field of.
-ADJUDICATED_DATASET = Path("evals/datasets/v0.2.2-gold.jsonl")
+ADJUDICATED_DATASET = Path(run_ids.GOLD_ADJUDICATED)
 
 
 def validate_evals(
@@ -92,34 +98,36 @@ def round_sample(
     n: Annotated[int, typer.Option("--n", help="Questions in the subsample.")] = ROUND2_SIZE,
     seed: Annotated[int, typer.Option("--seed", help="Sampling seed.")] = ROUND2_SEED,
     out: Annotated[Path, typer.Option("--out", "-o", help="Sample file to write.")] = Path(
-        "evals/selection/round2_sample.txt"
+        run_ids.ROUND2_SAMPLE
     ),
 ) -> None:
     """Draws the round-2 subsample, stratified by category, and writes it to a file.
 
     `crossvenue label --round 2 --sample-file FILE` then labels exactly that list.
     """
+    require_out_file(out, folder_must_exist=False)
     cfg = load(config, set_)
     path = str(questions or cfg.eval.questions)
     sample = stratified_sample(load_questions(path), n, seed)
     write_sample_file(out, sample, seed)
-    counts = Counter(q.effective_category for q in sample)
     say(
         console,
         f"{formatting.plural(len(sample), 'question')}, seed {formatting.own_form(seed)} -> {out}",
     )
-    for category, count in sorted(counts.items(), key=lambda kv: (-kv[1], kv[0])):
+    for category, count in category_counts(sample):
         say(console, f"  {category:<18} {formatting.count(count)}")
     for q in sample:
-        say(console, f'{q.id}  {q.effective_category:<18} "{cited_words(q)}"')
+        say(console, sample_line(q))
 
 
 def kappa(
     config: ConfigOpt = DEFAULT_CONFIG,
     set_: SetOpt = None,
     questions: QuestionsOpt = None,
-    first: Annotated[int, typer.Option("--first", help="First round to compare.")] = 1,
-    second: Annotated[int, typer.Option("--second", help="Second round to compare.")] = 2,
+    first: Annotated[int, typer.Option("--first", help="First round to compare.")] = FIRST_ROUND,
+    second: Annotated[
+        int, typer.Option("--second", help="Second round to compare.")
+    ] = RETEST_ROUND,
     exposed: Annotated[
         Path | None,
         typer.Option(
@@ -155,15 +163,17 @@ def kappa(
     bootstrap = Bootstrap(cfg.eval.bootstrap_resamples, cfg.eval.bootstrap_seed)
     request = KappaRequest(
         str(questions or cfg.eval.questions),
-        first,
-        second,
-        EXPOSED_FILE if exposed is None else exposed,
+        first=first,
+        second=second,
+        exposed=EXPOSED_FILE if exposed is None else exposed,
         short_gap=short_gap,
         bootstrap=bootstrap,
     )
     study = kappa_study(request)
     say(console, render.rounds_agreement_table(study.report, first, second))
-    if study.gaps:
+    gap_range = study.gap_range
+    if gap_range is not None:
+        low, high = gap_range
         short = (
             f" ({formatting.count(len(study.short))} under "
             f"{formatting.count(MIN_RETEST_DAYS)} days: not the registered measurement)"
@@ -171,8 +181,7 @@ def kappa(
         say(
             console,
             Text.assemble(
-                f"retest gap: {formatting.number(min(study.gaps.values()), 1)} to "
-                f"{formatting.number(max(study.gaps.values()), 1)} days",
+                f"retest gap: {formatting.number(low, 1)} to {formatting.number(high, 1)} days",
                 (short if study.short else "", "yellow"),
             ),
         )
@@ -218,6 +227,7 @@ def round_agreement_command(
     reliability under the amended criterion was not measured (methodology section 5b).
     Refuses until round 3 has judged every question.
     """
+    require_file(metadata_from, hint=METADATA_FROM_HINT)
     cfg = load(config, set_)
     category_of = {q.id: q.effective_category for q in load_questions(metadata_from)}
     report = round_agreement(str(questions or cfg.eval.questions), category_of)
@@ -233,13 +243,14 @@ def round3_gold_command(
         Path, typer.Option("--base", help="The version every other field comes from.")
     ] = ADJUDICATED_DATASET,
     out: Annotated[Path, typer.Option("--out", "-o", help="Dataset file to write.")] = Path(
-        "evals/datasets/v0.3-gold.jsonl"
+        run_ids.GOLD_ROUND3
     ),
 ) -> None:
     """Writes the gold set built from round 3 alone, then lists the flagged questions.
 
-    Refuses an existing `--out`, an unfinished round, and a journal in which any entry
-    besides round 3 differs from the journal frozen with `--base`.
+    Refuses an existing `--out` or one whose parent is not a directory, an unfinished round,
+    and a journal in which any entry besides round 3 differs from the journal frozen with
+    `--base`.
     """
     cfg = load(config, set_)
     built = build_round3_gold(base, str(questions or cfg.eval.questions), out)
@@ -274,12 +285,13 @@ def select(
     ] = False,
 ) -> None:
     """Chooses the evaluation set from a candidate pool, recording every decision."""
+    for value in category or []:
+        question_category(value)
     cfg = load(config, set_)
     path = dataset or newest_candidate_pool(DATASETS_DIR)
     candidates = load_records(path)
     questions_path = str(questions or cfg.eval.questions)
     selection_file = str(selection_path(questions_path))
-    check_categories(category)
     if not finalize:
         say(
             console,

@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from .... import formatting
 from ...check import Doc
-from ...compute import corpus, corpus_changes, datasets, retrieval_earlier
+from ...compute import corpus, corpus_changes, corpus_sheet, datasets, retrieval_earlier
 from ...run_ids import PRE_DEDUP_RUN
 from ...sources import Sources
 from ..comparisons import duplicate_share_text, top_k_text
@@ -34,7 +34,7 @@ def _groups(doc: Doc, src: Sources) -> None:
         formatting.count(dup.in_groups),
         duplicate_share_text(src),
         formatting.count(dup.groups),
-        formatting.count(dup.by_venue["binance"]),
+        formatting.count(corpus_sheet.testnet_mirror_groups(src)),
     )
     doc.claim(
         "no group spanned {} venues",

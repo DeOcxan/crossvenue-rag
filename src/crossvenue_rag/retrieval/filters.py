@@ -2,9 +2,8 @@
 
 `venue` and `venue_type` resolve to a venue allow-list and the structural
 metadata fields to a chunk-id allow-list, so the sparse and dense sides search the
-same chunks. A metadata filter matches a chunk if any of its occurrences
-matches, and `None` in a filter value matches chunks where no rule assigned the
-field.
+same chunks. A metadata filter matches a chunk if, for each key, any of its
+occurrences carries a value of that key, `None` for a field no rule assigned.
 """
 
 from __future__ import annotations
@@ -17,8 +16,7 @@ from ..models import METADATA_FIELDS, Chunk, MetadataField
 
 # `{"venue": "bybit"}`, `{"venue": [...], "venue_type": "dex"}`,
 # `{"environment": "testnet", "api_version": ["v5"]}`. Spelled out rather than
-# `dict[str, Any]`: the keys and the two shapes are the whole contract, and
-# `Any` here would hide a typo'd filter until it silently matched nothing.
+# `dict[str, Any]`: the two shapes are the whole contract.
 Filters = dict[str, Sequence[str | None] | str | None]
 
 
@@ -62,7 +60,7 @@ def filters_from_options(
     """The filter dict of `crossvenue retrieve`'s options, `None` when there is none.
 
     `metadata` holds `FIELD=VALUE` strings: a field given twice ORs its values,
-    and the value `none` matches chunks where no rule assigned the field.
+    and the value `none` matches a chunk with an occurrence where no rule assigned the field.
     `venue_types` maps each venue of data/sources.yaml to its type; the venue
     options are checked against it here, before any model is loaded.
 
@@ -117,9 +115,10 @@ def resolve_venues(filters: Filters | None, venue_types: Mapping[str, str]) -> l
     same map of data/sources.yaml that `venue_types` holds.
 
     Raises:
-        ValueError: A key is not in `FILTER_KEYS`, a venue or venue type is not in
-            `venue_types`, or the venues and the type select no venue together: both
-            indexes read an empty allow-list as "no filter".
+        ValueError: A key is not in `FILTER_KEYS`, a venue is not in `venue_types`, or the
+            venues and the type select no venue together: both indexes read an empty
+            allow-list as "no filter". No venue type given is in `venue_types`, or a `venue`
+            or `venue_type` value is or holds None.
     """
     if not filters:
         return None
@@ -155,10 +154,10 @@ def resolve_venues(filters: Filters | None, venue_types: Mapping[str, str]) -> l
 def resolve_metadata(filters: Filters | None, chunks: Sequence[Chunk]) -> set[str] | None:
     """The metadata part of a filter dict as a chunk-id allow-list.
 
-    A chunk matches if any of its occurrences matches: a text deduplicated from
-    `rest-api.md` and `testnet/rest-api.md` is testnet documentation as much as
-    mainnet documentation. None when no metadata key is present. Several keys
-    are ANDed; the values of one key are ORed. A value no chunk carries is an
+    A chunk matches a key if any of its occurrences carries a value of that key: a
+    text deduplicated from `rest-api.md` and `testnet/rest-api.md` is testnet
+    documentation as much as mainnet documentation. None when no metadata key is present.
+    Several keys are ANDed; the values of one key are ORed. A value no chunk carries is an
     error rather than an empty result, for the same reason an unknown venue is.
 
     Raises:

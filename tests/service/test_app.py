@@ -33,7 +33,7 @@ def test_health_reports_ok_and_the_generators(tmp_path):
     assert response.json()["status"] == "ok" and "gemini" in response.json()["generators"]
 
 
-def test_answer_returns_what_ask_prints_as_json(tmp_path):
+def test_answer_returns_the_cited_answer_and_its_generator_as_json(tmp_path):
     with client(tmp_path, lambda url, body: openrouter_payload(ASK_ANSWER)) as c:
         response = c.post("/answer", json={"question": "binance testnet ip ban?"})
     assert response.status_code == 200
@@ -53,7 +53,7 @@ def test_bad_requests_are_422_and_model_failures_502(tmp_path):
         assert c.post("/answer", json={"question": "binance ban?"}).status_code == 502
 
 
-def test_an_unknown_retriever_is_422_not_500(tmp_path):
+def test_an_oracle_retriever_is_422_not_500(tmp_path):
     with client(tmp_path, lambda url, body: openrouter_payload(ASK_ANSWER)) as c:
         response = c.post("/answer", json={"question": "q", "retriever": "venue_split_oracle"})
     assert response.status_code == 422
@@ -107,8 +107,7 @@ def test_the_openapi_schema_describes_both_response_bodies(tmp_path):
         assert field in schemas[model]["properties"]
 
 
-# The bodies the endpoints returned for the stubbed answer before they declared
-# response models; declaring them changed the schema and left the JSON byte-identical.
+# The exact bodies the endpoints return for the stubbed answer.
 HEALTH_JSON = (
     b'{"status":"ok","answering":"available","generators":["gemini","qwen"],"top_k":8,'
     b'"budget_usd":3.0,"spent_usd":0.0}'
@@ -126,7 +125,7 @@ ANSWER_JSON = (
 )
 
 
-def test_the_response_bodies_are_the_json_the_endpoints_always_returned(tmp_path):
+def test_the_response_bodies_are_these_bytes(tmp_path):
     with client(tmp_path, lambda url, body: openrouter_payload(ASK_ANSWER)) as c:
         health = c.get("/health").content
         answer = c.post("/answer", json={"question": "binance testnet ip ban?"}).content

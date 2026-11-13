@@ -55,11 +55,6 @@ POWER_LINE_STEP = 0.05
 TITLE_STYLE = "table.title"
 
 
-def _preview(text: str) -> str:
-    flat = " ".join(text.split())
-    return flat[:PREVIEW_CHARS] + (" ..." if len(flat) > PREVIEW_CHARS else "")
-
-
 def fetch_summary(rows: Sequence[ManifestRow]) -> Table:
     """Documents and pinned commit per venue, with the total, after `crossvenue fetch`."""
     table = Table(title="fetched", show_footer=True)
@@ -225,13 +220,13 @@ def retrieval_results(method: str, k: int, results: Sequence[Result], timings: T
             formatting.number(result.score, SCORE_DECIMALS),
             result.venue,
             result.heading_display,
-            _preview(result.text),
+            formatting.preview(result.text, PREVIEW_CHARS),
         )
     return table
 
 
 def validation_stats(stats: ValidationStats) -> Table:
-    """Question counts of a validated set: totals and per category, qtype and venue."""
+    """Question counts of a validated set: totals and per `category`, `qtype` and `venue`."""
     table = Table(show_header=False, box=None, padding=BORDERLESS_PADDING)
     add_text_row(table, "total", formatting.count(stats.total))
     add_text_row(table, "with gold chunks", formatting.count(stats.with_gold))
@@ -334,8 +329,6 @@ def kappa_intervals_table(variants: list[AgreementVariant], first: int, second: 
         table.add_column(column, justify="left" if column == "round 1 as" else "right")
     for v in variants:
         ci = v.interval
-        if ci is None:
-            continue
         bounds = (
             formatting.MISSING
             if ci.low is None or ci.high is None

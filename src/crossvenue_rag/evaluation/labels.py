@@ -18,7 +18,7 @@ def fmt(value: float | None) -> str:
 
 
 def markdown_table(
-    header: Sequence[str], rows: Iterable[Sequence[str]], *, right: Collection[int] = ()
+    header: Sequence[str], rows: Iterable[Sequence[str]], *, right: Collection[int]
 ) -> str:
     """A Markdown table: the header, its rule, then one line per row of cells.
 
@@ -48,12 +48,12 @@ def method_label(method: str) -> str:
 
 POOL_NOTE = (
     "\u2020 Not in the labeling pool (`retrieval.methods.POOL_METHODS`). `unjudged@k` is "
-    "the share of a method's top k that no judgment covered (pool plus augmentation, from "
+    "the share of a method's top k that no judgment covered (from "
     "the journal), each such chunk counted as a miss; it does not measure the bias itself. "
     "`ndcg_prime@k` is nDCG on the condensed list (Sakai 2007, full entry under "
     "References in `evals/methodology.md`): unjudged chunks are dropped from the ranking "
     "instead of scored as "
-    "irrelevant, and its gap to nDCG@k is the change that dropping them makes. Both are "
+    "irrelevant. Its gap to nDCG@k is the change that dropping them makes. Both are "
     f"`{formatting.MISSING}` when the judgment history is not available. "
     "venue_coverage@k needs no gold and is unaffected. (oracle) runs venue_split with the "
     "question's labeled `venues` in "

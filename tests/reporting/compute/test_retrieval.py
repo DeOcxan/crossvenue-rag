@@ -1,4 +1,4 @@
-"""Tests for `reporting.compute.retrieval`, on runs written under tmp_path."""
+"""Tests for `reporting.compute.retrieval`, on runs written under `tmp_path`."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ from crossvenue_rag.reporting.run_ids import GOLD_BEFORE_AUGMENTATION, PVALUE_RU
 from crossvenue_rag.reporting.sources import Sources
 from tests.reporting.conftest import (
     complete,
-    write_csv,
+    write_csv_rows,
     write_gold,
     write_retrieval_run,
     write_sources,
@@ -52,13 +52,12 @@ def test_runs_agree_on_metrics_whatever_their_timing(tmp_path):
 
 
 def test_k_and_the_pool_depth_are_read_from_the_run_config(tmp_path):
-    config = {"retrieval": {"k": 10}, "eval": {"pool_depth_per_method": 20}}
+    config = {"eval": {"k_values": [1, 7], "pool_depth_per_method": 15}}
     write_retrieval_run(tmp_path, RETRIEVAL_RUN, config=config)
     src = Sources(tmp_path)
-    assert retrieval.top_k(src) == 10
-    assert retrieval.pool_depth(src) == 20
-    assert retrieval.first_rank_below_top_k(src) == 11
-    assert retrieval.at_top_k(src, "off_venue") == "off_venue@10"
+    assert retrieval.top_k(src) == 7
+    assert retrieval.pool_depth(src) == 15
+    assert retrieval.at_top_k(src, "off_venue") == "off_venue@7"
 
 
 def test_the_deepest_cutoff_of_another_run_is_read_from_its_own_config(tmp_path):
@@ -69,7 +68,7 @@ def test_the_deepest_cutoff_of_another_run_is_read_from_its_own_config(tmp_path)
 
 
 # A comparison question naming both venues, one naming neither and a fact
-# question; bm25 and venue_split retrieve differently on the first.
+# question; on the first, bm25 retrieves other chunks and venue_split covers every venue.
 QUESTIONS = [
     {"id": "cv-0001", "question": "binance or bybit?", "gold_chunk_ids": ["c1", "c9"]},
     {"id": "cv-0002", "question": "which is faster?", "gold_chunk_ids": ["c2"]},
@@ -199,7 +198,7 @@ def test_the_round_1_pool_count_is_checked_in_the_text():
 def test_a_row_or_question_the_saved_tables_lack_raises_a_value_error(tmp_path):
     src = retrieval_fixture(tmp_path)
     by_category = complete("by_category", [{"category": "fact", "method": "bm25"}])
-    write_csv(tmp_path / "results" / RETRIEVAL_RUN / "by_category.csv", by_category)
+    write_csv_rows(tmp_path / "results" / RETRIEVAL_RUN / "by_category.csv", by_category)
     other = {"a": "dense", "b": "bm25", "metric": "recall@10", "scope": "comparison"}
     write_retrieval_run(tmp_path, PVALUE_RUN, paired=[other])
     cell = ("venue_split", "hybrid_rerank", "recall@10", "comparison")

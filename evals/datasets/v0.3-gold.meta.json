@@ -1,0 +1,119 @@
+{
+  "dataset_version": "v0.3-gold",
+  "schema_version": "1.0",
+  "created_at": "2026-10-31T19:40:29Z",
+  "corpus_snapshot": {
+    "manifest_path": "data/manifest.csv",
+    "manifest_sha256": "c419b4be7de8aca0614183e9b93baa64339b7f35a1a722f9f90596cca4fcd68f",
+    "documents": 1665,
+    "recorded_at": "2026-10-31T19:40:29Z",
+    "index_version": "2825a7160c4d09bf",
+    "chunks": 11934
+  },
+  "sources": [
+    {
+      "venue": "ccxt",
+      "venue_type": "cex",
+      "license": "MIT",
+      "homepage": "https://docs.ccxt.com/"
+    },
+    {
+      "venue": "bybit",
+      "venue_type": "cex",
+      "license": "no license found",
+      "homepage": "https://bybit-exchange.github.io/docs/"
+    },
+    {
+      "venue": "binance",
+      "venue_type": "cex",
+      "license": "no license found",
+      "homepage": "https://developers.binance.com/docs/binance-spot-api-docs"
+    },
+    {
+      "venue": "bingx",
+      "venue_type": "cex",
+      "license": "MIT",
+      "homepage": "https://bingx-api.github.io/docs/"
+    },
+    {
+      "venue": "uniswap",
+      "venue_type": "dex",
+      "license": "MIT",
+      "homepage": "https://docs.uniswap.org/"
+    },
+    {
+      "venue": "pancakeswap",
+      "venue_type": "dex",
+      "license": "no license found",
+      "homepage": "https://docs.pancakeswap.finance/"
+    },
+    {
+      "venue": "hyperliquid",
+      "venue_type": "dex",
+      "license": "no license found",
+      "homepage": "https://hyperliquid.gitbook.io/hyperliquid-docs"
+    },
+    {
+      "venue": "dydx",
+      "venue_type": "dex",
+      "license": "no license found",
+      "homepage": "https://docs.dydx.xyz/"
+    }
+  ],
+  "generator": {
+    "model": "none: v0.2.2-gold with its label fields taken from annotation round 3 alone, under methodology section 5a as amended on 2026-10-10 (methodology section 5b)",
+    "prompt_hash": "df6de014544b2c1c"
+  },
+  "counts": {
+    "total": 114,
+    "by_venue": {
+      "binance": 42,
+      "bingx": 24,
+      "bybit": 34,
+      "ccxt": 6,
+      "dydx": 14,
+      "hyperliquid": 27,
+      "pancakeswap": 18,
+      "uniswap": 18
+    },
+    "by_qtype": {
+      "comparison": 53,
+      "fact": 56,
+      "multihop": 5
+    },
+    "by_category": {
+      "adversarial": 13,
+      "ambiguous": 6,
+      "comparison": 50,
+      "fact": 10,
+      "multihop": 5,
+      "noisy": 6,
+      "unanswerable": 18,
+      "version_sensitive": 6
+    },
+    "labelled_by_category": {
+      "adversarial": 10,
+      "ambiguous": 6,
+      "comparison": 50,
+      "fact": 9,
+      "multihop": 3,
+      "noisy": 6,
+      "version_sensitive": 5
+    },
+    "answerable": 96,
+    "unanswerable": 18,
+    "with_gold": 89,
+    "judged": 114,
+    "gold_chunks": 183,
+    "venue_coverage": {
+      "covered": 80,
+      "missing_from_pool": 21
+    },
+    "annotation_round": 3,
+    "candidate_decisions": 3385,
+    "flagged_questions": 1
+  },
+  "notes": "Supersedes v0.2.2-gold, which stays on disk unchanged. Same 114 questions, same order. Every field but gold_chunk_ids, venue_coverage, annotator, annotated_at and annotation_round equals v0.2.2-gold (`make round3-gold`). Registered results stay on v0.2.1-gold. One question is flagged and keeps its category and empty gold: cv-0119 \"can ccxt fetchLeverageTiers give me uniswap\". Judgment history in annotations/v0.3-gold.rounds.json, a byte copy of evals/annotations/questions.rounds.json. See CHANGELOG.md.",
+  "dataset_sha256": "1f2a2abdb7046230ced64749313a4811ba1c5afe88bf135cc1d0de9f4dcc0817",
+  "journal_sha256": "9cca9aacb7f580bf9c416965634c65950081a15c950b9195e36dfc8c88b089b0"
+}

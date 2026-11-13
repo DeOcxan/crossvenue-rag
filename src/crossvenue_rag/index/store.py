@@ -3,9 +3,7 @@
 psycopg and pgvector are imported where a method first needs them, so importing
 the retriever, which builds a store, does not load them.
 
-A venue filter is a `WHERE` clause evaluated by the engine that runs the ANN
-search rather than a post-filter that shrinks k, because the venue filter is the
-control condition of the cross-venue confusion experiment.
+A venue filter is a `WHERE` clause.
 """
 
 from __future__ import annotations
@@ -95,7 +93,7 @@ class ChunkStore:
         """A connection that cannot change the database.
 
         `read_only` makes every transaction READ ONLY, so Postgres itself
-        refuses DDL and writes; used by `crossvenue check`, which must be safe to
+        refuses DDL and writes; `crossvenue check` uses it, since it must be safe to
         run against any database, including one someone else is indexing.
         """
         import psycopg
@@ -266,7 +264,7 @@ class ChunkStore:
         set rather than two implementations of the same rule.
 
         A hit carries the similarity, because pgvector's `<=>` yields cosine
-        *distance*, which would sort backward if passed to a fusion step
+        distance, which would sort backward if passed to a fusion step
         expecting scores.
         """
         from psycopg import sql
@@ -288,8 +286,7 @@ class ChunkStore:
         statement = sql.SQL(
             """
             SELECT chunk_id, 1 - (embedding <=> %s) AS similarity,
-                   venue, venue_type, doc_path, heading_path, source_url, text, token_count,
-                   sources
+                   venue, venue_type, doc_path, heading_path, source_url, text, sources
             FROM {table}
             {where}
             ORDER BY {order}
@@ -301,7 +298,7 @@ class ChunkStore:
         return [_search_hit(row) for row in result.fetchall()]
 
     def _exact(self, venues: Sequence[str] | None, chunk_ids: Sequence[str] | None, k: int) -> bool:
-        """Whether a search must be exact rather than served by HNSW.
+        """Whether a search must be exact rather than go through HNSW.
 
         HNSW visits about `ef_search` rows and filters afterward, so a filter
         it cannot push down, or a k beyond `ef_search`, would return fewer
@@ -337,31 +334,43 @@ def _where(
 
 
 @dataclass(frozen=True)
+class HitMetadata:
+    """The stored columns of a hit's chunk, under the names `Result` takes them."""
+
+    venue: str
+    venue_type: str
+    doc_path: str
+    heading_path: list[str]
+    source_url: str
+    text: str
+    sources: list[ChunkSource]
+
+
+@dataclass(frozen=True)
 class SearchHit:
     """One chunk a vector search returns."""
 
     chunk_id: str
     similarity: float  # cosine similarity, in [-1, 1]
-    metadata: dict[str, Any]  # the chunk's stored columns, as `Result` takes them
+    metadata: HitMetadata
 
 
 def _search_hit(row: Sequence[Any]) -> SearchHit:
     """One result row as a `SearchHit`."""
-    chunk_id, similarity, venue, venue_type, doc_path, heading, url, text, tokens, raw = row
+    chunk_id, similarity, venue, venue_type, doc_path, heading, url, text, raw = row
     srcs = raw if isinstance(raw, list) else json.loads(raw)
     return SearchHit(
         chunk_id,
         float(similarity),
-        {
-            "venue": venue,
-            "venue_type": venue_type,
-            "doc_path": doc_path,
-            "heading_path": heading if isinstance(heading, list) else json.loads(heading),
-            "source_url": url,
-            "text": text,
-            "token_count": tokens,
-            "sources": [ChunkSource(**src) for src in srcs],
-        },
+        HitMetadata(
+            venue=venue,
+            venue_type=venue_type,
+            doc_path=doc_path,
+            heading_path=heading if isinstance(heading, list) else json.loads(heading),
+            source_url=url,
+            text=text,
+            sources=[ChunkSource(**src) for src in srcs],
+        ),
     )
 
 
@@ -393,7 +402,7 @@ def index_chunks(
             f"{formatting.own_form(cfg.embedding.dimension)}, but {cfg.embedding.model_name} "
             f"produced {formatting.plural(int(vectors.shape[1]), 'dimension')}",
             hint=f"set `embedding.dimension: {formatting.own_form(vectors.shape[1])}` "
-            "in the config",
+            "in the config, then rebuild with `make ingest index`",
         )
 
     with store.connect_for_writing() as conn:

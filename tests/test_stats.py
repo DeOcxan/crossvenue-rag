@@ -66,8 +66,8 @@ def test_kappa_or_none_is_none_where_kappa_is_undefined():
     )
 
 
-def _removed_kappa_or_none(verdicts):
-    """The implementation `generation.metrics._kappa_or_none` had, kept as the reference."""
+def _reference_kappa_or_none(verdicts):
+    """Kappa of paired verdicts computed directly, the reference both paths are checked against."""
     if not verdicts:
         return None
     a = [x for x, _ in verdicts]
@@ -110,7 +110,7 @@ def test_both_kappa_paths_agree_on_the_calibration_data():
                 else:
                     verdicts = [v for p in sample for v in getattr(p, dimension)]
                 new = cohens_kappa_or_none(verdicts)
-                assert new == _removed_kappa_or_none(verdicts)
+                assert new == _reference_kappa_or_none(verdicts)
                 if new is not None:
                     direct = binary_agreement(
                         dimension, [a for a, _ in verdicts], [b for _, b in verdicts]

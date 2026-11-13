@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import math
 import random
-from collections import defaultdict
+from collections import Counter, defaultdict
 from collections.abc import Sequence
 from pathlib import Path
 
@@ -65,15 +65,17 @@ def stratified_quotas(sizes: dict[str, int], n: int, item: str = "question") -> 
     return quotas
 
 
-def stratified_sample(
-    questions: Sequence[Question], n: int = ROUND2_SIZE, seed: int = ROUND2_SEED
-) -> list[Question]:
+def stratified_sample(questions: Sequence[Question], n: int, seed: int) -> list[Question]:
     """`n` judged questions, stratified by category; deterministic for a seed.
 
     Only questions round 1 judged are eligible (gold chunks, or recorded as
     "nothing in the pool answers this"): re-judging a question never judged
     measures nothing. Returned in the question file's order, which is the order
-    they are labeled.
+    they are judged in.
+
+    Raises:
+        UserError: `n` is below the number of non-empty categories of the judged questions,
+            or above their total.
     """
     eligible = [q for q in questions if q.is_judged]
     by_category: dict[str, list[Question]] = defaultdict(list)
@@ -93,15 +95,25 @@ def cited_words(question: Question) -> str:
     return " ".join(question.question.split()[:CITATION_WORDS])
 
 
+def category_counts(sample: Sequence[Question]) -> list[tuple[str, int]]:
+    """Each category of `sample` with its question count, most frequent first, ties by name."""
+    counts = Counter(q.effective_category for q in sample)
+    return sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))
+
+
+def sample_line(question: Question) -> str:
+    """A question's line of the sample file: id, category, first six words."""
+    return f'{question.id}  {question.effective_category:<18} "{cited_words(question)}"'
+
+
 def write_sample_file(path: str | Path, sample: Sequence[Question], seed: int) -> None:
     """One question per line: id, category, first six words. First token is the id."""
     lines = [
         f"# Round-2 subsample: {formatting.plural(len(sample), 'question')}, "
         f"stratified by category, seed {formatting.own_form(seed)}.",
-        "# Written by `crossvenue round-sample`; read by `crossvenue label --sample-file`.",
+        "# `crossvenue round-sample` writes this file; `crossvenue label --sample-file` reads it.",
     ]
-    for q in sample:
-        lines.append(f'{q.id}  {q.effective_category:<18} "{cited_words(q)}"')
+    lines.extend(sample_line(q) for q in sample)
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     Path(path).write_text("\n".join(lines) + "\n", encoding="utf-8")
 

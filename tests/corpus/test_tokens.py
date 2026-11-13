@@ -8,7 +8,7 @@ import types
 import pytest
 
 from crossvenue_rag.corpus.tokens import token_counter_for
-from crossvenue_rag.errors import UserError
+from crossvenue_rag.errors import INSTALL_HINT, UserError
 
 
 class FakeTokenizer:
@@ -57,6 +57,17 @@ def test_a_malformed_revision_or_a_missing_library_is_a_user_error(monkeypatch, 
     _fake_transformers(monkeypatch, load)
     with pytest.raises(UserError, match="cannot load the tokenizer"):
         token_counter_for("m", "abc", 450)
+    token_counter_for.cache_clear()
+
+
+def test_a_missing_transformers_hints_installing_the_dependencies(monkeypatch):
+    def load(name, revision=None):
+        raise ImportError("no transformers")
+
+    _fake_transformers(monkeypatch, load)
+    with pytest.raises(UserError) as refused:
+        token_counter_for("m", "abc", 450)
+    assert refused.value.hint == INSTALL_HINT
     token_counter_for.cache_clear()
 
 

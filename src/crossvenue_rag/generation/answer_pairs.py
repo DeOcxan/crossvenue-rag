@@ -38,20 +38,21 @@ class ConfigComparison(PairedEstimate):
 
     `read_config_comparisons` reads every format of the file:
 
-    - the committed answer and judged runs of 2026-09-25 and 2026-09-26: up to
-      `holm_p`, without `calibrated`, `better`, `worse`, `ties` and
-      `higher_is_better`, which read as their defaults;
+    - the committed judged runs of 2026-09-26: up to `holm_p`, without `calibrated`,
+      `better`, `worse`, `ties` and `higher_is_better`, which read as their defaults;
+    - the committed answer runs of 2026-09-25: an empty file;
     - every other run: every column.
     """
 
-    # None when the scope is too small to test (`evaluation.paired.tested`). The role is then
-    # descriptive, or primary for the pre-registered pair under the registered prompt.
+    # `randomisation_p` is None when the scope is too small to test (`evaluation.paired.tested`).
+    # The role is then descriptive, or primary for the pre-registered pair under the registered
+    # prompt. `mcnemar_p` is None also for every metric but `behaviour_correct`.
     randomisation_p: OptionalFloat
     mcnemar_p: OptionalFloat
     role: Role
-    # Set by `_adjust_families` once every row of a family exists.
+    # `_adjust_families` sets it once every row of a family exists.
     holm_p: OptionalFloat = None
-    # False when the metric's judge dimension failed calibration.
+    # False when the metric's judge dimension failed calibration or no calibration names the judge.
     calibrated: bool = True
     # Questions where a is better than b, worse, tied, in the metric's direction.
     better: int = 0
@@ -71,7 +72,13 @@ class _Comparison:
 
 
 def paired_rows(records: Sequence[AnswerRecord], cfg: Config) -> list[ConfigComparison]:
-    """Every pair of configurations on every metric and scope, Holm-adjusted per family."""
+    """Every pair of configurations on every metric and scope with paired values.
+
+    The p-values are Holm-adjusted per family.
+
+    Raises:
+        UserError: `generation.calibration_run` is set and holds no calibration.json.
+    """
     gen = cfg.generation
     configs = [m.name for m in gen.matrix]
     by_key = _judged_by_key(records)
@@ -229,7 +236,8 @@ def _adjust_families(
 def read_config_comparisons(run_dir: Path) -> CsvTable[ConfigComparison]:
     """paired.csv of an answer or judged run, in any format `ConfigComparison` lists.
 
-    An empty file, as a run with one configuration writes, is an empty table.
+    An empty file, as a run without a judge or with one configuration writes, is an empty
+    table.
     """
     return read_table(run_dir / PAIRED_FILE, ConfigComparison)
 

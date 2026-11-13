@@ -57,7 +57,7 @@ def finalize_selection(
     """Writes the accepted candidates to `questions_path` if they meet the targets.
 
     Raises:
-        UserError: `selection_file` records no decisions.
+        UserError: `selection_file` records no decisions, or a directory is at it.
     """
     decisions = load_decisions(selection_file)
     if not decisions:

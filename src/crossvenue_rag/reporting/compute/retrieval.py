@@ -71,11 +71,6 @@ def pool_depth(src: Sources) -> int:
     return src.retrieval.config.eval.pool_depth_per_method
 
 
-def first_rank_below_top_k(src: Sources) -> int:
-    """The first rank a top-k metric does not score: `top_k` + 1."""
-    return top_k(src) + 1
-
-
 def method_count(src: Sources) -> int:
     """Retrieval methods the run compares."""
     return len(src.retrieval.methods)
@@ -183,7 +178,7 @@ def _comparison_rows(src: Sources, method: str) -> list[PerQueryRow]:
 
 
 def covers_every_venue(src: Sources, row: PerQueryRow) -> bool:
-    """Whether a row's top k holds every venue its question names: venue_coverage@k is 1."""
+    """Whether a row's top k holds every venue its question names: `venue_coverage@k` is 1."""
     return row.number(at_top_k(src, "venue_coverage")) == 1
 
 
@@ -314,7 +309,7 @@ def labelled_scores(
 
 
 def recall_against(src: Sources, method: str, gold: Mapping[str, Question]) -> float:
-    """Mean recall@10 of `method` on the comparison questions `gold` labels, against `gold`."""
+    """Mean `recall@10` of `method` on the comparison questions `gold` labels, against `gold`."""
     rows = [
         r
         for r in src.retrieval.per_query
@@ -325,7 +320,7 @@ def recall_against(src: Sources, method: str, gold: Mapping[str, Question]) -> f
 
 @dataclass(frozen=True)
 class RecallChange:
-    """A method's comparison recall@10 against the gold set before and after augmentation.
+    """A method's comparison `recall@10` against the gold set before and after augmentation.
 
     Unrounded: a change is computed from these and rounded only when written.
     """
@@ -341,7 +336,7 @@ class RecallChange:
 
 
 def recall_before_after(src: Sources) -> list[RecallChange]:
-    """Per method of `METHODS`, comparison recall@10 before and after augmentation."""
+    """Per method of `METHODS`, comparison `recall@10` before and after augmentation."""
     old, new = src.questions_before_augmentation, src.questions
     return [
         RecallChange(m, recall_against(src, m, old), recall_against(src, m, new)) for m in METHODS
@@ -349,12 +344,12 @@ def recall_before_after(src: Sources) -> list[RecallChange]:
 
 
 def recall_drops(src: Sources) -> list[float]:
-    """Per method, the drop of comparison recall@10 from augmentation (`recall_before_after`)."""
+    """Per method, the drop of comparison `recall@10` from augmentation (`recall_before_after`)."""
     return [r.before - r.after for r in recall_before_after(src)]
 
 
 def recall_change_range(src: Sources) -> tuple[float, float]:
-    """(largest, smallest) change of a method's comparison recall@10 from augmentation.
+    """(largest, smallest) change of a method's comparison `recall@10` from augmentation.
 
     Minus the smallest and minus the largest of `recall_drops`.
     """
@@ -363,5 +358,5 @@ def recall_change_range(src: Sources) -> tuple[float, float]:
 
 
 def recall_lower_for_every_method(src: Sources) -> bool:
-    """Whether every method's comparison recall@10 is lower against the augmented gold."""
+    """Whether every method's comparison `recall@10` is lower against the augmented gold."""
     return min(recall_drops(src)) > 0

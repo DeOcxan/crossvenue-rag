@@ -40,7 +40,7 @@ def test_the_judge_meeting_more_thresholds_is_selected():
     assert "more than any other" in chosen.reason
 
 
-def test_a_tie_goes_to_venue_correct_then_coverage_then_cost():
+def test_a_tie_goes_to_venue_correct_then_to_cost():
     from crossvenue_rag.generation.calibration import select_judge
 
     thresholds: dict[CalibrationDimension, float] = {

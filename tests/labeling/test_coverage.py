@@ -29,7 +29,7 @@ def test_derivation_fills_only_what_the_recorded_data_settles(tmp_path):
             annotated_at="t",
         ),
         comparison(id="q-skip", gold_chunk_ids=["c1", "c2"], annotated_at="t"),
-        comparison(id="q-new"),  # never labeled
+        comparison(id="q-new"),  # never judged
     ]
     save_questions(path, questions)
     entry = {"annotated_at": "t", "index_version": VERSION, "pool": ["c1", "c2"]}

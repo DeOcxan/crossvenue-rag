@@ -1,4 +1,4 @@
-"""Tests for `reporting.compute.corpus_changes`, on a corpus written under tmp_path."""
+"""Tests for `reporting.compute.corpus_changes`, on a corpus written under `tmp_path`."""
 
 from __future__ import annotations
 
@@ -88,7 +88,7 @@ def test_binance_removals_count_the_three_kinds_of_page(tmp_path):
     )
 
 
-def test_quoted_phrases_and_archive_pages_of_a_venue(tmp_path):
+def test_quoted_phrases_match_case_sensitively_and_archive_chunks_count_their_pages(tmp_path):
     archive = "https://docs.pancakeswap.invalid/archive/"
     write_chunks(
         tmp_path,

@@ -1,4 +1,4 @@
-"""The never-judged chunks an augmentation shows, listed from one run.
+"""The chunks round 1 has not judged that an augmentation shows, listed from one run.
 
 The run is an evaluation run or a retrieval-only pool-construction run from `pool_run`;
 the list is tied to that run and its index, and `labeling.augment` shows exactly those chunks.
@@ -21,11 +21,18 @@ from ..evaluation.results import PER_QUERY_FILE, PerQueryRow, read_per_query
 from ..models import Question
 from ..retrieval.methods import method_named
 from ..retrieval.protocols import Ranks
-from ..run_files import question_fields, read_index, write_csv, write_index, write_run_config
+from ..run_files import (
+    create_run_dir,
+    question_fields,
+    read_index,
+    write_csv,
+    write_index,
+    write_run_config,
+)
 
 
-class Candidate(BaseModel):
-    """A never-judged chunk, with the rank each method that found it gave it."""
+class PoolCandidate(BaseModel):
+    """A chunk round 1 has not judged, with the rank each method that found it gave it."""
 
     model_config = ConfigDict(extra="forbid")
 
@@ -34,12 +41,12 @@ class Candidate(BaseModel):
 
 
 class CandidateList(BaseModel):
-    """One question's never-judged chunks from a run, best rank first, with the run's stamps."""
+    """A question's chunks round 1 has not judged in a run, best rank first, with its stamps."""
 
     model_config = ConfigDict(extra="forbid")
 
     id: str
-    chunks: list[Candidate]
+    chunks: list[PoolCandidate]
     run: str
     methods: list[str]
     k: int
@@ -63,8 +70,8 @@ def read_run_rankings(run_dir: str | Path) -> RunRankings:
     """The ranked lists of an evaluation or pool-construction run.
 
     Raises:
-        UserError: The run has no `index.json`, or no `per_query.csv`; an `index.json` that
-            is not one is reported by `run_files.read_index`.
+        UserError: The run has no `index.json`, or no `per_query.csv`; `run_files.read_index`
+            reports an `index.json` that is not one.
     """
     run_dir = Path(run_dir)
     hint = "pass the directory of a `crossvenue eval` or `crossvenue pool-run` run"
@@ -83,10 +90,10 @@ def augment_candidates(
     category: str | None,
     k: int,
 ) -> list[CandidateList]:
-    """Per question, the chunks `methods` ranked in the top k that were never judged.
+    """Per question, the chunks `methods` ranked in the top k that round 1 has not judged.
 
     Chunks are ordered by the best rank any of the methods gave them, then by id,
-    so the likeliest candidates come first. Questions with no unjudged chunk are
+    so the likeliest candidates come first. Questions with no such chunk are
     left out. Only questions with a round-1 judgment are considered.
     """
     by_id = {q.id: q for q in questions}
@@ -114,7 +121,7 @@ def augment_candidates(
         out.append(
             CandidateList(
                 id=question.id,
-                chunks=[Candidate(chunk_id=c, found_by=ranks) for c, ranks in ordered],
+                chunks=[PoolCandidate(chunk_id=c, found_by=ranks) for c, ranks in ordered],
                 run=rankings.run,
                 methods=list(methods),
                 k=k,
@@ -124,8 +131,8 @@ def augment_candidates(
     return out
 
 
-# Saved in the run's index.json; its wording stays as committed runs have it
-# (docs/code-style.md rule 26). POOL_RUN.md states the same in prose.
+# Saved in the run's index.json; its wording stays as committed runs have it.
+# POOL_RUN.md states the same in prose.
 POOL_RUN_PURPOSE = (
     "pool construction only: retrieval depth for building augmentation candidates. "
     "Not an evaluation -- no metrics are computed and none may be quoted from it."
@@ -146,7 +153,7 @@ class PoolSpec:
     questions_path: str | Path
     methods: Sequence[str]
     k: int
-    category: str | None = None
+    category: str | None
 
 
 def _ranked_ids(retriever: Ranks, question: Question, method: str, k: int) -> str:
@@ -160,13 +167,16 @@ def _ranked_ids(retriever: Ranks, question: Question, method: str, k: int) -> st
 def pool_run(
     cfg: Config, retriever: Ranks, spec: PoolSpec, index_version: str, run_dir: Path
 ) -> int:
-    """Retrieves the top k of `spec.methods` for each question and writes only that.
+    """Retrieves the top k of `spec.methods` for each question `spec` names; writes only that.
 
     The output has the shape `augment_candidates` reads (`per_query.csv` with
     `retrieved_ids`, `index.json`), plus `purpose` in index.json and a
     `POOL_RUN.md` saying it is not an evaluation. There is deliberately no
     summary, report or metric: a run built to find chunks to judge is not a run
-    to score methods on.
+    to score methods on. Returns the number of rankings written, one per question and method.
+
+    Raises:
+        UserError: Nothing is at `spec.questions_path`, or a directory is. `run_dir` exists.
     """
     questions_path, methods, k, category = spec.questions_path, spec.methods, spec.k, spec.category
     questions = [
@@ -174,7 +184,7 @@ def pool_run(
         for q in load_questions(questions_path)
         if category is None or q.effective_category == category
     ]
-    run_dir.mkdir(parents=True, exist_ok=False)
+    create_run_dir(run_dir)
     rows = [
         [question.id, method, k, _ranked_ids(retriever, question, method, k)]
         for method in methods
@@ -204,6 +214,11 @@ def pool_run(
     return len(rows)
 
 
+def candidate_chunk_count(entries: Sequence[CandidateList]) -> int:
+    """The number of chunks in every candidate list together."""
+    return sum(len(e.chunks) for e in entries)
+
+
 def save_candidates(path: str | Path, entries: Sequence[CandidateList]) -> None:
     """Writes the candidate lists to a JSONL file, one per line."""
     jsonl.write(path, (e.model_dump() for e in entries))
@@ -213,7 +228,8 @@ def load_candidates(path: str | Path) -> list[CandidateList]:
     """The candidate lists of a JSONL file, in file order.
 
     Raises:
-        UserError: A line is not a candidate list; the message names the line.
+        UserError: Nothing is at `path`, or a directory is. A line is not a candidate list;
+            the message names the line.
     """
     return jsonl.read_models(
         path, CandidateList, hint="rebuild the list with `crossvenue augment-candidates`"

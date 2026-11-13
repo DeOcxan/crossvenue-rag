@@ -44,8 +44,8 @@ def split_answer_id(answer: str) -> tuple[str, str]:
 class AnswerInputs:
     """What generating or judging answers reads, built once by the command.
 
-    `chunks` are the ones the judge cites by id; `judge_name` is the judge
-    candidate, `None` to generate only.
+    `chunks` hold, by id, every chunk an answer was generated from and its question's gold
+    chunks; `judge_name` is the judge candidate, `None` to generate only.
     """
 
     questions: Sequence[Question]

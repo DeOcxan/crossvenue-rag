@@ -1,4 +1,4 @@
-"""Tests for `cli.dataset`: kappa, select and validate-evals from the command line."""
+"""Tests for `cli.dataset`: `kappa`, `select` and `validate-evals` from the command line."""
 
 from __future__ import annotations
 
@@ -115,7 +115,25 @@ def test_round_sample_refuses_more_than_the_judged_questions(config_file, tmp_pa
     assert "exceeds the 6 eligible questions" in str(result.exception)
 
 
-def two_rounds(tmp_path, *, stamped: bool = True) -> Path:
+@pytest.mark.parametrize(
+    ("place", "names"),
+    [("plain", "plain is a directory"), ("file.txt/s.txt", "file.txt is a file")],
+)
+def test_round_sample_refuses_an_out_path_that_is_a_directory_or_under_a_file(
+    config_file, tmp_path, place, names
+):
+    questions = judged_questions(tmp_path)
+    (tmp_path / "plain").mkdir()
+    (tmp_path / "file.txt").write_text("", encoding="utf-8")
+    result = invoke(
+        "round-sample", "-c", str(config_file), "-q", str(questions), "--n", "3",
+        "-o", str(tmp_path / place),
+    )  # fmt: skip
+    assert isinstance(result.exception, UserError), result.exception
+    assert names in str(result.exception)
+
+
+def _two_rounds(tmp_path, *, stamped: bool = True) -> Path:
     from crossvenue_rag.dataset.questions import save_questions
     from crossvenue_rag.models import Question
 
@@ -134,7 +152,7 @@ def two_rounds(tmp_path, *, stamped: bool = True) -> Path:
 
 
 def test_kappa_reports_the_gap_and_the_readings(tmp_path):
-    path = two_rounds(tmp_path)
+    path = _two_rounds(tmp_path)
     exposed = tmp_path / "exposed.txt"
     exposed.write_text("q1\n", encoding="utf-8")
     result = invoke("kappa", "-q", str(path), "--exposed", str(exposed))
@@ -145,7 +163,7 @@ def test_kappa_reports_the_gap_and_the_readings(tmp_path):
 
 
 def test_kappa_prints_the_interval_direction_and_sources_after_the_readings(tmp_path):
-    result = invoke("kappa", "-q", str(two_rounds(tmp_path)))
+    result = invoke("kappa", "-q", str(_two_rounds(tmp_path)))
     assert result.exit_code == 0, result.output
     out = result.output
     assert "bootstrap over questions: 10,000 resamples, seed 20260924" in out
@@ -160,20 +178,20 @@ def test_kappa_prints_the_interval_direction_and_sources_after_the_readings(tmp_
 
 
 def test_kappa_refuses_an_exposed_list_that_does_not_exist(tmp_path):
-    result = invoke("kappa", "-q", str(two_rounds(tmp_path)), "--exposed", "missing.txt")
+    result = invoke("kappa", "-q", str(_two_rounds(tmp_path)), "--exposed", "missing.txt")
     assert isinstance(result.exception, UserError)
     assert "missing.txt not found" in str(result.exception)
 
 
-def test_kappa_prints_each_interval_in_brackets(tmp_path):
-    result = invoke("kappa", "-q", str(two_rounds(tmp_path)))
+def test_kappa_prints_no_interval_in_the_low_to_high_form(tmp_path):
+    result = invoke("kappa", "-q", str(_two_rounds(tmp_path)))
     assert result.exit_code == 0, result.output
     intervals = result.output.split("kappa interval")[1].split("direction of")[0]
     assert "95% interval" in intervals and " to " not in intervals
 
 
 def test_kappa_without_timestamps_prints_no_gap(tmp_path):
-    result = invoke("kappa", "-q", str(two_rounds(tmp_path, stamped=False)))
+    result = invoke("kappa", "-q", str(_two_rounds(tmp_path, stamped=False)))
     assert result.exit_code == 0, result.output
     assert "retest gap" not in result.output
 
@@ -197,8 +215,8 @@ def candidate_pool(path: Path) -> Path:
     return path
 
 
-@pytest.fixture
-def sessions(monkeypatch) -> list:
+@pytest.fixture(name="sessions")
+def _sessions(monkeypatch) -> list:
     """The selection sessions `select` started, as (candidates, plan)."""
 
     got: list = []
@@ -235,8 +253,13 @@ def test_select_defaults_to_the_newest_candidate_pool(config_file, tmp_path, mon
 
 def test_select_refuses_an_unknown_category_before_the_session(config_file, tmp_path, sessions):
     pool = candidate_pool(tmp_path / "pool.jsonl")
-    result = invoke("select", "-c", str(config_file), "-d", str(pool), "--category", "nope")
+    result = invoke(
+        "select", "-c", str(config_file), "-d", str(pool), "--category", "fact",
+        "--category", "nope",
+    )  # fmt: skip
     assert isinstance(result.exception, UserError) and sessions == []
+    assert "--category 'nope' is not a question category" in str(result.exception)
+    assert "comparison" in (result.exception.hint or "")
 
 
 def finalize_with(monkeypatch, outcome) -> None:
@@ -346,6 +369,15 @@ def test_round_agreement_prints_no_kappa_and_no_target(config_file, tmp_path):
     assert result.exit_code == 0, result.output
     assert "raw agreement" in result.output and "descriptive" in result.output
     assert "kappa" not in result.output.lower() and "target" not in result.output.lower()
+
+
+def test_round_agreement_names_the_option_of_a_missing_metadata_file(config_file, tmp_path):
+    result = invoke(
+        "round-agreement", "-c", str(config_file), "-q", str(judged_questions(tmp_path)),
+        "--metadata-from", str(tmp_path / "absent.jsonl"),
+    )  # fmt: skip
+    assert isinstance(result.exception, UserError)
+    assert result.exception.hint == "pass --metadata-from a dataset file"
 
 
 def test_round3_gold_refuses_an_unfinished_round_and_writes_nothing(config_file, tmp_path):

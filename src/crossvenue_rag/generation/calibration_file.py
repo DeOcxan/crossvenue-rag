@@ -3,7 +3,7 @@
 `crossvenue select-judge` writes it into an answer run (`calibration_report.select_judge_files`)
 in the one format of `results/20260925T175128Z_answers/calibration.json`. The fields of
 `Calibration` come in order, indented by two, no final newline; each dimension holds only the
-statistics that are defined, each followed by its interval and its undefined resamples.
+statistics that are defined.
 """
 
 from __future__ import annotations
@@ -85,7 +85,7 @@ class Candidate(BaseModel):
 
 
 class Calibration(BaseModel):
-    """calibration.json: every agreement the judge selection rests on, and the selection."""
+    """calibration.json: every agreement the judge selection depends on, and the selection."""
 
     model_config = ConfigDict(frozen=True, extra="forbid")
 
@@ -114,9 +114,9 @@ def judge_comparison(a: str, b: str) -> str:
     return f"{a} vs {b}"
 
 
-def replicate_comparison(judge: str, replicate: int) -> str:
+def replicate_comparison(judge: str) -> str:
     """The `comparisons` key of `judge` against its replicate: `opus vs opus replicate 1`."""
-    return f"{judge} vs {judge} replicate {replicate}"
+    return f"{judge} vs {judge} replicate 1"
 
 
 def read_calibration(run_dir: Path) -> Calibration:

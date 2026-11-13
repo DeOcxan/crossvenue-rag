@@ -52,13 +52,13 @@ def test_table_name_must_be_an_identifier():
 
 @pytest.mark.parametrize("table", ["chunks\u00e9", "t\u00e4ble", "a-b"])
 def test_a_table_name_outside_ascii_identifiers_is_refused(table):
-    """The 49-character limit is Postgres's byte limit only for ASCII names."""
+    """49 characters keep index names within Postgres's 63-byte limit only for ASCII names."""
     with pytest.raises(ValidationError, match="ASCII letters, digits and underscores"):
         StoreConfig(table=table)
 
 
 def test_dense_candidates_may_exceed_hnsw_ef_search():
-    """A search deeper than ef_search is exact (`index.store`), so nothing is cut."""
+    """A search deeper than `ef_search` is exact (`index.store`), so nothing is cut."""
     assert (
         load_config(DEFAULT, ["retrieval.dense_candidates=150"]).retrieval.dense_candidates == 150
     )

@@ -31,7 +31,8 @@ from .patterns import (
     table_lines,
     typeset,
 )
-from .text_spans import Collapsed, Found, Spans
+from .span_sets import Spans
+from .text_spans import Collapsed, Found
 
 # A Markdown table's fewest lines: the header, the rule and one row.
 TABLE_MIN_LINES = TABLE_HEADER_LINES + 1
@@ -86,7 +87,7 @@ class Doc:
 
     The claims (`reporting.claims`) pass the numbers of a document to the `Doc` with the
     text they are written in, through `check`, `table`, `given`, `unsaved` and the other
-    methods; `audit` then reports every number no call covered. Numbers inside code, link
+    methods; `audit` then reports every number no call covered. Numbers inside code, inline-link
     targets, identifiers (`recall@10`, `cv-0045`, `v0.2.1`, dates), the reference patterns
     in `REFERENCES` and numbers joined to a word by a hyphen (`50-question`,
     `patterns.TOKEN`) are not numbers of the document.
@@ -152,7 +153,7 @@ class Doc:
         patterns = [
             r"```.*?```",  # fenced code
             r"`[^`]*`",  # inline code, a line break inside it included
-            r"\]\([^)]*\)",  # link targets
+            r"\]\([^)]*\)",  # inline-link targets
             r"<!--.*?-->",
             *REFERENCES,
         ]
@@ -166,7 +167,7 @@ class Doc:
         return Spans(self._masked)
 
     def is_masked(self, pos: int) -> bool:
-        """Whether offset `pos` lies in a span whose digits are not numbers (code, a link)."""
+        """Whether offset `pos` lies in a span `_mask` collected."""
         return pos in self._mask_spans
 
     def covered_spans(self) -> tuple[tuple[int, int], ...]:
@@ -324,8 +325,9 @@ class Doc:
         """The list under the line `heading` is exactly `expected`, item for item.
 
         An item is a line starting with `- `, and the list ends at the first line that is not
-        one. Each written item is covered and listed with `reason`; an item missing from the
-        list, an item not expected and an expected item out of order are each a problem.
+        one. Each written item that is expected is covered and listed with `reason`; an item
+        missing from the list, an item not expected and an expected item out of order are each
+        a problem.
         """
         # The offset of `heading` in the text, a first line included.
         start = f"\n{self.text}".find(f"\n{heading}\n")
@@ -438,8 +440,8 @@ class Doc:
     def audit(self) -> None:
         """Every number no check covered is a problem, in headings too.
 
-        So is a run, `index_version` or hash prefix no `ref` checked, and a minus sign written
-        as an ASCII hyphen.
+        So is a run directory (`results/<run>`), `index_version` or hash prefix no `ref`
+        checked, and a minus sign written as an ASCII hyphen before a digit.
         """
         covered = Spans(self.covered_spans())
         for m in TOKEN.finditer(self.text):
@@ -450,7 +452,7 @@ class Doc:
                 Problem(
                     self.path,
                     self.line_of(pos),
-                    f"number {m.group()!r} is not recomputed by any check",
+                    f"no check recomputes number {m.group()!r}",
                 )
             )
         refs = Spans(self.ref_spans())

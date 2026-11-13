@@ -9,7 +9,7 @@ from rich.text import Text
 from crossvenue_rag.rich_text import add_text_row
 
 
-def test_a_str_cell_is_literal_text_and_a_text_cell_keeps_its_style():
+def test_a_str_cell_is_literal_text_and_a_text_cell_keeps_its_text():
     table = Table()
     table.add_column("a")
     table.add_column("b")

@@ -28,7 +28,7 @@ BUILD_INDEX_HINT = "build the index with `make ingest index`"
 
 
 class EmbeddingComponents(BaseModel):
-    """The embedding settings that change a vector: model, dimension, prefix, normalization."""
+    """The embedding settings the index version hashes: model, dimension, prefix, normalization."""
 
     model_config = ConfigDict(frozen=True, extra="forbid")
 
@@ -39,7 +39,7 @@ class EmbeddingComponents(BaseModel):
 
 
 class IndexComponents(BaseModel):
-    """Everything that can move a chunk id or a vector, which the index version hashes.
+    """The inputs and config the index version hashes.
 
     The sha256 of data/manifest.csv (any source document changing), the chunking
     config, the embedding settings and the chunk schema version
@@ -56,7 +56,9 @@ class IndexComponents(BaseModel):
 
 def index_components(cfg: Config) -> IndexComponents:
     """The index components of this config and the manifest it names."""
-    manifest = require_file(cfg.paths.manifest, hint="run `crossvenue fetch` first")
+    manifest = require_file(
+        cfg.paths.manifest, hint="restore it, or write it with `crossvenue fetch --follow-branch`"
+    )
     return IndexComponents(
         manifest_sha256=file_sha256(manifest),
         chunking=cfg.chunking,
@@ -138,7 +140,11 @@ def built_index_version(cfg: Config) -> str | None:
 
 
 def recorded_index_version(meta_path: Path) -> str | None:
-    """The `index_version` an index_meta.json at `meta_path` records; None when there is no file."""
+    """The `index_version` an index_meta.json at `meta_path` records; None when there is no file.
+
+    Raises:
+        UserError: A directory is at `meta_path`.
+    """
     if not meta_path.exists():
         return None
     return read_json_model(meta_path, IndexMeta, hint=INDEX_META_HINT).index_version
@@ -149,7 +155,7 @@ def require_built_index_version(meta_path: Path) -> str:
 
     Raises:
         UserError: There is no index_meta.json at `meta_path`, so no index is built; the hint
-            names the command that builds it.
+            names the command that builds it. A directory is at `meta_path`.
     """
     version = recorded_index_version(meta_path)
     if version is None:
@@ -174,13 +180,13 @@ def require_current_index(cfg: Config, store_versions: list[str] | None = None) 
     if built != expected:
         raise UserError(
             f"the index on disk is {built}, but this config and manifest imply {expected}",
-            hint="the manifest, chunking config, embedding model or chunk schema changed "
+            hint="the manifest, chunking config, embedding settings or chunk schema changed "
             "since the last build; rebuild with `make ingest index`",
         )
     if store_versions is not None and store_versions != [built]:
         raise UserError(
             f"Postgres rows carry index_version {', '.join(store_versions) or 'none'}, "
             f"the BM25 side is {built}",
-            hint="the two indexes were built from different corpora; rebuild with `make index`",
+            hint="rebuild with `make index`",
         )
     return built

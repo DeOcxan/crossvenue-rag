@@ -20,6 +20,7 @@ from .corpus import (
     quoting_chunks,
     venue_chunks,
 )
+from .corpus_sheet import page_chunks
 
 # The Binance pages the next corpus version removes, as ADR 0012 lists them: the testnet
 # changelog (`TESTNET_CHANGELOG`), the `demo-mode/` pages and the `TERMS` pages.
@@ -74,12 +75,12 @@ class BinanceRemovals:
 
 
 def binance_removals(src: Sources) -> BinanceRemovals:
-    """Binance chunks of the pages the next version removes."""
-    binance = venue_chunks(src, "binance")
+    """Binance chunks of the pages the next version removes (`corpus_sheet.page_chunks`)."""
+    pages = page_chunks(src, "binance")
     return BinanceRemovals(
-        sum(is_testnet_changelog(c.doc_path) for c in binance),
-        sum(BINANCE_DEMO_MODE in c.doc_path for c in binance),
-        sum(is_terms_page(c.doc_path) for c in binance),
+        sum(k for page, k in pages.items() if is_testnet_changelog(page)),
+        sum(k for page, k in pages.items() if BINANCE_DEMO_MODE in page),
+        sum(k for page, k in pages.items() if is_terms_page(page)),
     )
 
 

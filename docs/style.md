@@ -178,11 +178,11 @@ Results are not one of Diátaxis's four types; `docs/results/` is a fifth sectio
 
 ## Files outside these rules
 
-Files under `results/` are written by a run and their sha256 is in `results/runs.json`; files under `prompts/` are pinned by sha256 (rule 44). Neither is ever edited. The rules apply to the templates in `src/` that write run reports, for future runs. The Markdown under `tests/fixtures/` is vendor-format input the tests parse as it is.
+A run writes each run folder under `results/`, and `results/runs.json` holds the sha256 of each of its files; files under `prompts/` are pinned by sha256 (rule 44). Neither is ever edited. The rules apply to the templates in `src/` that write run reports, for future runs. The Markdown under `tests/fixtures/` is vendor-format input the tests parse as it is.
 
 ## Checks
 
-Every rule is checked by reading. The tools are aids: each runs for the rules its row names, and a clean run does not show that a document meets them. `make lint-docs` runs Vale over `README.md`, `docs/` and `evals/` with the styles in `.vale/styles/crossvenue/`; `.vale.ini` sets `MinAlertLevel = warning`, and any alert fails the target. Code spans, code blocks and italic text are not linted (`IgnoredScopes`). A verbatim quotation, such as a GitHub issue title, keeps its own words and punctuation against rules 2, 20 and 25; Vale is switched off around it with `<!-- vale … = NO -->` comments.
+Every rule is checked by reading. The tools are aids: each runs for the rules its row names, and a clean run does not show that a document meets them. `make lint-docs` runs `vale` over `README.md`, `docs/` and `evals/` with the styles in `.vale/styles/crossvenue/`; `.vale.ini` sets `MinAlertLevel = warning`, and any alert fails the target. Code spans, code blocks and italic text are not linted (`IgnoredScopes`). A verbatim quotation, such as a GitHub issue title, keeps its own words and punctuation against rules 2, 20 and 25; Vale is switched off around it with `<!-- vale … = NO -->` comments.
 
 | Tool | Rules it runs for |
 |---|---|
@@ -202,7 +202,7 @@ Every rule is checked by reading. The tools are aids: each runs for the rules it
 | Vale, Headings | 31 |
 | Vale, Bold | 33 |
 | Vale, Emoji | 34 |
-| `tests/test_repo_hygiene.py`, over every published Markdown file, the committed run reports included | 30, 31, 32, 34 |
+| `tests/test_repo_hygiene.py`, over every published Markdown file outside `prompts/` and `tests/fixtures/`, the committed run reports included | 30, 31, 32, 34 |
 | lychee, offline, over `README.md`, `docs/` and `evals/`: every relative link and anchor resolves | 36 |
 | `make reproduce`, over the documents `reporting/reproduce.py` lists | 9, 10, 11 |
 

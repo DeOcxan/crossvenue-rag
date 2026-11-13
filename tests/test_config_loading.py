@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import shlex
 from pathlib import Path
 
 import pytest
@@ -43,6 +44,17 @@ def test_a_malformed_override_is_refused_naming_it(override, message):
     assert override.partition("=")[0].partition(":")[0] in str(refused.value)
 
 
+def test_the_yaml_refusal_hint_names_both_quotings_with_an_example_that_loads():
+    with pytest.raises(UserError, match="the value is not valid YAML") as refused:
+        load_config(DEFAULT, ["fetch.user_agent=@x"])
+    hint = refused.value.hint
+    assert "for the shell" in hint
+    assert "for YAML" in hint
+    option, override = shlex.split(hint.partition("for example ")[2])
+    assert option == "--set"
+    assert load_config(DEFAULT, [override]).fetch.user_agent == "@x"
+
+
 def test_a_config_that_is_not_a_yaml_file_of_sections_is_refused(tmp_path: Path):
     with pytest.raises(UserError, match="is a directory where a file is expected"):
         load_config(tmp_path)
@@ -60,6 +72,21 @@ def test_the_dsn_of_the_environment_fills_an_empty_store_section(tmp_path, monke
     monkeypatch.setenv("CROSSVENUE_PG_DSN", "not a dsn")
     with pytest.raises(UserError, match=r"store\.dsn"):
         load_config(path)
+
+
+def test_a_dsn_of_the_environment_outside_its_domain_is_refused_naming_the_variable(monkeypatch):
+    monkeypatch.setenv("CROSSVENUE_PG_DSN", "notadsn")
+    with pytest.raises(UserError, match=r"^invalid CROSSVENUE_PG_DSN: store\.dsn") as refused:
+        load_config(DEFAULT)
+    assert "CROSSVENUE_PG_DSN" in refused.value.hint
+    assert "notadsn" not in f"{refused.value} {refused.value.hint}"
+
+
+def test_an_override_rejected_beside_a_dsn_of_the_environment_is_named_as_the_override(monkeypatch):
+    monkeypatch.setenv("CROSSVENUE_PG_DSN", "notadsn")
+    with pytest.raises(UserError, match=r"^invalid --set retrieval\.k=0") as refused:
+        load_config(DEFAULT, ["retrieval.k=0"])
+    assert "--set retrieval.k" in refused.value.hint
 
 
 def test_no_environment_variable_sets_a_section(tmp_path, monkeypatch):

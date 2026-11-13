@@ -1,7 +1,7 @@
 """`make reproduce` on a fixture run, and the documents it checks.
 
 Nothing here reads the repository's own results: every run, dataset and document is
-built under tmp_path, except the list of the repository's Markdown files.
+built under `tmp_path`, except the list of the repository's Markdown files.
 """
 
 from __future__ import annotations
@@ -20,7 +20,7 @@ from tests.reporting.conftest import CONFIGS, write_fixture
 
 ROOT = Path(__file__).resolve().parents[2]
 # The Markdown documents `crossvenue reproduce` does not check, each with the reason.
-# docs/style.md, Checks: a number outside reproduce is re-derived from its source by hand.
+# docs/style.md, Checks: a number outside `reproduce` is re-derived from its source by hand.
 BY_HAND = "not under reproduce: its numbers are re-derived by hand"
 UNCHECKED = {
     "docs/README.md": "the index of the documentation",
@@ -68,7 +68,7 @@ def write_uncommitted_fixture(root: Path) -> None:
 
 
 def only_the_refusal_spec(monkeypatch):
-    """`reproduce` checks findings.md alone, with `_refusal_spec`."""
+    """`reproduce` checks `findings.md` alone, with `_refusal_spec`."""
     monkeypatch.setattr(
         reproduce_module, "document_specs", lambda root, count: {"findings.md": _refusal_spec}
     )
@@ -98,7 +98,7 @@ def test_reproduce_reports_where_the_document_disagrees_with_the_run(tmp_path, m
 
 
 def with_the_readme_count(monkeypatch, stated: str) -> None:
-    """`reproduce` checks findings.md with `_refusal_spec` and a README stating `stated`."""
+    """`reproduce` checks `findings.md` with `_refusal_spec` and a README stating `stated`."""
 
     def count_spec(doc: Doc, src: Sources) -> None:
         doc.given(CHECKED_NUMBERS_TEMPLATE, stated, reason="the total")
@@ -133,7 +133,7 @@ def test_reproduce_reports_a_readme_count_that_differs_from_its_total(tmp_path, 
 
 
 def markdown_documents(root: Path) -> set[str]:
-    """README.md and every Markdown file under docs/ and evals/, relative to `root`."""
+    """`README.md` and every Markdown file under `docs/` and `evals/`, relative to `root`."""
     found = {"README.md"} if (root / "README.md").exists() else set()
     for tree in ("docs", "evals"):
         found |= {str(p.relative_to(root)) for p in (root / tree).rglob("*.md")}

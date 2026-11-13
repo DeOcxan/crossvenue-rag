@@ -42,12 +42,13 @@ def write_answer_run(
 ) -> Path:
     """Writes every file of an answer run into `results_dir/<timestamp><suffix>/`; returns it.
 
-    The directory is created by this call and must not exist. The report is
+    This call creates the directory, which must not exist. The report is
     built first, so records it refuses (`answer_report.report`) leave no
     directory behind.
 
     Raises:
-        UserError: `records` carry more than one judge.
+        UserError: `records` carry more than one judge, or `generation.calibration_run` is set
+            and holds no calibration.json.
     """
     configs = [m.name for m in cfg.generation.matrix]
     summary = summary_rows(records, configs)

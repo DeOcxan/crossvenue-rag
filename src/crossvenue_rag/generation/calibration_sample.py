@@ -109,7 +109,7 @@ def write_calibration_sample(
         f"stratified by configuration and category, seed {formatting.own_form(seed)}.",
         f"{_RUN_LINE}{run_dir}",
         f"# Excluded questions (judge prompt revised on them): {' '.join(excluded) or 'none'}.",
-        "# Written by `crossvenue rate-sample`; read by `crossvenue rate`.",
+        "# `crossvenue rate-sample` writes this file; `crossvenue rate` reads it.",
     ]
     lines += [f"{r.answer_id}  {stratum(r)}" for r in sample]
     Path(path).parent.mkdir(parents=True, exist_ok=True)
@@ -130,9 +130,9 @@ def read_sample(path: str | Path) -> tuple[str, list[str]]:
 
     Raises:
         UserError: Nothing is at `path`, or a directory is. The file is not UTF-8 text, or it
-            names no run or no answer, so it was not written by `crossvenue rate-sample`.
+            names no run or no answer, so `crossvenue rate-sample` did not write it.
     """
-    hint = "pass --sample-file a sample written by `crossvenue rate-sample`"
+    hint = "pass --sample-file a sample that `crossvenue rate-sample` wrote"
     try:
         text = require_file(path, hint=hint).read_text(encoding="utf-8")
     except UnicodeDecodeError as exc:
@@ -156,6 +156,11 @@ def read_sample(path: str | Path) -> tuple[str, list[str]]:
     if not ids:
         raise UserError(f"{path} names no answer", hint=hint)
     return run_dir, ids
+
+
+def answer_total(strata: dict[str, int]) -> int:
+    """The number of answers of a calibration sample, from its answers per stratum."""
+    return sum(strata.values())
 
 
 def draw_calibration_sample(cfg: Config, run: Path, out: Path) -> dict[str, int]:

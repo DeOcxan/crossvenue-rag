@@ -1,6 +1,6 @@
 """Power of the paired recall comparison as it is run, by simulation.
 
-The comparisons use a two-sided sign-flip randomization test on per-question recall@10
+The comparisons use a two-sided sign-flip randomization test on per-question `recall@10`
 (fractional when a question has several gold chunks), Holm-adjusted within a family.
 Methodology section 7's power table models a binary hit and an unadjusted McNemar test.
 """
@@ -98,7 +98,7 @@ class PowerDesign:
     @property
     def ceiling(self) -> float:
         """Psi E[m]: the largest expected difference the model reaches."""
-        return self.psi * sum(self.magnitudes) / len(self.magnitudes)
+        return self.psi * mean(self.magnitudes)
 
     def __post_init__(self) -> None:
         """Refuses a design outside the simulation's domain.
@@ -123,6 +123,14 @@ class PowerDesign:
                 raise ValueError(
                     f"{name} must be at least 1, got {formatting.count(getattr(self, name))}"
                 )
+
+
+def favor_probability(ceiling: float, delta: float) -> float:
+    """The probability that a discordant question favors the better method.
+
+    `ceiling` is the largest expected difference the model reaches.
+    """
+    return 0.5 + delta / (2 * ceiling)
 
 
 def simulate_power(design: PowerDesign) -> list[PowerPoint]:
@@ -156,7 +164,7 @@ def simulate_power(design: PowerDesign) -> list[PowerPoint]:
                 )
             )
             continue
-        favor = 0.5 + delta / (2 * ceiling)
+        favor = favor_probability(ceiling, delta)
         shape = (design.studies, design.n)
         discordant = rng.random(shape) < design.psi
         size = m[rng.integers(0, m.size, size=shape)]
@@ -218,7 +226,7 @@ RETRIEVAL_RUN_HINT = "pass --run a retrieval run, results/<ts>, as `crossvenue e
 
 
 def run_index(run: Path) -> RunIndex:
-    """A retrieval run's index.json; every retrieval run from 20260924T234623Z on has one.
+    """A retrieval run's index.json; every committed retrieval run but `20260924T200525Z` has one.
 
     Raises:
         UserError: `run` has no index.json.
@@ -313,14 +321,14 @@ def power_json(study: PowerStudy) -> str:
 def power_study(request: PowerRequest, questions: Sequence[Question], seed: int) -> PowerStudy:
     """The power.json content of a retrieval run.
 
-    It holds the family of recall@k comparisons on the category, the discordance
+    It holds the family of `recall@k` comparisons on the category, the discordance
     and differences it shows, and the simulated power.
 
     psi and the magnitudes are pooled over the family's comparisons on the same
     questions.
 
     Raises:
-        UserError: The run compares no recall@k on the category. The run has no labeled
+        UserError: The run compares no `recall@k` on the category. The run has no labeled
             question of the category, or the family shows no discordant pair, so the
             difference is 0. Or per_query.csv has no row of a method of the family on a
             question another one has (the message names it).
@@ -386,10 +394,10 @@ def power_study(request: PowerRequest, questions: Sequence[Question], seed: int)
 
 
 def _family(request: PowerRequest) -> list[tuple[str, str]]:
-    """The run's secondary recall@k comparisons over the labeled category.
+    """The run's secondary `recall@k` comparisons over the labeled category.
 
     Raises:
-        UserError: The run compares no recall@k on that category; the hint lists the
+        UserError: The run compares no `recall@k` on that category; the hint lists the
             recall cutoffs and categories it does compare.
     """
     rows = read_paired(request.run / PAIRED_FILE).rows
@@ -423,7 +431,7 @@ def _family(request: PowerRequest) -> list[tuple[str, str]]:
 def _recall(
     request: PowerRequest, questions: Sequence[Question], methods: set[str]
 ) -> dict[tuple[str, str], float]:
-    """recall@k of each method on each labeled question of the category, from per_query.csv.
+    """`recall@k` of each method on each labeled question of the category, from per_query.csv.
 
     The category is `Question.effective_category`, the one the paired family scoped on.
     """
@@ -471,7 +479,7 @@ def power_run(cfg: Config, request: PowerRequest, questions: Sequence[Question])
     study is seeded with `eval.bootstrap_seed`.
 
     Raises:
-        UserError: `request.run` has no index.json, or compares no recall@k on the category,
+        UserError: `request.run` has no index.json, or compares no `recall@k` on the category,
             or has no labeled question of the category, or no discordant pair there.
         ValueError: per_query.csv has a question `questions` lacks, or `request.studies`
             or `request.permutations` is below 1 (`PowerDesign`).

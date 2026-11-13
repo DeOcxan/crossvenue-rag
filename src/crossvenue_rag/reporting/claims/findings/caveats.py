@@ -15,8 +15,8 @@ SMALL_CATEGORIES = ("adversarial", "fact", "ambiguous", "noisy", "version_sensit
 def caveats(doc: Doc, src: Sources) -> None:
     """The caveats of the retrieval results."""
     doc.check(
-        "the labeled categories have {}--{} questions (adversarial {}, fact {}, ambiguous {}, "
-        "noisy {}, version_sensitive {}, multihop {})",
+        "the labeled categories have {}--{} labeled questions (adversarial {}, fact {}, "
+        "ambiguous {}, noisy {}, version_sensitive {}, multihop {})",
         *[formatting.count(v) for v in retrieval_tables.labelled_size_range(src, SMALL_CATEGORIES)],
         *[formatting.count(v) for v in retrieval_tables.labelled_sizes(src, SMALL_CATEGORIES)],
     )

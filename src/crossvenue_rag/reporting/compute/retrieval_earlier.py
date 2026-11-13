@@ -3,15 +3,15 @@
 The run made before exact deduplication (`run_ids.PRE_DEDUP_RUN`), whose top 10s
 held copies of one text, and the first run on `v0.2-gold`
 (`run_ids.FIRST_GOLD_RUN`), whose venue coverage motivated venue_split (ADR
-0007). Both are read at the retrieval run's deepest cutoff (`top_k`); the run that measured
-the coverage failure (`run_ids.COVERAGE_FAILURE_RUN`) at the top 10.
+0007). These two and the run that measured the coverage failure
+(`run_ids.COVERAGE_FAILURE_RUN`) are read at the retrieval run's deepest cutoff (`top_k`).
 """
 
 from __future__ import annotations
 
 from ... import formatting
 from ...config_eval import LABELLED_COMPARISON_SCOPE
-from ...evaluation.metrics import venue_coverage_at_k
+from ...evaluation.metrics import unjudged_at_k, venue_coverage_at_k
 from ...evaluation.results import PER_QUERY_FILE
 from ...run_files import PAIRED_FILE
 from ...stats import mean
@@ -88,7 +88,7 @@ def copy_slot_most(src: Sources) -> int:
 
 
 def first_gold_coverage(src: Sources, method: str) -> float:
-    """Mean venue_coverage@k of `method` on `v0.2-gold`'s comparison questions.
+    """Mean `venue_coverage@k` of `method` on `v0.2-gold`'s comparison questions.
 
     Recomputed from the first run on that set, with each retrieved chunk's venue as the
     row saved it, or else from the corpus (`PerQueryRow.retrieval`).
@@ -129,7 +129,7 @@ def first_gold_coverage_equal(src: Sources, a: str, b: str) -> bool:
 
 
 def first_run_unjudged(src: Sources, method: str) -> float:
-    """Mean share of `method`'s top 10 on the comparison questions that round 1 never judged.
+    """Mean share of `method`'s top k on the comparison questions that round 1 never judged.
 
     In the run that measured the coverage failure, against the `v0.2-gold`
     journal; the run predates `unjudged@k`, so it is recomputed from its saved
@@ -144,8 +144,7 @@ def first_run_unjudged(src: Sources, method: str) -> float:
         if row.method != method or not before[q].is_comparison or first is None:
             continue
         seen = set(first.judged_ids())
-        top = row.ids[: top_k(src)]
-        shares.append(mean([c not in seen for c in top]))
+        shares.append(unjudged_at_k(row.ids, seen, top_k(src)))
     return mean(shares)
 
 

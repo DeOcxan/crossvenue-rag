@@ -1,4 +1,4 @@
-"""Tests for `crossvenue_rag.evaluation.comparisons`: primary row and Holm families."""
+"""Tests for `crossvenue_rag.evaluation.comparisons`."""
 
 from __future__ import annotations
 
@@ -107,6 +107,16 @@ def test_paired_table_states_each_rows_direction():
     table = paired_table([row("a", "b", "recall@10", "labelled", 0.2), down])
     assert "better is" in table.splitlines()[0]
     assert "| higher |" in table.splitlines()[2] and "| lower |" in table.splitlines()[3]
+
+
+def test_paired_table_right_aligns_its_numeric_and_interval_columns():
+    from crossvenue_rag.evaluation.comparisons import paired_table
+
+    table = paired_table([row("a", "b", "recall@10", "labelled", 0.2)])
+    header, rule = table.splitlines()[:2]
+    labels = {"a vs b", "metric", "scope", "better is", "role"}
+    cells = [cell.strip() for cell in header.strip("|").split("|")]
+    assert rule.strip("|").split("|") == ["---" if c in labels else "---:" for c in cells]
 
 
 @pytest.mark.parametrize(("size", "tested"), [(49, False), (50, True)])

@@ -1,7 +1,6 @@
 """What docs/reference/config.md claims.
 
-The tables come first, in document order, then one function per section for the rest of its
-text, in document order.
+The tables come first, in document order.
 """
 
 from __future__ import annotations

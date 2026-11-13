@@ -86,7 +86,7 @@ _ADMONITION_OPEN_RE = re.compile(
 )
 _ADMONITION_CLOSE_RE = re.compile(r"^:::+\s*$", re.MULTILINE)
 
-# Docsify heading directives, such as `### fetchFundingRate{docsify-ignore}` all over
+# Docsify heading directives, such as `### fetchFundingRate{docsify-ignore}` in
 # the CCXT wiki. Left in, they attach to the one token that identifies the method.
 _DOCSIFY_DIRECTIVE_RE = re.compile(r"\{docsify-[a-z-]+\}")
 
@@ -148,7 +148,7 @@ def _clean_prose(text: str) -> str:
     text = _SELF_CLOSING_COMPONENT_RE.sub("", text)
     text = _TAG_RE.sub("", text)
 
-    # GitBook emits `&#x20;` for significant spaces and escapes `&`, `<`, `>`.
+    # GitBook emits `&#x20;` for spaces that must be kept and escapes `&`, `<`, `>`.
     text = html.unescape(text)
 
     text = _unmask_inline_code(text, inline_code)
@@ -162,7 +162,7 @@ _NAV_LINE_PATTERNS = [
     # prose that merely starts with "Next," is not mistaken for a nav control.
     re.compile(r"^\s*\[?(previous|next)\]?\s*(\(.*\))?\s*$", re.IGNORECASE),
     re.compile(r"^\s*(edit this page|last updated)\b.*$", re.IGNORECASE),
-    re.compile(r"^\s*(?:\*|-)\s*$"),  # empty list bullets left by stripped components
+    re.compile(r"^\s*(?:\*|-)\s*$"),  # empty list bullets that stripped components leave
     # Markdown table rules (`|---|:---:|---|`). They carry no information once
     # the table is plain text, and the wide ones break the chunk budget. One rule
     # in Binance's fix-api.md is a single 951-token run of dashes with no spaces,

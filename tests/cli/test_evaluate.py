@@ -1,5 +1,5 @@
 """Tests for `cli.evaluate`: argument errors are raised before any model or database is opened, and
-every command runs end to end on the fixture corpus with an in-memory retriever."""
+each retrieval command runs end to end on the fixture corpus with an in-memory retriever."""
 
 from __future__ import annotations
 
@@ -10,17 +10,14 @@ import pytest
 from typer.testing import CliRunner
 
 from crossvenue_rag.cli import app
-from crossvenue_rag.config import Config
 from crossvenue_rag.config_loading import load_config
 from crossvenue_rag.corpus.artifacts import load_chunks
 from crossvenue_rag.dataset.questions import save_questions
 from crossvenue_rag.errors import UserError
 from crossvenue_rag.evaluation.machine import MachineState
-from crossvenue_rag.index.bm25_index import BM25Index
-from crossvenue_rag.index_version import require_current_index
 from crossvenue_rag.models import Question
 from tests.cli.conftest import current_version
-from tests.conftest import InMemoryRetriever, write_journal
+from tests.conftest import MemoryRetriever, write_journal
 from tests.evaluation.factories import fake_run
 
 
@@ -37,21 +34,6 @@ def test_an_unknown_method_is_refused(config_file):
     assert isinstance(result.exception, UserError)
 
 
-class MemoryRetriever(InMemoryRetriever):
-    """`Retriever` as the commands open it, over the fixture corpus: no model, no Postgres."""
-
-    def __init__(self, cfg: Config) -> None:
-        chunks = load_chunks(cfg)
-        super().__init__(cfg, chunks, BM25Index.build(chunks))
-        self.warmups: list[bool] = []
-
-    def warmup(self, *, load_reranker: bool = True) -> None:
-        self.warmups.append(load_reranker)
-
-    def require_current_index(self) -> str:
-        return require_current_index(self.cfg)
-
-
 @pytest.fixture
 def memory_retriever(monkeypatch):
     # Every module that builds a retriever: the commands, `compare_methods` and the bench.
@@ -59,7 +41,7 @@ def memory_retriever(monkeypatch):
         monkeypatch.setattr(f"crossvenue_rag.{module}.Retriever", MemoryRetriever)
 
 
-def labelled_questions(config_file: Path, tmp_path: Path) -> Path:
+def _labelled_questions(config_file: Path, tmp_path: Path) -> Path:
     """A question file labeled against the current index, gold in the fixture corpus."""
     cfg = load_config(config_file)
     by_venue = {c.venue: c.chunk_id for c in load_chunks(cfg)}
@@ -87,8 +69,10 @@ def test_retrieve_prints_each_methods_results(config_file, memory_retriever):
     assert "binance" not in result.output
 
 
-def test_eval_runs_every_method_and_writes_the_results(config_file, tmp_path, memory_retriever):
-    questions = labelled_questions(config_file, tmp_path)
+def test_eval_writes_the_report_the_per_query_file_and_the_question_file_it_ran(
+    config_file, tmp_path, memory_retriever
+):
+    questions = _labelled_questions(config_file, tmp_path)
     result = CliRunner().invoke(
         app, ["eval", "-c", str(config_file), "-q", str(questions), "--venue-filter"]
     )
@@ -110,7 +94,7 @@ def test_eval_refuses_gold_the_corpus_does_not_contain(config_file, tmp_path, me
 
 
 def test_pool_run_writes_a_pool_directory(config_file, tmp_path, memory_retriever):
-    questions = labelled_questions(config_file, tmp_path)
+    questions = _labelled_questions(config_file, tmp_path)
     result = CliRunner().invoke(
         app, ["pool-run", "-m", "bm25", "-m", "venue_split", "--k", "12",
               "--category", "comparison", "-c", str(config_file), "-q", str(questions)],
@@ -122,7 +106,7 @@ def test_pool_run_writes_a_pool_directory(config_file, tmp_path, memory_retrieve
 
 
 def test_pool_run_without_k_reports_the_configured_depth(config_file, tmp_path, memory_retriever):
-    questions = labelled_questions(config_file, tmp_path)
+    questions = _labelled_questions(config_file, tmp_path)
     result = CliRunner().invoke(
         app, ["pool-run", "-m", "bm25", "--category", "comparison", "-c", str(config_file),
               "-q", str(questions), "--set", "eval.pool_depth_per_method=12"],
@@ -134,7 +118,7 @@ def test_pool_run_without_k_reports_the_configured_depth(config_file, tmp_path, 
 def test_pool_run_writes_its_depth_through_the_formatting_module_in_its_own_form(
     config_file, tmp_path, memory_retriever, monkeypatch
 ):
-    questions = labelled_questions(config_file, tmp_path)
+    questions = _labelled_questions(config_file, tmp_path)
     monkeypatch.setattr("crossvenue_rag.formatting.own_form", lambda value: f"<{value}>")
     result = CliRunner().invoke(
         app, ["pool-run", "-m", "bm25", "--k", "12", "--category", "comparison",
@@ -161,7 +145,7 @@ def test_bench_rerank_times_the_split_questions(
         busy_processes=(),
     )
     monkeypatch.setattr("crossvenue_rag.evaluation.bench.machine_state", lambda: idle)
-    questions = labelled_questions(config_file, tmp_path)
+    questions = _labelled_questions(config_file, tmp_path)
     result = CliRunner().invoke(
         app, ["bench-rerank", "-c", str(config_file), "-q", str(questions), "--rounds", "1"]
     )

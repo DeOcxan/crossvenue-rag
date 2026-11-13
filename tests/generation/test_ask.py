@@ -60,7 +60,7 @@ def test_a_partial_answer_without_claims_is_a_refusal_with_its_missing_venues(tm
     assert result.partial is True and [m.model_dump() for m in result.missing] == missing
 
 
-def test_a_partial_answer_with_claims_names_what_is_missing(tmp_path):
+def test_a_partial_answer_with_claims_has_the_partial_outcome_and_no_refusal(tmp_path):
     partial = {**ASK_ANSWER, "partial": True, "missing": [{"venue": "bybit", "missing": "bans"}]}
     cfg, llm, retriever, _ = ask_setup(tmp_path, partial)
     result = answer_question(

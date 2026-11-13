@@ -7,6 +7,7 @@ from pathlib import Path
 from .. import formatting, listing
 from ..config import Config
 from ..evaluation.labels import markdown_table
+from ..run_files import read_run_config
 from ..stats import INTERVAL_LEVEL_PERCENT
 from .calibration import calibration_report
 from .calibration_file import (
@@ -18,8 +19,8 @@ from .calibration_file import (
 CALIBRATION_MARKDOWN = "calibration.md"
 
 
-def calibration_markdown(report: Calibration) -> str:
-    """calibration.md: the agreement tables and the selection.
+def calibration_markdown(report: Calibration, questions: Path) -> str:
+    """calibration.md: the agreement tables and the selection, on the question file `questions`.
 
     Every dimension a comparison of `report` lists with a threshold in `report.thresholds`
     has its statistic in `report.statistic`.
@@ -33,22 +34,20 @@ def calibration_markdown(report: Calibration) -> str:
         if value is None:
             return formatting.MISSING
         bounds = row.interval(statistic)
-        interval = (
-            ""
-            if bounds is None
-            else f" [{formatting.metric(bounds[0])}, {formatting.metric(bounds[1])}]"
-        )
+        interval = "" if bounds is None else " " + formatting.bounds(*bounds)
         undefined = row.undefined(statistic)
         note = f", undefined in {formatting.plural(undefined, 'resample')}" if undefined else ""
         return f"{formatting.metric(value)}{interval}{note}"
 
+    intervals = (
+        f"{formatting.count(INTERVAL_LEVEL_PERCENT)}% percentile bootstrap intervals over answers"
+    )
     lines = [
         f"# Judge calibration: `{report.run}`",
         "",
-        f"{formatting.plural(report.answers_rated, 'answer')} rated by "
-        f"{listing.prose(list(report.raters))}; "
-        f"{formatting.count(INTERVAL_LEVEL_PERCENT)}% percentile bootstrap intervals "
-        f"over answers, {formatting.plural(report.resamples, 'resample')}, "
+        f"{formatting.plural(report.answers_rated, 'answer')}, which "
+        f"{listing.prose(list(report.raters))} rated, on `{questions}`; {intervals}, "
+        f"{formatting.plural(report.resamples, 'resample')}, "
         f"seed {formatting.own_form(report.seed)}."
         + (
             " Left out of `behaviour_correct` against the human: "
@@ -84,7 +83,14 @@ def calibration_markdown(report: Calibration) -> str:
             ]
             for dimension, row in dims.items()
         ]
-        lines += [f"## {name}", "", markdown_table(header, rows, right=range(1, len(header))), ""]
+        lines += [
+            f"## {name}",
+            "",
+            f"{name} on `{questions}`: n paired verdicts per dimension, {intervals}.",
+            "",
+            markdown_table(header, rows, right=range(1, len(header))),
+            "",
+        ]
     selection = [
         [
             judge_name,
@@ -97,6 +103,10 @@ def calibration_markdown(report: Calibration) -> str:
     lines += [
         "## Selection",
         "",
+        f"Each candidate against the human on `{questions}`, on the n paired verdicts of its "
+        "table against the human above: the dimensions at or above their threshold, those below "
+        "it, and the mean cost per answer.",
+        "",
         markdown_table(["judge", "passes", "fails", "USD per answer"], selection, right=(3,)),
         "",
         f"Selected: {report.selected}. {report.reason}.",
@@ -108,13 +118,16 @@ def calibration_markdown(report: Calibration) -> str:
 def select_judge_files(cfg: Config, run_dir: Path) -> str:
     """Writes calibration.json and calibration.md into the run and returns the Markdown.
 
+    The question file calibration.md names is `eval.questions` of the run's config.yaml.
+
     Raises:
-        UserError: `generation.judges` names no candidate, or a candidate with no judgments
-            in the run or that graded none of the rated answers, or
-            `generation.calibration_exclude_behaviour` names an answer the run does not have.
+        UserError: `run_dir` is not an answer or judged run. `generation.judges` names no
+            candidate, or a candidate with no judgments in the run or that graded none of the
+            rated answers, or `generation.calibration_exclude_behaviour` names an answer the
+            run does not have.
     """
     report = calibration_report(cfg, run_dir)
+    text = calibration_markdown(report, read_run_config(run_dir).eval.questions)
     write_calibration(run_dir, report)
-    text = calibration_markdown(report)
     (run_dir / CALIBRATION_MARKDOWN).write_text(text, encoding="utf-8")
     return text

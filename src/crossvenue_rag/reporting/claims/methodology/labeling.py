@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from .... import formatting
 from ....dataset.agreement import KAPPA_TARGET, MIN_RETEST_DAYS
+from ....dataset.journal import FULL_RELABEL_ROUND, RETEST_ROUND
 from ....dataset.sampling import ROUND2_SEED
 from ....dataset.selection import TARGETS
 from ....dataset.validate import LEAKAGE_NGRAM
@@ -17,6 +18,7 @@ from ...compute import (
     datasets_rounds,
     gold_sheet,
 )
+from ...compute.round3 import round3_added, round3_sizes
 from ...outcomes import Param
 from ...run_ids import RETRIEVAL_RUN
 from ...sources import Sources
@@ -132,7 +134,7 @@ def agreement(doc: Doc, src: Sources) -> None:
     doc.definition(
         "Two caveats from the reliability literature apply", reason="the two caveats that follow"
     )
-    relevant, shown = datasets_rounds.first_pass_marks(src)
+    relevant, shown = datasets_rounds.round1_marks_after_review(src)
     doc.check(
         "(on `v0.2-gold`, {} of the {} candidates shown were marked relevant)",
         formatting.count(relevant),
@@ -158,7 +160,7 @@ def agreement(doc: Doc, src: Sources) -> None:
     )
     doc.check(
         "The order was shuffled per question with seed {}, recorded as `shuffle_seed`",
-        formatting.own_form(datasets_rounds.retest_shuffle_seed(src)),
+        formatting.own_form(datasets_rounds.shuffle_seed(src, RETEST_ROUND)),
     )
     _sample_decisions(doc, src)
     _agreement_marks(doc, src)
@@ -203,6 +205,11 @@ def _sample_decisions(doc: Doc, src: Sources) -> None:
     )
 
 
+# The other-chunk counts section 5 registers, of the pools as deduplication remapped them.
+REMAPPED_OTHER_MARKS = ("172", "2,759")
+REMAPPED = "the count section 5 registers, of the remapped pools (deviation D32)"
+
+
 def _agreement_marks(doc: Doc, src: Sources) -> None:
     """Section 5: how source chunks were marked, the target and the schedule."""
     marks = datasets_rounds.source_chunk_marks(src)
@@ -211,8 +218,7 @@ def _agreement_marks(doc: Doc, src: Sources) -> None:
         "times out of {}",
         formatting.count(marks.source_relevant),
         formatting.count(marks.source_shown),
-        formatting.count(marks.other_relevant),
-        formatting.count(marks.other_shown),
+        *[Param(n, REMAPPED) for n in REMAPPED_OTHER_MARKS],
     )
     doc.given(
         'Target \u03ba \u2265 {} (Landis & Koch "substantial")',
@@ -245,16 +251,16 @@ def _agreement_marks(doc: Doc, src: Sources) -> None:
     kappa = formatting.metric(registered.report.kappa)
     low, high = comparisons.kappa_bounds(registered)
     doc.check(
-        "| \u03ba computed and written to `evals/agreement.md`: {} [{}, {}] ({}% percentile "
-        "bootstrap over questions) |",
+        "| \u03ba computed and written to `evals/agreement.md`: {} [{}, {}] on `v0.2.1-gold` "
+        "({}% percentile bootstrap over questions) |",
         kappa,
         low,
         high,
         Param(comparisons.level(), INTERVAL_LEVEL),
     )
     doc.check(
-        "by either date; \u03ba is {} [{}, {}] ({}% percentile bootstrap over questions; "
-        "[agreement]",
+        "by either date; \u03ba is {} [{}, {}] on `v0.2.1-gold` ({}% percentile bootstrap over "
+        "questions; [agreement]",
         kappa,
         low,
         high,
@@ -278,12 +284,17 @@ def instructions(doc: Doc) -> None:
 
 def round3(doc: Doc, src: Sources) -> None:
     """Section 5b: the registered size, seed, index and exposure of the full relabel."""
-    sizes = retest.round3_sizes(src)
+    sizes = round3_sizes(src)
     total_questions = sum(s.questions for s in sizes.values())
     total = formatting.count(total_questions)
-    doc.check("| {} | Full relabel | Annotation round {} over all {} questions", "12", "3", total)
+    doc.check(
+        "| {} | Full relabel | Annotation round {} over all {} questions",
+        "12",
+        formatting.own_form(FULL_RELABEL_ROUND),
+        total,
+    )
     doc.check("All {} questions, one annotator, no subsample.", total)
-    added = retest.round3_added(src)
+    added = round3_added(src)
     doc.definition("The three questions of deviation D23 add the chunks", reason="deviation D23")
     doc.check(
         "which come to {} chunks on {} questions",
@@ -299,7 +310,7 @@ def round3(doc: Doc, src: Sources) -> None:
     doc.table("| Category | Questions | Candidate decisions |", rows)
     doc.check(
         "shuffled per question with seed {}, recorded as `shuffle_seed` in each entry; round 2's",
-        formatting.own_form(datasets_rounds.round3_shuffle_seed(src)),
+        formatting.own_form(datasets_rounds.shuffle_seed(src, FULL_RELABEL_ROUND)),
     )
     doc.check(
         "That is {} questions, and on those questions",
@@ -312,7 +323,7 @@ def round3(doc: Doc, src: Sources) -> None:
         formatting.count(len(retest.relabeled_questions(src))),
     )
     doc.check(
-        "\u03ba {} stays the only test-retest figure",
+        "\u03ba {} on `v0.2.1-gold` stays the only test-retest figure",
         formatting.metric(retest.registered(src).report.kappa),
     )
     doc.definition(
@@ -326,7 +337,7 @@ def round3(doc: Doc, src: Sources) -> None:
 def deduplication(doc: Doc, src: Sources) -> None:
     """Section 6: question deduplication and leakage."""
     doc.definitions(DEDUPLICATION_STUDIES, reason=LITERATURE)
-    doc.definition("Two checks, both run by", reason=LIST_FOLLOWS)
+    doc.definition("Two checks, both cheap, and", reason=LIST_FOLLOWS)
     doc.definition("differ in one token", reason=CONVENTION)
     doc.definition("a one-token venue swap", reason=CONVENTION)
     threshold = protocol.duplicate_threshold(src)

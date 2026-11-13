@@ -1,4 +1,7 @@
-"""What the decision records (docs/adr/NNNN-*.md) claim, one module per record."""
+"""What the decision records (docs/adr/NNNN-*.md) claim.
+
+`RECORDS` names the module of each record that states numbers.
+"""
 
 from __future__ import annotations
 

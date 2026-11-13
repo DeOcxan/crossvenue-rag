@@ -1,4 +1,4 @@
-"""Tests for `reporting.compute.answers`, on a run written under tmp_path."""
+"""Tests for `reporting.compute.answers`, on a run written under `tmp_path`."""
 
 from __future__ import annotations
 
@@ -7,7 +7,6 @@ from dataclasses import replace
 import pytest
 import yaml
 
-from crossvenue_rag.errors import UserError
 from crossvenue_rag.generation.answer_rows import SCOPES
 from crossvenue_rag.generation.metrics import METRICS
 from crossvenue_rag.reporting.compute import answers
@@ -45,7 +44,7 @@ def paired_row(a, b, metric, **values):
 PAIR = ("gemini@venue_split", "gemini@hybrid_rerank")
 
 
-def test_three_generators_answer_in_four_configurations(tmp_path):
+def test_the_generators_are_counted_once_each(tmp_path):
     write_fixture(tmp_path)
     assert len(answers.generators(Sources(tmp_path))) == 3
 
@@ -86,20 +85,18 @@ def test_judged_comparisons_are_read_from_paired_csv(tmp_path):
     assert not answers.judged_includes_zero(src, 1, PAIR, "coverage", "comparison")
     assert answers.judged_includes_zero(src, 2, PAIR, "coverage", "comparison")
     assert answers.judged_p(src, 1, PAIR, "coverage", "comparison", "holm_p") == 0.02
-    family = ("coverage", "venue_attribution_error")
-    # Holm: the smaller p of two is doubled.
-    assert answers.judged_holm(src, 2, PAIR, family, "comparison")[0] == 0.08
 
 
-def test_the_primary_holm_p_is_adjusted_within_the_runs_primary_metrics(tmp_path):
+def test_the_primary_holm_p_is_the_one_paired_csv_records_for_a_primary_metric(tmp_path):
+    # Holm over the two randomization p-values would give 0.08; paired.csv records 0.05.
     v2 = [
-        paired_row(*PAIR, "coverage", randomisation_p=0.04),
-        paired_row(*PAIR, "venue_attribution_error", randomisation_p=0.3),
+        paired_row(*PAIR, "coverage", randomisation_p=0.04, holm_p=0.05),
+        paired_row(*PAIR, "venue_attribution_error", randomisation_p=0.3, holm_p=0.3),
     ]
     config = {"generation": {"primary_metrics": ["venue_attribution_error", "coverage"]}}
     write_judged_run(tmp_path, JUDGED_V2, paired=v2, config=config)
     src = Sources(tmp_path)
-    assert answers.primary_holm(src, 2, PAIR, "coverage", "comparison") == 0.08
+    assert answers.primary_holm(src, 2, PAIR, "coverage", "comparison") == 0.05
     with pytest.raises(ValueError, match="not a primary metric"):
         answers.primary_holm(src, 2, PAIR, "behaviour_correct", "comparison")
 
@@ -141,7 +138,7 @@ def test_the_answer_matrix_pairs_every_configuration_on_every_metric_and_scope(t
     assert answers.expected_false_positives(src) == 2
 
 
-def test_answers_and_refusals_of_the_prompt_v1_run(tmp_path):
+def test_the_prompt_v1_run_counts_its_answers_and_each_configurations_comparison_refusals(tmp_path):
     write_fixture(tmp_path)
     src = Sources(tmp_path)
     assert answers.answer_count(src) == 8
@@ -172,6 +169,17 @@ def test_refusals_are_flattened_and_filtered_by_their_context(tmp_path):
     # No gold chunk at all in the context: group c.
     assert len(answers.refusal_groups(src)["a"]) == 0
     assert len(answers.refusal_groups(src)["c"]) == 1
+
+
+def test_refusal_groups_take_the_category_from_the_gold_set_over_the_answer_record(tmp_path):
+    write_fixture(tmp_path)
+    write_chunks(tmp_path, [make_chunk("c1", "binance", "x")])
+    # The refused cv-0001's record keeps "comparison"; the gold set recategorizes it.
+    write_gold(
+        tmp_path,
+        [{"id": "cv-0001", "category": "fact"}, {"id": "cv-0002", "category": "unanswerable"}],
+    )
+    assert answers.refusal_groups(Sources(tmp_path)) == {"a": [], "b": [], "c": []}
 
 
 def test_a_partial_answer_without_a_claim_is_claimless_under_prompt_v2(tmp_path):
@@ -221,8 +229,6 @@ def test_a_refused_question_the_gold_set_or_the_chunks_lack_is_a_value_error(tmp
     with pytest.raises(ValueError, match=no_question):
         answers.outcome_count(src, "gemini@venue_split", "comparison", "refused", answers.PROMPT_V1)
     with pytest.raises(ValueError, match=no_question):
-        answers.wrong_refusals(src, "gemini@venue_split")
-    with pytest.raises(ValueError, match=no_question):
         answers.refusal_groups(src)
     with pytest.raises(ValueError, match="the gold set has no 'cv-9999'"):
         answers.gold_less_venue(src, "cv-9999")
@@ -242,7 +248,31 @@ def test_a_refusal_group_other_than_a_b_or_c_is_a_value_error(tmp_path):
         answers.gold_less_refusals(Sources(tmp_path), "d")
 
 
-def test_a_judged_run_config_without_a_primary_pair_is_a_user_error_naming_it(tmp_path):
+def test_a_wrong_refusal_is_a_refusal_its_answer_record_does_not_expect(tmp_path):
+    from tests.generation.factories import answer_json
+    from tests.reporting.conftest import write_jsonl
+
+    write_fixture(tmp_path)
+    refused = generation_json(answer=answer_json(refused=True, claims=0), chunk_ids=("c1",))
+    # The gold set expects an answer to both questions; the records decide.
+    write_gold(
+        tmp_path,
+        [
+            {"id": "cv-0001", "expected_behavior": "answer"},
+            {"id": "cv-0002", "expected_behavior": "answer"},
+        ],
+    )
+    records = [
+        record_json("gemini@venue_split", generation=refused, expected_behavior="refuse"),
+        record_json(
+            "gemini@venue_split", "cv-0002", generation=refused, expected_behavior="answer"
+        ),
+    ]
+    write_jsonl(tmp_path / f"results/{ANSWERS_V1}/answers.jsonl", records)
+    assert answers.wrong_refusals(Sources(tmp_path), "gemini@venue_split") == 1
+
+
+def test_a_judged_run_config_without_a_primary_pair_is_a_value_error_naming_it(tmp_path):
     write_judged_run(tmp_path, config={"generation": {"matrix": []}})
-    with pytest.raises(UserError, match=r"config\.yaml sets no generation\.primary_pair"):
+    with pytest.raises(ValueError, match=r"config\.yaml sets no generation\.primary_pair"):
         answers.primary_pair(Sources(tmp_path))

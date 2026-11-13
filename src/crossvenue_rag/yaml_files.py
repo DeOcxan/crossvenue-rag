@@ -66,7 +66,8 @@ def read_model[M: BaseModel](path: str | Path, model: type[M], *, hint: str) -> 
     """The YAML file `path` validated as `model`; an empty file reads as `{}`.
 
     Raises:
-        UserError: `model` rejects the file; `hint` says where to fix it.
+        UserError: Nothing is at `path`, or a directory is. `model` rejects the file; `hint`
+            says where to fix it.
     """
     try:
         return model.model_validate(read_mapping(path, hint=hint))

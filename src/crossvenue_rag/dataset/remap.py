@@ -12,9 +12,11 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from .. import formatting, listing
+from ..atomic_files import write_text_atomically
 from ..errors import UserError
 from ..index.migrate import IdMap, RemapReport, map_ids, remap_jsonl, require_known_ids
 from .journal import (
+    JOURNAL_SUFFIX,
     Adjudication,
     AdjudicationMigration,
     Decision,
@@ -26,12 +28,13 @@ from .journal import (
 
 
 def remap_rounds(
-    path: str | Path, id_map: IdMap, index_version: str, only: set[str] | None = None
+    path: str | Path, id_map: IdMap, index_version: str, only: set[str] | None
 ) -> RemapReport:
-    """Carries every chunk id of the judgment journal across, in place.
+    """Carries the chunk ids of the judgment journal across, in place, for the questions in `only`.
 
-    A round's pool and verdict, round 1's corrections and augmentations, the adjudicated
-    decisions and the relabel's pool and verdict are all mapped. Each migrated entry is
+    When `only` is None, every question is carried. A round's pool and verdict, round 1's
+    corrections and augmentations, the adjudicated decisions and the relabel's pool and
+    verdict are all mapped. Each migrated entry is
     stamped with `index_version` and keeps what it held before under `migrated_from`, which
     keeps the migration before it. The pool the annotator was shown (with its duplicate
     copies) so stays on record through every migration. Refuses, before writing, an `only` id
@@ -39,8 +42,8 @@ def remap_rounds(
     chunks the adjudication decided differently.
 
     Raises:
-        UserError: An `only` id names no question of the journal, an id is not in the map, or
-            two merged chunks carry different adjudicated verdicts.
+        UserError: `path` cannot be read, an `only` id names no question of the journal, an id
+            is not in the map, or two merged chunks carry different adjudicated verdicts.
     """
     carry = _Carry(id_map.mapping, index_version)
     journal = read_journal(Path(path))
@@ -73,7 +76,7 @@ def remap_rounds(
             hint="adjudicate the question again after the index change; the journal was not "
             "changed",
         )
-    Path(path).write_text(journal.to_text(), encoding="utf-8")
+    write_text_atomically(Path(path), journal.to_text())
     return report
 
 
@@ -181,13 +184,14 @@ def remap_file(request: RemapRequest, current_index: str) -> tuple[RemapReport, 
 
     Refuses a map built for another index than `current_index`, and a target or
     fields given for a journal, which is rewritten in place and always in every
-    chunk-id list it holds. Refuses a dataset target that is missing or
+    kind of chunk-id list it holds. Refuses a dataset target that is missing or
     already exists too: datasets are immutable.
 
     Raises:
         UserError: The map targets another index than `current_index`. A journal gets a
             target or fields. A dataset's target is missing, exists, or lies in a missing
-            directory. An `only` id names no record of the source.
+            directory. An `only` id names no record of the source. Nothing is at
+            `request.map_path` or `request.source`, or a directory is.
     """
     mapping = IdMap.load(request.map_path)
     if mapping.to_index_version != current_index:
@@ -196,7 +200,7 @@ def remap_file(request: RemapRequest, current_index: str) -> tuple[RemapReport, 
             hint="rebuild the map with `crossvenue id-map` against the current index",
         )
     only = set(request.only) if request.only else None
-    if request.source.name.endswith(".rounds.json"):
+    if request.source.name.endswith(JOURNAL_SUFFIX):
         _require_journal_options(request)
         return remap_rounds(request.source, mapping, current_index, only), request.source
     target = request.target
@@ -227,7 +231,8 @@ def _require_journal_options(request: RemapRequest) -> None:
         )
     if request.fields is not None:
         raise UserError(
-            f"{request.source} is a judgment journal, whose every chunk-id list is "
-            f"always remapped; --field {', '.join(request.fields)} would be ignored",
+            f"{request.source} is a judgment journal, whose chunk-id lists are remapped for "
+            f"the questions in --only, or for every question without it; "
+            f"--field {', '.join(request.fields)} would be ignored",
             hint="leave out --field for a journal",
         )

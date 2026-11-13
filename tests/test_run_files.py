@@ -1,4 +1,4 @@
-"""Tests for `run_files`: the index.json and CSV writers every run kind shares."""
+"""Tests for `run_files`: the `index.json` and CSV writers the run kinds share."""
 
 from __future__ import annotations
 

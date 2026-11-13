@@ -8,7 +8,7 @@ from ...evaluation.labels import fmt
 from ..check import Doc
 from ..compute import agreement, datasets, datasets_rounds, gold_sheet, retrieval
 from ..outcomes import Param
-from ..run_ids import RETRIEVAL_RUN
+from ..run_ids import GOLD_BEFORE_AUGMENTATION, RETRIEVAL_RUN
 from ..sources import Sources
 from .comparisons import (
     comparison_questions,
@@ -22,7 +22,7 @@ from .reasons import INTERVAL_LEVEL, REGISTERED
 
 
 def limitations(doc: Doc, src: Sources) -> None:
-    """The known limitations: pooling, slices, agreement, the source marker, D23 and ccxt."""
+    """The known limitations of evals/datasheet.md."""
     doc.check("round 1 judged the fused top {} of", protocol.pool_display_text(src))
     doc.check("of the {} round-1 pool methods", formatting.count(len(retrieval.ROUND1_POOL)))
     doc.check(
@@ -62,13 +62,22 @@ def limitations(doc: Doc, src: Sources) -> None:
         formatting.count(values["absent_in_docs"]),
     )
     doc.check(
-        "the labeled categories hold {}--{} questions",
+        "the labeled categories hold {}--{} labeled questions",
         *[formatting.count(n) for n in gold_sheet.labelled_range(src, "comparison")],
     )
     doc.check(
         "the gold chunks of {} of the {} round-2 questions",
         formatting.count(datasets_rounds.exposed_sample_count(src)),
         round2_sample_text(src),
+    )
+    split = gold_sheet.source_split(src, GOLD_BEFORE_AUGMENTATION)
+    doc.claim(
+        "on `v0.2-gold`, those of the {} answerable questions, and none on the {} "
+        "unanswerable ones, which have no `source_chunk_ids`",
+        formatting.count(split.sourced),
+        formatting.count(split.unsourced),
+        holds=split.exactly_answerable,
+        what="the questions with `source_chunk_ids` are exactly the answerable ones",
     )
     marks = datasets_rounds.source_chunk_marks(src)
     doc.check(
@@ -85,7 +94,7 @@ def limitations(doc: Doc, src: Sources) -> None:
     )
     registered = agreement.registered(src)
     doc.check(
-        "reproduced by the same annotator at \u03ba {} [{}, {}] ({}% percentile bootstrap "
+        "which the same annotator reproduced at \u03ba {} [{}, {}] ({}% percentile bootstrap "
         "over questions;",
         formatting.metric(registered.report.kappa),
         *kappa_bounds(registered),

@@ -68,11 +68,11 @@ class PerQueryRow(CsvRow):
     `ndcg_prime@10`, ...) are read through `number`. `read_per_query` reads
     every format of the file:
 
-    - 20260924T200525Z and 20260924T234623Z: without `retrieved_venues` and
+    - `20260924T200525Z` and `20260924T234623Z`: without `retrieved_venues` and
       the metric columns;
-    - the runs of 2026-09-25 from 002151Z on: with the metric columns each
+    - the retrieval runs from `20260925T002151Z` on: with the metric columns each
       run computed;
-    - the pool run 20260925T003721Z_pool: `question_id`, `method`, `k` and
+    - the pool run `20260925T003721Z_pool`: `question_id`, `method`, `k` and
       `retrieved_ids` only.
     """
 
@@ -117,8 +117,8 @@ class SummaryRow(CsvRow):
     columns (`encode_p50_ms`, ...) are read through `number`. `read_summary`
     reads every format of the file:
 
-    - 20260924T200525Z: counts and latency only;
-    - 20260924T234623Z: with the ranking metrics;
+    - `20260924T200525Z`: counts and latency only;
+    - `20260924T234623Z`: with the ranking metrics;
     - the runs of 2026-09-25: with `multi_venue_questions` and the metric
       columns each run computed;
     - the later runs: with the per-step latency columns last.

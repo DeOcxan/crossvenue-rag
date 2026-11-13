@@ -31,8 +31,8 @@ HELP = """The crossvenue-rag command line.
     crossvenue pool-run            # retrieval only, to build a label pool
     crossvenue bench-rerank        # one cross-encoder call against one per venue
     crossvenue power               # power of the recall comparison, by simulation
-    crossvenue augment-candidates  # never-judged chunks from a run
-    crossvenue derive-coverage     # venue_coverage implied by the record
+    crossvenue augment-candidates  # chunks round 1 has not judged, from a run
+    crossvenue derive-coverage     # `venue_coverage` the record implies
     crossvenue validate-evals      # checks the versioned datasets
     crossvenue round-sample        # fixed, stratified round-2 subsample
     crossvenue kappa               # agreement between annotation rounds
@@ -97,8 +97,9 @@ def load(config: Path, overrides: list[str] | None) -> Config:
     """The config with `--set` overrides applied; INFO logging is set up first.
 
     Raises:
-        UserError: An override of `overrides` is not `section.field=value` with a YAML value
-            under a section, or the config schema rejects a value it sets.
+        UserError: Nothing is at `config`, or a directory is. An override of `overrides` is
+            not `section.field=value` with a YAML value under a section, or the config
+            schema rejects a value it sets.
     """
     logging.basicConfig(level=logging.INFO, format="%(levelname)-7s %(name)s: %(message)s")
     return load_config(config, overrides)
@@ -141,8 +142,8 @@ def positive_budget(budget: float | None) -> None:
         )
 
 
-def question_category(option: str, value: str | None) -> None:
-    """Refuses a category that no question can have; left out (None) passes.
+def question_category(value: str | None) -> None:
+    """Refuses a `--category` that no question can have; left out (None) passes.
 
     Raises:
         UserError: `value` is not a `QuestionCategory`.
@@ -150,6 +151,6 @@ def question_category(option: str, value: str | None) -> None:
     categories = get_args(QuestionCategory)
     if value is not None and value not in categories:
         raise UserError(
-            f"{option} {value!r} is not a question category",
-            hint=f"pass {option} one of: {', '.join(categories)}",
+            f"--category {value!r} is not a question category",
+            hint=f"pass --category one of: {', '.join(categories)}",
         )

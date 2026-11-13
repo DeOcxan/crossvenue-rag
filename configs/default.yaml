@@ -1,7 +1,7 @@
 # Baseline configuration: every key the pipeline reads, except fetch.user_agent,
 # which keeps its schema default (docs/reference/config.md). An ablation is
 # another config file or `--set section.field=value` on the CLI, never a code
-# edit. Each eval run copies the resolved config next to its results.
+# edit. Each eval run writes the resolved config, without store.dsn, next to its results.
 
 paths:
   sources: data/sources.yaml
@@ -21,8 +21,8 @@ chunking:
   # A heading section shorter than this is merged into the next one instead of
   # becoming a chunk of its own. Stops "## Parameters" from being a chunk.
   min_tokens: 40
-  # Never split inside a fenced code block: an endpoint signature cut in half is
-  # unretrievable and unusable as a citation.
+  # Keep a fenced code block whole up to max_code_block_tokens and split a larger one:
+  # an endpoint signature cut in half is unretrievable and unusable as a citation.
   keep_code_blocks_intact: true
   # A code block up to this size may exceed max_tokens rather than be split;
   # above it, splitting is the lesser evil.
@@ -185,7 +185,8 @@ generation:
     coverage: 0.70
   # The run whose calibration.json records which dimensions passed for each
   # candidate; a run's report.md and paired.csv mark the metrics of the others
-  # uncalibrated. The two committed judged runs predate the mark.
+  # uncalibrated. The judged runs 20260926T000001Z_judged and
+  # 20260926T004836Z_judged predate the mark.
   calibration_run: results/20260925T175128Z_answers
   # Left out of behaviour_correct against the human: the rating screen showed
   # asked_clarification as false for this answer (methodology section 9).

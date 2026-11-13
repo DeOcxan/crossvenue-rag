@@ -1,4 +1,4 @@
-"""Fetching a git documentation source by a blobless shallow sparse clone, a manifest row per file.
+"""Fetching a git documentation source by a blobless shallow clone, a manifest row per file.
 
 A source is checked out at the commit the manifest records, or at the head of
 its branch when the manifest is being rewritten; its include and exclude globs
@@ -24,7 +24,7 @@ log = logging.getLogger(__name__)
 
 
 def _glob_match(rel_path: str, pattern: str) -> bool:
-    """fnmatch, with `**/` also matching zero directories.
+    """fnmatch, with a leading `**/` also matching zero directories.
 
     fnmatch's `*` crosses separators, so `docs/**/*.md` matches nested paths,
     but `**/*_CN.md` would not match the top-level `rest-api_CN.md` of the
@@ -74,11 +74,10 @@ def _run_git(args: list[str], cwd: Path | None = None) -> str:
 
 
 def clone_or_update(spec: SourceSpec, dest: Path) -> str:
-    """Shallow, blobless, sparse clone (or fast-forward) of a docs repo.
+    """Shallow, blobless clone (or a forced checkout of the fetched branch head) of a docs repo.
 
     Returns the checked-out commit SHA. ``--filter=blob:none`` matters for ccxt,
-    whose repository holds its generated SDKs; with a sparse-checkout of
-    ``wiki`` only the wiki blobs are ever downloaded.
+    whose repository holds its generated SDKs.
     """
     if (dest / ".git").exists():
         _run_git(["fetch", "--depth", "1", "origin", spec.ref], cwd=dest)
@@ -90,7 +89,7 @@ def clone_or_update(spec: SourceSpec, dest: Path) -> str:
 
 
 def checkout_commit(spec: SourceSpec, dest: Path, sha: str) -> str:
-    """Blobless, sparse checkout of one recorded commit (not the branch head).
+    """Blobless checkout of one recorded commit (not the branch head).
 
     A fresh clone starts without a checkout, then fetches exactly `sha`; the
     hosts in `sources.yaml` serve a commit by id to a shallow fetch.

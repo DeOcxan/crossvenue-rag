@@ -12,7 +12,15 @@ from ...compute.answers_costs import MERCURY
 from ...compute.estimates import Estimate
 from ...compute.lookup import entry
 from ...outcomes import SKIP, Param
-from ...run_ids import ANSWERS_V1, ANSWERS_V2, RETRIEVAL_RUN
+from ...run_ids import (
+    ANSWERS_V1,
+    ANSWERS_V2,
+    JUDGED_V1,
+    JUDGED_V2,
+    RETRIEVAL_RUN,
+    ROUND3_JUDGED_V1,
+    ROUND3_JUDGED_V2,
+)
 from ...sources import Sources
 from .. import comparisons
 from ..reasons import INTERVAL_LEVEL, REGISTERED
@@ -179,8 +187,9 @@ def metric_bounds(agreement: Estimate) -> list[str]:
 
 def agreement_cell(agreement: Estimate) -> str:
     """A cell of a calibration table: an agreement with its interval, `0.620 [0.412, 0.790]`."""
-    value, low, high = _parts(agreement)
-    return f"{value} [{low}, {high}]"
+    return (
+        f"{formatting.metric(agreement.value)} {formatting.bounds(agreement.low, agreement.high)}"
+    )
 
 
 def threshold_cell(statistic: str, threshold: float) -> str:
@@ -252,7 +261,7 @@ def judge_protocol_claims(doc: Doc, src: Sources) -> None:
     doc.claim(
         "`behaviour_correct` passes on the point estimate only",
         holds="behaviour_correct" in point_only,
-        what="Opus's behaviour_correct interval reaches below its threshold",
+        what="Opus passes behaviour_correct on the point estimate only",
     )
     doc.check(
         "Opus meets {} thresholds and Sonnet {}, so Opus is the judge",
@@ -296,8 +305,10 @@ def judge_protocol_claims(doc: Doc, src: Sources) -> None:
         formatting.count(
             calibration.compared_count(src, calibration.judge_with_human(src), "behaviour_correct")
         ),
-        formatting.metric(calibration.behaviour_kappa(src, calibration.other_candidate(src))),
-        formatting.metric(calibration.behaviour_kappa(src, judge)),
+        formatting.optional(
+            calibration.behaviour_kappa(src, calibration.other_candidate(src)), formatting.metric
+        ),
+        formatting.optional(calibration.behaviour_kappa(src, judge), formatting.metric),
     )
     doc.check(
         "It stays in the other {} dimensions", formatting.count(len(calibration.DIMENSIONS) - 1)
@@ -312,9 +323,18 @@ def judge_protocol_claims(doc: Doc, src: Sources) -> None:
         "with {} claims. Every claim of it that either grader",
         formatting.count(calibration.sample_claims(src)),
     )
-    doc.definition(
-        "`paired.csv` of the two committed judged runs",
-        reason="the judged runs of prompt v1 and v2",
+    doc.ref(
+        "`paired.csv` of `results/{}` and `results/{}`, which predate the mark",
+        JUDGED_V1,
+        JUDGED_V2,
+    )
+    doc.ref(
+        "`paired.csv` of `results/{}`, `results/{}`, `results/{}` and `results/{}` show it with "
+        "no mark",
+        JUDGED_V1,
+        JUDGED_V2,
+        ROUND3_JUDGED_V1,
+        ROUND3_JUDGED_V2,
     )
     _refusals(doc, src)
 

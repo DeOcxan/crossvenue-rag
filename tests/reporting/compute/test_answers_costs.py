@@ -1,4 +1,4 @@
-"""Tests for `reporting.compute.answers_costs`, on runs written under tmp_path."""
+"""Tests for `reporting.compute.answers_costs`, on runs written under `tmp_path`."""
 
 from __future__ import annotations
 
@@ -8,13 +8,13 @@ from crossvenue_rag.reporting.compute import answers_costs
 from crossvenue_rag.reporting.run_ids import ANSWERS_V1, ANSWERS_V2, JUDGED_V1, JUDGED_V2
 from crossvenue_rag.reporting.sources import Sources
 from tests.generation.factories import call_json, generation_json, judge_json, record_json
-from tests.reporting.conftest import CONFIGS, complete, write_csv, write_judged_run
+from tests.reporting.conftest import CONFIGS, complete, write_csv_rows, write_judged_run
 
 MERCURY = answers_costs.MERCURY
 
 
 def summary(cost, judge_cost=0.0, **columns):
-    """One summary.csv row per configuration of `CONFIGS`: cost `cost[i]` for the i-th."""
+    """One `summary.csv` row per configuration of `CONFIGS`: cost `cost[i]` for the i-th."""
     return [
         {
             "config": c,
@@ -41,7 +41,7 @@ def write_runs(root, *, v1, v2, judged_v1, judged_v2):
         (JUDGED_V2, judged_v2),
     ):
         write_judged_run(root, run_id)
-        write_csv(root / "results" / run_id / "summary.csv", complete("answer_summary", rows))
+        write_csv_rows(root / "results" / run_id / "summary.csv", complete("answer_summary", rows))
     return Sources(root)
 
 

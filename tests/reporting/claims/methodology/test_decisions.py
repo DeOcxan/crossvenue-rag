@@ -29,7 +29,7 @@ def test_the_decisions_and_section_3_state_the_category_targets(monkeypatch):
         )
 
 
-def test_the_pooling_sentence_states_the_pool_methods_and_their_depth(monkeypatch):
+def test_the_pooling_sentence_states_the_number_of_pool_methods(monkeypatch):
     """With another pool, the count of systems the pooling section states does not match."""
     monkeypatch.setattr(decisions, "POOL_METHODS", ("bm25", "dense", "hybrid", "hybrid_rerank"))
     doc = Doc.from_text(METHODOLOGY, Path(METHODOLOGY).read_text(encoding="utf-8"))

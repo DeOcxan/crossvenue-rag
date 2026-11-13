@@ -1,4 +1,4 @@
-"""Tests for `crossvenue_rag.evaluation.report`: the report.md of a retrieval run."""
+"""Tests for `crossvenue_rag.evaluation.report`: the `report.md` of a retrieval run."""
 
 from __future__ import annotations
 
@@ -152,6 +152,25 @@ def test_a_full_report_has_no_raw_lists_dicts_or_other_output_defects(run):
     report = report_markdown(cfg, "run-x", "v1", questions, tables)
     assert output_defects(report) == []
     assert "{'" not in report and "['" not in report
+
+
+def test_every_table_right_aligns_its_numeric_columns_and_left_aligns_its_labels(run):
+    cfg, questions, runs = run
+    tables = tables_of(
+        cfg,
+        questions,
+        runs,
+        paired=[paired_row("recall@3")],
+        off_venue=[paired_row("off_venue@1", higher_is_better=False)],
+    )
+    lines = report_markdown(cfg, "run-x", "v1", questions, tables).splitlines()
+    labels = {"qtype", "method", "a vs b", "metric", "scope", "better is", "role"}
+    rules = [i for i, line in enumerate(lines) if line.startswith("|---")]
+    assert len(rules) == 5  # metrics, by qtype, paired, off-venue, latency
+    for i in rules:
+        header = [cell.strip() for cell in lines[i - 1].strip("|").split("|")]
+        expected = ["---" if cell in labels else "---:" for cell in header]
+        assert lines[i].strip("|").split("|") == expected, lines[i - 1]
 
 
 def test_a_filtered_run_says_so_and_descriptive_rows_are_named(run):

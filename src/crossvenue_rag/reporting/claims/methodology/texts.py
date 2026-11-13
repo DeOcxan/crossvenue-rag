@@ -1,9 +1,8 @@
 """The text evals/methodology.md defines rather than measures, with the reason for each.
 
-Each tuple of sentences is literal text of the document whose numbers are a registered
-target, a quotation or a numbering; a section passes it to `Doc.definitions` with its
-reason. The three tuples at the end, of category names and question ids, are arguments of
-claims and compute functions.
+Each tuple of sentences is literal text of the document; a section passes it to
+`Doc.definitions` with its reason. The three tuples at the end, of category names and
+question ids, are arguments of claims and compute functions.
 """
 
 from __future__ import annotations
@@ -125,10 +124,10 @@ INSTRUCTION_CASES = (
     "| fact | One or two chunks,",
     "Three cases that would otherwise be decided differently on different days.",
     '"order creation: 10/s"',
-    "2. Two chunks stating the same fact",
+    "- Two chunks stating the same fact",
     "a minimal cover would keep one of the two.",
-    "3. A code example with no prose",
-    "1. A general rule and a concrete number",
+    "- A code example with no prose",
+    "- A general rule and a concrete number",
 )
 
 # Section 6: the deduplication literature.
@@ -184,7 +183,7 @@ WORDING = (
     "computed between the two passes",
     "when the two ratings come from the same rater",
     "differs between the two references",
-    "Disagreements between the two passes",
+    "resolves disagreements between the two passes",
     "the only thing connecting two others",
     "Those two observations",
     "They are one observation counted twice",
@@ -209,7 +208,7 @@ WORDING_STUDIES = (
     "found that over half of open-domain Natural Questions",
 )
 
-# Section 9: the answer configurations, the judges and missing metrics.
+# Section 9: the answer configurations and missing metrics.
 ANSWER_CONVENTIONS = (
     "| gemini@venue_split | `google/gemini-3.8-flash`",
     "| gemini@hybrid_rerank | `google/gemini-3.8-flash`",

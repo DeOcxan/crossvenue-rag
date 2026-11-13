@@ -72,7 +72,11 @@ class MetadataRules:
 
     @classmethod
     def from_file(cls, sources_path: str | Path) -> MetadataRules:
-        """The rules of every venue and the global rules in `sources_path`."""
+        """The rules of every venue and the global rules in `sources_path`.
+
+        Raises:
+            UserError: Nothing is at `sources_path`, or a directory is.
+        """
         return cls(load_sources(sources_path), load_global_metadata_rules(sources_path))
 
     def derive(

@@ -1,6 +1,6 @@
 # Reproduce the documented numbers
 
-How to check the numbers of the documents against their sources, and, in the sections after the first, how to rerun each measurement. The documents are `README.md`, [findings](../results/findings.md), the [agreement](../../evals/agreement.md), the methodology, the design document, the decision records, the three pages of `docs/reference/`, the [gold-set datasheet](../../evals/datasheet.md) and the [domain research](../../evals/domain-research.md). Every snippet runs from the repository root. The snippets read only saved files, except `make figures`, which writes the figures; the corpus build, which writes `data/`; the drift measurement, which rewrites `data/manifest.csv`; `eval`, `bench-rerank` and `power`, which each write another run; and the steps under [Judge the answers](#judge-the-answers), which write runs and ratings and make paid model calls. The runs the documents cite are committed under `results/`.
+How to check the numbers of the documents against their sources, and, in the sections after the first, how to rerun the measurements they list. The documents are `README.md`, [findings](../results/findings.md), the [agreement](../../evals/agreement.md), the methodology, the design document, the decision records, the three pages of `docs/reference/`, the [gold-set datasheet](../../evals/datasheet.md) and the [domain research](../../evals/domain-research.md). Every snippet runs from the repository root. The snippets read only saved files, except `make figures`, which writes the figures; the corpus build, which writes `data/`; the drift measurement, which rewrites `data/manifest.csv`; `eval`, `bench-rerank` and `power`, which each write another run; and the steps under [Evaluate on v0.3-gold](#evaluate-on-v03-gold) and [Judge the answers](#judge-the-answers), which write runs and ratings and make paid model calls. The runs the documents cite are committed under `results/`.
 
 ## Check the documents' numbers against their sources
 
@@ -45,7 +45,7 @@ How to check the numbers of the documents against their sources, and, in the sec
    |---|---|---|
    | Comparison table (recall, nDCG, nDCG′, venue coverage) | `by_category.csv` | `category=comparison`; `recall@10`, `ndcg@10`, `ndcg_prime@10`, `venue_coverage@10` |
    | venue_split − hybrid_rerank, hybrid_rerank − hybrid, − dense, − bm25, oracle − venue_split | `paired.csv` | `a`, `b`, `metric`, `scope`; `diff`, `low`, `high`, `better`, `worse`, `ties`, `mcnemar_p`, `randomisation_p`, `role` (primary, secondary, or descriptive for a scope under 50 questions), `holm_p` (secondary rows: Holm within metric and scope) |
-   | `unjudged@10` and nDCG′@10 − nDCG@10 on the 90 labeled questions | `summary.csv` | `unjudged@10`, `ndcg@10`, `ndcg_prime@10` |
+   | `unjudged@10` and `nDCG′@10` − `nDCG@10` on the 90 labeled questions | `summary.csv` | `unjudged@10`, `ndcg@10`, `ndcg_prime@10` |
    | Cross-encoder latency | `report.md` | per-step p50 table; totals also in `summary.csv` as `p50_ms`, `p95_ms`, and in runs that have the per-step columns, each step's p50 and p95 as `<step>_p50_ms`, `<step>_p95_ms` |
    | Small slices | `by_category.csv` | `labelled_questions` per category |
 
@@ -134,6 +134,27 @@ How to check the numbers of the documents against their sources, and, in the sec
 1. Run `uv run crossvenue kappa`.
 2. Read the registered reading (κ with round 1 as corrected, over all sampled questions), its bootstrap interval and the three sensitivity readings of methodology §5. Each sensitivity reading changes one or both of two choices: round 1 as first judged instead of as corrected, and only the questions not listed in `evals/selection/round2_exposed.txt` instead of all.
 
+## Evaluate on v0.3-gold
+
+1. Start the database with `make db`, then run the six methods on the CPU, which pairs with `results/20261010T214504Z` and `results/20261010T222553Z`:
+
+   ```bash
+   uv run crossvenue eval -q evals/datasets/v0.3-gold.jsonl --set embedding.device=cpu
+   ```
+
+2. Check that every retrieved list and every value of `venue_coverage@k`, `off_venue@k` and `via_ccxt@k` equals `results/20261010T214504Z`, and that `unjudged@k` equals it per question on the questions with gold in both versions ([deviation D27](../../evals/methodology.md#deviations-from-protocol)).
+3. Judge both answer runs on the set, which makes paid calls through OpenRouter for each judge prompt the cache does not hold, and compare them:
+
+   ```bash
+   uv run crossvenue judge-run --run results/20260925T175128Z_answers --judge opus \
+     -q evals/datasets/v0.3-gold.jsonl --budget 12 \
+     --set generation.generator_prompt=prompts/generator.v1.md --set generation.answer_schema_version=1 \
+     --set generation.generator_prompt_sha256=519bd2c251d42325be1f28371d53a1db30c51ba6d211e31385f16b110c61f78f
+   uv run crossvenue judge-run --run results/20260925T202827Z_answers --judge opus \
+     -q evals/datasets/v0.3-gold.jsonl --budget 12
+   uv run crossvenue compare-prompts --v1 results/<ts>_judged --v2 results/<ts>_judged
+   ```
+
 ## Count answer refusals
 
 1. Count the prompt v1 refusals from `answers.jsonl`, with no model call, under the outcome rule of methodology §9a. An answer flagged partial with no claim is a refusal; a partial answer is one flagged partial that has a claim:
@@ -167,7 +188,8 @@ How to check the numbers of the documents against their sources, and, in the sec
    uv run crossvenue judge-sample --judge opus --replicate 1
    uv run crossvenue select-judge --run results/20260925T175128Z_answers
    uv run crossvenue judge-run --run results/20260925T175128Z_answers --judge opus \
-     --set generation.generator_prompt=prompts/generator.v1.md --set generation.answer_schema_version=1
+     --set generation.generator_prompt=prompts/generator.v1.md --set generation.answer_schema_version=1 \
+     --set generation.generator_prompt_sha256=519bd2c251d42325be1f28371d53a1db30c51ba6d211e31385f16b110c61f78f
    uv run crossvenue judge-run --run results/20260925T202827Z_answers --judge opus
    uv run crossvenue compare-prompts --v1 results/<ts>_judged --v2 results/<ts>_judged
    ```

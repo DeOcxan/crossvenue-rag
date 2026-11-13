@@ -112,7 +112,7 @@ known-first-party = ["crossvenue_rag", "tests"]
 # them, and says so in its docstring (docs/code-style.md rule 30).
 "src/crossvenue_rag/cli/reporting.py" = ["PLC0415"]
 "src/crossvenue_rag/corpus/tokens.py" = ["PLC0415"]
-"src/crossvenue_rag/index/{bm25_index,embeddings,store}.py" = ["PLC0415"]
+"src/crossvenue_rag/index/{bm25_index,embeddings,model_loading,store}.py" = ["PLC0415"]
 "src/crossvenue_rag/retrieval/{rerank,retriever}.py" = ["PLC0415"]
 
 # Import contracts, checked by `lint-imports` in `make lint` and CI.
@@ -156,6 +156,8 @@ source_modules = [
     "crossvenue_rag.retries",
     "crossvenue_rag.yaml_files",
     "crossvenue_rag.confined_paths",
+    "crossvenue_rag.rich_text",
+    "crossvenue_rag.atomic_files",
 ]
 forbidden_modules = [
     "crossvenue_rag.corpus",
@@ -203,7 +205,8 @@ forbidden_modules = ["crossvenue_rag.reporting.claims"]
 # The version CI tests and requires-python names.
 python_version = "3.12"
 files = ["src", "tests", "scripts"]
-# Strict for src/ and scripts/ (docs/code-style.md rule 18): the flags --strict implies.
+# Strict for src/ and scripts/ (docs/code-style.md rule 18): the flags --strict implies,
+# and warn_unused_configs.
 warn_unused_configs = true
 warn_unused_ignores = true
 warn_redundant_casts = true
@@ -222,7 +225,7 @@ extra_checks = true
 plugins = ["pydantic.mypy"]
 
 [[tool.mypy.overrides]]
-# tests/ are checked without the strict flags (docs/code-style.md rule 19).
+# tests/ are checked with the strict flags relaxed (docs/code-style.md rule 19).
 module = ["tests", "tests.*"]
 disallow_any_generics = false
 disallow_subclassing_any = false
@@ -236,6 +239,6 @@ strict_equality = false
 extra_checks = false
 
 [[tool.mypy.overrides]]
-# No stubs and no py.typed: bm25s, Stemmer (PyStemmer), pgvector, sklearn.
-module = ["bm25s.*", "Stemmer", "pgvector.*", "sklearn.*"]
+# No stubs and no py.typed: bm25s, Stemmer (PyStemmer), sklearn.
+module = ["bm25s.*", "Stemmer", "sklearn.*"]
 ignore_missing_imports = true

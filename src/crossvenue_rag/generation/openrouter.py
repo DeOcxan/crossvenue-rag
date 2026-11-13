@@ -77,8 +77,8 @@ def _error(message: str) -> dict[str, JsonValue]:
 def response_payload(payload: JsonValue) -> dict[str, JsonValue]:
     """A decoded JSON body in the shape `post_with_retries` reads: an object whose `error` is one.
 
-    A body that is not an object (`["upstream"]`) becomes an error payload saying so,
-    and an `error` that is not an object (`"Bad request"`) becomes one holding it
+    A body that is not an object (`["upstream"]`) becomes an error payload saying so.
+    An `error` that is not an object (`"Bad request"`) becomes one holding it
     as the message, so every failed call ends as a `ModelCallError`.
     """
     if not isinstance(payload, dict):
@@ -123,22 +123,21 @@ class RetryPolicy:
 
 def post_with_retries(
     transport: Transport,
-    url: str,
     headers: dict[str, str],
     body: dict[str, Any],
     policy: RetryPolicy,
 ) -> tuple[dict[str, JsonValue], int]:
     """Sends a POST, retrying what `retries.is_retryable` allows, with exponential backoff.
 
-    Returns (payload, retries). A `Retry-After` header in seconds is honored
-    when it asks for longer than the backoff.
+    The POST goes to `OPENROUTER_URL`. Returns (payload, retries). A `Retry-After`
+    header in seconds is honored when it asks for longer than the backoff.
 
     Raises:
         ModelCallError: The last attempt did not succeed.
     """
 
     def attempt() -> Attempt[dict[str, JsonValue]]:
-        response = transport.post(url, headers, body, policy.timeout)
+        response = transport.post(OPENROUTER_URL, headers, body, policy.timeout)
         after = response.headers.get("retry-after") or response.headers.get("Retry-After")
         return Attempt(response.payload, response.status, after)
 
@@ -148,6 +147,11 @@ def post_with_retries(
         return last.result, retries
     message = failure_message(last.result)
     tries = formatting.plural(retries, "retry", "retries")
+    if last.status == NETWORK_ERROR:
+        raise ModelCallError(
+            f"{body.get('model')}: a network error after {tries}: {message}",
+            hint="re-run to retry; check the network connection",
+        )
     raise ModelCallError(
         f"{body.get('model')}: HTTP {formatting.own_form(last.status)} after {tries}: {message}",
         hint="re-run to retry; if the same status repeats, check the model id in the config "
@@ -239,8 +243,7 @@ class SamplingParams:
     """The sampling parameters of a call.
 
     `effort` is the reasoning effort (`reasoning_effort` of a generator, `effort` of a
-    judge), sent when set; `temperature` is sent when set and the model's endpoint
-    accepts it.
+    judge), sent when set; `temperature` is sent when set.
     """
 
     max_tokens: int
@@ -289,7 +292,7 @@ def request_body(request: ModelRequest) -> dict[str, Any]:
     }
     if params.effort:
         body["reasoning"] = {"effort": params.effort, "exclude": True}
-    if params.temperature is not None and model.temperature_supported:
+    if params.temperature is not None:
         body["temperature"] = params.temperature
     if model.provider_order:
         body["provider"] = {
@@ -302,6 +305,8 @@ def request_body(request: ModelRequest) -> dict[str, Any]:
 
 def sent_params(body: dict[str, Any]) -> dict[str, Any]:
     """What the body asked of the model, without the messages.
+
+    `response_format` keeps its type alone.
 
     Raises:
         ValueError: `body` has no `response_format` type, as a `request_body` has.

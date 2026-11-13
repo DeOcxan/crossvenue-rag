@@ -51,7 +51,7 @@ def test_chunks_ingested_under_another_config_are_refused(cfg, dense):
     assert dense == []
 
 
-def test_an_empty_chunks_file_is_refused_before_bm25_is_built(cfg, dense):
+def test_an_empty_chunks_file_is_refused_with_a_hint_to_ingest(cfg, dense):
     build_corpus(cfg)
     chunks_path(cfg).write_text("", encoding="utf-8")
     with pytest.raises(UserError, match="holds no chunk") as refused:

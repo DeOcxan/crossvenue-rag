@@ -76,22 +76,21 @@ def test_the_candidates_are_the_recorded_set_and_the_added_chunks_shuffled_in(tm
         r.chunk_id for r in round3_candidates(target, load_rounds(target.questions_path))["q1"]
     ]
     assert sorted(shown) == sorted([*POOL, "x1"])
-    assert shown != [*POOL, "x1"]  # the added chunk is not appended
+    assert shown[-1] != "x1"  # the added chunk is not appended
 
 
 def test_round_3_has_its_own_seed_so_it_does_not_repeat_round_2s_order(tmp_path):
-    assert ROUND3_SHUFFLE_SEED != RETEST_SHUFFLE_SEED
-    first = load_rounds(_target(tmp_path).questions_path).require_first("q1")
-    assert retest_order("q1", first, ROUND3_SHUFFLE_SEED) != retest_order(
-        "q1", first, RETEST_SHUFFLE_SEED
-    )
+    target = _target(tmp_path)
+    rounds = load_rounds(target.questions_path)
+    shown = [r.chunk_id for r in round3_candidates(target, rounds)["q1"]]
+    assert shown != retest_order("q1", rounds.require_first("q1"), RETEST_SHUFFLE_SEED, ())
 
 
 def test_adding_nothing_keeps_round_2s_order(tmp_path):
     first = load_rounds(_target(tmp_path).questions_path).require_first("q1")
     expected = list(POOL)
     random.Random(f"{RETEST_SHUFFLE_SEED}:q1").shuffle(expected)
-    assert retest_order("q1", first, RETEST_SHUFFLE_SEED) == expected
+    assert retest_order("q1", first, RETEST_SHUFFLE_SEED, ()) == expected
 
 
 def test_the_screen_is_blind_and_shows_the_criterion_on_every_question(tmp_path):
@@ -183,6 +182,14 @@ def test_u_reaches_back_one_question_only(tmp_path):
     assert "u re-opens the previous question of this session." in console.export_text()
 
 
+def test_an_interrupt_after_u_counts_no_negative_skips(tmp_path):
+    target = _target(tmp_path)
+    console = quiet()
+    round3_session(target, console=console, prompt=_interrupting("1", "u"))
+    text = console.export_text()
+    assert "1 recorded, 0 skipped" in text and "1 skipped" not in text
+
+
 def test_u_does_not_cross_a_restart(tmp_path):
     target = _target(tmp_path)
     round3_session(target, console=quiet(), prompt=_interrupting("1"))
@@ -241,9 +248,11 @@ def test_the_screen_shows_the_questions_it_is_given_not_the_question_file(tmp_pa
 
 
 def test_every_question_is_checked_before_the_first_is_shown(tmp_path):
+    # No defect is on q1, so a first prompt fails the test.
     target = _target(tmp_path)
-    missing = {k: v for k, v in CHUNKS.items() if k != "p3"}
-    bad = Round3Target(target.questions_path, target.questions, {}, missing, VERSION, "me")
+    bad = Round3Target(
+        target.questions_path, target.questions, {"q2": ["zz"]}, CHUNKS, VERSION, "me"
+    )
     with pytest.raises(UserError, match="not in the current index"):
         round3_session(bad, console=quiet(), prompt=Script())
     with pytest.raises(UserError, match="outside the round"):
@@ -257,7 +266,9 @@ def test_every_question_is_checked_before_the_first_is_shown(tmp_path):
     other = Question("q9", "never judged?", "gold", ["bybit"], "fact", category="fact")
     with pytest.raises(UserError, match="no round-1 judgment"):
         round3_session(
-            Round3Target(target.questions_path, [other], {}, CHUNKS, VERSION, "me"),
+            Round3Target(
+                target.questions_path, [*target.questions, other], {}, CHUNKS, VERSION, "me"
+            ),
             console=quiet(),
             prompt=Script(),
         )

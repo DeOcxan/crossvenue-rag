@@ -70,13 +70,14 @@ def value_grid(ax: Axes, axis: Literal["x", "y"] = "y") -> None:
 def agree(drawn: float, reported: float, what: str) -> None:
     """Checks that `drawn` equals `reported` to `METRIC_DECIMALS`.
 
-    The values checked are venue coverage, recall and nDCG, the two ends of each pooling gap,
-    the wrong refusals, each configuration's refusal and partial totals and the off-venue
-    shares. The drawn difference between a gap's two ends is not checked on its own.
+    The values checked against the number their run reports are venue coverage, recall and
+    nDCG, the two ends of each pooling gap, the wrong refusals and each configuration's refusal
+    and partial totals. The off-venue shares are checked against the value findings uses. The
+    drawn difference between a gap's two ends is not checked on its own.
 
     Raises:
         ValueError: The two differ at `METRIC_DECIMALS`; the message names `what`.
     """
     drawn_text, reported_text = (formatting.fixed(v, METRIC_DECIMALS) for v in (drawn, reported))
     if drawn_text != reported_text:
-        raise ValueError(f"{what}: drawn {drawn_text}, the run reports {reported_text}")
+        raise ValueError(f"{what}: drawn {drawn_text}, the reference value {reported_text}")

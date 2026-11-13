@@ -1,4 +1,4 @@
-"""Test-retest agreement (Cohen's kappa) between two labeling rounds of one annotator.
+"""Agreement between labeling rounds of one annotator: Cohen's kappa, or counts across a revision.
 
 The unit of agreement is a (question, candidate chunk) pair judged relevant or not.
 """
@@ -14,15 +14,23 @@ import numpy as np
 from .. import formatting, listing
 from ..clock import SECONDS_PER_DAY, record_time
 from ..errors import UserError
-from ..stats import Interval, chance_agreement, cohens_kappa, kappa_value
-from .journal import FIRST_ROUND, FULL_RELABEL_ROUND, Journal, load_rounds, rounds_path
+from ..stats import Interval, chance_agreement, cohens_kappa, kappa_value, observed_agreement
+from .journal import (
+    FIRST_ROUND,
+    FULL_RELABEL_ROUND,
+    RETEST_ROUND,
+    Journal,
+    load_rounds,
+    require_full_relabel,
+    rounds_path,
+)
 from .questions import load_questions
 from .sampling import read_sample_file
 
 # Landis & Koch (1977): each label holds kappas below its bound; the rest are
 # "almost perfect".
 LANDIS_KOCH = (
-    (0.0, "worse than chance"),
+    (0.0, "poor"),
     (0.21, "slight"),
     (0.41, "fair"),
     (0.61, "moderate"),
@@ -42,8 +50,23 @@ class Judgements:
     """One round's verdicts: (`question_id`, `chunk_id`) -> relevant."""
 
     round_id: int
-    annotator: str
     labels: dict[tuple[str, str], bool]
+
+
+def shared_pairs(first: Judgements, second: Judgements) -> set[tuple[str, str]]:
+    """The (question, chunk) pairs both rounds judged."""
+    return set(first.labels) & set(second.labels)
+
+
+def compared_questions(first: Judgements, second: Judgements) -> set[str]:
+    """The questions of the pairs both rounds judged (`shared_pairs`)."""
+    return {question_id for question_id, _ in shared_pairs(first, second)}
+
+
+def differing_pairs(first: Judgements, second: Judgements) -> list[tuple[str, str]]:
+    """The pairs both rounds judged (`shared_pairs`) on which their verdicts differ, sorted."""
+    shared = shared_pairs(first, second)
+    return sorted(key for key in shared if first.labels[key] != second.labels[key])
 
 
 @dataclass(slots=True)
@@ -77,7 +100,7 @@ def compare_rounds(first: Judgements, second: Judgements) -> AgreementReport:
     Raises:
         UserError: the rounds share no judged pair.
     """
-    shared = sorted(set(first.labels) & set(second.labels))
+    shared = sorted(shared_pairs(first, second))
     if not shared:
         raise UserError(
             f"rounds {formatting.own_form(first.round_id)} and "
@@ -89,23 +112,23 @@ def compare_rounds(first: Judgements, second: Judgements) -> AgreementReport:
     a = [first.labels[key] for key in shared]
     b = [second.labels[key] for key in shared]
     result = cohens_kappa(a, b)
+    table = verdict_table(first, second)
 
     return AgreementReport(
-        pairs=len(shared),
-        both_relevant=sum(1 for x, y in zip(a, b, strict=True) if x and y),
-        both_irrelevant=sum(1 for x, y in zip(a, b, strict=True) if not x and not y),
-        disagreements=sum(1 for x, y in zip(a, b, strict=True) if x != y),
+        pairs=table.pairs,
+        both_relevant=table.both_relevant,
+        both_irrelevant=table.both_irrelevant,
+        disagreements=table.disagreements,
         observed_agreement=result.observed,
         expected_agreement=result.expected,
         kappa=result.kappa,
-        questions=len({question_id for question_id, _ in shared}),
+        questions=len(compared_questions(first, second)),
     )
 
 
 def judgements_from_rounds(
     journal: Journal,
     round_id: int,
-    annotator: str = "",
     *,
     first_pass: bool = False,
     questions: Collection[str] | None = None,
@@ -128,7 +151,7 @@ def judgements_from_rounds(
         relevant = entry.first_pass_relevant() if first_pass else set(entry.relevant)
         for chunk_id in entry.judged_ids():
             labels[(question_id, chunk_id)] = chunk_id in relevant
-    return Judgements(round_id=round_id, annotator=annotator, labels=labels)
+    return Judgements(round_id=round_id, labels=labels)
 
 
 @dataclass(slots=True)
@@ -138,7 +161,7 @@ class AgreementVariant:
     reference: str  # "corrected" (registered) or "first pass" (sensitivity)
     scope: str  # "all" (registered) or "unexposed" (sensitivity)
     report: AgreementReport
-    interval: Interval | None = None
+    interval: Interval
 
 
 @dataclass(frozen=True)
@@ -158,21 +181,21 @@ def kappa_interval(first: Judgements, second: Judgements, bootstrap: Bootstrap) 
     the unit drawn. The level is `stats.INTERVAL_LEVEL_PERCENT`; the
     draws follow `evaluation.paired.paired_bootstrap`.
     """
-    shared = set(first.labels) & set(second.labels)
-    questions = sorted({question_id for question_id, _ in shared})
+    questions = sorted(compared_questions(first, second))
+    chunks = _chunks_by_question(first)
     # Per question: pairs, relevant in the first round, in the second, agreements.
-    counts = np.zeros((len(questions), 4), dtype=np.int64)
-    row = {question_id: i for i, question_id in enumerate(questions)}
-    for key in shared:
-        a, b = first.labels[key], second.labels[key]
-        counts[row[key[0]]] += (1, a, b, a == b)
+    tables = [verdict_table(first, second, {q: chunks[q]}) for q in questions]
+    counts = np.array(
+        [(t.pairs, t.first_relevant, t.second_relevant, t.agreements) for t in tables],
+        dtype=np.int64,
+    ).reshape(len(questions), 4)
     rng = np.random.default_rng(bootstrap.seed)
     draws = rng.integers(0, len(questions), size=(bootstrap.resamples, len(questions)))
     n, relevant_first, relevant_second, agree = counts[draws].sum(axis=1).T
     expected = chance_agreement(relevant_first / n, relevant_second / n)
     # `stats.cohens_kappa`'s undefined case: one and the same label throughout.
     defined = expected < 1.0
-    kappas = kappa_value(agree[defined] / n[defined], expected[defined])
+    kappas = kappa_value(observed_agreement(agree[defined], n[defined]), expected[defined])
     # A resample is undefined when every pooled pair carried one and the same label.
     return Interval.from_draws(kappas, int((~defined).sum()), bootstrap.resamples)
 
@@ -192,26 +215,46 @@ class VerdictTable:
         return self.first_only + self.second_only
 
     @property
+    def agreements(self) -> int:
+        """Pairs both rounds judged alike."""
+        return self.both_relevant + self.both_irrelevant
+
+    @property
     def pairs(self) -> int:
         """Every pair the table counts."""
-        return self.both_relevant + self.both_irrelevant + self.disagreements
+        return self.agreements + self.disagreements
+
+    @property
+    def none_relevant(self) -> bool:
+        """No pair is relevant in either round."""
+        return self.both_relevant + self.disagreements == 0
+
+    @property
+    def first_relevant(self) -> int:
+        """Pairs the first round judged relevant."""
+        return self.both_relevant + self.first_only
+
+    @property
+    def second_relevant(self) -> int:
+        """Pairs the second round judged relevant."""
+        return self.both_relevant + self.second_only
 
     @property
     def raw_agreement(self) -> float:
         """The share of pairs both rounds judged alike."""
-        return 1 - self.disagreements / self.pairs
+        return observed_agreement(self.agreements, self.pairs)
 
 
 def verdict_table(
     first: Judgements, second: Judgements, keep: Mapping[str, Collection[str]] | None = None
 ) -> VerdictTable:
-    """The shared pairs counted by both verdicts.
+    """The shared pairs that both verdicts count.
 
     `keep`, when given, maps a question id to the chunk ids counted for it;
     other pairs are left out.
     """
     cells = {(True, True): 0, (True, False): 0, (False, True): 0, (False, False): 0}
-    for key in set(first.labels) & set(second.labels):
+    for key in shared_pairs(first, second):
         question_id, chunk_id = key
         if keep is None or chunk_id in keep.get(question_id, ()):
             cells[(first.labels[key], second.labels[key])] += 1
@@ -224,14 +267,12 @@ def direction_by_category(
     first: Judgements, second: Judgements, category_of: Mapping[str, str]
 ) -> list[tuple[str, VerdictTable]]:
     """The 2x2 verdict table per question category, most disagreement first."""
+    chunks = _chunks_by_question(first)
     out = []
     for category in sorted(set(category_of.values())):
-        chunks: dict[str, set[str]] = {}
-        for question_id, chunk_id in first.labels:
-            if category_of.get(question_id) == category:
-                chunks.setdefault(question_id, set()).add(chunk_id)
-        table = verdict_table(first, second, chunks)
-        if table.disagreements + table.both_relevant + table.both_irrelevant:
+        keep = {q: ids for q, ids in chunks.items() if category_of.get(q) == category}
+        table = verdict_table(first, second, keep)
+        if table.pairs:
             out.append((category, table))
     return sorted(out, key=lambda item: -item[1].disagreements)
 
@@ -241,7 +282,7 @@ class SourceChunks:
     """How the two rounds judged the questions' source chunks.
 
     Round 1 marked a question's source chunk on screen and round 2 hid the
-    marker (methodology section 5), so the table shows the marker's effect.
+    marker (methodology section 5).
     """
 
     verdicts: VerdictTable
@@ -252,8 +293,8 @@ def source_chunk_verdicts(
     first: Judgements, second: Judgements, sources: Mapping[str, Collection[str]]
 ) -> SourceChunks:
     """The verdicts on each compared question's source chunks (`source_chunk_ids`)."""
-    shared = set(first.labels) & set(second.labels)
-    compared = {question_id for question_id, _ in shared}
+    shared = shared_pairs(first, second)
+    compared = compared_questions(first, second)
     listed = {(q, c) for q in compared for c in sources.get(q, ())}
     return SourceChunks(
         verdicts=verdict_table(first, second, {q: sources.get(q, ()) for q in compared}),
@@ -265,15 +306,15 @@ def agreement_variants(
     journal: Journal,
     first: int,
     second: int,
-    exposed: Collection[str] = (),
-    bootstrap: Bootstrap | None = None,
+    exposed: Collection[str],
+    bootstrap: Bootstrap,
 ) -> list[AgreementVariant]:
-    """The four agreement readings methodology section 5 registers.
+    """The agreement readings methodology section 5 registers.
 
     Round 1 is read as corrected (the gold set) or as first judged, over all
     sampled questions or only those whose gold the answer-rating screen never
-    showed (`exposed` lists the rest). With `bootstrap`, each reading carries
-    its kappa interval.
+    showed (`exposed` lists the rest). Without `exposed`, the two readings over all
+    questions are returned. Each reading carries its kappa interval.
 
     Raises:
         UserError: `exposed` names every question the second round judged.
@@ -297,7 +338,7 @@ def agreement_variants(
             earlier = judgements_from_rounds(
                 journal, first, first_pass=first_pass, questions=questions
             )
-            interval = kappa_interval(earlier, later, bootstrap) if bootstrap else None
+            interval = kappa_interval(earlier, later, bootstrap)
             out.append(AgreementVariant(reference, scope, compare_rounds(earlier, later), interval))
     return out
 
@@ -313,15 +354,22 @@ def kappa_by_category(
     out = []
     for category in sorted(set(category_of.values())):
         keep = {q for q, c in category_of.items() if c == category}
-        a = Judgements(first.round_id, first.annotator, _only(first.labels, keep))
-        b = Judgements(second.round_id, second.annotator, _only(second.labels, keep))
-        if set(a.labels) & set(b.labels):
+        a = Judgements(first.round_id, _only(first.labels, keep))
+        b = Judgements(second.round_id, _only(second.labels, keep))
+        if shared_pairs(a, b):
             out.append((category, compare_rounds(a, b)))
     return sorted(out, key=lambda item: -item[1].disagreements)
 
 
 def _only(labels: dict[tuple[str, str], bool], questions: set[str]) -> dict[tuple[str, str], bool]:
     return {key: value for key, value in labels.items() if key[0] in questions}
+
+
+def _chunks_by_question(judgements: Judgements) -> dict[str, set[str]]:
+    chunks: dict[str, set[str]] = {}
+    for question_id, chunk_id in judgements.labels:
+        chunks.setdefault(question_id, set()).add(chunk_id)
+    return chunks
 
 
 def retest_gaps(journal: Journal, first: int, second: int) -> dict[str, float]:
@@ -351,11 +399,11 @@ class KappaRequest:
     """
 
     questions_path: str
-    first: int = 1
-    second: int = 2
+    bootstrap: Bootstrap
+    first: int = FIRST_ROUND
+    second: int = RETEST_ROUND
     exposed: Path | None = None
     short_gap: bool = False
-    bootstrap: Bootstrap | None = None
 
 
 @dataclass(frozen=True)
@@ -374,6 +422,13 @@ class KappaStudy:
     direction_by_category: list[tuple[str, VerdictTable]]
     sources: SourceChunks
 
+    @property
+    def gap_range(self) -> tuple[float, float] | None:
+        """The shortest and the longest retest gap in days, or None when `gaps` is empty."""
+        if not self.gaps:
+            return None
+        return min(self.gaps.values()), max(self.gaps.values())
+
 
 def kappa_study(request: KappaRequest) -> KappaStudy:
     """Cohen's kappa between two rounds and its readings (methodology section 5).
@@ -381,7 +436,8 @@ def kappa_study(request: KappaRequest) -> KappaStudy:
     Raises:
         UserError: A round is round 3, which judged under another criterion and has no
             kappa. The question file has no round history, or a question's two judgments
-            are less than `MIN_RETEST_DAYS` apart and `short_gap` is not set.
+            are less than `MIN_RETEST_DAYS` apart and `short_gap` is not set. Nothing is at
+            `request.questions_path`, or a directory is. A directory is at `request.exposed`.
     """
     path, first, second = request.questions_path, request.first, request.second
     if FULL_RELABEL_ROUND in (first, second):
@@ -394,7 +450,7 @@ def kappa_study(request: KappaRequest) -> KappaStudy:
     if not rounds.questions:
         raise UserError(
             f"no annotation history at {rounds_path(path)}",
-            hint="run `crossvenue label` first; round history is written as you judge",
+            hint="run `crossvenue label` first; round history is written at each judgment",
         )
     gaps = retest_gaps(rounds, first, second)
     short = sorted(q for q, days in gaps.items() if days < MIN_RETEST_DAYS)
@@ -448,17 +504,11 @@ def round_agreement(questions_path: str, category_of: Mapping[str, str]) -> Roun
         UserError: A question of `category_of` has no round-3 entry.
     """
     rounds = load_rounds(questions_path)
-    open_ids = sorted(q for q in category_of if rounds.get(q).judgment(FULL_RELABEL_ROUND) is None)
-    if open_ids:
-        raise UserError(
-            f"{formatting.plural(len(open_ids), 'question')} without a round-"
-            f"{formatting.own_form(FULL_RELABEL_ROUND)} entry: {listing.first_items(open_ids)}",
-            hint="finish the round with `make round3`; its agreement is read at the end",
-        )
+    require_full_relabel(rounds, category_of)
     earlier = judgements_from_rounds(rounds, FIRST_ROUND)
     later = judgements_from_rounds(rounds, FULL_RELABEL_ROUND)
     return RoundAgreement(
-        questions=len({q for q, _ in set(earlier.labels) & set(later.labels)}),
+        questions=len(compared_questions(earlier, later)),
         total=verdict_table(earlier, later),
         by_category=direction_by_category(earlier, later, category_of),
     )

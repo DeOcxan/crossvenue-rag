@@ -3,34 +3,15 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import ClassVar
 
 import pytest
 
-from crossvenue_rag.config import Config
 from crossvenue_rag.corpus.artifacts import load_chunks
 from crossvenue_rag.errors import UserError
 from crossvenue_rag.evaluation import jobs
-from crossvenue_rag.index.bm25_index import BM25Index
 from crossvenue_rag.index_version import require_current_index, write_index_meta
 from crossvenue_rag.models import Question
-from tests.conftest import InMemoryRetriever, build_corpus
-
-
-class MemoryRetriever(InMemoryRetriever):
-    """`Retriever` as the job opens it, over the fixture corpus: no model, no Postgres."""
-
-    def __init__(self, cfg: Config) -> None:
-        chunks = load_chunks(cfg)
-        super().__init__(cfg, chunks, BM25Index.build(chunks))
-
-    warmups: ClassVar[list[bool]] = []
-
-    def warmup(self, *, load_reranker: bool = True) -> None:
-        MemoryRetriever.warmups.append(load_reranker)
-
-    def require_current_index(self) -> str:
-        return require_current_index(self.cfg)
+from tests.conftest import MemoryRetriever, build_corpus
 
 
 @pytest.fixture
@@ -62,7 +43,7 @@ def test_the_run_is_checked_evaluated_and_written(indexed, tmp_path):
 
 def test_a_failed_check_writes_no_run(indexed, tmp_path):
     def refuse(version: str, chunk_ids: set[str]) -> None:
-        raise UserError("labelled against another index")
+        raise UserError("judged against another index")
 
     job = jobs.EvalJob(Path("q.jsonl"), questions(indexed), None, refuse, venue_filter=False)
     with pytest.raises(UserError, match="another index"):

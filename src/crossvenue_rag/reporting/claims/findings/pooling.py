@@ -4,12 +4,13 @@ from __future__ import annotations
 
 from .... import formatting
 from ....config_eval import COMPARISON_SCOPE, LABELLED_COMPARISON_SCOPE, MULTI_VENUE_SCOPE
+from ....evaluation import power as power_module
 from ....evaluation.labels import fmt
 from ....models import COMPARISON, MULTI_VENUE
 from ....retrieval.methods import ORACLE_METHODS
 from ....retrieval.venue_detect import DETECTION_OUTCOMES, DetectionOutcome
 from ...check import Doc
-from ...compute import datasets, retrieval, retrieval_earlier, retrieval_tables
+from ...compute import datasets, power, retrieval, retrieval_earlier, retrieval_tables
 from ...run_ids import COVERAGE_FAILURE_RUN, PVALUE_RUN
 from ...sources import Sources
 from ..comparisons import (
@@ -100,12 +101,12 @@ def augmentation_claims(doc: Doc, src: Sources) -> None:
     )
     doc.check(
         "venue_split and venue_split_oracle on the {} comparison questions ({} chunks shown; {} "
-        "of the {} at ranks {}--{};",
+        "of the {} at ranks {}--{}",
         comparison_questions(src),
         formatting.count(aug.shown),
         formatting.count(aug.relevant_lower),
         formatting.count(aug.relevant),
-        formatting.count(retrieval.first_rank_below_top_k(src)),
+        formatting.count(datasets.TOP_RANKS + 1),
         depth,
     )
     doc.table(
@@ -161,6 +162,18 @@ def rescored_gap(doc: Doc, src: Sources) -> None:
         what="the rescored gap against v0.2.1-gold equals the paired difference of the p-value run",
     )
     doc.claim(
+        "`v0.2.1-gold`, inconclusive at this size, the secondary comparison above",
+        holds=retrieval.paired_includes_zero(
+            src, *SPLIT, retrieval.at_top_k(src, "recall"), LABELLED_COMPARISON_SCOPE
+        ),
+        what=f"the {retrieval.at_top_k(src, 'recall')} interval includes 0",
+    )
+    doc.check(
+        "seen (D4). The test reaches {}% power from a gap of {}",
+        formatting.count(power_module.TARGET_POWER_PERCENT),
+        formatting.design_parameter(power.detectable_gap(src, "holm_first_step")),
+    )
+    doc.claim(
         "Against `v0.2-gold` it is {} [{}, {}] in",
         *signed_parts(retrieval_earlier.earlier_gold_gap(src)),
         holds=retrieval_earlier.earlier_gold_run_matches(src)
@@ -203,9 +216,9 @@ def rescored_gap(doc: Doc, src: Sources) -> None:
 
 
 def condensed(doc: Doc, src: Sources) -> None:
-    """nDCG'@10 against nDCG@10: how nDCG changes when unjudged chunks are dropped."""
+    """`nDCG'@10` against `nDCG@10`: how nDCG changes when unjudged chunks are dropped."""
     doc.check(
-        "nDCG'@10 - nDCG@10 on the {} labeled questions: bm25 {} ({} to {}), dense {} ({} to "
+        "`nDCG'@10` - `nDCG@10` on the {} labeled questions: bm25 {} ({} to {}), dense {} ({} to "
         "{}), hybrid {} ({} to {}), hybrid_rerank {} ({} to {}), venue_split {} ({} to {}), "
         "venue_split_oracle {} ({} to {}):",
         formatting.count(datasets.labelled_count(src)),

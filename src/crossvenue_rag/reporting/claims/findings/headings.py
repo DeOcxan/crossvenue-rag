@@ -62,7 +62,7 @@ def headings(doc: Doc, src: Sources) -> None:
     )
     doc.check(
         "### {} limits on the retrieval results",
-        formatting.count(len(documents.list_items(doc.text, LIMITS, "\n#"))),
+        formatting.count(len(documents.list_items(doc.text, LIMITS))),
     )
     doc.check(
         "## {}% of chunk occurrences are byte-identical",

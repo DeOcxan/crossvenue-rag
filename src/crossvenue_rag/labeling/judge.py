@@ -1,8 +1,8 @@
 """The annotator's choice of relevant candidates, checked before it is saved.
 
-In every mode a comparison question accounts for each venue without a marked chunk
-(`confirm_coverage`), and a version_sensitive or adversarial question shows the marked
-chunks' `environment` and `api_version` beside its notes (`confirm_versions`).
+In `judge`, a question that `needs_venue_coverage` accounts for each venue without a marked
+chunk (`confirm_coverage`). A version_sensitive or adversarial question with a marked chunk
+shows the marked chunks' `environment` and `api_version` beside its `notes` (`confirm_versions`).
 """
 
 from __future__ import annotations
@@ -16,7 +16,7 @@ from rich.table import Table
 from rich.text import Text
 
 from .. import formatting
-from ..models import Question, Result, VenueCoverage
+from ..models import NOTES_SHOWN, Question, Result, VenueCoverage
 from .screen import Ask, ScreenView, Show, render, render_full
 
 
@@ -52,7 +52,6 @@ def ask_picks(
     question: Question,
     candidates: Sequence[Result],
     prompt: Ask,
-    label: str,
     toggle_view: Callable[[], None],
 ) -> list[int] | Literal["none"] | None:
     """Prompts until the annotator enters a selection of candidates.
@@ -65,7 +64,6 @@ def ask_picks(
         question: The question the candidates are shown for.
         candidates: The numbered candidates, 1 to `len(candidates)`.
         prompt: Reads one line of input.
-        label: What the numbers mark, the first words of the prompt.
         toggle_view: Switches between the compact and the full list and redraws it.
 
     Returns:
@@ -74,8 +72,17 @@ def ask_picks(
     """
     while True:
         raw = prompt(
-            f"{label} #s ([cyan]enter[/cyan]=skip, [cyan]n[/cyan]=none relevant, "
-            "[cyan]v<n>[/cyan]=view, [cyan]f[/cyan]=full/compact)",
+            Text.assemble(
+                "relevant #s (",
+                ("enter", "cyan"),
+                "=skip, ",
+                ("n", "cyan"),
+                "=none relevant, ",
+                ("v<n>", "cyan"),
+                "=view, ",
+                ("f", "cyan"),
+                "=full/compact)",
+            ),
             default="",
             show_default=False,
         )
@@ -101,13 +108,12 @@ def ask_picks(
         return picks
 
 
-def uncovered_venues(
+def _uncovered_venues(
     question: Question, candidates: Sequence[Result], relevant: Sequence[str]
 ) -> list[str]:
     """Venues the question names that no marked chunk comes from."""
     by_id = {r.chunk_id: r for r in candidates}
-    covered = {by_id[c].venue for c in relevant if c in by_id}
-    return [v for v in question.venues if v not in covered]
+    return question.uncovered_venues(by_id[c].venue for c in relevant if c in by_id)
 
 
 _COVERAGE_KEYS: dict[str, VenueCoverage] = {"a": "absent_in_docs", "m": "missing_from_pool"}
@@ -131,7 +137,7 @@ def confirm_coverage(
     """
     if not question.needs_venue_coverage:
         return {}
-    missing = set(uncovered_venues(question, candidates, relevant))
+    missing = set(_uncovered_venues(question, candidates, relevant))
     coverage: dict[str, VenueCoverage] = {}
     for venue in question.venues:
         if venue not in missing:
@@ -213,7 +219,7 @@ def confirm_versions(
 
     The trap named in the notes is not parsed; the annotator compares.
     """
-    if question.effective_category not in ("version_sensitive", "adversarial"):
+    if question.effective_category not in NOTES_SHOWN:
         return True
     if not relevant:
         return True
@@ -224,7 +230,7 @@ def confirm_versions(
         answer = (
             prompt(
                 "is any marked chunk only in the version/environment the notes call "
-                "the trap? [cyan]enter[/cyan]=save, [cyan]b[/cyan]=back to selection",
+                "the trap? [cyan]enter[/cyan]=continue, [cyan]b[/cyan]=back to selection",
                 default="",
                 show_default=False,
             )
@@ -268,13 +274,12 @@ def judge(
 
     render(console, question, candidates, marked, view)
     while True:
-        picks = ask_picks(console, question, candidates, prompt, "relevant", toggle_view)
+        picks = ask_picks(console, question, candidates, prompt, toggle_view)
         if picks is None:
             return None
         if isinstance(picks, str):  # NONE_RELEVANT: the annotator entered `n`
             # An explicit "nothing here" is information: it marks the question as
-            # reviewed-and-unanswerable-from-the-pool rather than untouched,
-            # which is a direct signal of pool failure.
+            # reviewed-and-unanswerable-from-the-pool rather than untouched.
             relevant: list[str] = []
         else:
             relevant = [candidates[i - 1].chunk_id for i in picks]

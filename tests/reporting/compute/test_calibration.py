@@ -1,4 +1,4 @@
-"""Tests for `reporting.compute.calibration`, on ratings written under tmp_path."""
+"""Tests for `reporting.compute.calibration`, on ratings written under `tmp_path`."""
 
 from __future__ import annotations
 
@@ -208,6 +208,14 @@ def test_the_behaviour_kappa_is_over_the_answers_both_graded(tmp_path):
     assert calibration.behaviour_kappa(Sources(tmp_path), "opus") == 1.0
 
 
+def test_the_behaviour_kappa_is_undefined_when_both_graders_give_one_and_the_same_verdict(tmp_path):
+    human = [rating_row(f"a{i}", graded(behaviour=True)) for i in range(3)]
+    write_jsonl(tmp_path / "evals/annotations/judge_ratings.jsonl", human)
+    grades = [judge_row(f"a{i}", graded(behaviour=True)) for i in range(3)]
+    write_jsonl(tmp_path / f"results/{ANSWERS_V1}/judgements_opus.jsonl", grades)
+    assert calibration.behaviour_kappa(Sources(tmp_path), "opus") is None
+
+
 def sample_fixture(root, categories):
     """One answer per category in `categories`, all in the sample but the last."""
     records = [
@@ -234,7 +242,7 @@ def test_the_calibration_sample_is_counted_by_config_and_category(tmp_path):
         "gemini@venue_split:cv-0003",
     ]
     assert len(calibration.sample_answers(src)) == 4
-    # a0 to a3 hold 0 + 1 + 2 + 3 claims.
+    # The four sampled answers hold 0 + 1 + 2 + 3 claims.
     assert calibration.sample_claims(src) == 6
     assert calibration.sample_by(src, "config") == {"qwen@venue_split": 2, "gemini@venue_split": 2}
     assert calibration.sample_by(src, "category")["adversarial"] == 0

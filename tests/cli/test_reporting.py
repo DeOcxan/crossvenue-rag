@@ -1,4 +1,4 @@
-"""Tests for `cli.reporting`: runs-manifest writes the registry make reproduce checks."""
+"""Tests for `cli.reporting`: `runs-manifest` writes the registry `make reproduce` checks."""
 
 from __future__ import annotations
 
@@ -25,6 +25,16 @@ def test_runs_manifest_lists_committed_runs_and_names_the_unversioned(tmp_path, 
     registry = json.loads((tmp_path / "results" / "runs.json").read_text())
     assert registry["runs"]["a"]["index_version"] == "v1"
     assert set(registry["runs"]["b"]["files"]) == {"report.md"}
+
+
+def test_a_folder_with_only_a_gitignore_is_refused_as_lacking_one_of_the_two(tmp_path, monkeypatch):
+    from crossvenue_rag.errors import UserError
+
+    (tmp_path / ".gitignore").write_text("results/*\n")
+    monkeypatch.chdir(tmp_path)
+    result = CliRunner().invoke(app, ["runs-manifest"])
+    assert isinstance(result.exception, UserError), result.output
+    assert str(result.exception).endswith("it has no .gitignore or no results/")
 
 
 def _fake_reproduce(*, problems: list[str]):

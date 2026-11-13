@@ -1,19 +1,29 @@
-"""The test-retest agreement of evals/agreement.md, as `crossvenue kappa` computes it.
+"""The first two labeling rounds, as the working journal or a gold version records them.
 
-With it, the disagreements `v0.2.2-gold` resolves. Round 2 is in the working journal and in
-the journal frozen with `v0.2.2-gold`; the `v0.2.1-gold` journal (`src.rounds`) ends at
-round 1, so it is the reference the working round 1 is held to.
+Round 2 is in the working journal and in the journal frozen with `v0.2.2-gold`; the `v0.2.1-gold`
+journal (`src.rounds`) ends at round 1, so it is the reference the working round 1 is held to.
 """
 
 from __future__ import annotations
 
-from collections import Counter
 from dataclasses import dataclass
-from typing import Any
 
 from ...dataset.added_chunks import read_added_chunks
-from ...dataset.agreement import AgreementVariant, Bootstrap, KappaRequest, KappaStudy, kappa_study
-from ...dataset.journal import Journal, Judgment, load_rounds
+from ...dataset.agreement import (
+    AgreementVariant,
+    Bootstrap,
+    KappaRequest,
+    KappaStudy,
+    differing_pairs,
+    judgements_from_rounds,
+    kappa_study,
+)
+from ...dataset.journal import (
+    FIRST_ROUND,
+    RETEST_ROUND,
+    Journal,
+    load_rounds,
+)
 from ...dataset.questions import load_questions
 from ...dataset.sampling import read_sample_file
 from ...models import Question
@@ -70,21 +80,16 @@ def exposed_count(src: Sources) -> int:
 def round1_is_gold(src: Sources) -> bool:
     """Whether every re-judged question's round-1 entry equals the gold set's journal entry."""
     working = load_rounds(str(src.path(WORKING_QUESTIONS)))
-    retested = [q for q, entries in working.questions.items() if entries.judgment(2) is not None]
-    return bool(retested) and all(
-        _dumped(working.get(q).first) == _dumped(src.rounds.get(q).first) for q in retested
-    )
-
-
-def _dumped(judgment: Judgment | None) -> dict[str, Any] | None:
-    """A judgment as its file holds it, so two are compared by content whatever their key order."""
-    return None if judgment is None else judgment.model_dump(by_alias=True)
+    retested = [
+        q for q, entries in working.questions.items() if entries.judgment(RETEST_ROUND) is not None
+    ]
+    return bool(retested) and all(working.get(q).first == src.rounds.get(q).first for q in retested)
 
 
 def relevant_counts(src: Sources) -> tuple[int, int]:
     """(pairs relevant in round 1, pairs relevant in round 2) of the registered reading."""
     d = study(src).direction
-    return d.both_relevant + d.first_only, d.both_relevant + d.second_only
+    return d.first_relevant, d.second_relevant
 
 
 def sensitivity_spread(src: Sources) -> float:
@@ -97,8 +102,7 @@ def intervals_hold_registered(src: Sources) -> bool:
     """Whether every reading's interval includes the registered kappa."""
     kappa = registered(src).report.kappa
     return all(
-        v.interval is not None
-        and v.interval.low is not None
+        v.interval.low is not None
         and v.interval.high is not None
         and v.interval.low <= kappa <= v.interval.high
         for v in study(src).variants
@@ -136,10 +140,10 @@ def version_counts(questions: dict[str, Question]) -> VersionCounts:
     """Questions with gold, gold chunks, and fact and unanswerable questions."""
     qs = questions.values()
     return VersionCounts(
-        with_gold=sum(1 for q in qs if q.gold_chunk_ids),
+        with_gold=sum(1 for q in qs if q.is_labelled),
         gold_chunks=sum(len(q.gold_chunk_ids) for q in qs),
-        fact=sum(1 for q in qs if q.category == "fact"),
-        unanswerable=sum(1 for q in qs if q.category == "unanswerable"),
+        fact=sum(1 for q in qs if q.effective_category == "fact"),
+        unanswerable=sum(1 for q in qs if q.effective_category == "unanswerable"),
     )
 
 
@@ -153,34 +157,6 @@ def adjudicated_gold(src: Sources) -> dict[str, Question]:
 def adjudicated_journal(src: Sources) -> Journal:
     """The journal frozen with `v0.2.2-gold`."""
     return load_rounds(src.path(GOLD_ADJUDICATED))
-
-
-@dataclass(frozen=True)
-class Round3Size:
-    """The questions and candidate decisions round 3 holds for one category."""
-
-    questions: int
-    decisions: int
-
-
-def round3_added(src: Sources) -> dict[str, list[str]]:
-    """Per question, the chunks round 3 shows beside the ones round 1 judged."""
-    added = read_added_chunks(src.path(D23_ANSWER_CHUNKS))
-    return {q: chunks for q, chunks in added.items() if chunks}
-
-
-def round3_sizes(src: Sources) -> dict[str, Round3Size]:
-    """Questions and decisions by category of `v0.2.2-gold`, most decisions first."""
-    journal, added = adjudicated_journal(src), round3_added(src)
-    questions: Counter[str] = Counter()
-    decisions: Counter[str] = Counter()
-    for question in adjudicated_gold(src).values():
-        first = journal.require_first(question.id)
-        shown = set(first.judged_ids()) | set(added.get(question.id, ()))
-        questions[question.effective_category] += 1
-        decisions[question.effective_category] += len(shown)
-    order = sorted(decisions, key=lambda category: (-decisions[category], category))
-    return {c: Round3Size(questions[c], decisions[c]) for c in order}
 
 
 def changed_gold(src: Sources) -> list[str]:
@@ -224,7 +200,7 @@ def recategorized(src: Sources) -> list[str]:
     return [
         q
         for q, old in src.questions.items()
-        if old.category == "unanswerable" and new[q].category == "fact"
+        if old.effective_category == "unanswerable" and new[q].effective_category == "fact"
     ]
 
 
@@ -240,17 +216,20 @@ def adjudication_split(src: Sources) -> AdjudicationSplit:
     """How the adjudication decided the pairs rounds 1 and 2 disagree on.
 
     Raises:
-        ValueError: A decided chunk is one both rounds judged alike, so no disagreement.
+        ValueError: A decided chunk is not a pair the rounds disagree on
+            (`agreement.differing_pairs`).
     """
+    journal = adjudicated_journal(src)
+    first = judgements_from_rounds(journal, FIRST_ROUND)
+    second = judgements_from_rounds(journal, RETEST_ROUND)
+    differing = set(differing_pairs(first, second))
     as_first = as_second = 0
-    for entries in adjudicated_journal(src).questions.values():
-        adjudication, first, second = entries.adjudicated, entries.first, entries.judgment(2)
-        if adjudication is None or first is None or second is None:
-            continue
-        for chunk_id, decision in adjudication.decisions.items():
-            in_first, in_second = chunk_id in first.relevant, chunk_id in second.relevant
-            if in_first == in_second:
-                raise ValueError(f"{chunk_id} was judged alike in both rounds")
-            as_first += decision.relevant == in_first
-            as_second += decision.relevant == in_second
+    for question_id, entries in journal.questions.items():
+        decisions = entries.adjudicated.decisions if entries.adjudicated else {}
+        for chunk_id, decision in decisions.items():
+            key = (question_id, chunk_id)
+            if key not in differing:
+                raise ValueError(f"{chunk_id} is not a pair the rounds disagree on")
+            as_first += decision.relevant == first.labels[key]
+            as_second += decision.relevant == second.labels[key]
     return AdjudicationSplit(as_first, as_second)

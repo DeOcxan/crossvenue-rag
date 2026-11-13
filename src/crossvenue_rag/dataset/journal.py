@@ -2,13 +2,14 @@
 
 `annotations/<name>.rounds.json` holds, per question, every judgment made of it: the numbered
 labeling rounds, the adjudication of the pairs two rounds disagree on and a relabel under the
-amended criterion. Round 3 relabels the whole set. A record keeps the key order of the file it
-was read from, so a journal read and written again is byte-identical.
+amended criterion. A record keeps the key order of the file it was read from, so a journal read
+and written again is byte-identical.
 """
 
 from __future__ import annotations
 
 import json
+from collections.abc import Iterable, Sequence
 from pathlib import Path
 from typing import Any, Self
 
@@ -16,14 +17,18 @@ from pydantic import (
     BaseModel,
     ConfigDict,
     Field,
+    ModelWrapValidatorHandler,
     PrivateAttr,
     SerializerFunctionWrapHandler,
+    TypeAdapter,
     ValidationError,
     model_serializer,
     model_validator,
 )
 
-from ..errors import UserError
+from .. import formatting, listing
+from ..atomic_files import write_text_atomically
+from ..errors import UserError, validation_problems
 from ..models import VenueCoverage
 
 # The journal keys of the judgments made after round 2 under the criterion amended then
@@ -33,9 +38,14 @@ ADJUDICATED = "adjudicated"
 RELABELED = "relabeled"
 # The round whose judgments are the gold the later passes start from.
 FIRST_ROUND = 1
+# The round that judges judged questions again, for intra-rater agreement.
+RETEST_ROUND = 2
 # The round that judges every question again under the amended criterion (methodology
 # section 5b); the gold of a set built from it comes from this round alone.
 FULL_RELABEL_ROUND = 3
+# The ending of a journal's file name: `<name>.rounds.json` in `annotations/` beside the
+# question file.
+JOURNAL_SUFFIX = ".rounds.json"
 
 
 class JournalRecord(BaseModel):
@@ -51,7 +61,7 @@ class JournalRecord(BaseModel):
 
     @model_validator(mode="wrap")
     @classmethod
-    def _remember_order(cls, data: Any, handler: Any) -> Any:
+    def _remember_order(cls, data: Any, handler: ModelWrapValidatorHandler[Self]) -> Self:
         record = handler(data)
         if isinstance(data, dict) and isinstance(record, JournalRecord):
             record._order = tuple(data)
@@ -85,7 +95,7 @@ class Correction(JournalRecord):
 
 
 class CoverageChange(JournalRecord):
-    """A venue_coverage value an augmentation changed."""
+    """A `venue_coverage` value an augmentation changed."""
 
     venue: str
     old: VenueCoverage = Field(alias="from")
@@ -154,16 +164,33 @@ class Judgment(JournalRecord):
             seen.update(dict.fromkeys(augmentation.shown))
         return list(seen)
 
+    def as_shown(self) -> Judgment | Migration:
+        """The pool and the marks as the annotator saw them: before the earliest id migration.
+
+        That is the innermost `migrated_from`, or the judgment itself when it was never migrated.
+        """
+        shown: Judgment | Migration = self
+        while shown.migrated_from is not None:
+            shown = shown.migrated_from
+        return shown
+
     def first_pass_relevant(self) -> set[str]:
         """The verdicts before review.
 
         These are the `previous_relevant` of the earliest correction (`relevant` when the
-        judgment was never corrected), plus what augmentation marked, which review never
-        touched.
+        judgment was never corrected), plus what augmentation marked. In the journals under
+        evals/datasets/annotations/, every correction predates every augmentation, so no
+        correction changed an augmentation's mark.
         """
         base = self.corrections[0].previous_relevant if self.corrections else self.relevant
         augmented = {c for a in self.augmentations or [] for c in a.relevant}
         return set(base) | augmented
+
+
+def candidate_ids(round1_entry: Judgment, added: Sequence[str] = ()) -> list[str]:
+    """What round 1 judged in its recorded order, then the `added` chunks it did not."""
+    ids = round1_entry.judged_ids()
+    return ids + [c for c in dict.fromkeys(added) if c not in ids]
 
 
 class Decision(JournalRecord):
@@ -281,19 +308,16 @@ class QuestionJournal(BaseModel):
         return first | set(self.relabeled.pool if self.relabeled is not None else [])
 
 
+# The file holds the question map itself, so a problem's location starts at a question id.
+_BY_QUESTION: TypeAdapter[dict[str, QuestionJournal]] = TypeAdapter(dict[str, QuestionJournal])
+
+
 class Journal(BaseModel):
     """The judgment journal of a question file: question id to its judgments, in file order."""
 
     model_config = ConfigDict(extra="forbid")
 
     questions: dict[str, QuestionJournal] = {}
-
-    @model_validator(mode="before")
-    @classmethod
-    def _wrap(cls, data: Any) -> Any:
-        if isinstance(data, dict) and set(data) != {"questions"}:
-            return {"questions": data}
-        return data
 
     @model_serializer(mode="plain")
     def _plain(self) -> dict[str, Any]:
@@ -312,9 +336,9 @@ class Journal(BaseModel):
                 "expected"
             )
         try:
-            return cls.model_validate(data)
+            return cls(questions=_BY_QUESTION.validate_python(data))
         except ValidationError as exc:
-            raise ValueError(_first_error(exc)) from exc
+            raise ValueError(validation_problems(exc)) from exc
 
     def get(self, question_id: str) -> QuestionJournal:
         """The judgments of a question, empty when the journal has none."""
@@ -339,22 +363,36 @@ class Journal(BaseModel):
             raise ValueError(f"{question_id} has no round-1 judgment")
         return first
 
+    def judged_in(self, number: int, question_ids: Iterable[str]) -> int:
+        """How many of `question_ids` round `number` judged."""
+        return sum(1 for q in question_ids if self.get(q).judgment(number) is not None)
+
     def to_text(self) -> str:
         """The journal as its file holds it."""
         return json.dumps(self.model_dump(), indent=2, ensure_ascii=False)
 
 
-def _first_error(exc: ValidationError) -> str:
-    """The first validation problem, located by its path in the journal."""
-    error = exc.errors()[0]
-    where = ".".join(str(p) for p in error["loc"] if p != "questions")
-    return f"{where}: {error['msg']}" if where else str(error["msg"])
+def require_full_relabel(journal: Journal, question_ids: Iterable[str]) -> None:
+    """Refuses a journal in which round 3 has not judged every one of `question_ids`.
+
+    Raises:
+        UserError: A question of `question_ids` has no round-3 entry.
+    """
+    open_ids = sorted(
+        q for q in question_ids if journal.get(q).judgment(FULL_RELABEL_ROUND) is None
+    )
+    if open_ids:
+        raise UserError(
+            f"{formatting.plural(len(open_ids), 'question')} without a round-"
+            f"{formatting.own_form(FULL_RELABEL_ROUND)} entry: {listing.first_items(open_ids)}",
+            hint="finish the round with `make round3`",
+        )
 
 
 def rounds_path(questions_path: str | Path) -> Path:
     """Sidecar holding the judgment journal of a question file."""
     path = Path(questions_path)
-    return path.parent / "annotations" / (path.name.removesuffix(".jsonl") + ".rounds.json")
+    return path.parent / "annotations" / (path.name.removesuffix(".jsonl") + JOURNAL_SUFFIX)
 
 
 def read_journal(path: Path) -> Journal:
@@ -385,11 +423,7 @@ def save_rounds(questions_path: str | Path, journal: Journal) -> None:
     A session writes after every judgment, so an interrupt or a crash mid-write must leave
     the last complete journal in place.
     """
-    path = rounds_path(questions_path)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_suffix(".tmp")
-    tmp.write_text(journal.to_text(), encoding="utf-8")
-    tmp.replace(path)
+    write_text_atomically(rounds_path(questions_path), journal.to_text())
 
 
 def load_judged_sets(questions_path: str | Path) -> dict[str, set[str]] | None:

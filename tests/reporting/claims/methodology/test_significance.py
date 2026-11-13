@@ -39,7 +39,7 @@ def test_the_sample_size_rules_state_the_registered_targets(monkeypatch):
     """With another fact target, the set size the section 7 decision states does not match."""
     monkeypatch.setitem(TARGETS, "fact", TARGETS["fact"] + 1)
     doc = Doc.from_text(METHODOLOGY, Path(METHODOLOGY).read_text(encoding="utf-8"))
-    significance.observed_power(doc, Sources("."))
+    significance.sample_size_decision(doc, Sources("."))
     for template in ("{} questions, hard floor", "- {} total gives"):
         assert any(
             p.message.startswith(f"105 in the text, 106 recomputed (hole 1 of '{template}")

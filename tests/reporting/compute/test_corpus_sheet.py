@@ -1,9 +1,12 @@
-"""Tests for `reporting.compute.corpus_sheet`, on a corpus and manifest written under tmp_path."""
+"""Tests for `reporting.compute.corpus_sheet`, on a corpus and manifest written under `tmp_path`."""
 
 from __future__ import annotations
 
 from dataclasses import replace
 
+import pytest
+
+from crossvenue_rag.errors import UserError
 from crossvenue_rag.models import ChunkSource
 from crossvenue_rag.reporting.compute import corpus_sheet
 from crossvenue_rag.reporting.sources import Sources
@@ -37,20 +40,51 @@ def binance_corpus(tmp_path):
     return Sources(tmp_path)
 
 
-def test_a_chunk_on_a_mainnet_page_and_its_testnet_copy_is_a_mirror_group(tmp_path):
-    assert corpus_sheet.testnet_mirror_groups(binance_corpus(tmp_path)) == 1
+def test_the_testnet_mirror_groups_are_the_saved_count_or_a_user_error_without_one(tmp_path):
+    from crossvenue_rag.corpus.artifacts import DedupSummary, corpus_stats_json
+    from crossvenue_rag.corpus.ingest import corpus_stats
 
-
-def test_testnet_only_chunks_are_split_into_reference_terms_and_changelog(tmp_path):
-    assert corpus_sheet.testnet_only(binance_corpus(tmp_path)) == corpus_sheet.OnlyOnTestnet(
-        3, 1, 1, 1
+    src = binance_corpus(tmp_path)  # one mirror group in the chunks
+    counts = dict.fromkeys(("chunks_before", "chunks_after", "removed", "groups"), 0)
+    dedup = DedupSummary(
+        **counts,
+        occurrences_in_groups=0,
+        cross_venue_groups=0,
+        cross_venue_examples=[],
+        groups_by_venue={},
+        testnet_mirror_groups=7,
     )
+    stats = corpus_stats(src.chunks, {}).model_copy(update={"dedup": dedup})
+    write_file(tmp_path, "data/processed/corpus_stats.json", corpus_stats_json(stats))
+    assert corpus_sheet.testnet_mirror_groups(src) == 7
+    without = corpus_stats_json(corpus_stats(src.chunks, {}))
+    write_file(tmp_path, "data/processed/corpus_stats.json", without)
+    with pytest.raises(UserError, match="records no deduplication"):
+        corpus_sheet.testnet_mirror_groups(src)
 
 
-def test_chunks_are_counted_on_every_page_they_occur_on(tmp_path):
+def write_binance_manifest(tmp_path):
+    """A manifest with the one mainnet page of `binance_corpus`, `rest-api.md`."""
+    row = "binance,cex,https://b.invalid/rest-api,binance/rest-api.md,2026-09-20T00:00:00Z,,x\n"
+    write_file(tmp_path, "data/manifest.csv", MANIFEST_HEADER + row)
+
+
+def test_testnet_only_chunks_count_as_mirrored_only_when_the_mainnet_page_is_in_the_manifest(
+    tmp_path,
+):
+    write_binance_manifest(tmp_path)
+    src = binance_corpus(tmp_path)
+    # A testnet page with no mainnet page.
+    extra = chunk("b7", "binance", "testnet info", "testnet/general-info.md")
+    write_chunks(tmp_path, [*src.chunks, extra])
+    only = corpus_sheet.testnet_only(Sources(tmp_path))
+    assert only == corpus_sheet.OnlyOnTestnet(4, 1)
+
+
+def test_chunks_are_counted_on_their_primary_page(tmp_path):
     pages = corpus_sheet.page_chunks(binance_corpus(tmp_path), "binance")
     assert pages["rest-api.md"] == 3
-    assert pages["testnet/rest-api.md"] == 2
+    assert pages["testnet/rest-api.md"] == 1
     src = binance_corpus(tmp_path)
     assert corpus_sheet.terms_pages(src) == ["testnet/TESTNET-TERMS-OF-USE.md"]
     assert corpus_sheet.page_chunk_count(src, "binance", corpus_sheet.terms_pages(src)) == 1

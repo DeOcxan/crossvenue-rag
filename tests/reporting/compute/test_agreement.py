@@ -1,4 +1,4 @@
-"""Tests for `reporting.compute.agreement`, on journals written under tmp_path."""
+"""Tests for `reporting.compute.agreement`, on files written under `tmp_path`."""
 
 from __future__ import annotations
 
@@ -11,13 +11,7 @@ import pytest
 from crossvenue_rag.config_loading import DEFAULT_CONFIG
 from crossvenue_rag.dataset.journal import rounds_path
 from crossvenue_rag.reporting.compute import agreement
-from crossvenue_rag.reporting.run_ids import (
-    D23_ANSWER_CHUNKS,
-    GOLD,
-    GOLD_ADJUDICATED,
-    ROUND2_EXPOSED,
-    WORKING_QUESTIONS,
-)
+from crossvenue_rag.reporting.run_ids import GOLD, ROUND2_EXPOSED, WORKING_QUESTIONS
 from crossvenue_rag.reporting.sources import Sources
 from tests.conftest import adjudication, relabel
 from tests.reporting.conftest import write_file, write_gold
@@ -160,6 +154,19 @@ def test_the_adjudicated_version_is_compared_with_the_gold_set(tmp_path):
     assert agreement.recategorized(src) == ["q3"]
 
 
+def test_a_question_saved_without_a_category_is_counted_by_its_qtype(tmp_path):
+    from crossvenue_rag.reporting.run_ids import GOLD_ADJUDICATED
+
+    old = {"id": "q1", "category": "unanswerable", "qtype": "fact", "is_answerable": False,
+           "expected_behavior": "refuse", "venues": ["bybit"]}  # fmt: skip
+    write_gold(tmp_path, [old])
+    new = {"id": "q1", "category": None, "qtype": "fact", "venues": ["bybit"]}
+    write_gold(tmp_path, [new], path=GOLD_ADJUDICATED)
+    src = Sources(tmp_path)
+    assert agreement.version_counts(agreement.adjudicated_gold(src)).fact == 1
+    assert agreement.recategorized(src) == ["q1"]
+
+
 def test_the_adjudication_is_split_by_the_round_each_decision_agrees_with(tmp_path):
     from crossvenue_rag.reporting.run_ids import GOLD_ADJUDICATED
 
@@ -174,32 +181,7 @@ def test_the_adjudication_is_split_by_the_round_each_decision_agrees_with(tmp_pa
     write_file(tmp_path, str(rounds_path(GOLD_ADJUDICATED)), json.dumps({"q1": entry}))
     split = agreement.adjudication_split(Sources(tmp_path))
     assert (split.as_first, split.as_second) == (1, 2)
-    entry["adjudicated"] = adjudication({"z": True})  # judged alike (not relevant) in both
+    entry["adjudicated"] = adjudication({"z": True})  # judged by neither round
     write_file(tmp_path, str(rounds_path(GOLD_ADJUDICATED)), json.dumps({"q1": entry}))
-    with pytest.raises(ValueError, match="alike in both rounds"):
+    with pytest.raises(ValueError, match="not a pair the rounds disagree on"):
         agreement.adjudication_split(Sources(tmp_path))
-
-
-def test_round_3_counts_the_chunks_round_1_judged_plus_the_added_ones(tmp_path):
-    write_gold(
-        tmp_path,
-        [{"id": "q1", "category": "fact", "qtype": "fact"}, {"id": "q2", "category": "noisy"}],
-        path=GOLD_ADJUDICATED,
-    )
-    pool = {"pool": ["a", "b"], "relevant": [], "annotated_at": "2026-09-24T12:00:00Z"}
-    write_file(
-        tmp_path,
-        str(rounds_path(GOLD_ADJUDICATED)),
-        json.dumps({"q1": {"1": pool}, "q2": {"1": pool}}),
-    )
-    write_file(
-        tmp_path,
-        D23_ANSWER_CHUNKS,
-        '{"id": "q1", "chunk_ids": ["a", "x"]}\n{"id": "q2", "chunk_ids": []}\n',
-    )
-    src = Sources(tmp_path)
-    assert agreement.round3_added(src) == {"q1": ["a", "x"]}
-    sizes = agreement.round3_sizes(src)
-    assert list(sizes) == ["fact", "noisy"]
-    assert (sizes["fact"].questions, sizes["fact"].decisions) == (1, 3)
-    assert (sizes["noisy"].questions, sizes["noisy"].decisions) == (1, 2)

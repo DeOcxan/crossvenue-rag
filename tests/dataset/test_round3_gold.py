@@ -8,8 +8,9 @@ from typing import Any
 
 import pytest
 
-from crossvenue_rag.dataset.records import load_records
-from crossvenue_rag.dataset.round3_gold import build_round3_gold
+from crossvenue_rag.dataset.journal import Journal
+from crossvenue_rag.dataset.records import QuestionRecord, load_records
+from crossvenue_rag.dataset.round3_gold import build_round3_gold, labels_from_round3
 from crossvenue_rag.errors import UserError
 from tests.conftest import write_journal
 
@@ -94,6 +95,13 @@ def test_an_unfinished_round_is_refused(tmp_path):
     assert not out.exists()
 
 
+def test_an_unfinished_round_lists_its_open_questions_in_id_order(tmp_path):
+    base, working, out = _setup(tmp_path, {})
+    _write(base, [_row("q2", **UNANSWERABLE), _row("q1")])
+    with pytest.raises(UserError, match="without a round-3 entry: q1, q2"):
+        build_round3_gold(base, working, out)
+
+
 def test_a_changed_earlier_entry_is_refused(tmp_path):
     base, working, out = _setup(tmp_path, FULL)
     journal = _earlier()
@@ -112,3 +120,18 @@ def test_an_existing_version_is_never_rewritten(tmp_path):
     with pytest.raises(UserError, match="exists"):
         build_round3_gold(base, working, out)
     assert out.read_text(encoding="utf-8") == "frozen\n"
+
+
+def test_an_out_path_in_a_missing_directory_is_refused_and_nothing_is_written(tmp_path):
+    base, working, out = _setup(tmp_path, FULL)
+    missing = out.parent / "absent" / "out.jsonl"
+    with pytest.raises(UserError, match="is not a directory"):
+        build_round3_gold(base, working, missing)
+    assert not missing.parent.exists()
+
+
+def test_labels_from_round3_refuses_a_question_without_a_round_3_entry():
+    record = QuestionRecord.model_validate(_row("q1"))
+    entries = Journal.from_json(_earlier()).get("q1")
+    with pytest.raises(ValueError, match="no round-3 entry"):
+        labels_from_round3(record, entries)

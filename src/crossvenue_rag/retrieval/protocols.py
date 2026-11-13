@@ -1,7 +1,7 @@
 """What callers need of a retriever, one protocol per contract.
 
-`retriever.Retriever` satisfies all of them; tests pass fakes that satisfy only
-the one a function takes.
+`retriever.Retriever` satisfies all of them but `DetectsVenues`, which its `venue_detector`
+satisfies; tests pass fakes that satisfy only the one a function takes.
 """
 
 from __future__ import annotations
@@ -15,7 +15,7 @@ from ..models import Chunk, Result, Timings
 from .filters import Filters
 
 # How venue_split calls the cross-encoder: once per venue, or once for all venues. The
-# bench (`evaluation.bench.MODES`) times and reports them in this order.
+# bench (`evaluation.bench.MODES`) reports them in this order.
 RerankCalls = Literal["per_venue", "one_call"]
 
 
@@ -97,7 +97,7 @@ class AskRetriever(DetectingRanks, Protocol):
 
 
 class TimesVenueSplit(Protocol):
-    """Names the venues a question mentions and times venue_split: what bench-rerank reads."""
+    """Names the venues a question mentions and times venue_split: what `bench-rerank` reads."""
 
     @property
     def venue_detector(self) -> DetectsVenues:

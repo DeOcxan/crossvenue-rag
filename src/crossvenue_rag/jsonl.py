@@ -16,19 +16,12 @@ from .errors import UserError, invalid_file, require_file
 _LINE_HINT = "fix that line of the file: each line holds one JSON object"
 
 
-def read(path: str | Path) -> list[dict[str, Any]]:
-    """Every record of a JSON Lines file, in file order; blank lines are skipped.
+def read_models[M: BaseModel](path: str | Path, model: type[M], hint: str = _LINE_HINT) -> list[M]:
+    """Every record of a JSON Lines file validated as `model`, in file order.
 
     Raises:
-        UserError: The file is missing or a directory, or a line is not UTF-8, not JSON
-            or holds something other than an object (`iter_rows`); the error names the
-            file and the line.
+        UserError: Nothing is at `path`, or a directory is.
     """
-    return [row for _, row in iter_rows(path)]
-
-
-def read_models[M: BaseModel](path: str | Path, model: type[M], hint: str = _LINE_HINT) -> list[M]:
-    """Every record of a JSON Lines file validated as `model`, in file order."""
     return [record for _, record in iter_models(path, model, hint)]
 
 
@@ -40,8 +33,8 @@ def iter_models[M: BaseModel](
     `hint` is what the error for a line that is not a valid `model` tells the reader to do.
 
     Raises:
-        UserError: A line is not a valid `model`; the error names the file, the line and the
-            field.
+        UserError: Nothing is at `path`, or a directory is. A line is not a valid `model`;
+            the error names the file, the line and the field.
     """
     for number, row in iter_rows(path):
         try:

@@ -10,6 +10,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from ... import formatting
+from ...evaluation.paired import mcnemar_p
 from ...generation.prompt_compare import COMPARISON_FILE
 from ..sources import Sources
 from .answers import configurations
@@ -101,7 +102,7 @@ def smallest_p(changed: int) -> float:
         raise ValueError(
             f"the smallest p needs at least one changed question, got {formatting.count(changed)}"
         )
-    return 2 / float(2**changed)
+    return mcnemar_p(0, changed)
 
 
 def changes_against_v2_at_floor(src: Sources, metric: str) -> bool:

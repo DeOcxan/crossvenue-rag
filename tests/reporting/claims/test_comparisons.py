@@ -1,4 +1,4 @@
-"""Tests for `reporting.claims.comparisons`: the kappa cell and bounds the documents state."""
+"""Tests for `reporting.claims.comparisons`: the kappa cell and bounds, and a share's parts."""
 
 from __future__ import annotations
 
@@ -18,3 +18,7 @@ def test_a_kappa_cell_holds_its_interval_or_the_kappa_alone():
     assert comparisons.kappa_cell(undefined) == "0.470"
     with pytest.raises(ValueError, match="has no kappa interval"):
         comparisons.kappa_bounds(undefined)
+
+
+def test_a_share_is_written_with_its_two_counts():
+    assert comparisons.share_parts(0.52, 26, 50) == ["0.52", "26", "50"]

@@ -15,38 +15,16 @@ from rich.console import Console
 from rich.prompt import Prompt
 from rich.text import Text
 
-from .. import formatting, listing
+from .. import formatting
 from ..clock import utc_now
-from ..dataset.journal import RELABELED, Judgment, Relabel, load_rounds, rounds_path, save_rounds
+from ..dataset.journal import RELABELED, Relabel, load_rounds, rounds_path, save_rounds
 from ..dataset.questions import load_questions
 from ..errors import UserError
-from ..models import Chunk, Result
+from ..models import Chunk
 from .adjudicate import CRITERION_DATE, CRITERION_SUMMARY
 from .judge import judge
+from .pool import retest_candidates
 from .screen import Ask
-
-
-def relabel_candidates(
-    chunks: Mapping[str, Chunk],
-    question_id: str,
-    round1_entry: Judgment,
-    added: Sequence[str],
-) -> list[Result]:
-    """Round 1's judged chunks in their recorded order, then the added ones it never showed.
-
-    Raises:
-        UserError: a chunk is not in the corpus.
-    """
-    ids = round1_entry.judged_ids()
-    ids += [c for c in dict.fromkeys(added) if c not in ids]
-    missing = [c for c in ids if c not in chunks]
-    if missing:
-        raise UserError(
-            f"{question_id}: {formatting.plural(len(missing), 'chunk')} not in the corpus: "
-            f"{listing.first_items(missing)}",
-            hint="the chunk ids are of another index; carry them with `remap-ids`",
-        )
-    return [Result.from_chunk(chunks[c], 0.0) for c in ids]
 
 
 @dataclass(frozen=True)
@@ -69,7 +47,9 @@ def relabel_session(
     Ctrl-C stops; verdicts given so far are saved, and a rerun shows every named question.
 
     Raises:
-        UserError: a named question is not in the file or has no round-1 entry.
+        UserError: a named question is not in the file or has no round-1 entry. Nothing is at
+            `target.questions_path`, or a directory is. A chunk to show is not in
+            `target.chunks`.
     """
     console = console or Console()
     path = target.questions_path
@@ -86,7 +66,9 @@ def relabel_session(
     try:
         for qid in target.ids:
             question, first = questions[qid], rounds.require_first(qid)
-            candidates = relabel_candidates(target.chunks, qid, first, target.added.get(qid, ()))
+            candidates = retest_candidates(
+                target.chunks, qid, first, None, target.added.get(qid, ())
+            )
             console.rule(Text(qid))
             judgement = judge(console, question, candidates, set(), prompt)
             if judgement is None:

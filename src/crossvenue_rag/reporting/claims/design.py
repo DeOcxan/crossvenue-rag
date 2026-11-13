@@ -1,8 +1,4 @@
-"""What docs/explanation/design.md claims.
-
-Each function checks one section of the document or a part of one, in document order except
-`index_version`.
-"""
+"""What docs/explanation/design.md claims."""
 
 from __future__ import annotations
 
@@ -88,7 +84,7 @@ def _module_layout(doc: Doc, src: Sources) -> None:
 
 def _tests(doc: Doc, src: Sources) -> None:
     doc.check(
-        "{} files test no single module",
+        "{} files are named after no module",
         formatting.count(len(repository.suite_level_test_files(src))),
     )
     doc.check(
@@ -107,7 +103,6 @@ def _normalization(doc: Doc) -> None:
 
 
 def _chunking(doc: Doc, src: Sources) -> None:
-    doc.definition("becomes a two-word chunk", reason="`## Parameters` is two words")
     budget = formatting.count(corpus.chunk_token_budget(src))
     doc.check('so a "{}-token" chunk is {} tokens', budget, budget)
     prose, code = corpus.over_budget_chunks(src)
@@ -137,7 +132,7 @@ def _deduplication(doc: Doc, src: Sources) -> None:
         formatting.count(dup.occurrences),
         formatting.count(corpus.chunk_count(src)),
         formatting.count(dup.groups),
-        formatting.count(dup.by_venue["binance"]),
+        formatting.count(corpus_sheet.testnet_mirror_groups(src)),
     )
 
 
@@ -261,7 +256,9 @@ def _device(doc: Doc, src: Sources) -> None:
     unjudged = "unjudged@10"
     doc.claim(
         "On the {} comparison questions only nDCG and MRR differ, in the fourth decimal, and "
-        "dense's unjudged@10, {} against {}.",
+        "dense's unjudged@10, {} against {}, scored against comparison gold augmented after "
+        "results were seen ([methodology D4](../../evals/methodology.md#deviations-from-"
+        "protocol)).",
         comparisons.comparison_questions(src),
         formatting.metric(cpu[("comparison", "dense")].value(unjudged)),
         formatting.metric(mps[("comparison", "dense")].value(unjudged)),
@@ -269,13 +266,15 @@ def _device(doc: Doc, src: Sources) -> None:
         what="on the comparison questions only nDCG and MRR change, below 0.001, besides "
         "dense's unjudged@10",
     )
-    largest = device.membership_changes(src)[0]
+    changes = device.membership_changes(src)
+    largest = changes[0]
     doc.claim(
-        f"most in {largest.category} {largest.method} {largest.metric}, {{}} against {{}}",
+        f"differ only in {largest.category} for {largest.method}, {largest.metric} {{}} against "
+        "{}",
         formatting.metric(largest.cpu),
         formatting.metric(largest.mps),
-        holds=all(c.category != "comparison" for c in device.membership_changes(src)),
-        what="no recall or precision cell of the comparison questions differs",
+        holds={(c.category, c.method) for c in changes} == {(largest.category, largest.method)},
+        what=f"every differing recall or precision cell is {largest.category} {largest.method}'s",
     )
 
 

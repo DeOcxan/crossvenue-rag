@@ -46,7 +46,8 @@ def estimate_answers(
     ones cost more, and a judge call the cache already holds costs nothing.
 
     Raises:
-        UserError: `judge_name` is not a judge of `generation.judges`.
+        UserError: `judge_name` is not a judge of `generation.judges`, or nothing is at
+            `generation.generator_prompt`, or a directory is.
     """
     gen = cfg.generation
     means = observed_costs(llm.cache)

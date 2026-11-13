@@ -73,7 +73,8 @@ def _minus(text: str) -> str:
     A value that rounds to zero is written without a sign (`-0.000` is `0.000`),
     so every formatter treats a rounded zero as `signed` does.
     """
-    if text.startswith("-") and not any(digit in text for digit in "123456789"):
+    digits = {c for c in text if c.isdigit()}
+    if text.startswith("-") and digits == {"0"}:
         text = text[1:]
     return text.replace("-", MINUS)
 
@@ -143,14 +144,21 @@ def percent(fraction: float) -> str:
 
 def ms(value: float) -> str:
     """A latency in milliseconds: integer from 10 ms, one decimal below: `2,531`, `0.1`."""
-    if abs(value) >= LATENCY_INTEGER_FROM_MS:
+    if _integer_ms(value):
         return _minus(f"{value:,.0f}")
     return _minus(f"{value:.{MS_DECIMALS}f}")
 
 
 def signed_ms(value: float) -> str:
-    """A latency difference with its sign, at the precision of `ms`: `+83`, `-2.5` with U+2212."""
-    return signed(value, 0 if abs(value) >= LATENCY_INTEGER_FROM_MS else MS_DECIMALS)
+    """A latency difference with its sign, as `ms` writes it: `+2,531`, `-2.5` with U+2212."""
+    if _integer_ms(value):
+        return _minus(f"{value:+,.0f}")
+    return signed(value, MS_DECIMALS)
+
+
+def _integer_ms(value: float) -> bool:
+    # Rounded to one decimal before the form is chosen, so 9.96 ms is written 10.
+    return abs(round(value, MS_DECIMALS)) >= LATENCY_INTEGER_FROM_MS
 
 
 def cost(usd: float) -> str:
@@ -231,6 +239,12 @@ def revision_text(revision: str | None) -> str:
     return f" at revision {revision}" if revision else ""
 
 
+def preview(text: str, limit: int) -> str:
+    """The text with its whitespace collapsed, cut to `limit` characters, and " ..." when cut."""
+    flat = " ".join(text.split())
+    return flat[:limit] + (" ..." if len(flat) > limit else "")
+
+
 def optional(value: float | str | None, fmt: Callable[[float], str]) -> str:
     """`fmt(value)`, or `MISSING` when there is no value (`None` or an empty CSV cell).
 
@@ -243,13 +257,13 @@ def optional(value: float | str | None, fmt: Callable[[float], str]) -> str:
 
 
 def duration(seconds: float) -> str:
-    """An elapsed time a person reads: `45s`, `12m`, `2h05m`."""
-    # Rounded to the unit before it is chosen, so 89.6 s is 1m and 7,182 s is 2h00m.
+    """An elapsed time a person reads: `45 s`, `12 min`, `2 h 05 min`."""
+    # Rounded to the unit before it is chosen, so 89.6 s is 1 min and 7,182 s is 2 h 00 min.
     whole_seconds = round(seconds)
     if whole_seconds < DURATION_UNIT_LIMIT:
-        return f"{whole_seconds}s"
+        return f"{whole_seconds} s"
     minutes = round(seconds / SECONDS_PER_MINUTE)
     if minutes < DURATION_UNIT_LIMIT:
-        return f"{minutes}m"
+        return f"{minutes} min"
     hours, rest = divmod(minutes, MINUTES_PER_HOUR)
-    return f"{hours}h{rest:02d}m"
+    return f"{hours} h {rest:02d} min"

@@ -30,33 +30,33 @@ Chunk lengths in tokens, as `make stats` bins them (lower bound included, upper 
 
 Structural metadata. Each chunk carries `environment`, `api_version`, `product` and `doc_type`, read off paths and headings by rules in `data/sources.yaml`. Share of chunks with a value: `doc_type` 88.5%, `api_version` 44.8%, `product` 38.4%, `environment` 10.9%. A null means no rule gave a value: none matched the page, or a stop rule (`value: null`) matched it; [design](../explanation/design.md#structural-metadata) lists the null environments per venue.
 
-Duplicate text. 12,783 chunk occurrences are stored as 11,934 chunks: 536 groups of byte-identical text within a venue, 433 of them Binance mainnet pages against their `testnet/` copies. Every occurrence is kept in the chunk's `sources`. No text occurs on two venues ([findings](../results/findings.md#108-of-chunk-occurrences-are-byte-identical)).
+Duplicate text. 12,783 chunk occurrences are stored as 11,934 chunks: 536 groups of byte-identical text within a venue, 433 of them Binance mainnet pages against their `testnet/` copies. Every occurrence is kept in the chunk's `sources`. No chunk text occurs on two venues ([findings](../results/findings.md#108-of-chunk-occurrences-are-byte-identical)).
 
 Included on purpose.
 
-- `binance/testnet/**`, a near-verbatim copy of the mainnet pages. Where a testnet chunk is byte-identical to a mainnet one, the two are one chunk citing the mainnet page with the testnet page in `sources` (433 chunks). 349 Binance chunks occur only on testnet pages: 227 from the mirrored reference pages, 1 from the testnet terms page and 121 from `testnet/CHANGELOG.md`. The mirrored reference pages differ from mainnet in titles, hosts and limits and are the version-confusion trap.
-- Binance's changelogs and terms pages, which the include globs match because fnmatch's `*` crosses `/`: `testnet/CHANGELOG.md` (121 chunks), `demo-mode/CHANGELOG.md` and `demo-mode/general-info.md` (6 each), and the three terms-of-use pages (1 each), one of them under `demo-mode/`. Unlike Bybit's changelog below, gold labels point into them (`cv-0148 "do i still need a listenKey"`, `cv-0093 "binance demo trading api, is that"`).
-- `bybit/docs/v3`, superseded by v5 and seven documents wide: kept so that a question can name a superseded version.
+- `binance/testnet/**`, a near-verbatim copy of the mainnet pages. Where a testnet chunk is byte-identical to a mainnet one, the two are one chunk citing the mainnet page with the testnet page in `sources` (433 chunks). 349 Binance chunks occur only on testnet pages, 210 of them from the mirrored reference pages. The mirrored reference pages differ from mainnet in titles, hosts and limits and are the version-confusion trap.
+- Binance's changelogs, terms pages and demo-mode pages: `testnet/CHANGELOG.md` (121 chunks), `demo-mode/CHANGELOG.md` and `demo-mode/general-info.md` (6 each), and the three terms-of-use pages (1 each), one of them under `demo-mode/`. Unlike Bybit's changelog below, gold labels point into them (`cv-0148 "do i still need a listenKey"`, `cv-0093 "binance demo trading api, is that"`).
+- `bybit/docs/v3`, seven documents wide, which v5 supersedes: kept so that a question can name a superseded version.
 
 Excluded.
 
 | Excluded | Why |
 |---|---|
 | `bybit/docs/changelog/**` | A single file naming every endpoint and every limit Bybit has changed. |
-| `bybit/docs/api-explorer/**` | OpenAPI JSON in MDX frontmatter; normalization keeps only the title, and every page duplicates a reference page. |
-| `binance/**/*_CN.md` | Chinese translations of documents already in the corpus. |
+| `bybit/docs/api-explorer/**` | Endpoint pages (`*.api.mdx`) hold OpenAPI JSON in MDX frontmatter; normalization keeps the title, a one-line summary, the parameter section labels and the response description, and all but one duplicate a reference page. For category pages (`*.tag.mdx`), it keeps a one-line label and an MDX code block that renders the category's page cards. |
+| `binance/**/*_CN.md` | Chinese translations of English documents. |
 | `dydx/old-docs/**` | Describes v3, a different system with the same nouns. |
-| PancakeSwap non-English | `llms.txt` lists fifteen translations; the same text in fifteen languages measures the wrong thing. |
+| PancakeSwap non-English | `llms.txt` lists fifteen translations of the same text. |
 
 Known gaps.
 
 - Binance covers spot only. `developers.binance.com` is a compiled SPA with no documentation repository and no `llms.txt`. A question about Binance perpetual funding is therefore unanswerable from this corpus. The other perpetual venues state different intervals. Hyperliquid's is 1 hour ("funding interval is 1 hour": 1 chunk; "every hour": 4, one of them, `42436e891f0bc10a`, about the interest on borrowing and not funding), and dYdX charges funding every hour ("every hour": 2). Bybit sets it per symbol, in minutes, in the instruments endpoint's `fundingInterval`. BingX's 20 chunks containing "funding" give `nextFundingTime` and no interval. Counts are chunks containing the term, case-insensitive, per venue (`crossvenue count-term TERM --venue X`).
 - BingX is its AI-skills repository. `bingx-api.github.io` compiles its markdown into JS bundles and `BingX-swap-api-doc` is a one-line redirect; the corpus uses `BingX-API/api-ai-skills` from the same organization: per-domain endpoint references plus shared pages for rate limits, error codes and authentication. It is the smallest venue, at 507 chunks.
 
-Known limitations, measured on the index and kept until another corpus version ([ADR 0012](../adr/0012-deferred-corpus-changes.md) records each fix and what it changes):
+Known limitations, measured on the index ([ADR 0012](../adr/0012-deferred-corpus-changes.md) records the fix of each one it defers and what it changes):
 
 - 4,522 of the 8,820 chunks that start at a heading miss at least one of their parent headings: the breadcrumb is written only into chunks that do not start with a heading. The two Binance "Timing security" chunks, one from the REST API and one from the WebSocket API, name neither. The fix rewrites the text, and so the id, of those 4,522 chunks.
-- The Binance include globs let fnmatch's `*` cross `/`, so they match the changelogs and terms pages listed under "Included on purpose". Narrowing the globs removes them, and with them the gold labels that point into them.
+- The Binance include globs match the changelogs and terms pages listed under "Included on purpose". Narrowing the globs removes them, and with them the gold labels that point into them.
 - PancakeSwap is served on its own domain, so the path mapping drops the first real URL segment: `welcome-to-pancakeswap` (102 pages), `trade` (67), `earn` (33), `archive` (31) and smaller sections. The 206 chunks of the 31 archived pages lose the `archive` marker in `doc_path`, and the metadata rules type them from the rest of the path. The fix changes every PancakeSwap `local_path` in the manifest and the metadata of those 206 chunks; the chunk text does not change.
 - Normalization keeps GitBook page furniture: 270 PancakeSwap chunks (61,955 tokens) are the "Querying This Documentation" section GitBook adds for AI agents, and every PancakeSwap and Hyperliquid page opens with an `llms.txt` banner. Stripping them removes the 270 chunks.
 - 153 chunks exceed 510 tokens of text, the reading window of the bi-encoder (512 with its two special tokens) (`bge-base-en-v1.5`); the dense index does not embed their tail. They are code blocks kept whole. The cross-encoder (`bge-reranker-base`) reads the query and the chunk in one window of 512 tokens with four special tokens, so less of each chunk fits in its window than in the bi-encoder's.
@@ -72,7 +72,7 @@ Two acquisition modes, both reading markdown the vendor publishes:
 - `git`: a clone at depth 1 (`--depth 1`) with no blobs until checkout (`--filter=blob:none`), sparse where the source sets `sparse_paths`, of the repository `data/sources.yaml` names. `make fetch` clones with `--no-checkout`, fetches the commit the manifest records by its sha at depth 1, checks it out, and compares the sha256 of every file with the manifest. It therefore rebuilds this corpus after the upstream branch has moved. `crossvenue fetch --follow-branch` clones the branch head instead and rewrites the manifest, which starts another corpus version. Blobless matters for CCXT, whose repository, generated SDKs included, is 8,537,212 KB by the GitHub API's `size` field (retrieved 2026-09-26); with a sparse checkout of `wiki/`, only the wiki blobs are downloaded.
 - `gitbook`: Hyperliquid and PancakeSwap have no documentation repository. Both are GitBook spaces that publish `/llms.txt`, an index of per-page `.md` URLs; fetching those gives the markdown the site renders, with no HTML cleanup. Both `robots.txt` files, checked on 2026-09-26, give `User-agent: *` with `Allow: /` and no `Disallow`, so fetching the pages is permitted; their `Content-Signal` line is a separate statement about use. Requests are serialized with `fetch.request_delay_seconds`. `make fetch` compares each page with the sha256 the manifest records, counts per venue the pages that changed, disappeared or appeared, and never replaces a recorded copy already on disk. A page that fails to download fails the fetch unless `--allow-missing` is given.
 
-There is no headless-browser scraper: it would serve one source (BingX) and make the corpus unpinnable and unverifiable.
+There is no headless-browser scraper: it would make the corpus unpinnable and unverifiable.
 
 Per-source include/exclude globs, rationale and caveats are in [`data/sources.yaml`](../../data/sources.yaml), the machine-readable form of the tables above. `fetched_at` is 2026-09-20 for all 1,665 documents.
 
@@ -81,7 +81,7 @@ Per-source include/exclude globs, rationale and caveats are in [`data/sources.ya
 Each stage is explained in [design](../explanation/design.md); the raw pages are kept in `data/raw/`.
 
 - Normalization strips per-stack markup: Docusaurus MDX imports, `<Tabs>` and admonitions (Bybit), JSX components (Uniswap, dYdX), GitBook `{% hint %}` blocks and HTML entities (Hyperliquid, PancakeSwap), docsify directives (CCXT). Fenced code blocks and inline code spans are kept, apart from blank-line runs collapsed in 19 blocks ([design](../explanation/design.md#normalization)).
-- Chunking breaks at headings once a chunk reaches 40 tokens and keeps fenced code atomic up to 1,200 tokens. It carries the heading breadcrumb into the text and holds the rendered chunk to 450 tokens of the embedding model's tokenizer. A chunk closed because the next block would pass that limit carries its trailing blocks after the last code block, whole and up to 60 tokens, into the next chunk ([design](../explanation/design.md#chunking), [ADR 0002](../adr/0002-structural-chunking.md)).
+- Chunking breaks at headings once a chunk reaches 40 tokens and keeps fenced code atomic up to 1,200 tokens. It carries the heading breadcrumb into the text and budgets the rendered chunk at 450 tokens of the embedding model's tokenizer. A chunk closed because the next block would pass that limit carries its trailing blocks after the last code block, whole and up to 60 tokens, into the next chunk ([design](../explanation/design.md#chunking), [ADR 0002](../adr/0002-structural-chunking.md)).
 - Structural metadata is assigned by path and heading rules ([design](../explanation/design.md#structural-metadata)).
 - Exact deduplication stores byte-identical text within a venue once, with every occurrence in `sources` and a primary occurrence chosen deterministically (non-testnet first, then `doc_path`, then position) ([design](../explanation/design.md#exact-deduplication), [ADR 0003](../adr/0003-exact-deduplication.md)).
 
@@ -89,7 +89,7 @@ Each stage is explained in [design](../explanation/design.md); the raw pages are
 
 ## Counting a term
 
-A count of a term is the number of chunks in `data/processed/chunks.jsonl` that contain it, case-insensitive, as `crossvenue count-term TERM [--venue X]` prints it. Every count of one term quoted in a document or a `notes` field is this command's output, so two people counting the same thing agree. Counting occurrences instead of chunks, or matching case, gives other numbers for the same corpus. A count that could be read another way states this convention beside it, and names its suspicious hits: `GTX` = 2 chunks, both a substring of the same `clientOrderId` value in Binance examples.
+A count of a term is the number of chunks in `data/processed/chunks.jsonl` that contain it, case-insensitive, as `crossvenue count-term TERM [--venue X]` prints it. Every count of one term quoted in a document is this command's output, so two people counting the same thing agree. Counting occurrences instead of chunks, or matching case, gives other numbers for the same corpus. A count that could be read another way states this convention beside it, and names its suspicious hits: `GTX` = 2 chunks, both a substring of the same `clientOrderId` value in Binance examples.
 
 A concept is searched under every spelling the vendor uses (`tickSize`, `szDecimals`, "significant figures") before it is called present or absent, and the counts are reported. One spelling with no hit does not show that the corpus lacks the concept.
 

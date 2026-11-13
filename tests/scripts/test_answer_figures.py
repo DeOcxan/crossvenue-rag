@@ -1,4 +1,4 @@
-"""Tests for scripts/answer_figures.py: what a figure refuses before it draws."""
+"""Tests for `scripts/answer_figures.py`: what a figure refuses before it draws."""
 
 from __future__ import annotations
 

@@ -1,31 +1,32 @@
-"""The labeling journals: round 1 of `v0.2-gold` and the round-2 re-judging sample.
+"""The labeling journals: round 1 of `v0.2-gold`, the round-2 re-judging sample, the shuffle seeds.
 
-The seed round 2 shuffles candidates with and the labeling pool's depth limit are read
-from the committed file that sets them, since reporting may not import the labeling layer.
+The labeling pool's depth limit is read from the committed file that sets it, since
+reporting may not import the labeling layer.
 """
 
 from __future__ import annotations
 
-import re
 from collections import Counter
 from collections.abc import Sequence
 from dataclasses import dataclass
 from itertools import pairwise
 
+from ... import formatting
 from ...clock import record_time
 from ...dataset.journal import Judgment
 from ...dataset.sampling import read_sample_file
-from ...stats import P50, percentile
 from ..run_ids import ROUND2_EXPOSED
 from ..sources import Sources
+from . import round3
+from .corpus_changes import dedup_idmap
 from .datasets import round2_sample
+from .distinct import shared_value
+from .repository import PACKAGE, module_literal
 
 # A pace needs one gap besides the session break, which is left out.
 MIN_STAMPS = 3
-# Where the re-judging shuffle seed and the pool's depth limit are set.
-SHUFFLE_SEED = ("src/crossvenue_rag/labeling/pool.py", r"RETEST_SHUFFLE_SEED = (\d+)")
-ROUND3_SEED = ("src/crossvenue_rag/labeling/pool.py", r"ROUND3_SHUFFLE_SEED = (\d+)")
-MAX_DEPTH_MULTIPLIER = ("src/crossvenue_rag/labeling/pool.py", r"_MAX_DEPTH_MULTIPLIER = (\d+)")
+# Where the pool's depth limit is set.
+MAX_DEPTH_MULTIPLIER = (f"{PACKAGE}/labeling/pool.py", "_MAX_DEPTH_MULTIPLIER")
 
 
 def _first_before_augmentation(src: Sources) -> dict[str, Judgment]:
@@ -34,27 +35,36 @@ def _first_before_augmentation(src: Sources) -> dict[str, Judgment]:
     return {q: e.first for q, e in journal.questions.items() if e.first is not None}
 
 
-def _committed_int(src: Sources, path: str, pattern: str) -> int:
-    """The integer the first group of `pattern` matches in the committed file `path`."""
-    match = re.search(pattern, src.path(path).read_text(encoding="utf-8"))
-    if match is None:
-        raise ValueError(f"{pattern!r} matches nothing in {path}")
-    return int(match.group(1))
+def shuffle_seed(src: Sources, number: int) -> int:
+    """The seed round `number` shuffled each question's candidates with, as its entries record it.
 
+    The entries are those of the journal frozen with `v0.3-gold`, which holds every round.
 
-def retest_shuffle_seed(src: Sources) -> int:
-    """The seed round 2 shuffles each question's candidates with."""
-    return _committed_int(src, *SHUFFLE_SEED)
-
-
-def round3_shuffle_seed(src: Sources) -> int:
-    """The seed round 3 shuffles each question's candidates with."""
-    return _committed_int(src, *ROUND3_SEED)
+    Raises:
+        ValueError: if the entries of round `number` do not all record one seed.
+    """
+    journal = round3.journal(src)
+    entries = (journal.get(q).judgment(number) for q in round3.gold(src))
+    seed = shared_value(e.shuffle_seed for e in entries if e is not None)
+    if seed is None:
+        raise ValueError(
+            f"the entries of round {formatting.own_form(number)} do not all record one shuffle_seed"
+        )
+    return seed
 
 
 def pool_depth_multiplier(src: Sources) -> int:
-    """How many times its configured depth a pool method is asked for at most."""
-    return _committed_int(src, *MAX_DEPTH_MULTIPLIER)
+    """How many times its configured depth a pool method is asked for at most.
+
+    Raises:
+        ValueError: the literal `labeling/pool.py` binds to `_MAX_DEPTH_MULTIPLIER` is not an
+            integer.
+    """
+    path, name = MAX_DEPTH_MULTIPLIER
+    multiplier = module_literal(src, path, name)
+    if not isinstance(multiplier, int):
+        raise ValueError(f"{name} in {path} is not an integer")
+    return multiplier
 
 
 def question_count_before_augmentation(src: Sources) -> int:
@@ -62,9 +72,12 @@ def question_count_before_augmentation(src: Sources) -> int:
     return len(src.questions_before_augmentation)
 
 
-def first_pass_marks(src: Sources) -> tuple[int, int]:
-    """(candidates marked relevant, candidates shown) in round 1 of `v0.2-gold`."""
-    entries = list(_first_before_augmentation(src).values())
+def round1_marks_after_review(src: Sources) -> tuple[int, int]:
+    """(candidates marked relevant, candidates shown) in round 1 of `v0.2-gold`, as shown.
+
+    Each pool and its marks are read before any id migration (`Judgment.as_shown`).
+    """
+    entries = [e.as_shown() for e in _first_before_augmentation(src).values()]
     return sum(len(e.relevant) for e in entries), sum(len(e.pool) for e in entries)
 
 
@@ -83,15 +96,18 @@ def source_chunk_marks(src: Sources) -> SourceChunkMarks:
 
     `source_shown` and `source_relevant`: shown chunks a question was drafted
     from, and those marked relevant; `other_shown` and `other_relevant`: the
-    rest of the pool.
+    rest of the pool. Each pool and its marks are read as shown (`Judgment.as_shown`), and a
+    chunk id from before deduplication through the id map.
     """
     before = src.questions_before_augmentation
+    idmap = dedup_idmap(src)
     out = dict.fromkeys(("source_shown", "source_relevant", "other_shown", "other_relevant"), 0)
     for q, entry in _first_before_augmentation(src).items():
         drafted = set(before[q].source_chunk_ids)
-        marked = set(entry.relevant)
-        for chunk in entry.pool:
-            kind = "source" if chunk in drafted else "other"
+        shown = entry.as_shown()
+        marked = set(shown.relevant)
+        for chunk in shown.pool:
+            kind = "source" if idmap.get(chunk, chunk) in drafted else "other"
             out[f"{kind}_shown"] += 1
             out[f"{kind}_relevant"] += chunk in marked
     return SourceChunkMarks(**out)
@@ -107,15 +123,14 @@ def unexposed_sample_count(src: Sources) -> int:
     return len(round2_sample(src)) - exposed_sample_count(src)
 
 
-def sample_categories(src: Sources) -> Counter[str | None]:
+def sample_categories(src: Sources) -> Counter[str]:
     """Questions of the round-2 sample per category (0 for a category it lacks)."""
-    counts: Counter[str | None] = Counter(src.questions[q].category for q in round2_sample(src))
-    return counts
+    return Counter(src.questions[q].effective_category for q in round2_sample(src))
 
 
 def single_sampled_categories(src: Sources) -> list[str]:
     """The categories with one question in the round-2 sample, sorted."""
-    return sorted(c for c, k in sample_categories(src).items() if k == 1 and c is not None)
+    return sorted(c for c, k in sample_categories(src).items() if k == 1)
 
 
 def only_single_sampled(src: Sources, categories: Sequence[str]) -> bool:
@@ -129,11 +144,7 @@ def _sample_entries(src: Sources) -> list[Judgment]:
     Raises:
         ValueError: A sampled question has no round-1 judgment in the gold set's journal.
     """
-    entries = [src.rounds.first(q) for q in round2_sample(src)]
-    missing = [q for q, e in zip(round2_sample(src), entries, strict=True) if e is None]
-    if missing:
-        raise ValueError(f"no round-1 judgment for the sampled {', '.join(missing)}")
-    return [e for e in entries if e is not None]
+    return [src.rounds.require_first(q) for q in round2_sample(src)]
 
 
 @dataclass(frozen=True)
@@ -185,7 +196,6 @@ class SaveTimes:
     the longer session is the one after it.
     """
 
-    median_gap: float  # seconds
     longer_saves: int
     longer_span: float  # seconds from the first save of the longer session to its last
     longer_mean_gap: float  # seconds
@@ -209,7 +219,6 @@ def save_times(src: Sources) -> SaveTimes:
     longer = max(stamps[: pause + 1], stamps[pause + 1 :], key=len)
     span = (longer[-1] - longer[0]).total_seconds()
     return SaveTimes(
-        median_gap=percentile([g for i, g in enumerate(gaps) if i != pause], P50),
         longer_saves=len(longer),
         longer_span=span,
         longer_mean_gap=span / (len(longer) - 1),
@@ -229,8 +238,7 @@ class ReviewCounts:
 def review_counts(src: Sources) -> ReviewCounts:
     """The review's reach, from the corrections the annotator made (derived ones left out).
 
-    A re-opened question is journaled even when its relevant set stays, since review
-    records the venue coverage it confirms.
+    A re-opened question is journaled when its relevant set or its venue coverage changes.
     """
     reopened = changed = added = removed = 0
     for entry in _first_before_augmentation(src).values():

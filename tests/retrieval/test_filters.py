@@ -18,7 +18,7 @@ VENUE_TYPES = {
 
 
 def test_venue_filters_resolve_to_an_explicit_allow_list():
-    """venue_type is expanded here so BM25 and Postgres apply identical filters."""
+    """`venue_type` is expanded here so BM25 and Postgres apply identical filters."""
     assert resolve_venues(None, VENUE_TYPES) is None
     assert resolve_venues({}, VENUE_TYPES) is None
     assert resolve_venues({"venue": "bybit"}, VENUE_TYPES) == ["bybit"]

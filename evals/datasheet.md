@@ -8,11 +8,11 @@ A datasheet for the gold evaluation set `evals/datasets/v0.2.1-gold.jsonl`, foll
 | Metadata | `v0.2.1-gold.meta.json` |
 | Judgment journal | `datasets/annotations/v0.2.1-gold.rounds.json` |
 | Corpus | manifest `c419b4be…` (in full in the `corpus_snapshot` of `v0.2.1-gold.meta.json`; 1,665 documents), `index_version` `2825a7160c4d09bf`, 11,934 chunks |
-| Supersedes | `v0.2-gold`, the same 114 questions without the augmentation's 17 gold chunks |
+| Supersedes | `v0.2-gold`, the same 114 questions without the augmentation's 17 gold chunks and 9 venue values |
 
 ## Motivation
 
-Purpose. To measure whether retrieval returns the venue a question asks about when near-identical documentation from other venues competes, and whether a system declines when the corpus holds no answer. The headline measurement is the 50-question comparison subgroup, sized to detect a recall@10 gap of 0.20 with 80% power ([methodology §7](methodology.md#7-set-size-and-statistical-power)).
+Purpose. To measure whether retrieval returns the venue a question asks about when other venues document the same objects, such as orders, rate limits and funding where a source documents them, and whether a system declines when the corpus holds no answer. The headline measurement is the 50-question comparison subgroup, sized to detect a recall@10 gap of 0.20 with 80% power ([methodology §7](methodology.md#7-set-size-and-statistical-power)).
 
 Creator. The repository's author, as sole annotator; no external funding.
 
@@ -52,7 +52,7 @@ The five fields the record schema requires:
  "venues": ["binance", "bybit"], "qtype": "fact|comparison|multihop"}
 ```
 
-Versioned files carry the full schema on the same record:
+Versioned files carry these fields on the same record:
 
 | Field | Meaning |
 |---|---|
@@ -64,38 +64,40 @@ Versioned files carry the full schema on the same record:
 | `adversarial_type` | names the trap; required when `category` is `adversarial` |
 | `source_chunk_ids` | chunks the question is written from: provenance and a check on pool completeness, never a gold label |
 | `gold_chunk_ids` | the judgment |
-| `venue_coverage` | per named venue of a labeled answerable comparison: `covered` · `absent_in_docs` · `missing_from_pool` |
+| `venue_coverage` | per named venue of a judged answerable comparison: `covered` · `absent_in_docs` · `missing_from_pool` |
 | `annotator` · `annotated_at` · `annotation_round` | stamped by the labeling tool |
 | `created_at` · `generator` · `prompt_hash` | how the question is produced |
 
-The fields are cross-checked (`QuestionRecord` in `src/crossvenue_rag/dataset/records.py`, checked by `make validate-evals`). An unanswerable question expects refusal and carries no gold chunks, an ambiguous one expects a clarifying question or a refusal, an adversarial one names its trap, and a comparison names at least two venues. `venue_coverage` is `covered` exactly where a gold chunk is from that venue.
+The fields are cross-checked (`QuestionRecord` in `src/crossvenue_rag/dataset/records.py`, which `make validate-evals` checks). An unanswerable question expects refusal and carries no gold chunks, an ambiguous one expects a clarifying question or a refusal, an adversarial one names its trap, and a comparison names at least two venues. `venue_coverage` is `covered` exactly where a gold chunk is from that venue.
 
 ## Collection process
 
-Candidates. 204 candidate questions across `v0.1-candidates` … `v0.1.6-candidates` are the drafts of an LLM, Claude Opus 5 (`claude-opus-5`). The `generator` field of every record names the model and the drafting pass, and `prompt_hash` holds a hash of the brief. Each draft starts from a recurring developer problem mined from SDK issue trackers ([domain research](domain-research.md)) and is grounded in corpus chunks recorded as `source_chunk_ids`. Every unanswerable premise and every "absent on one venue" comparison is checked by searching the concept under every vendor spelling with `crossvenue count-term`, counts in `notes`. For the unanswerable questions listed under [Known limitations](#known-limitations) the search did not find the answer ([deviation D23](methodology.md#deviations-from-protocol)). Candidate files are immutable; each supplement is another version (comparison supplement in `v0.1.2`, headroom for the thin categories in `v0.1.3`, id migration after deduplication in `v0.1.5`).
+Candidates. 205 distinct candidate questions across `v0.1-candidates` (140 questions) … `v0.1.6-candidates` (204 questions) are the drafts of an LLM, Claude Opus 5 (`claude-opus-5`). The `generator` field of every record names the model and the drafting pass, and `prompt_hash` holds a hash of the brief. Each draft starts from a recurring developer problem mined from SDK issue trackers ([domain research](domain-research.md)). The answerable drafts are grounded in corpus chunks recorded as `source_chunk_ids`, 123 of the 140 in `v0.1-candidates` and 181 of the 204 in `v0.1.6-candidates`; the unanswerable ones have none. Every unanswerable premise and every "absent on one venue" comparison is checked by searching the concept under every vendor spelling with `crossvenue count-term`, counts in `notes`. For the unanswerable questions listed under [Known limitations](#known-limitations) the search did not find the answer ([deviation D23](methodology.md#deviations-from-protocol)). Candidate files are immutable; each supplement is another version (comparison supplement in `v0.1.2`, headroom for the thin categories in `v0.1.3`, id migration after deduplication in `v0.1.5`).
 
-Selection. `crossvenue select`, category by category, thin categories first. Of the 204 candidates, 117 were shown: 114 accepted, 1 rejected (`cv-0139 "bingx websoket close always, need send"`, unrealistic phrasing), 2 skipped. The other 87 were never shown, because the category targets were met first. With 1 rejection among the 117 shown, the set followed the order of acceptance, and question text is the LLM draft unchanged. Every decision is in `evals/selection/selection.jsonl`.
+Selection. `crossvenue select`, category by category. Of the 204 candidates, 117 were shown: 114 accepted, 1 rejected (`cv-0139 "bingx websoket close always, need send"`, unrealistic phrasing), 2 skipped. The other 87 were never shown, because the category targets were met first. With 1 rejection among the 117 shown, the set followed the order of acceptance, and question text is the LLM draft unchanged. Every decision is in `evals/selection/selection.jsonl`.
 
 ## Labeling
 
-Round 1 (2026-09-24, one annotator). For each question the tool pooled the top 20 of bm25, dense, hybrid and hybrid_rerank with RRF and showed the top 25 distinct chunks. The annotator marked the relevant ones against the written criterion ([methodology §5a](methodology.md#5a-annotation-instructions)). Every judgment is stamped with the `index_version`, and the journal records the pool shown as well as the chunks marked. Time between consecutive saves, from the round-1 `annotated_at` timestamps in the journal: median 17 s per question, 0.7 s per candidate at 25 candidates. The longer session saved 113 questions over 3,325 s, a mean of 29.7 s between consecutive saves and 1.2 s per candidate. Round 2 reproduced these labels at κ 0.470 [0.317, 0.645] (95% percentile bootstrap over questions; [agreement](agreement.md)), below the registered target, so the pace and the agreement are this version's main caveats on its labels.
+The one annotator of every round is an engineer with hands-on experience of exchange and DEX integrations and is no specialist in the full documentation of each of the seven venues. No engineer of any venue reviewed the labels.
+
+Round 1 (2026-09-24, one annotator). For each question the tool pooled the top 20 of bm25, dense, hybrid and hybrid_rerank with RRF and showed the top 25 distinct chunks. The annotator marked the relevant ones against the written criterion ([methodology §5a](methodology.md#5a-annotation-instructions)). Every judgment is stamped with the `index_version`, and the journal records the pool shown as well as the chunks marked. Time between consecutive saves, from the round-1 `annotated_at` timestamps in the journal: median 17 s per question; that median divided by 25 candidates is 0.7 s per candidate. The longer session saved 113 questions over 3,325 s, a mean of 29.7 s between consecutive saves and 1.2 s per candidate. Round 2 reproduced these labels at κ 0.470 [0.317, 0.645] (95% percentile bootstrap over questions; [agreement](agreement.md)), below the registered target, so the pace and the agreement are this version's main caveats on its labels.
 
 Review. 26 questions re-opened on their recorded round-1 pool, chosen by quality checks (comparisons whose gold missed a named venue with candidates shown; adversarial and version-sensitive items with trap-side chunks marked relevant). The labels of 11 changed: 3 chunks added, 9 removed. Corrections are journaled with the previous set.
 
-Venue coverage. Every labeled answerable comparison records, per venue it names, whether the gold covers it (`covered`), the venue's documentation does not answer it (`absent_in_docs`), or no suitable candidate of the venue is in the pool (`missing_from_pool`). 101 values on 51 questions, the 50 comparison questions (100 values) and one version_sensitive question that also records a value: covered 86, missing_from_pool 14, absent_in_docs 1. Values that follow from recorded data are derived mechanically (`crossvenue derive-coverage`); only the annotator sets `absent_in_docs`.
+Venue coverage. Every judged answerable comparison records, per venue it names, whether the gold covers it (`covered`), the venue's documentation does not answer it (`absent_in_docs`), or no suitable candidate of the venue is in the pool (`missing_from_pool`). 101 values on 51 questions, the 50 comparison questions (100 values) and one version_sensitive question that also records a value: covered 86, missing_from_pool 14, absent_in_docs 1. Values that follow from recorded data are derived mechanically (`crossvenue derive-coverage`); only the annotator sets `absent_in_docs`.
 
-Augmentation. `venue_split` and `venue_split_oracle` joined evaluation after round 1, and judging their unjudged chunks was decided after their results were seen ([deviation D4](methodology.md#deviations-from-protocol)). On the 50 comparison questions, the chunks in their top 20 that round 1 never showed (534, 211 of them in the top 10) were judged (`crossvenue label --augment`, run `results/20260925T003721Z_pool`). 17 were relevant, 13 of them at ranks 11–20; they are this version's only change from `v0.2-gold`, appended to 15 questions' gold, nothing removed. Nine venue values became `covered`: 8 from `missing_from_pool`, and 1 from `absent_in_docs`, bingx on `cv-0153 "bybit cancels my orders when i"`, whose answer is at rank 20 of venue_split. The journal keeps that correction as a wrong assessment.
+Augmentation. `venue_split` and `venue_split_oracle` joined evaluation after round 1, and judging their unjudged chunks was decided after their results were seen ([deviation D4](methodology.md#deviations-from-protocol)). On the 50 comparison questions, the chunks in their top 20 that round 1 never showed (534, 211 of them in the top 10) were judged (`crossvenue label --augment`, run `results/20260925T003721Z_pool`). 17 were relevant, 13 of them at ranks 11–20, appended to 15 questions' gold, nothing removed. Nine venue values became `covered`: 8 from `missing_from_pool`, and 1 from `absent_in_docs`, bingx on `cv-0153 "bybit cancels my orders when i"`, whose answer is at rank 20 of venue_split. The journal keeps that correction as a wrong assessment. The added gold and these venue values are this version's only changes from `v0.2-gold`.
 
 Agreement. Round 2 re-judged 25 questions blind on 2026-10-10. The sample is stratified by category and was fixed before round 2 in `evals/selection/round2_sample.txt` (comparison 11, unanswerable 5, adversarial 3, fact 2, one each of ambiguous, multihop, noisy and version_sensitive; methodology §5). Cohen's κ between round 1 as corrected and round 2 is 0.470 [0.317, 0.645] over 750 candidate decisions, below the registered target of 0.61. The reproducibility of these labels is therefore a limitation of this version ([agreement](agreement.md)).
 
-Relabel. Round 3, registered in [methodology §5b](methodology.md#5b-annotation-round-3-pre-registered), is scheduled for 2026-10-31 and will give `v0.3-gold`, with every label under one criterion.
+Relabel. Round 3, registered in [methodology §5b](methodology.md#5b-annotation-round-3-pre-registered), ran on 2026-10-31 and gave `v0.3-gold` ([Version v0.3-gold](#version-v03-gold)), with every label under one criterion.
 
 ## Version v0.2.2-gold
 
-`evals/datasets/v0.2.2-gold.jsonl` supersedes this version. Every other section of this datasheet describes `v0.2.1-gold`, the version the registered results are scored on. `v0.2.2-gold` holds the same 114 questions in the same order, with the round-2 disagreements adjudicated and the questions of deviation D23 relabeled, under [methodology §5a](methodology.md#amendment-of-2026-10-10) as amended on 2026-10-10 ([CHANGELOG](datasets/CHANGELOG.md#v022-gold-2026-10-10)). Its counts beside this version's:
+`evals/datasets/v0.2.2-gold.jsonl` supersedes this version. Every section of this datasheet but this one and [Version v0.3-gold](#version-v03-gold) describes `v0.2.1-gold`, the version the registered results are scored on. `v0.2.2-gold` holds the same 114 questions in the same order, with the round-2 disagreements adjudicated and the questions of deviation D23 relabeled, under [methodology §5a](methodology.md#amendment-of-2026-10-10) as amended on 2026-10-10 ([CHANGELOG](datasets/CHANGELOG.md#v022-gold-2026-10-10)). Its counts beside this version's:
 
 | Count | `v0.2.1-gold` | `v0.2.2-gold` |
-|---|---|---|
+|---|---:|---:|
 | questions with gold | 90 | 92 |
 | gold chunks | 277 | 282 |
 | fact questions | 8 | 10 |
@@ -103,14 +105,32 @@ Relabel. Round 3, registered in [methodology §5b](methodology.md#5b-annotation-
 
 The adjudication decided the 63 pairs on which round 1 and round 2 disagree, on 17 questions, and changed the gold of 6 of them. The D23 relabel made 2 questions fact and kept 1 unanswerable. In all, the gold of 8 questions differs from this version. The 63 disagreeing pairs of the 25 sampled questions and the D23 questions follow the amended criterion. Every other label follows the round-1 criterion, among them every label of the other 87 questions ([deviation D25](methodology.md#deviations-from-protocol)), so recall on `v0.2.1-gold` and on `v0.2.2-gold` is not comparable. The journal, `datasets/annotations/v0.2.2-gold.rounds.json`, holds round 1, round 2, the adjudication and the relabel; `make validate-evals` checks each record's gold against what its entries resolve to.
 
+## Version v0.3-gold
+
+`evals/datasets/v0.3-gold.jsonl` supersedes `v0.2.2-gold`. It holds the same 114 questions in the same order, with the categories, `expected_behavior`, `venues` and `notes` of `v0.2.2-gold` and the labels of annotation round 3 alone, under [methodology §5a](methodology.md#amendment-of-2026-10-10) as amended on 2026-10-10 ([CHANGELOG](datasets/CHANGELOG.md#v03-gold-2026-10-31)). Registered results stay on `v0.2.1-gold`. Its counts beside those of `v0.2.2-gold`:
+
+| Count | `v0.2.2-gold` | `v0.3-gold` |
+|---|---:|---:|
+| questions with gold | 92 | 89 |
+| gold chunks | 282 | 183 |
+| venues covered | 86 | 80 |
+| venues missing from the pool | 14 | 21 |
+| venues absent from the docs | 1 | 0 |
+
+The gold of 56 questions differs from `v0.2.2-gold`: 28 chunks added and 127 removed. Every label follows one criterion, and reliability under it was not measured ([agreement](agreement.md#round-1-alone-marked-130-pairs-and-round-3-alone-marked-34-over-3382-pairs)). Recall on `v0.3-gold` and on an earlier version is not comparable.
+
+4 answerable questions have gold in `v0.2.2-gold` and empty gold in `v0.3-gold`. Each is a recorded judgment of round 3 that nothing among its candidates answers the question, and none is an unjudged question: `cv-0006 "how does hyperliquid work out my"`, `cv-0068 "im hitting -1021, what parameter fixes"`, `cv-0092 "can i set createMarketBuyOrderRequiresPrice false on"` and `cv-0130 "the error strings changed between uniswap"`. 3 other answerable questions have empty gold in both versions, so `v0.3-gold` holds 7: `cv-0067 "bybit caps limit at 1000, how"`, `cv-0088 "binance postOnly timeInForce isnt working, what"` and `cv-0090 "my hyperliquid api wallet address returns"`. These 7 have no recall in a run. `cv-0132 "is switch-isolated still how i change"` has gold in `v0.3-gold` and none in `v0.2.2-gold`.
+
+Round 3 flagged 1 unanswerable question, which keeps its category and its empty gold: `cv-0119 "can ccxt fetchLeverageTiers give me uniswap"`. A recategorization belongs to a later version.
+
 ## Known limitations
 
 - Pooling bias. Gold is recall within the pool: a relevant chunk no pooled method found is never judged, and further judging could move absolute recall either way ([methodology §1](methodology.md#1-test-collection-construction-and-pooling)). How much scoring the same retrievals against `v0.2-gold` and `v0.2.1-gold` changes every method's comparison recall@10 is a result in [findings](../docs/results/findings.md#adding-17-gold-chunks-changes-every-methods-comparison-recall10-by-0034-to-0092). The judged depth is set by the display cap, not the pool depth: round 1 judged the fused top 25 of the four round-1 pool methods. The augmentation was decided after results were seen ([deviation D4](methodology.md#deviations-from-protocol)). In `results/20260925T012314Z` on `v0.2.1-gold`, after the augmentation, each round-1 pool method's own top 10 on the 50 comparison questions has an unjudged@10 of 0.032–0.088 (bm25 0.088, dense 0.078, hybrid and hybrid_rerank 0.032). venue_split and the oracle, augmented to depth 20, are fully judged there. A recall comparison between a round-1 pool method and an augmented one is therefore judged more completely on one side. A method in neither group has every relevant chunk only it finds scored as a miss and must be augmented first ([methodology §1](methodology.md#1-test-collection-construction-and-pooling)).
 - Augmentation covers comparison questions only. On the six ambiguous questions, venue_split_oracle's unjudged@10 is 0.467 (`results/20260925T012314Z`), a result in [findings](../docs/results/findings.md#three-limits-on-the-retrieval-results).
 - One-sided gold. 15 of the 50 comparisons have a named venue recorded `missing_from_pool` (14) or `absent_in_docs` (1); recall on them is measured against the side the pool found.
-- Small slices. Outside comparison the labeled categories hold 4–11 questions; their per-category figures are descriptive, never significance claims.
-- One annotator and fast judgments, reproduced by the same annotator at κ 0.470 [0.317, 0.645] (95% percentile bootstrap over questions; [agreement](agreement.md)). The answer-rating screen showed the gold chunks of 9 of the 25 round-2 questions during the quiet period (`evals/selection/round2_exposed.txt`); κ is reported with and without them ([methodology §5](methodology.md#decision-for-this-project-4)).
-- Source-chunk marker. The round-1 screen marked the chunk each question was drafted from; shown source chunks were marked relevant 88 times out of 89, other pool chunks 172 times out of 2,759. Round 2 hid the marker.
+- Small slices. Outside comparison the labeled categories hold 4–11 labeled questions; their per-category figures are descriptive, never significance claims.
+- One annotator and fast judgments, which the same annotator reproduced at κ 0.470 [0.317, 0.645] (95% percentile bootstrap over questions; [agreement](agreement.md)). The answer-rating screen showed the gold chunks of 9 of the 25 round-2 questions during the quiet period (`evals/selection/round2_exposed.txt`); κ is reported with and without them ([methodology §5](methodology.md#decision-for-this-project-4)).
+- Source-chunk marker. The round-1 screen marked the chunks a question was drafted from: on `v0.2-gold`, those of the 94 answerable questions, and none on the 20 unanswerable ones, which have no `source_chunk_ids`. Shown source chunks were marked relevant 88 times out of 89, other pool chunks 174 times out of 2,761. Round 2 hid the marker.
 - Two questions labeled unanswerable have answers in the corpus: `cv-0115 "does bybit have a mass cancel"` (Bybit documents `POST /v5/order/cancel-all`) and `cv-0121 "which bingx endpoint returns the usdt-m"` (BingX's `GET /openApi/swap/v2/quote/fundingRate` takes a time range). Both are fact in [`v0.2.2-gold`](#version-v022-gold) ([deviation D23](methodology.md#deviations-from-protocol)). `cv-0106 "which binance endpoint sets leverage on"`, which D23 also listed, stays unanswerable: the corpus has no Binance futures documentation, and CCXT's `setLeverage` chunk names Binance's Change Initial Leverage page by URL and gives no endpoint. An answer built from it would attribute a CCXT page to Binance, the wrapper kind of attribution in deviation D14.
 - LLM-drafted questions carry the generator-bias risk of [methodology §2](methodology.md#2-synthetic-question-generation-used-as-a-drafting-aid-only). The lexical shortcut is measured: no question shares 6 or more consecutive words with any of its gold chunks, spans in backticks or double quotes excluded (Word overlap with gold, above).
 - ccxt appears in 6 questions, below the protocol's floor of 8 per venue.

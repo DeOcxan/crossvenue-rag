@@ -8,6 +8,7 @@ import numpy as np
 import pytest
 
 from crossvenue_rag.evaluation.paired import (
+    binomial_tails,
     holm,
     mcnemar_exact,
     mcnemar_p,
@@ -77,6 +78,12 @@ def test_bootstrap_counts_better_in_the_metric_direction():
     assert paired_bootstrap([0.0], [0.5], 10, 0, higher_is_better=False).better == 1
     assert paired_bootstrap([0.0], [0.5], 10, 0).worse == 1
     assert up.mean_diff == down.mean_diff and (up.low, up.high) == (down.low, down.high)
+
+
+def test_binomial_tails_are_the_cumulative_coefficients_up_to_half_the_discordant():
+    # C(5, 0), C(5, 1), C(5, 2) = 1, 5, 10.
+    assert list(binomial_tails(5)) == [1, 6, 16]
+    assert list(binomial_tails(0)) == [1]
 
 
 def test_mcnemar_p_is_the_exact_two_sided_binomial_tail():

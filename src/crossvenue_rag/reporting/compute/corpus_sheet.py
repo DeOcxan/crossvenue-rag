@@ -1,6 +1,6 @@
 """The corpus as its datasheet (docs/reference/corpus.md) describes it.
 
-The per-venue table is recomputed by the function `ingest` writes corpus_stats.json with.
+It recomputes the per-venue table with the function `ingest` uses to write corpus_stats.json.
 """
 
 from __future__ import annotations
@@ -10,15 +10,23 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from urllib.parse import urlparse
 
-from ...corpus.artifacts import CorpusStats, VenueStats
+from ...config import SCHEMA_DEFAULTS
+from ...corpus.artifacts import (
+    INGEST_AGAIN,
+    CorpusStats,
+    VenueStats,
+    read_corpus_stats_at,
+    stats_path,
+)
 from ...corpus.ingest import corpus_stats, doc_path_of, documents_by_venue
 from ...corpus.normalize import has_code_fence
+from ...errors import UserError
 from ..sources import Sources
 from .corpus import (
+    TESTNET,
     chunked_documents,
     chunks_above,
     is_terms_page,
-    is_testnet_changelog,
     is_testnet_page,
     source_entries,
     venue_chunks,
@@ -32,7 +40,10 @@ NO_LICENSE = "no license found"
 
 @per_sources
 def corpus_statistics(src: Sources) -> CorpusStats:
-    """The corpus statistics `ingest` writes, recomputed from the chunks and the manifest."""
+    """The totals, per-venue table and histogram of the corpus statistics `ingest` writes.
+
+    Recomputed from the chunks and the manifest.
+    """
     return corpus_stats(src.chunks, documents_by_venue(src.manifest))
 
 
@@ -42,23 +53,26 @@ def smallest_venue(src: Sources) -> VenueStats:
 
 
 def testnet_mirror_groups(src: Sources) -> int:
-    """Binance chunks stored once for a mainnet page and its byte-identical testnet copy."""
-    return sum(
-        1
-        for c in venue_chunks(src, "binance")
-        if any(is_testnet_page(o.doc_path) for o in c.sources)
-        and any(not is_testnet_page(o.doc_path) for o in c.sources)
-    )
+    """Chunks stored once for a testnet page and a non-testnet page.
+
+    `dedup.testnet_mirror_groups` of corpus_stats.json.
+
+    Raises:
+        UserError: There is no corpus_stats.json, or it records no deduplication.
+    """
+    path = src.path(stats_path(SCHEMA_DEFAULTS))
+    dedup = read_corpus_stats_at(path).dedup
+    if dedup is None:
+        raise UserError(f"{path} records no deduplication", hint=INGEST_AGAIN)
+    return dedup.testnet_mirror_groups
 
 
 @dataclass(frozen=True)
 class OnlyOnTestnet:
-    """Binance chunks that occur only on testnet pages, by the page they come from."""
+    """Binance chunks that occur only on testnet pages, and those of mirrored reference pages."""
 
     chunks: int
-    mirrored: int  # of the mirrored reference pages
-    terms: int  # of the testnet terms page
-    changelog: int  # of `testnet/CHANGELOG.md`
+    mirrored: int  # of a testnet page whose mainnet page is in the manifest
 
 
 def testnet_only(src: Sources) -> OnlyOnTestnet:
@@ -68,14 +82,14 @@ def testnet_only(src: Sources) -> OnlyOnTestnet:
         for c in venue_chunks(src, "binance")
         if all(is_testnet_page(o.doc_path) for o in c.sources)
     ]
-    changelog = sum(is_testnet_changelog(p) for p in only)
-    terms = sum(is_terms_page(p) for p in only)
-    return OnlyOnTestnet(len(only), len(only) - changelog - terms, terms, changelog)
+    mainnet = {doc_path_of(r) for r in src.manifest if r.venue == "binance"}
+    mirrored = sum(p.removeprefix(TESTNET) in mainnet for p in only)
+    return OnlyOnTestnet(len(only), mirrored)
 
 
 def page_chunks(src: Sources, venue: str) -> Counter[str]:
-    """Chunks per page of `venue`, a chunk counted on every page it occurs on."""
-    return Counter(o.doc_path for c in venue_chunks(src, venue) for o in c.sources)
+    """Chunks per page of `venue`, each chunk counted on its primary page (`doc_path`)."""
+    return Counter(c.doc_path for c in venue_chunks(src, venue))
 
 
 def terms_pages(src: Sources) -> list[str]:

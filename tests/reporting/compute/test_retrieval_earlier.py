@@ -1,4 +1,4 @@
-"""Tests for `reporting.compute.retrieval_earlier`, on runs written under tmp_path."""
+"""Tests for `reporting.compute.retrieval_earlier`, on runs written under `tmp_path`."""
 
 from __future__ import annotations
 
@@ -20,7 +20,7 @@ from crossvenue_rag.reporting.sources import Sources
 from tests.conftest import augmentation, make_chunk
 from tests.reporting.conftest import (
     write_chunks,
-    write_csv,
+    write_csv_rows,
     write_file,
     write_gold,
     write_retrieval_run,
@@ -159,7 +159,7 @@ def test_a_method_question_or_row_the_earlier_runs_lack_raises_a_value_error(tmp
     write_retrieval_run(tmp_path, PRE_DEDUP_RUN, per_query=per_query)
     with pytest.raises(ValueError, match=r"per_query\.csv has no 'bm25'"):
         retrieval_earlier.copy_slot_means(Sources(tmp_path))
-    write_csv(tmp_path / "results" / PRE_DEDUP_RUN / "per_query.csv", [])
+    write_csv_rows(tmp_path / "results" / PRE_DEDUP_RUN / "per_query.csv", [])
     with pytest.raises(ValueError, match="has no row"):
         retrieval_earlier.copy_slot_questions(Sources(tmp_path))
     other = {"a": "dense", "b": "bm25", "metric": "recall@3", "scope": "comparison"}

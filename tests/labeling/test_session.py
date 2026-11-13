@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 import pytest
@@ -26,13 +27,30 @@ from tests.dataset.factories import gold_like, question
 from tests.labeling.conftest import VERSION, Script, ThreeChunkRetriever, comparison, quiet
 
 
+def queue_spec(**fields) -> QueueSpec:
+    """A round-1 queue of the unjudged questions, with `fields` changed."""
+    first_round = {
+        "annotation_round": 1,
+        "only_unjudged": True,
+        "sample": None,
+        "seed": 0,
+        "sample_ids": None,
+    }
+    return QueueSpec(**{**first_round, **fields})
+
+
+def plan(cfg, target: LabelTarget, queue: QueueSpec | None = None) -> LabelPlan:
+    """A session on `queue` (round 1 by default) at the config's pool geometry."""
+    return LabelPlan(target, queue or queue_spec(), cfg.eval.pool_depth_per_method, None)
+
+
 def test_label_session_refuses_to_start_on_mismatched_labels(cfg, tmp_path: Path):
     path = tmp_path / "questions.jsonl"
     save_questions(path, [Question("q1", "a?", "gold", ["bybit"], "fact", gold_chunk_ids=["c1"])])
     write_journal(path, {"q1": {"1": {"index_version": "old", "pool": [], "relevant": ["c1"]}}})
     with pytest.raises(UserError, match="not made against the current index new"):
         # The version check refuses before the retriever is asked for anything.
-        label_session(cfg, ThreeChunkRetriever(cfg), LabelPlan(LabelTarget(str(path), "new")))
+        label_session(cfg, ThreeChunkRetriever(cfg), plan(cfg, LabelTarget(str(path), "new", "me")))
 
 
 def test_progress_reports_what_is_left_not_what_is_done():
@@ -50,16 +68,24 @@ def test_progress_reports_what_is_left_not_what_is_done():
     console = Console(width=100, no_color=True)
 
     with console.capture() as capture:
-        console.print(progress_table(queue, queue, handled=2, judged=1, elapsed_seconds=120.0))
+        console.print(
+            progress_table(
+                queue, queue, handled=2, judged=1, elapsed_seconds=120.0, judged_overall=None
+            )
+        )
     out = capture.get()
     assert "1 recorded, 1 skipped, 3 left in queue" in out
-    assert "60s per question" in out  # pace counts the skip, which took reading time
-    assert "3m" in out  # 3 remaining x 60s
+    assert "60 s per question" in out  # pace counts the skip, which took reading time
+    assert "3 min" in out  # 3 remaining x 60 s
     # Remaining shape, not the whole queue: the two handled items are excluded.
     assert "comparison=2" in out and "multihop=1" in out and "fact=" not in out
 
     with console.capture() as capture:
-        console.print(progress_table(queue, queue, handled=0, judged=0, elapsed_seconds=0.0))
+        console.print(
+            progress_table(
+                queue, queue, handled=0, judged=0, elapsed_seconds=0.0, judged_overall=None
+            )
+        )
     assert "needs one question first" in capture.get()
 
 
@@ -69,7 +95,7 @@ def test_round_1_labeling_writes_venue_coverage(cfg, tmp_path):
     label_session(
         cfg,
         ThreeChunkRetriever(cfg),
-        LabelPlan(LabelTarget(str(path), VERSION, "me")),
+        plan(cfg, LabelTarget(str(path), VERSION, "me")),
         console=quiet(),
         prompt=Script("2", "m"),
     )
@@ -117,9 +143,10 @@ def test_round_2_session_judges_round_1_material_and_kappa_covers_those_pairs(cf
     label_session(
         cfg,
         ThreeChunkRetriever(cfg),
-        LabelPlan(
+        plan(
+            cfg,
             LabelTarget(str(path), VERSION, "me"),
-            QueueSpec(annotation_round=2, sample_ids=["cv-0001"]),
+            queue_spec(annotation_round=2, sample_ids=["cv-0001"]),
         ),
         console=console,
         prompt=Script(str(pick)),
@@ -138,31 +165,102 @@ def test_round_2_session_judges_round_1_material_and_kappa_covers_those_pairs(cf
     assert report.pairs == 3  # every candidate both rounds judged, augmentation included
 
 
+def test_a_round_2_session_counts_the_questions_round_2_judged(cfg, tmp_path):
+    """Both questions have a round-1 verdict; "judged overall" counts round 2's alone."""
+    path = tmp_path / "questions.jsonl"
+    questions = [
+        Question(
+            qid,
+            "how long does binance keep my order",
+            "gold",
+            ["binance"],
+            "fact",
+            category="fact",
+            gold_chunk_ids=["c1"],
+            annotator="me",
+            annotated_at="2026-09-24T12:00:00Z",
+            annotation_round=1,
+        )
+        for qid in ("cv-0001", "cv-0002")
+    ]
+    save_questions(path, questions)
+    first = {
+        "annotator": "me",
+        "annotated_at": "2026-09-24T12:00:00Z",
+        "index_version": VERSION,
+        "pool": ["c1", "c3"],
+        "relevant": ["c1"],
+    }
+    write_journal(path, {"cv-0001": {"1": first}, "cv-0002": {"1": first}})
+
+    console = quiet()
+    label_session(
+        cfg,
+        ThreeChunkRetriever(cfg),
+        plan(
+            cfg,
+            LabelTarget(str(path), VERSION, "me"),
+            queue_spec(annotation_round=2, sample_ids=["cv-0001"]),
+        ),
+        console=console,
+        prompt=Script("1"),
+    )
+    shown = console.export_text()
+    assert re.search(r"judged overall\s+0/2", shown)
+    assert re.search(r"judged overall\s+1/2", shown)
+
+
 def test_a_sample_file_drives_the_round_2_queue(tmp_path: Path):
     questions = gold_like()
     path = tmp_path / "round2_sample.txt"
     write_sample_file(path, stratified_sample(questions, 25, seed=20260924), seed=20260924)
     ids = read_sample_file(path)
-    queue = select_queue(questions, QueueSpec(annotation_round=2, sample_ids=ids))
+    queue = select_queue(questions, queue_spec(annotation_round=2, sample_ids=ids))
     assert [q.id for q in queue] == ids
 
 
 def test_a_sample_file_naming_an_unjudged_question_is_refused():
     questions = [*gold_like(), question(999, "fact", judged=False)]
     with pytest.raises(UserError, match="round 1 never judged: cv-0999"):
-        select_queue(questions, QueueSpec(annotation_round=2, sample_ids=["cv-0999"]))
+        select_queue(questions, queue_spec(annotation_round=2, sample_ids=["cv-0999"]))
 
 
 def test_round_2_with_a_count_uses_the_stratified_sample():
     questions = gold_like()
-    queue = select_queue(questions, QueueSpec(annotation_round=2, sample=25, seed=20260924))
+    queue = select_queue(questions, queue_spec(annotation_round=2, sample=25, seed=20260924))
     assert [q.id for q in queue] == [q.id for q in stratified_sample(questions, 25, 20260924)]
 
 
 def test_the_progress_table_shows_the_count_a_round_passes():
     from crossvenue_rag.labeling.session import progress_table
 
-    queue = [Question("q1", "a?", "gold", ["bybit"], "fact", category="fact")]
+    # q1 has a verdict, so a table that counted verdicts itself would show 1/1.
+    queue = [Question("q1", "a?", "gold", ["bybit"], "fact", ["c1"], category="fact")]
     console = Console(record=True, width=120)
-    console.print(progress_table(queue, queue, 0, 0, 0.0, labelled=0))
-    assert "0/1" in console.export_text()
+    console.print(progress_table(queue, queue, 0, 0, 0.0, judged_overall=0))
+    assert re.search(r"judged overall\s+0/1", console.export_text())
+
+
+def test_a_recorded_empty_judgment_is_not_queued_again_and_counts_as_judged(cfg, tmp_path):
+    """A verdict of no relevant chunk is a judgment: the next session's queue leaves it out,
+    as the progress table's judged count includes it.
+    """
+    from crossvenue_rag.labeling.session import progress_table
+
+    path = tmp_path / "questions.jsonl"
+    save_questions(path, [Question("cv-0002", "a?", "gold", ["binance"], "fact", category="fact")])
+    console = quiet()
+    label_session(
+        cfg,
+        ThreeChunkRetriever(cfg),
+        plan(cfg, LabelTarget(str(path), VERSION, "me")),
+        console=console,
+        prompt=Script("n"),
+    )
+    assert "recorded: no relevant chunk in pool" in console.export_text()
+
+    questions = load_questions(path)
+    assert select_queue(questions, queue_spec()) == []
+    table = Console(record=True, width=120)
+    table.print(progress_table(questions, [], 0, 0, 0.0, None))
+    assert re.search(r"judged overall\s+1/1", table.export_text())

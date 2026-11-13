@@ -1,4 +1,4 @@
-"""Tests for `reporting.compute.retrieval_tables`, on retrieval runs written under tmp_path."""
+"""Tests for `reporting.compute.retrieval_tables`, on retrieval runs written under `tmp_path`."""
 
 from __future__ import annotations
 
@@ -31,7 +31,7 @@ QUESTIONS: list[dict[str, Any]] = [
 
 
 def retrieved(method, qid):
-    """venue_split finds both gold chunks of cv-0001, hybrid_rerank one of them and
+    """`venue_split` finds both gold chunks of cv-0001, `hybrid_rerank` one of them and
     cv-0002's, the other methods only c1."""
     if qid == "cv-0001":
         return "c1 c9" if method == "venue_split" else "c1 c5"
@@ -41,7 +41,7 @@ def retrieved(method, qid):
 
 
 def covered(method, qid):
-    """The oracle covers every comparison question, venue_split only cv-0001."""
+    """The oracle covers every comparison question, `venue_split` only cv-0001."""
     if qid == "cv-0003":
         return ""
     if method == "venue_split_oracle" or (method == "venue_split" and qid == "cv-0001"):
@@ -49,7 +49,7 @@ def covered(method, qid):
     return "0.0"
 
 
-def per_query():
+def per_query(questions=QUESTIONS):
     return [
         {
             "question_id": q["id"],
@@ -59,7 +59,7 @@ def per_query():
             **{f"{s}_ms": j + 1 for j, s in enumerate(RETRIEVAL_STEPS)},
         }
         for m in METHODS
-        for q in QUESTIONS
+        for q in questions
     ]
 
 
@@ -122,9 +122,12 @@ def test_a_comparison_row_joins_both_runs_and_the_coverage_counts(src):
     assert (oracle.covered, oracle.questions) == (3, 3)
 
 
-def test_oracle_gains_are_split_by_the_venues_the_text_names(src):
-    # cv-0002 names no venue, cv-0004 one; the fact question names a single venue.
-    assert tables.oracle_gains(src) == tables.OracleGains(2, 1, 1)
+def test_oracle_gains_are_split_by_the_venues_the_text_names(src, tmp_path):
+    questions = [*QUESTIONS, {"id": "cv-0005", "question": "another bybit question"}]
+    write_gold(tmp_path, questions)
+    write_retrieval_run(tmp_path, RETRIEVAL_RUN, per_query=per_query(questions))
+    # cv-0002 names no venue, cv-0004 and cv-0005 one; the fact question names a single venue.
+    assert tables.oracle_gains(Sources(tmp_path)) == tables.OracleGains(3, 1, 2)
 
 
 def test_the_recall_gap_widens_with_the_augmented_gold(src):

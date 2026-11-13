@@ -181,7 +181,7 @@ class Script:
 
 
 class ThreeChunkRetriever:
-    """Every method returns the three chunks in order; ids resolve via by_id."""
+    """Every method returns the three chunks in order; ids resolve via `by_id`."""
 
     def __init__(self, cfg: Config) -> None:
         self.cfg = cfg

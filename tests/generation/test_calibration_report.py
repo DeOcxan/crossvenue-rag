@@ -1,13 +1,15 @@
-"""Tests for `generation.calibration_report`: calibration.md."""
+"""Tests for `generation.calibration_report`: `calibration.md`."""
 
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 import pytest
 
 from crossvenue_rag import jsonl
 from crossvenue_rag.generation import calibration_report
+from crossvenue_rag.run_files import write_run_config
 from tests.conftest import calibration_of, output_defects
 from tests.generation.factories import (
     ANSWER_IDS,
@@ -20,6 +22,8 @@ from tests.generation.factories import (
 from tests.generation.offline import (
     calibration_config,
 )
+
+QUESTIONS = Path("evals/q.jsonl")
 
 
 def test_calibration_markdown_has_no_output_defects():
@@ -49,7 +53,7 @@ def test_calibration_markdown_has_no_output_defects():
         "selected": "opus",
         "reason": "most thresholds",
     }
-    text = calibration_markdown(calibration_of(**report))
+    text = calibration_markdown(calibration_of(**report), QUESTIONS)
     assert "undefined in 3,634 resamples" in text and "$0.030" in text
     assert text.startswith("# Judge calibration: `results/r`\n")
     assert output_defects(text) == []
@@ -63,7 +67,7 @@ def test_a_threshold_is_written_at_two_decimals_and_a_missing_one_as_a_dash():
         statistic={"supported": "kappa", "coverage": "spearman"},
         comparisons={"sonnet vs human": {"supported": {"n": 3}, "coverage": {"n": 3}}},
     )
-    lines = calibration_markdown(report).splitlines()
+    lines = calibration_markdown(report, QUESTIONS).splitlines()
     bar = "| kappa \u2265 0.60 |"
     assert any(line.startswith("| `supported` |") and line.endswith(bar) for line in lines)
     assert any(line.startswith("| `coverage` |") and line.endswith("| - |") for line in lines)
@@ -73,9 +77,31 @@ def test_the_seed_is_written_through_the_formatting_module_as_an_identifier(monk
     from crossvenue_rag.generation.calibration_report import calibration_markdown
 
     report = calibration_of(seed=20260925)
-    assert "seed 20260925." in calibration_markdown(report)
+    assert "seed 20260925." in calibration_markdown(report, QUESTIONS)
     monkeypatch.setattr("crossvenue_rag.formatting.own_form", lambda value: f"<seed {value}>")
-    assert "seed <seed 20260925>." in calibration_markdown(report)
+    assert "seed <seed 20260925>." in calibration_markdown(report, QUESTIONS)
+
+
+def test_calibration_markdown_names_the_question_file_and_captions_every_table():
+    from crossvenue_rag.generation.calibration_report import calibration_markdown
+
+    report = calibration_of(
+        statistic={"supported": "kappa"},
+        comparisons={
+            "sonnet vs human": {"supported": {"n": 3}},
+            "opus vs human": {"supported": {"n": 3}},
+        },
+    )
+    lines = calibration_markdown(report, QUESTIONS).splitlines()
+    assert "on `evals/q.jsonl`" in lines[2]
+    for heading in ("## sonnet vs human", "## opus vs human"):
+        assert lines[lines.index(heading) + 2] == (
+            f"{heading[3:]} on `evals/q.jsonl`: n paired verdicts per dimension, "
+            "95% percentile bootstrap intervals over answers."
+        )
+    selection = lines.index("## Selection")
+    assert "on `evals/q.jsonl`" in lines[selection + 2]
+    assert lines[selection + 4].startswith("| judge |")
 
 
 def test_select_judge_files_writes_the_report_and_selects_the_agreeing_judge(tmp_path, monkeypatch):
@@ -91,7 +117,10 @@ def test_select_judge_files_writes_the_report_and_selects_the_agreeing_judge(tmp
         ],
     )
     rated_in(monkeypatch, write_ratings(tmp_path / "ratings.jsonl"))
-    text = calibration_report.select_judge_files(calibration_config(tmp_path), run)
+    cfg = calibration_config(tmp_path)
+    write_run_config(run, cfg.with_questions(QUESTIONS))
+    text = calibration_report.select_judge_files(cfg, run)
+    assert "on `evals/q.jsonl`" in text
     report = json.loads((run / "calibration.json").read_text())
     assert (run / "calibration.md").read_text(encoding="utf-8") == text
     assert report["selected"] == "sonnet"
@@ -133,4 +162,4 @@ def test_a_threshold_without_its_statistic_is_a_value_error_naming_the_dimension
         comparisons={"sonnet vs human": {"supported": {"n": 3}}},
     )
     with pytest.raises(ValueError, match="threshold on supported but no statistic"):
-        calibration_markdown(report)
+        calibration_markdown(report, QUESTIONS)

@@ -220,6 +220,9 @@ def rate_calibration_sample(
     """Rates the answers `sample_file` names, by hand; returns how many were rated.
 
     The ratings go to `RATINGS_PATH` with the `index_version` the run was made against.
+
+    Raises:
+        UserError: Nothing is at `sample_file` or `questions_path`, or a directory is.
     """
     run_dir, ids = read_sample(sample_file)
     version = require_run_index(Path(run_dir), require_current_index(cfg))

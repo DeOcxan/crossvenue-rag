@@ -1,7 +1,8 @@
 """The values the findings figures draw.
 
-scripts/figures.py draws these and checks each mean against the number its run reports
-before drawing it; the bootstrap intervals, which no run reports, are drawn unchecked.
+scripts/figures.py draws these and checks each mean against the number its run reports, or the
+off-venue shares against findings' re-scoring, before drawing it; the bootstrap intervals,
+which no run reports, are drawn unchecked.
 """
 
 from __future__ import annotations

@@ -1,6 +1,6 @@
 """The forms of a document's text the checks match: typography, numbers, identifiers, references.
 
-`TOKEN` is a number of the text, `REF` a run, `index_version` or hash reference, and
+`TOKEN` is a number of the text, `REF` a run directory, `index_version` or hash reference, and
 `REFERENCES` the patterns whose digits are not numbers.
 """
 
@@ -32,14 +32,14 @@ WORD = r"(?i:\b(?:" + "|".join(WORDS) + r")\b)"
 HOLE = f"({NUMBER}|{WORD})"
 # A number with a unit attached ("12ms", "10x") is a number of the document.
 UNIT = r"(?:ms|s|x|GB|MB|KB|min|h)"
-# A number of the document is not part of an identifier, a version, a date or a path. A
+# A number of the document is not part of an identifier, a version or a date. A
 # numeral or a number word joined to a word by a hyphen ("50-question", "five-question") is
 # not one either.
 _WORD_TOKEN = r"(?i:(?<![\w\-])(?:" + "|".join(WORDS) + r")(?![\w]|-\w))"
 TOKEN = re.compile(
     rf"(?<![\w@.#\u00a7\u2032\-]){NUMBER}{UNIT}?(?![\w@\u2032]|\.\d|-\w)|{_WORD_TOKEN}"
 )
-# An ASCII hyphen used as a minus sign: the documents write U+2212.
+# An ASCII hyphen before a digit, used as a minus sign: the documents write U+2212.
 HYPHEN_MINUS = re.compile(r"(?<![\w\-])-\d")
 # Identifiers the spec checks with `ref`: run directories, index versions and
 # hash prefixes. Found inside code spans too, which is where they are written.

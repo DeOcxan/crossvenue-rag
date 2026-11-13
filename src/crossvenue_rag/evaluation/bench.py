@@ -211,6 +211,11 @@ class BenchSummaryRow(CsvRow):
     identical_retrievals: int
 
 
+def _saved_ms(value: float) -> float:
+    """A latency in milliseconds at `SUMMARY_MS_DECIMALS`, as summary.csv keeps it."""
+    return round(value, SUMMARY_MS_DECIMALS)
+
+
 def summarise_modes(rows: Sequence[BenchRow]) -> list[BenchSummaryRow]:
     """One row per mode: latency percentiles and means, calls, pairs and identical retrievals.
 
@@ -231,12 +236,12 @@ def summarise_modes(rows: Sequence[BenchRow]) -> list[BenchSummaryRow]:
             BenchSummaryRow(
                 mode=mode,
                 n=len(mine),
-                total_p50_ms=round(percentile(total, P50), SUMMARY_MS_DECIMALS),
-                total_p95_ms=round(percentile(total, P95), SUMMARY_MS_DECIMALS),
-                total_mean_ms=round(mean(total), SUMMARY_MS_DECIMALS),
-                rerank_p50_ms=round(percentile(rerank, P50), SUMMARY_MS_DECIMALS),
-                rerank_p95_ms=round(percentile(rerank, P95), SUMMARY_MS_DECIMALS),
-                rerank_mean_ms=round(mean(rerank), SUMMARY_MS_DECIMALS),
+                total_p50_ms=_saved_ms(percentile(total, P50)),
+                total_p95_ms=_saved_ms(percentile(total, P95)),
+                total_mean_ms=_saved_ms(mean(total)),
+                rerank_p50_ms=_saved_ms(percentile(rerank, P50)),
+                rerank_p95_ms=_saved_ms(percentile(rerank, P95)),
+                rerank_mean_ms=_saved_ms(mean(rerank)),
                 calls_per_query=round(mean([r.calls for r in mine]), CALLS_DECIMALS),
                 pairs_per_call_mean=round(mean(pairs), PAIRS_DECIMALS),
                 pairs_per_query_mean=round(sum(pairs) / len(mine), PAIRS_DECIMALS),

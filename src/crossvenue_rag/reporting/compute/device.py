@@ -15,7 +15,7 @@ from .memo import per_sources
 
 CPU_RUN = SENSITIVITY_BASE_RUN
 MPS_RUN = RETRIEVAL_RUN
-# The metrics a reordering of a list leaves unchanged: they change only when its chunks change.
+# Recall and precision: they change at k only when the top k's chunks change.
 MEMBERSHIP_METRICS = ("recall", "precision")
 # A difference "in the fourth decimal" is below this.
 FOURTH_DECIMAL = 0.001
@@ -52,7 +52,7 @@ def list_change(src: Sources) -> ListChange:
 
 
 def changed_cells(src: Sources) -> list[CellChange]:
-    """Every metric cell of by_category.csv that differs between the devices.
+    """Every metric cell of by_category.csv that both devices fill and that differs between them.
 
     Largest difference first; latency is left out.
     """
@@ -75,7 +75,7 @@ def membership_changes(src: Sources) -> list[CellChange]:
 
 
 def ranking_only_changes(src: Sources, category: str) -> bool:
-    """Whether on `category` only nDCG and MRR change, below 0.001, besides dense's unjudged@10."""
+    """Whether on `category` only nDCG and MRR move, below 0.001, besides dense's `unjudged@10`."""
     for c in changed_cells(src):
         if c.category != category:
             continue

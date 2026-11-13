@@ -25,6 +25,7 @@ from . import (
     pooling,
     references,
     retrieval,
+    round3,
     rounds,
 )
 
@@ -41,6 +42,8 @@ def findings(doc: Doc, src: Sources) -> None:
     _off_venue(doc, src)
     rounds.agreement_finding(doc, src)
     rounds.sensitivity_finding(doc, src)
+    round3.retrieval_section(doc, src)
+    round3.answers_section(doc, src)
     _corpus(doc, src)
     _answers(doc, src)
     references.runs(doc, src)

@@ -149,6 +149,15 @@ def bm25(doc: Doc, src: Sources) -> None:
         holds=off_venue.others_include_zero(src, "bm25", "comparison"),
         what="every other comparison-scope off-venue interval includes 0",
     )
+    doc.check(
+        "hybrid_rerank - dense is {} [{}, {}] on off-venue share@{} and {} [{}, {}] on the top-1 "
+        "off-venue rate; hybrid_rerank - hybrid is {} [{}, {}] and {} [{}, {}].",
+        *signed_parts(off_venue.off_venue_interval(src, "dense", share, "comparison")),
+        top_k_text(src),
+        *signed_parts(off_venue.off_venue_interval(src, "dense", TOP_ONE_OFF_VENUE, "comparison")),
+        *signed_parts(off_venue.off_venue_interval(src, "hybrid", share, "comparison")),
+        *signed_parts(off_venue.off_venue_interval(src, "hybrid", TOP_ONE_OFF_VENUE, "comparison")),
+    )
     doc.claim(
         "The {} adversarial questions are a category of fewer than {} questions, so under",
         formatting.count(off_venue.scope_questions(src, "adversarial")),

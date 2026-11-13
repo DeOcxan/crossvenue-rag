@@ -1,4 +1,4 @@
-"""Tests for `reporting.compute.corpus_pancakeswap`, on a corpus written under tmp_path."""
+"""Tests for `reporting.compute.corpus_pancakeswap`, on a corpus written under `tmp_path`."""
 
 from __future__ import annotations
 

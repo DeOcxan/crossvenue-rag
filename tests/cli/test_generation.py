@@ -34,7 +34,7 @@ def answer_run(tmp_path: Path, version: str) -> Path:
 def test_rate_sample_writes_a_stratified_sample_of_the_run(config_file, tmp_path):
     run = answer_run(tmp_path, current_version(config_file))
     out = tmp_path / "sample.txt"
-    # The fixture run answers none of the questions the default config excludes.
+    # The fixture run does not answer every question the default config excludes.
     result = CliRunner().invoke(
         app,
         ["rate-sample", "--run", str(run), "-o", str(out), "-c", str(config_file),
@@ -221,6 +221,20 @@ def test_rate_grades_the_sample_of_the_run(config_file, tmp_path, monkeypatch):
     ]
 
 
+def test_a_blank_rater_records_the_default_annotator_that_label_records(config_file, monkeypatch):
+    raters: list = []
+
+    def rate_calibration_sample(cfg, sample_file, questions, rater, say):
+        raters.append(rater)
+        return 0
+
+    monkeypatch.setattr(_under_test, "rate_calibration_sample", rate_calibration_sample)
+    monkeypatch.setenv("CROSSVENUE_ANNOTATOR", "annotator-from-env")
+    result = invoke("rate", "-c", str(config_file), "--rater", " ")
+    assert result.exit_code == 0, result.output
+    assert raters == ["annotator-from-env"]
+
+
 def test_rate_needs_a_sample_that_names_its_run(config_file, tmp_path):
     sample = tmp_path / "sample.txt"
     sample.write_text("gemini@venue_split:cv-0001  x\n", encoding="utf-8")
@@ -287,6 +301,7 @@ def test_select_judge_writes_the_calibration_files(config_file, tmp_path, monkey
     write_judgements(run, "sonnet", cost=0.01)
     write_judgements(run, "opus", flip=True, cost=0.03)
     rated_in(monkeypatch, write_ratings(tmp_path / "ratings.jsonl"))
+    (run / "config.yaml").write_text(config_file.read_text(encoding="utf-8"), encoding="utf-8")
     result = invoke(
         "select-judge", "--run", str(run), "-c", str(config_file),
         "--set", "eval.bootstrap_resamples=50",
@@ -336,6 +351,7 @@ def test_compare_prompts_writes_the_comparison(config_file, tmp_path):
         ]  # fmt: skip
         write_answers(run / "answers.jsonl", records)
         (run / "index.json").write_text(json.dumps({"index_version": version}))
+        (run / "config.yaml").write_text(config_file.read_text(encoding="utf-8"), encoding="utf-8")
         runs.append(run)
     result = invoke(
         "compare-prompts", "--v1", str(runs[0]), "--v2", str(runs[1]), "-c", str(config_file),

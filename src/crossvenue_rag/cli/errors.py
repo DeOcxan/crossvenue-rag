@@ -1,7 +1,7 @@
 """The CLI's error boundary: an expected failure prints its message and hint and exits 1.
 
-The expected failures are a `UserError`, a problem the user can fix (fetch before
-ingest, a bad config value), and a failure outside the program: an `ExternalFailure`
+The expected failures are a `UserError`, a problem the user can fix (`fetch` before
+`ingest`, a bad config value), and a failure outside the program: an `ExternalFailure`
 (a model call that failed) or Postgres refusing a connection. Anything else is a
 defect and keeps its traceback, a ValueError or a pydantic ValidationError included;
 `CROSSVENUE_DEBUG=1` re-raises everything.
@@ -64,5 +64,5 @@ def friendly_errors(console: Console) -> Iterator[None]:
         say(console, Text("Error:", style="red"), message)
         if hint:
             say(console, hint, style="dim")
-        console.print("[dim]Set CROSSVENUE_DEBUG=1 for the full traceback.[/dim]")
+        console.print("[dim]CROSSVENUE_DEBUG=1 shows the full traceback.[/dim]")
         raise SystemExit(1) from exc

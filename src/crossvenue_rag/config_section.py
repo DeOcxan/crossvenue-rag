@@ -32,8 +32,8 @@ def named(value: str, key: str) -> str:
     Raises:
         ValueError: `value` is empty or blank; the message names `key`.
     """
-    # pydantic turns only a ValueError into a validation error, so this raises one and shares
-    # the test of `errors.not_blank`.
+    # pydantic turns a ValueError into a validation error and passes a UserError through, so
+    # this raises one and shares the test of `errors.not_blank`.
     if is_blank(value):
         raise ValueError(f"{key} must not be empty or blank")
     return value

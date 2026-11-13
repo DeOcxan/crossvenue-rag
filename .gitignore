@@ -25,6 +25,10 @@ results/*
 !results/20260926T015648Z_power/
 !results/20261010T214504Z/
 !results/20261010T222553Z/
+!results/20261031T202503Z/
+!results/20261031T213610Z_judged/
+!results/20261031T220102Z_judged/
+!results/20261031T220111Z_prompts/
 # The committed runs' file hashes and index_versions (`crossvenue runs-manifest`).
 !results/runs.json
 

@@ -32,7 +32,7 @@ def _git(*args: str, cwd: Path) -> str:
 
 @pytest.fixture
 def upstream(tmp_path: Path) -> tuple[Path, str, str]:
-    """A repository with two commits: docs/a.md at "v1", then "v2" plus docs/b.md."""
+    """A repository with two commits: `docs/a.md` at "v1", then "v2" plus `docs/b.md`."""
     repo = tmp_path / "upstream"
     (repo / "docs").mkdir(parents=True)
     _git("init", "-q", "-b", "main", cwd=repo)
@@ -81,7 +81,7 @@ def _git_config(tmp_path: Path, repo: Path) -> Config:
 
 
 def _pin(cfg: Config, rows: list[tuple[str, str, str]]) -> None:
-    """Writes a manifest of (local_path, commit, content) rows."""
+    """Writes a manifest of (`local_path`, `commit`, `content`) rows."""
     write_manifest(
         cfg.paths.manifest,
         [

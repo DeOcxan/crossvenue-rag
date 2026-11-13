@@ -1,4 +1,4 @@
-"""Reporting commands: reproduce, runs-manifest.
+"""Reporting commands: `reproduce`, `runs-manifest`.
 
 `reporting.reproduce` is imported inside its command: the claims load scipy and
 scikit-learn, which `crossvenue --help` does not need. Every other import is at the top.
@@ -43,7 +43,7 @@ def reproduce_command(
     _require_repository_root()
     report = reproduce(".")
     # Printed as text: a problem quotes document text, and a citation such as
-    # `[doi:...]` would be read by rich as a style tag.
+    # `[doi:...]` would be a style tag to rich.
     for problem in report.problems:
         say(console, str(problem), style="red", soft_wrap=True)
     if verbose:
@@ -106,6 +106,6 @@ def _require_repository_root() -> None:
     results = SCHEMA_DEFAULTS.paths.results
     if not (Path(GITIGNORE).is_file() and results.is_dir()):
         raise UserError(
-            f"{Path.cwd()} is not the repository root: it has no {GITIGNORE} and {results}/",
+            f"{Path.cwd()} is not the repository root: it has no {GITIGNORE} or no {results}/",
             hint="run the command from the root of the crossvenue-rag checkout",
         )

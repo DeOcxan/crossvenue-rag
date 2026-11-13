@@ -1,10 +1,10 @@
-"""What more than one document gives: numbers no run measures, and the reasons they carry."""
+"""Numbers no run measures, each with the reason it carries."""
 
 from __future__ import annotations
 
 # The level of an interval: a convention that no run measures.
 INTERVAL_LEVEL = "interval level"
-# A provider or uptime figure read from OpenRouter's model listing, which no saved run holds.
+# A figure read from OpenRouter's model listing, which no saved run holds.
 OPENROUTER = "OpenRouter's model listing on 2026-09-25, an external source"
 REGISTERED = "a target or parameter the protocol registers"
 POWER_MODEL = "an input of the power model, chosen in section 7"

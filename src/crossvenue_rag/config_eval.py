@@ -75,7 +75,7 @@ class EvalConfig(Section):
     ) -> list[tuple[RetrievalMethod, RetrievalMethod]]:
         """A method against itself compares nothing; a repeated pair is counted twice by Holm.
 
-        A pair whose methods `methods` does not run is kept and skipped by the run, so an
+        A pair whose methods `methods` does not run is kept, and the run skips it, so an
         ablation (`--set eval.methods=[bm25, dense]`) needs no edit of the pairs.
         """
         for a, b in v:
@@ -120,7 +120,7 @@ class EvalConfig(Section):
         """The judged set has to extend past the ranks being scored.
 
         If the pool is only as deep as the largest k, the judgments end exactly at the
-        deepest rank the metric scores. Recall@k is then measured against a gold
+        deepest rank the metric scores. `recall@k` is then measured against a gold
         set that was never allowed to contain anything below rank k. Pooling bias
         is unavoidable (evals/methodology.md section 1); making it coincide with the
         evaluation depth is not.
@@ -133,10 +133,15 @@ class EvalConfig(Section):
                 f"({formatting.own_form(deepest)}); a pool no deeper than the evaluation "
                 "depth adds no judgment below the ranks the metric scores"
             )
+        return self
+
+    @model_validator(mode="after")
+    def _pool_display_covers_the_pool_depth(self) -> EvalConfig:
         if self.pool_display < self.pool_depth_per_method:
             raise ValueError(
                 f"eval.pool_display ({formatting.own_form(self.pool_display)}) is below "
-                f"pool_depth_per_method ({pool_depth}); candidates would be fetched and then "
+                f"pool_depth_per_method ({formatting.own_form(self.pool_depth_per_method)}); "
+                "candidates would be fetched and then "
                 "hidden from the annotator"
             )
         return self

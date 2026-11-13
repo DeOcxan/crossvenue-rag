@@ -95,7 +95,7 @@ def judge_choice(doc: Doc, src: Sources) -> None:
     )
     human = calibration.human_negatives(src)
     doc.check(
-        "the human marked {} of {} claims unsupported and {} misattributed",
+        "The human marked {} of {} claims unsupported and {} misattributed",
         formatting.count(human.unsupported),
         formatting.count(human.claims),
         formatting.count(human.misattributed),
@@ -154,12 +154,16 @@ def rejection_claims(doc: Doc, src: Sources) -> None:
         holds=calibration.rejects_none_accepted(src, calibration.other_candidate(src)),
         what="Sonnet rejected none of the claims the human accepted",
     )
-    _answer_claim(doc, src, "limit defaults to {} for", "gemini@venue_split:cv-0127", LIMIT_DEFAULT)
-    _answer_claim(doc, src, "size defaults to {} for", "mercury@venue_split:cv-0127", SIZE_DEFAULT)
+    _answer_claim(
+        doc, src, "`limit` defaults to {} for", "gemini@venue_split:cv-0127", LIMIT_DEFAULT
+    )
+    _answer_claim(
+        doc, src, "`size` defaults to {} for", "mercury@venue_split:cv-0127", SIZE_DEFAULT
+    )
     _answer_claim(
         doc,
         src,
-        "limit accepts {} to {}, default {}, for",
+        "`limit` accepts {} to {}, default {}, for",
         "mercury@venue_split:cv-0067",
         LIMIT_RANGE,
     )

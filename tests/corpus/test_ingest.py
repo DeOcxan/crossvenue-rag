@@ -4,10 +4,13 @@ from __future__ import annotations
 
 import json
 
+import pytest
+
 from crossvenue_rag.config import Config
 from crossvenue_rag.corpus.artifacts import corpus_stats_json, read_corpus_stats
-from crossvenue_rag.corpus.ingest import doc_path_of
+from crossvenue_rag.corpus.ingest import doc_path_of, ingest
 from crossvenue_rag.corpus.manifest import ManifestRow
+from crossvenue_rag.errors import UserError
 from crossvenue_rag.models import VenueType
 from tests.conftest import CORPUS, build_corpus
 
@@ -19,7 +22,7 @@ def test_ingestion_is_deterministic(cfg: Config):
 
 
 def test_ingestion_merges_a_testnet_mirror_into_one_mainnet_cited_chunk(cfg: Config):
-    """433 of the real corpus's 536 identical-text groups were Binance mainnet
+    """433 of the real corpus's 536 identical-text groups are Binance mainnet
     pages against their testnet/ copies. After ingestion each is one chunk that
     cites the mainnet page and keeps the testnet page as a second source."""
     mainnet_text = CORPUS["binance/rest-api.md"][2]
@@ -72,3 +75,11 @@ def test_a_document_path_drops_the_venue_segment_of_the_local_path():
 
     assert doc_path_of(row("bybit/v5/order/create.md")) == "v5/order/create.md"
     assert doc_path_of(row("create.md")) == "create.md"
+
+
+def test_ingest_without_a_manifest_names_the_fetch_that_writes_one(cfg: Config):
+    # Plain `crossvenue fetch` refuses a missing manifest too; only `--follow-branch` writes one.
+    with pytest.raises(UserError) as refused:
+        ingest(cfg, count_tokens=len)
+    assert "empty or missing" in str(refused.value)
+    assert "`crossvenue fetch --follow-branch`" in refused.value.hint

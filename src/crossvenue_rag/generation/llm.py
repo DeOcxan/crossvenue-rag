@@ -24,7 +24,6 @@ from ..stats import mean
 from .api_key import load_api_key
 from .cache import DiskCache, cache_key, read_entry
 from .openrouter import (
-    OPENROUTER_URL,
     HttpxTransport,
     ModelCallError,
     ModelRequest,
@@ -101,7 +100,11 @@ class LLM:
         api_key: str | None = None,
         timers: Timers = Timers(),
     ) -> None:
-        """A client for `cfg`; an argument left out defaults from `cfg` or the environment."""
+        """A client for `cfg`.
+
+        The cache defaults from `cfg`, the API key from `load_api_key`, the transport to
+        `HttpxTransport` and the timers to `time.sleep` and `time.perf_counter`.
+        """
         self.cfg = cfg
         self.transport = transport or HttpxTransport()
         self.cache = cache or DiskCache(cfg.cache_dir)
@@ -177,7 +180,7 @@ class LLM:
             try:
                 content = _parsed(response, validate)
                 break
-            # What an unusable reply raises: no text or not JSON (ValueError), or a
+            # What an unusable reply raises: no text or not a JSON object (ValueError), or a
             # validator's refusal (InvalidResponse).
             except (ValueError, InvalidResponse) as exc:
                 self._invalid(model, exc, totals)
@@ -204,9 +207,7 @@ class LLM:
             "X-Title": "crossvenue-rag",
         }
         start = self._clock()
-        payload, http_retries = post_with_retries(
-            self.transport, OPENROUTER_URL, headers, body, self._policy
-        )
+        payload, http_retries = post_with_retries(self.transport, headers, body, self._policy)
         totals.latency_ms += (self._clock() - start) * MS_PER_SECOND
         totals.retries += http_retries
         return payload
@@ -308,7 +309,7 @@ def _cached_costs(cache: DiskCache) -> dict[str, list[float]]:
 
 
 def observed_costs(cache: DiskCache) -> dict[str, float]:
-    """Mean cost per call by requested model, over every cached response."""
+    """Mean cost per call by requested model, over every cached response that records a cost."""
     return {model: mean(costs) for model, costs in _cached_costs(cache).items()}
 
 

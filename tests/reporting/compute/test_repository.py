@@ -5,14 +5,9 @@ from __future__ import annotations
 import pytest
 
 from crossvenue_rag.errors import UserError
-from crossvenue_rag.models import ChunkSource
 from crossvenue_rag.reporting.compute import repository
 from crossvenue_rag.reporting.sources import Sources
 from tests.reporting.conftest import write_file
-
-
-def source(venue, doc_path):
-    return ChunkSource(venue, doc_path, ["Limits"], f"https://example.invalid/{doc_path}", 0)
 
 
 def test_source_lines_count_every_line_of_every_py_file(tmp_path):
@@ -54,10 +49,11 @@ def test_fixture_pages_are_the_keys_of_the_test_corpus(tmp_path):
         "CORPUS: dict[str, tuple[str, str, str]] = {\n"
         '    "binance/rest-api.md": (\n        "binance",\n    ),\n'
         '    "bybit/rate-limit.md": (\n        "bybit",\n    ),\n'
+        '    "binance/websocket.mdx": (\n        "binance",\n    ),\n'
         "}\n"
     )
     write_file(tmp_path, "tests/conftest.py", "import pytest\n\n" + conftest)
-    assert repository.fixture_pages(Sources(tmp_path)) == 2
+    assert repository.fixture_pages(Sources(tmp_path)) == 3
 
 
 def test_the_python_requirement_is_read_from_pyproject(tmp_path):

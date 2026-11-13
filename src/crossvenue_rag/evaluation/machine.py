@@ -25,9 +25,11 @@ PS_FIELDS = 4
 
 # Processes that would compete with the timing for CPU or the accelerator.
 COMPETITORS = ("crossvenue", "pytest", "uvicorn", "sentence_transformers")
-# A process of any name at or above this CPU share is recorded as busy; it does not block timing.
+# The CPU share from which `classify_processes` records a process not named in COMPETITORS
+# as busy; it does not block timing.
 BUSY_CPU_PERCENT = 50.0
-# A process named in COMPETITORS competes from this CPU share; below it, it is idle.
+# The CPU share from which `classify_processes` counts a process named in COMPETITORS as
+# competing; below it, it is idle.
 COMPETING_CPU_PERCENT = 5.0
 # The 1-minute load average per CPU above which the machine is too busy to time on.
 BUSY_LOAD_PER_CPU = 0.5
@@ -85,7 +87,7 @@ class LoadDuring(BaseModel):
 class MachineRecord(BaseModel):
     """machine.json: the machine before and after timing and the load while timing.
 
-    One format, the bench run 20260925T225850Z_bench's: two-space indent, no
+    One format, the bench run `20260925T225850Z_bench`'s: two-space indent, no
     final newline, `load1_during` an empty object when no row recorded a load.
     """
 
@@ -162,7 +164,11 @@ def parse_process_table(ps: str) -> list[ProcessRow]:
 def classify_processes(
     table: Sequence[ProcessRow], own_pid: int
 ) -> tuple[list[Process], list[Process]]:
-    """The competing and the busy processes of `table`, leaving out `own_pid` and its parents."""
+    """The competing and the busy processes of `table`.
+
+    It leaves out `own_pid`, its parents below pid 1 and every process whose command names
+    `bench-rerank`.
+    """
     # This process and the shells and `uv run` that started it are not competitors.
     parent_of = {row.pid: row.ppid for row in table}
     mine = {own_pid}

@@ -26,6 +26,8 @@ MIN_QUESTIONS_PER_CATEGORY = 5
 _LINE_HINT = "fix that line of the file"
 # What a dataset whose `.meta.json` cannot be read is told to do.
 META_HINT = "restore the .meta.json the dataset version was published with"
+# What a missing `--metadata-from` file is told to do.
+METADATA_FROM_HINT = "pass --metadata-from a dataset file"
 
 
 def load_questions(path: str | Path) -> list[Question]:
@@ -70,14 +72,14 @@ def save_questions(path: str | Path, questions: Sequence[Question]) -> None:
 
 
 def label_version_problems(
-    questions: Sequence[Question], journal: Journal, current: str, *, all_rounds: bool = False
+    questions: Sequence[Question], journal: Journal, current: str, *, all_rounds: bool
 ) -> list[str]:
-    """Labeled questions whose judgments were not made against `current`.
+    """Judged questions whose judgments were not made against `current`.
 
-    A labeled question is one with gold chunks or an annotation timestamp. Its
+    A judged question is one with gold chunks or an annotation timestamp. Its
     round-1 judgment in the sidecar carries the `index_version` it was made
     against; an entry without one counts as a mismatch.
-    `all_rounds` also checks later rounds, which `label` needs (a round-2 pool
+    `all_rounds` checks every entry of the journal instead, which `label` needs (a round-2 pool
     from a different index is not comparable with round 1) and `eval` does not.
     """
     problems: list[str] = []
@@ -94,7 +96,7 @@ def label_version_problems(
             if version != current:
                 problems.append(
                     f"{question.id} round {round_id}: "
-                    + (f"labeled against {version}" if version else "no index_version recorded")
+                    + (f"judged against {version}" if version else "no index_version recorded")
                 )
     return problems
 
@@ -106,11 +108,11 @@ def require_label_versions(
 
     A frozen dataset (`evals/datasets/<name>.jsonl`) is checked against the `index_version`
     its `.meta.json` records, the index every label in it was judged against, checked at
-    freeze time; the copy of its journal taken then is not read here.
+    freeze time. The copy of its journal taken then is not read here.
 
     Raises:
-        UserError: A frozen dataset was frozen against another index, or a judgment in the
-            journal was made against one.
+        UserError: Nothing is at `questions_path`, or a directory is. A frozen dataset was
+            frozen against another index, or a judgment in the journal was made against one.
     """
     frozen = frozen_index_version(questions_path)
     if frozen is not None:
@@ -169,8 +171,8 @@ def require_gold_resolves(questions: Sequence[Question], chunk_ids: set[str]) ->
 def index_check(questions_path: str | Path, questions: Sequence[Question] = ()) -> IndexCheck:
     """The check that a question file may be used at an index (`retrieval.retriever.IndexCheck`).
 
-    It passes when every label of the file was made at the index's `index_version`
-    (`require_label_versions`) and every gold id of `questions` is one of the index's
+    It passes when the file's labels pass `require_label_versions` at the index's
+    `index_version` and every gold id of `questions` is one of the index's
     chunks (`require_gold_resolves`); no questions, no gold check.
     """
 
